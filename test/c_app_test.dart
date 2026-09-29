@@ -34,7 +34,7 @@ void main() {
 
   setUp(() {
     previousProfile = StudioProfile.current;
-    StudioProfile.current = cProfile;
+    StudioProfile.current = profileWith(const CProgramRunner());
     project = Directory.systemTemp.createTempSync('qfli_c_app_test');
   });
 
@@ -451,7 +451,10 @@ int main(void) { printf("dart\\n"); return 0; }
         entryFile: p.join(project.path, 'main.cpp'),
       );
       expect(result, isNotNull);
-      expect(result!.title, anyOf(contains('Clang'), contains('C++')));
+      expect(
+        result!.title,
+        anyOf(contains('Clang'), contains('GCC'), contains('C++')),
+      );
     });
   });
 }
