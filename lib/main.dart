@@ -11,19 +11,21 @@ import 'package:qfli_studio_core/store/project_store.dart';
 import 'package:qfli_studio_core/store/settings_store.dart';
 
 import 'forge_runner.dart';
+import 'forge_tools_page.dart';
 
 /// 本 App 的产品名。窗口标题、任务切换器和应用内顶栏都读它。
 const String _appTitle = StudioProductCatalog.forge;
 
 /// Forge 档位：同一套内核 UI，收窄成 C/C++ 工具。
 ///
-/// 新建项目只出现 C 模板，运行按钮交给应用内的 C 解释器。
+/// 新建项目使用 C/C++ 模板，运行与工具入口由 Forge 档位提供。
 /// 单独提出来是为了让测试能直接断言档位，而不必为了一个常量去跑 `main()`。
 final StudioProfile forgeProfile = StudioProfile(
   id: StudioProductCatalog.forgeKey,
   appTitle: _appTitle,
   templates: [ProjectTemplate.empty, ProjectTemplate.c, ProjectTemplate.cpp],
   runner: ForgeProgramRunner(),
+  toolsPageBuilder: (_) => const ForgeToolsPage(),
   isOffline: true,
   productKey: StudioProductCatalog.forgeKey,
   showHomeTabs: false,
