@@ -1,8 +1,11 @@
-# 原生执行后端（picoc）
+# 旧版原生 C 执行后端（picoc）
 
-这是 C 版 App 的**可选**执行后端。默认不启用——App 实际交付的是纯 Dart 解释器
-（`packages/qfli_c_runtime`），它不需要 NDK、不需要按 ABI 出多个 `.so`，在所有平台上
-都能跑，覆盖面也够教学用。
+本文说明 `native/src/` 中保留的旧版可选 picoc 后端。当前 Forge 桌面端使用真实的
+Clang/GCC 工具链；HarmonyOS 的 LLVM 交叉构建步骤见
+[工具链构建说明](toolchain/README.md)。本文不作为新 Clang 后端的接入或验收说明。
+
+旧版默认 C 路径是纯 Dart 解释器（`packages/qfli_c_runtime`），不需要 NDK 或按 ABI
+出多个 `.so`。
 
 只有当你想换性能更好的 picoc、或者需要 picoc 的某些语义时，才按本文打开这条路径。
 
