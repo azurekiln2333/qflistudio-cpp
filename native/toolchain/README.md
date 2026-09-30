@@ -1,5 +1,8 @@
 # LLVM Toolchain Build
 
+For the Android-specific build, package layout and executor contract, see
+[README.android.md](./README.android.md).
+
 This directory builds upstream LLVM 15.0.7 for ARM64 OHOS devices and x86_64
 OHOS emulators. It is
 separate from the legacy picoc bridge in `native/src/`.
