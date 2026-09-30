@@ -250,8 +250,20 @@ $manifest = [ordered]@{
 }
 [IO.File]::WriteAllText((Join-Path $resources 'toolchain.json'), ($manifest | ConvertTo-Json -Depth 10))
 New-Item -ItemType Directory -Path (Split-Path -Parent $archive) -Force | Out-Null
-Add-Type -AssemblyName System.IO.Compression.FileSystem
-[IO.Compression.ZipFile]::CreateFromDirectory($resources, $archive, [IO.Compression.CompressionLevel]::Optimal, $false)
+Add-Type -AssemblyName System.IO.Compression, System.IO.Compression.FileSystem
+# .NET Framework's CreateFromDirectory writes Windows separators into ZIP paths.
+$resourcePrefix = $resources.TrimEnd([char[]]@('/', '\')) + [IO.Path]::DirectorySeparatorChar
+$zip = [IO.Compression.ZipFile]::Open($archive, [IO.Compression.ZipArchiveMode]::Create)
+try {
+    foreach ($file in Get-ChildItem -LiteralPath $resources -Recurse -File | Sort-Object FullName) {
+        $entryName = $file.FullName.Substring($resourcePrefix.Length).Replace('\', '/')
+        $null = [IO.Compression.ZipFileExtensions]::CreateEntryFromFile(
+            $zip, $file.FullName, $entryName, [IO.Compression.CompressionLevel]::Optimal
+        )
+    }
+} finally {
+    $zip.Dispose()
+}
 $archiveHash = (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash.ToLowerInvariant()
 [IO.File]::WriteAllText("$archive.sha256", "$archiveHash  $TargetArchitecture.zip`n")
 Write-Output "Packaged $TargetArchitecture Android LLVM $version resources: $archive"

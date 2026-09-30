@@ -72,6 +72,8 @@ Android's stable `__ndk1` ABI. Upstream Clang's `-lc++` is resolved by a
 `libc++.so` linker script pointing to `libc++_shared.so`. Other ABI or API
 library directories are omitted. Do not put SDK link-time stubs into
 `LD_LIBRARY_PATH`; use the installed native-library directory instead.
+ZIP entry paths always use `/`, including when packaged with Windows PowerShell 5.
+The APK verifier rejects backslash paths because Android treats them as filenames.
 
 ## Local Validation
 

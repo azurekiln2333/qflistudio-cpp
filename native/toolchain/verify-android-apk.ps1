@@ -50,6 +50,11 @@ try {
         $resourceStream = $resourceEntry.Open()
         $resources = [IO.Compression.ZipArchive]::new($resourceStream, [IO.Compression.ZipArchiveMode]::Read)
         try {
+            foreach ($entry in $resources.Entries) {
+                if ($entry.FullName.Contains('\')) {
+                    throw "Resource ZIP paths must use forward slashes for Android: $abi/$($entry.FullName)"
+                }
+            }
             $manifest = Read-EntryText (Require-Entry $resources 'toolchain.json') | ConvertFrom-Json
             if ($manifest.architecture -ne $abi) { throw "Resource manifest architecture mismatch: $abi" }
             if ($manifest.validation.deviceExecutionVerified -ne $false) { throw 'Local artifacts must not claim device verification' }
