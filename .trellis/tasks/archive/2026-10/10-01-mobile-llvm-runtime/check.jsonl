@@ -1,0 +1,2 @@
+{"file":".trellis/spec/backend/native-toolchain.md","reason":"Native artifacts and honest validation scope"}
+{"file":".trellis/tasks/10-01-mobile-llvm-runtime/prd.md","reason":"Android-only requirements and no device debugging"}

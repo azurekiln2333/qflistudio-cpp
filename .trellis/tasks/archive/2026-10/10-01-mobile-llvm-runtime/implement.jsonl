@@ -1,0 +1,2 @@
+{"file":".trellis/spec/backend/native-toolchain.md","reason":"Pinned LLVM, build hygiene and native validation gates"}
+{"file":".trellis/tasks/10-01-mobile-llvm-runtime/design.md","reason":"Android executor and channel contract"}
