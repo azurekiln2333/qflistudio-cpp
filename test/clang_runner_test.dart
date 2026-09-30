@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
+import 'package:qfli_c/cpp_runner.dart';
 import 'package:qfli_c/main.dart' show forgeProfile;
 import 'package:qfli_studio_core/services/runner_service.dart';
 import 'package:qfli_studio_core/services/studio_profile.dart';
@@ -113,6 +114,30 @@ int main() { std::cout << answer() << std::endl; return 0; }
     expect(code, isNot(0));
     expect(output, isEmpty);
     expect(errors.join('\n'), contains('main.cpp'));
+  });
+
+  test('legacy C++ runner delegates to a working compiler', () async {
+    write('main.cpp', '''
+#include <iostream>
+#include <numeric>
+#include <vector>
+int main() {
+  std::vector<int> values{10, 20, 12};
+  std::cout << std::accumulate(values.begin(), values.end(), 0) << std::endl;
+  return 0;
+}
+''');
+    final result = await const CppProgramRunner().run(
+      projectPath: project.path,
+      entryFile: p.join(project.path, 'main.cpp'),
+    );
+    expect(result, isNotNull);
+    final output = result!.stdout.toList();
+    final errors = result.stderr.toList();
+    final code = await result.exitCode;
+    expect(code, 0, reason: (await errors).join('\n'));
+    expect(await output, ['42']);
+    expect(result.title, anyOf(contains('Clang'), contains('GCC')));
   });
 
   test('allows output streams to be consumed one after another', () async {

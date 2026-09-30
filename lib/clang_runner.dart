@@ -315,14 +315,14 @@ class ClangProgramRunner implements ProgramRunner {
       } else {
         fallbackToC = type == 'c';
         if (!fallbackToC) {
-          _addLines(stderr, 'QFLIForge 的 HarmonyOS Clang native bridge 未安装。');
+          _addLines(stderr, '无法加载 C++ 编译工具链。');
           result.complete(kProgramNotRunExitCode);
         }
       }
     } on MissingPluginException {
       fallbackToC = type == 'c';
       if (!fallbackToC) {
-        _addLines(stderr, 'QFLIForge 的 HarmonyOS Clang native bridge 未安装。');
+        _addLines(stderr, '无法加载 C++ 编译工具链。');
         result.complete(kProgramNotRunExitCode);
       }
     } on PlatformException catch (error) {
