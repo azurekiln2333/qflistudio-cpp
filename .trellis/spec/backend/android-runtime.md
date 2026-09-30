@@ -45,6 +45,10 @@ EventChannel `qfli_forge/native/events` emits:
 - Assets `qfli_toolchain/<abi>.zip` contain `toolchain.json`, `sysroot/`, and
   `lib/clang/15.0.7/`. Manifest fields `targetTriple`, `apiLevel`, and
   `resourceDirectory` are consumed by Kotlin.
+- ZIP entry names must use `/` on every host. Windows PowerShell 5 uses .NET
+  Framework, whose `ZipFile.CreateFromDirectory` emits backslash paths. Create
+  entries explicitly with normalized names; Android treats backslashes as
+  filename characters, so header extraction otherwise fails.
 - Use LLVM 15 libc++ headers configured for Android's `__ndk1` ABI. Include
   Android libraries/startup objects, libunwind, libatomic and compiler-rt
   builtins. Upstream Clang's `-lc++` needs the packaged libc++.so link script.
@@ -103,6 +107,8 @@ EventChannel `qfli_forge/native/events` emits:
   Verify unchanged compiler/linker/executor hashes against the archived
   manifest, resource archive SHA256, and actual ELF ABI/dependencies/16 KB
   alignment after AGP stripping. Executables require /system/bin/linker64.
+- Package with Windows PowerShell 5 and verify the resulting APK; every resource
+  entry must reject backslashes and include `sysroot/usr/include/stdio.h`.
 - Later device gate: stdin, multi-file C/C++, C entry with C++ helper, compile
   and link errors, nonzero exit, crash isolation and cancellation of children.
 
@@ -113,3 +119,26 @@ Correct: record local cross-link/APK results separately from actual app executio
 
 Wrong: kill only the compiler leader while its child linker retains stdout.
 Correct: cancel its process group, drain/close both pipes, then emit one exit.
+
+## 8. Android Startup
+
+- `qfli_forge/startup` accepts `startupProgress({progress: double})`. Require a
+  finite number, clamp to 0..1 and update the native progress bar. Invalid data
+  returns `invalid_progress`; unknown methods remain unimplemented.
+- AndroidStartup holds the first frame before runApp. AppBootstrap reports
+  actual completion of project/auth/settings loads. After bootstrap, await
+  endOfFrame for home layout, then allowFirstFrame in finally, including errors.
+- Keep the native icon/progress overlay until onFlutterUiDisplayed, then fade
+  it out. A progress value of 1 alone must never remove it. The progress channel
+  is optional and its errors must not block startup.
+- RenderMode.texture allows the native loading UI to draw during deferred
+  Flutter rendering. Surface mode installs an Android pre-draw blocker that
+  also hides the native progress bar.
+- Light/dark launch, normal and overlay backgrounds match shared AppTheme:
+  #F8F9FF / #111418. Android 12+ also configures its system splash background.
+  Retain system/cutout insets and fit the progress bar within 32 dp side margins
+  and a 420 dp maximum width. No fixed bootstrap wait is required.
+- Tests must hold rendering during pending loads, release only after home
+  layout, release on load failure, and tolerate absent/failing progress channels.
+  Verify Kotlin/resources through local build/lint. Device visual checks remain
+  deferred under the user's instruction to avoid debugging.
