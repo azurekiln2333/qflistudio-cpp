@@ -118,7 +118,10 @@ and loading errors return 125 and print to stderr.
 The app compiles each file as PIC with its own C/C++ language mode, then
 links a shared object using the packaged linker. Keep `-Wl,-z,defs` so
 unresolved user symbols fail during linking, and use
-`-Wl,-z,max-page-size=16384` after driver defaults for generated programs.
+`-Wl,-z,max-page-size=16384,-z,common-page-size=16384` after driver defaults
+for generated programs, including RELRO padding. Link `-latomic -lm` for
+atomic operations and C math functions. Make the generated library read-only
+before the executor loads it.
 
 ## Android App Integration
 

@@ -8,7 +8,20 @@ plugins {
 android {
     namespace = "com.azurekiln.qfli.forge"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = "27.0.12077973"
+
+    val toolchainPackage = providers.gradleProperty("qfliToolchainPackage")
+        .orElse("../../native/build/android-package").get()
+    sourceSets.getByName("main") {
+        jniLibs.srcDir("$toolchainPackage/jniLibs")
+        assets.srcDir("$toolchainPackage/assets")
+    }
+    packaging {
+        jniLibs {
+            useLegacyPackaging = true
+            keepDebugSymbols.add("**/libqfli*.so")
+        }
+    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

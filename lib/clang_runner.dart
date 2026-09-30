@@ -8,10 +8,12 @@ import 'package:qfli_studio_core/services/app_paths.dart';
 import 'package:qfli_studio_core/services/process_supervisor.dart';
 import 'package:qfli_studio_core/services/studio_profile.dart';
 
+import 'android_clang_runner.dart';
+
 /// Native C/C++ compiler backend for QFLIForge.
 ///
-/// Desktop builds use an installed or bundled compiler. HarmonyOS calls a
-/// separate native channel because host executables cannot run in its sandbox.
+/// Desktop builds use an installed or bundled compiler. Android streams native
+/// compilation and execution through its platform bridge.
 class ClangProgramRunner implements ProgramRunner {
   ClangProgramRunner({
     ProcessSupervisor? supervisor,
@@ -41,6 +43,13 @@ class ClangProgramRunner implements ProgramRunner {
     final extension = p.extension(entryFile).toLowerCase();
     if (!_extensions.contains(extension)) return null;
     final type = extension == '.c' || extension == '.h' ? 'c' : 'cpp';
+    if (Platform.isAndroid) {
+      return AndroidClangRunner().run(
+        type: type,
+        projectPath: projectPath,
+        entryFile: entryFile,
+      );
+    }
     if (AppPaths.isDesktop) {
       final compiler = await _findCompiler(type, projectPath);
       if (compiler == null) {
