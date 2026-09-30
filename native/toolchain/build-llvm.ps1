@@ -6,6 +6,8 @@ param(
     [string]$MsysRoot,
     [ValidateSet('All', 'Host', 'Target')]
     [string]$Stage = 'All',
+    [ValidateSet('arm64-v8a', 'x86_64')]
+    [string]$TargetArchitecture = 'arm64-v8a',
     [ValidateRange(1, 32)]
     [int]$Jobs = 2,
     [string]$BuildRoot = (Join-Path $PSScriptRoot '../build'),
@@ -56,7 +58,14 @@ $MsysRoot = [IO.Path]::GetFullPath($MsysRoot)
 $BuildRoot = [IO.Path]::GetFullPath($BuildRoot)
 if (-not $SourceDirectory) { $SourceDirectory = Join-Path $BuildRoot 'llvm-project' }
 if (-not $HostBuildDirectory) { $HostBuildDirectory = Join-Path $BuildRoot 'llvm-host-windows' }
-if (-not $TargetBuildDirectory) { $TargetBuildDirectory = Join-Path $BuildRoot 'llvm-ohos-arm64' }
+$targetName = if ($TargetArchitecture -eq 'arm64-v8a') { 'arm64' } else { 'x86_64' }
+$targetBackend = if ($TargetArchitecture -eq 'arm64-v8a') { 'AArch64' } else { 'X86' }
+$targetTriple = if ($TargetArchitecture -eq 'arm64-v8a') {
+    'aarch64-unknown-linux-ohos'
+} else {
+    'x86_64-unknown-linux-ohos'
+}
+if (-not $TargetBuildDirectory) { $TargetBuildDirectory = Join-Path $BuildRoot "llvm-ohos-$targetName" }
 $SourceDirectory = [IO.Path]::GetFullPath($SourceDirectory)
 $HostBuildDirectory = [IO.Path]::GetFullPath($HostBuildDirectory)
 $TargetBuildDirectory = [IO.Path]::GetFullPath($TargetBuildDirectory)
@@ -102,7 +111,7 @@ $env:Path = "$hostTools;$mingwBin;$originalPath"
 try {
     $common = @(
         '-G', 'Ninja', "-DCMAKE_MAKE_PROGRAM=$(Cmake-Path $ninja)",
-        '-DCMAKE_BUILD_TYPE=Release', '-DLLVM_TARGETS_TO_BUILD=AArch64',
+        '-DCMAKE_BUILD_TYPE=Release',
         '-DLLVM_INCLUDE_TESTS=OFF', '-DLLVM_INCLUDE_EXAMPLES=OFF',
         '-DLLVM_INCLUDE_BENCHMARKS=OFF', '-DLLVM_ENABLE_TERMINFO=OFF',
         '-DLLVM_ENABLE_ZLIB=OFF', '-DLLVM_ENABLE_ZSTD=OFF',
@@ -117,7 +126,7 @@ try {
             "-DCMAKE_CXX_COMPILER=$(Cmake-Path $gxx)",
             "-DCMAKE_C_FLAGS=$toolsFlag", "-DCMAKE_ASM_FLAGS=$toolsFlag",
             "-DCMAKE_CXX_FLAGS=$toolsFlag -include cstdint",
-            '-DLLVM_ENABLE_PROJECTS=clang'
+            '-DLLVM_ENABLE_PROJECTS=clang', '-DLLVM_TARGETS_TO_BUILD=AArch64'
         ) + $common
         Invoke-Checked $cmake $hostArgs
         if (-not $ConfigureOnly) {
@@ -127,6 +136,14 @@ try {
         }
     }
     if ($Stage -in @('All', 'Target')) {
+        $cachePath = Join-Path $TargetBuildDirectory 'CMakeCache.txt'
+        if (Test-Path -LiteralPath $cachePath) {
+            $existingCache = Get-Content -LiteralPath $cachePath -Raw
+            if ($existingCache -match '(?m)^OHOS_ARCH:[^=]+=([^\r\n]+)' -and
+                $Matches[1] -ne $TargetArchitecture) {
+                throw "Build directory targets $($Matches[1]), not $TargetArchitecture; select another TargetBuildDirectory"
+            }
+        }
         $llvmTablegen = Join-Path $HostBuildDirectory 'bin/llvm-tblgen.exe'
         $clangTablegen = Join-Path $HostBuildDirectory 'bin/clang-tblgen.exe'
         Require-Tablegen $llvmTablegen
@@ -134,11 +151,12 @@ try {
         $targetArgs = @(
             '-S', $source, '-B', $TargetBuildDirectory,
             "-DCMAKE_TOOLCHAIN_FILE=$(Cmake-Path $toolchain)",
-            '-DOHOS_ARCH=arm64-v8a', '-DCMAKE_C_FLAGS=-Qunused-arguments',
+            "-DOHOS_ARCH=$TargetArchitecture", "-DLLVM_TARGETS_TO_BUILD=$targetBackend",
+            '-DCMAKE_C_FLAGS=-Qunused-arguments',
             '-DCMAKE_CXX_FLAGS=-Qunused-arguments', '-DCMAKE_ASM_FLAGS=-Qunused-arguments',
             '-DLLVM_ENABLE_PROJECTS=clang;lld',
-            '-DLLVM_HOST_TRIPLE=aarch64-unknown-linux-ohos',
-            '-DLLVM_DEFAULT_TARGET_TRIPLE=aarch64-unknown-linux-ohos',
+            "-DLLVM_HOST_TRIPLE=$targetTriple",
+            "-DLLVM_DEFAULT_TARGET_TRIPLE=$targetTriple",
             "-DLLVM_TABLEGEN=$(Cmake-Path $llvmTablegen)",
             "-DCLANG_TABLEGEN=$(Cmake-Path $clangTablegen)"
         ) + $common
