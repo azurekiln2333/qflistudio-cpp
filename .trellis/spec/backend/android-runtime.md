@@ -19,7 +19,7 @@ default: `native/build/android-package` relative to the repository root.
 
 MethodChannel `qfli_forge/native` exposes:
 
-- `start({runId: String, type: 'c'|'cpp', projectPath: String, entryFile: String})`
+- `start({runId: String, type: 'c'|'cpp', projectPath: String, entryFile: String, sources?: String[]})`
   returns `{available: bool}`. Paths must identify a readable project and entry.
 - `cancel({runId: String})` cancels that accepted run.
 
@@ -66,6 +66,10 @@ EventChannel `qfli_forge/native/events` emits:
   link-time stubs. ProcessBuilder uses argument arrays, without a shell.
 - Subscribe before start; filter by runId; preserve empty output lines. Exit
   follows drained stdout and stderr. Accepted runs emit one terminal event.
+- Android Process.destroy() closes its pipes. After a natural child exit, kill
+  remaining process-group children without destroying the completed Process;
+  await both readers before closing streams. Use exitValue() for API 24
+  compatibility; destroy only while it still throws IllegalThreadStateException.
 - `available:false` permits the existing C fallback. Accepted compilation,
   linking and runtime errors must never silently switch to the interpreter.
 - Build/package success is local evidence. Device execution remains unverified
@@ -111,6 +115,18 @@ EventChannel `qfli_forge/native/events` emits:
   entry must reject backslashes and include `sysroot/usr/include/stdio.h`.
 - Later device gate: stdin, multi-file C/C++, C entry with C++ helper, compile
   and link errors, nonzero exit, crash isolation and cancellation of children.
+- `tool/android_native_audit.dart` exercises the actual packaged engine, without
+  C fallback. Build/install it under a distinct application ID and require the
+  QFLI_C_ANDROID_AUDIT ok:true marker. Its eight x64 cases passed on API 37 with
+  16 KiB pages after fixing the pipe race. Before the fix, C++ printed the correct
+  result but an InterruptedIOException during pipe draining produced exit 127.
+  The ordinary owning debug APK separately passed project creation and editor
+  Run: AndroidCppNative/src/main.cpp reports Android Clang cpp, prints
+  Hello, QFLIStudio+! and exits 0 on API 37 with 16 KiB pages. Its native files
+  and compiler resources passed APK audits. A fresh task-owned emulator-5562
+  was used after the original emulator-5560 rejected both ordinary APK variants
+  for insufficient storage; no ordinary application data was removed. ARM
+  device execution remains unverified.
 
 ## 7. Wrong vs Correct
 
@@ -142,3 +158,7 @@ Correct: cancel its process group, drain/close both pipes, then emit one exit.
   layout, release on load failure, and tolerate absent/failing progress channels.
   Verify Kotlin/resources through local build/lint. Device visual checks remain
   deferred under the user's instruction to avoid debugging.
+
+## Selected-entry runs
+
+The optional sources list follows [source-selection.md](./source-selection.md). It restricts compilation inputs while preserving the complete project and existing execution/cleanup contracts. Validate explicit lists and use legacy discovery only when the list is absent.

@@ -1,0 +1,2495 @@
+--- a/android/app/src/main/kotlin/com/example/qflistudio/c/NativeCompilerBridge.kt
++++ b/android/app/src/main/kotlin/com/example/qflistudio/c/NativeCompilerBridge.kt
+@@ -65,6 +65,21 @@
+             result.error("invalid_run", "编译运行参数不完整。", null)
+             return
+         }
++        // An absent `sources` key means a legacy caller (discover sources).
++        // A present key is authoritative and must be a valid, non-empty list of
++        // absolute paths; anything else is rejected here, so an invalid
++        // selection can never fall back to rediscovery or the default main.
++        val requestedSources: List<String>? = if (call.hasArgument("sources")) {
++            when (val parsed = parseRequestedSources(call.argument<Any?>("sources"))) {
++                is RequestedSources -> parsed.paths
++                is RequestedSourcesError -> {
++                    result.error("invalid_run", parsed.message, null)
++                    return
++                }
++            }
++        } else {
++            null
++        }
+         if (sink == null) {
+             result.error("missing_listener", "编译运行输出通道未连接。", null)
+             return
+@@ -74,7 +89,7 @@
+             result.success(mapOf("available" to false))
+             return
+         }
+-        val run = NativeRun(id, File(projectPath), File(entryPath), abi)
++        val run = NativeRun(id, File(projectPath), File(entryPath), abi, requestedSources)
+         if (!active.compareAndSet(null, run)) {
+             result.error("runner_busy", "已有程序正在编译或运行。", null)
+             return
+@@ -98,6 +113,37 @@
+         main.post { sink?.success(mapOf("runId" to id, "kind" to kind, key to value)) }
+     }
+ 
++    /** Parsed `sources` payload: either the validated paths or an error. */
++    private sealed interface RequestedSourcesResult
++    private class RequestedSources(val paths: List<String>) : RequestedSourcesResult
++    private class RequestedSourcesError(val message: String) : RequestedSourcesResult
++
++    /**
++     * Validates a present `sources` argument.
++     *
++     * The presence of the key already means the Dart runner chose the compile
++     * set, so an empty list, a non-list, a non-string element, a blank entry
++     * or a relative path is a hard error. It must never collapse to "no
++     * selection" (which would rediscover every file and could run another
++     * program's main).
++     */
++    private fun parseRequestedSources(raw: Any?): RequestedSourcesResult {
++        if (raw !is List<*>) {
++            return RequestedSourcesError("选择的源文件列表格式无效。")
++        }
++        if (raw.isEmpty()) {
++            return RequestedSourcesError("选择的源文件列表为空。")
++        }
++        val paths = ArrayList<String>(raw.size)
++        for (element in raw) {
++            if (element !is String || element.isBlank() || !File(element).isAbsolute) {
++                return RequestedSourcesError("选择的源文件路径无效：$element")
++            }
++            paths.add(element)
++        }
++        return RequestedSources(paths)
++    }
++
+     override fun close() {
+         active.get()?.cancel()
+         methods.setMethodCallHandler(null)
+@@ -112,6 +158,7 @@
+         val project: File,
+         val entry: File,
+         val abi: String,
++        val requestedSources: List<String>?,
+     ) {
+         @Volatile var cancelled = false
+             private set
+@@ -145,7 +192,7 @@
+             if (cancelled) return 130
+             val toolchain = AndroidToolchain.prepare(context, abi)
+             if (cancelled) return 130
+-            val sources = collectSources(root)
++            val sources = selectSources(root)
+             check(sources.isNotEmpty()) { "工程中没有可编译的源文件。" }
+             val build = File(context.cacheDir, "forge-runs").apply { mkdirs() }
+             val work = File.createTempFile("run-", "", build).apply { delete(); mkdirs() }
+@@ -178,6 +225,37 @@
+                     runProgram = true, input = File(root, "input.txt").takeIf { it.isFile },
+                 )
+             } finally { work.deleteRecursively() }
++        }
++
++        /**
++         * Translation units to compile.
++         *
++         * An explicit [requestedSources] list from Dart is authoritative: it
++         * already selected the requested entry plus ordinary helpers and
++         * excluded other unambiguous main programs. Each entry must be a
++         * project-local readable source; a bad list is an error, never a
++         * silent fall back to re-enumerating every file (which could compile
++         * a different program's main). Without a list, legacy discovery is
++         * kept for older callers.
++         */
++        private fun selectSources(root: File): List<File> {
++            val requested = requestedSources ?: return collectSources(root)
++            check(requested.isNotEmpty()) { "选择的源文件列表为空。" }
++            val entryPath = entry.canonicalPath
++            val extensions = setOf("c", "cpp", "cc", "cxx")
++            val resolved = ArrayList<File>(requested.size)
++            for (path in requested) {
++                val file = File(path).canonicalFile
++                check(file.isFile && file.extension.lowercase() in extensions &&
++                    file.path.startsWith(root.path + File.separator)) {
++                    "选择的源文件不可读取或不在工程内：$path"
++                }
++                resolved.add(file)
++            }
++            check(resolved.any { it.path == entryPath }) { "选择的源文件不包含入口文件。" }
++            // Entry first, matching the picoc/desktop convention; helpers keep
++            // their given order.
++            return resolved.sortedByDescending { it.path == entryPath }
+         }
+ 
+         private fun collectSources(root: File): List<File> {
+--- a/ios/Runner/NativeCompilerBridge.mm
++++ b/ios/Runner/NativeCompilerBridge.mm
+@@ -31,6 +31,7 @@
+ @property(nonatomic, copy) NSString *identifier;
+ @property(nonatomic, copy) NSString *projectPath;
+ @property(nonatomic, copy) NSString *entryPath;
++@property(nonatomic, copy) NSArray<NSString *> *requestedSources;
+ @property(nonatomic, copy) NSString *sdkPath;
+ @property(nonatomic) NSUInteger listenerGeneration;
+ - (BOOL)isCancelled;
+@@ -139,6 +140,63 @@
+   qfli_compiler_cancel(_compiler);
+   qfli_wasm_cancel(_runtime);
+ #endif
++}
++
++/// Translation units to compile.
++///
++/// An explicit `requestedSources` list from Dart is authoritative: it already
++/// selected the requested entry plus ordinary helpers and excluded other
++/// unambiguous main programs. Each entry must be a project-local readable
++/// C/C++ source; a bad list is an error, never a silent fall back to
++/// re-enumerating every file (which could compile a different program's
++/// main). Without a list, legacy discovery is kept for older callers.
++- (NSArray<NSString *> *)selectSources:(NSURL *)root error:(NSError **)error {
++  if (!self.requestedSources) return [self collectSources:root error:error];
++  if (!self.requestedSources.count) {
++    if (error) {
++      *error = [NSError errorWithDomain:@"qfli" code:1 userInfo:@{
++        NSLocalizedDescriptionKey: @"The selected source list is empty."
++      }];
++    }
++    return nil;
++  }
++  NSFileManager *files = NSFileManager.defaultManager;
++  NSSet *extensions = [NSSet setWithArray:@[@"c", @"cpp", @"cc", @"cxx"]];
++  NSMutableArray<NSString *> *resolved = [NSMutableArray array];
++  for (NSString *path in self.requestedSources) {
++    if (![path isKindOfClass:NSString.class]) return nil;
++    NSString *standard = [[NSURL fileURLWithPath:path] URLByResolvingSymlinksInPath].URLByStandardizingPath.path;
++    BOOL local = [standard hasPrefix:[root.path stringByAppendingString:@"/"]];
++    BOOL source = [extensions containsObject:standard.pathExtension.lowercaseString];
++    // Foundation check so this method compiles with or without the portable
++    // runtime (QFLIRegularFile only exists under QFLI_PORTABLE_RUNTIME).
++    BOOL directory = YES;
++    BOOL readable = [files fileExistsAtPath:standard isDirectory:&directory] && !directory;
++    if (!local || !source || !readable) {
++      if (error) {
++        *error = [NSError errorWithDomain:@"qfli" code:1 userInfo:@{
++          NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Selected source is not a project translation unit: %@", path]
++        }];
++      }
++      return nil;
++    }
++    [resolved addObject:standard];
++  }
++  NSString *entryStandard = [[NSURL fileURLWithPath:self.entryPath] URLByResolvingSymlinksInPath].URLByStandardizingPath.path;
++  if (![resolved containsObject:entryStandard]) {
++    if (error) {
++      *error = [NSError errorWithDomain:@"qfli" code:1 userInfo:@{
++        NSLocalizedDescriptionKey: @"The selected sources do not include the entry file."
++      }];
++    }
++    return nil;
++  }
++  // Entry first, then helpers in their given order.
++  NSMutableArray<NSString *> *ordered = [NSMutableArray arrayWithObject:entryStandard];
++  for (NSString *path in resolved) {
++    if (![path isEqualToString:entryStandard]) [ordered addObject:path];
++  }
++  return ordered;
+ }
+ 
+ - (NSArray<NSString *> *)collectSources:(NSURL *)root error:(NSError **)error {
+@@ -180,7 +238,7 @@
+     return 127;
+   }
+   NSError *error = nil;
+-  NSArray<NSString *> *sources = [self collectSources:root error:&error];
++  NSArray<NSString *> *sources = [self selectSources:root error:&error];
+   if (self.isCancelled) return 130;
+   if (!sources.count || ![sources containsObject:entry.path]) {
+     emit(@"stderr", error.localizedDescription ?: @"The project has no readable C/C++ entry source.");
+@@ -354,6 +412,20 @@
+   run.identifier = args[@"runId"];
+   run.projectPath = args[@"projectPath"];
+   run.entryPath = args[@"entryFile"];
++  id requestedSources = args[@"sources"];
++  if (requestedSources != nil) {
++    if (![requestedSources isKindOfClass:NSArray.class]) {
++      result([FlutterError errorWithCode:@"invalid_run" message:@"Selected sources must be an array." details:nil]);
++      return;
++    }
++    for (id value in (NSArray *)requestedSources) {
++      if (![value isKindOfClass:NSString.class] || ![value isAbsolutePath]) {
++        result([FlutterError errorWithCode:@"invalid_run" message:@"Selected source paths must be absolute." details:nil]);
++        return;
++      }
++    }
++    run.requestedSources = requestedSources;
++  }
+   run.sdkPath = sdk;
+   run.listenerGeneration = self.listenerGeneration;
+   self.active = run;
+--- a/lib/c_runner.dart
++++ b/lib/c_runner.dart
+@@ -6,6 +6,9 @@
+ import 'package:qfli_c_runtime/qfli_c_runtime.dart';
+ import 'package:qfli_studio_core/services/file_encoding.dart';
+ import 'package:qfli_studio_core/services/studio_profile.dart';
++
++import 'run_title.dart';
++import 'source_selection.dart';
+ 
+ /// 用应用内的 C 运行时执行项目里的 C 代码。
+ ///
+@@ -62,11 +65,16 @@
+     // 不接管的类型交回内核的默认逻辑（返回 null）。
+     if (p.extension(entryFile).toLowerCase() != '.c') return null;
+ 
++    // 入口必须是工程内、可读、受支持的源文件。越界/不存在的入口直接报
++    // 127，不能静默回退到默认 main。
++    final invalid = _entryError(projectPath, entryFile);
++    if (invalid != null) {
++      return _failure(invalid, projectPath: projectPath, entryFile: entryFile);
++    }
++
+     final entry = File(entryFile);
+-    if (!entry.existsSync()) return null;
+-
+     final fileName = _relative(entryFile, projectPath);
+-    final sources = _collectSources(projectPath);
++    final sources = _selectedSources(projectPath, entryFile);
+     if (sources.isEmpty) return null;
+ 
+     final stdin = _readStdin(projectPath);
+@@ -83,7 +91,11 @@
+     // 2) 退回 Dart 解释器。
+     final source = _readSource(entry);
+     if (source == null) {
+-      return _failure(fileName, '无法读取 $fileName（编码或权限问题）。');
++      return _failure(
++        '无法读取 $fileName（编码或权限问题）。',
++        projectPath: projectPath,
++        entryFile: entryFile,
++      );
+     }
+ 
+     // 项目内所有 .c / .h 一起送进去：`#include "utils.h"` 靠 files 解析，
+@@ -106,11 +118,65 @@
+     );
+ 
+     return ProgramRunResult(
+-      title: '运行 $fileName（应用内 C 解释器）',
++      title: runTitle(projectPath: projectPath, entryFile: entryFile),
+       stdout: session.stdout,
+       stderr: session.stderr,
+       exitCode: session.exitCode,
+     );
++  }
++
++  /// Project C sources (`.c` and `.h`) to compile for [entryFile].
++  ///
++  /// Keeps the requested entry and ordinary helpers, drops only other
++  /// unambiguous top-level `main` definitions so two independent programs in
++  /// one project no longer collide in picoc/interpreter function tables. The
++  /// picoc path filters to `.c` when it builds its translation units; the
++  /// interpreter keeps `.h` files so `#include "utils.h"` resolves.
++  /// Returns an English reason when [entryFile] cannot be run inside
++  /// [projectPath], or null when it is a valid in-project C source.
++  ///
++  /// Symlinks are resolved on both sides so a link inside the project cannot
++  /// point at a program outside it.
++  String? _entryError(String projectPath, String entryFile) {
++    final project = Directory(projectPath);
++    if (!project.existsSync()) return 'project directory is not readable';
++    final file = File(entryFile);
++    if (!file.existsSync()) return 'entry file no longer exists';
++    final root = project.resolveSymbolicLinksSync();
++    final String resolved;
++    try {
++      resolved = file.resolveSymbolicLinksSync();
++    } on FileSystemException {
++      return 'entry file is not readable';
++    }
++    if (!p.isWithin(root, resolved) && !p.equals(root, resolved)) {
++      return 'entry file is outside the project';
++    }
++    return null;
++  }
++
++  /// Project sources for [entryFile]: the entry plus the other C translation
++  /// units minus any other unambiguous top-level `main`, and every `.h` file.
++  ///
++  /// Headers are include-only: they never carry the program entry and a `main`
++  /// defined inside a header must stay in the file map so `#include` resolves.
++  List<String> _selectedSources(String projectPath, String entryFile) {
++    final entry = p.normalize(p.absolute(entryFile));
++    final all = _collectSources(
++      projectPath,
++    ).map((path) => p.normalize(p.absolute(path))).toList();
++    final units = all
++        .where((path) => p.extension(path).toLowerCase() == '.c')
++        .toList();
++    final headers = all
++        .where((path) => p.extension(path).toLowerCase() == '.h')
++        .toList();
++    final selectedUnits = selectRunSources(
++      entryFile: entry,
++      allSources: units,
++      readSource: (path) => _readSource(File(path)),
++    );
++    return [...selectedUnits, ...headers];
+   }
+ 
+   /// 走原生 .so。通道不存在（没打进 .so）时返回 null，让调用方退回解释器。
+@@ -145,8 +211,9 @@
+       return null;
+     } on PlatformException catch (error) {
+       return _failure(
+-        p.basename(entryFile),
+         '原生运行时出错：${error.message ?? error.code}',
++        projectPath: projectPath,
++        entryFile: entryFile,
+       );
+     }
+ 
+@@ -174,7 +241,7 @@
+     });
+ 
+     return ProgramRunResult(
+-      title: '运行 ${p.basename(entryFile)}（原生 picoc 运行时）',
++      title: runTitle(projectPath: projectPath, entryFile: entryFile),
+       stdout: stdout.stream,
+       stderr: stderr.stream,
+       exitCode: Future<int>.value(
+@@ -208,14 +275,18 @@
+   ///
+   /// 退出码用 [kProgramNotRunExitCode]（127）而不是 1：终端面板把非 0 渲染成
+   /// 「（运行结束，退出码 N）」，用 1 会被读成「程序跑完报错退出」，其实没跑。
+-  ProgramRunResult _failure(String fileName, String message) {
++  ProgramRunResult _failure(
++    String message, {
++    required String projectPath,
++    required String entryFile,
++  }) {
+     final controller = StreamController<String>();
+     scheduleMicrotask(() {
+       controller.add(message);
+       controller.close();
+     });
+     return ProgramRunResult(
+-      title: '运行 $fileName',
++      title: runTitle(projectPath: projectPath, entryFile: entryFile),
+       stdout: const Stream<String>.empty(),
+       stderr: controller.stream,
+       exitCode: Future<int>.value(kProgramNotRunExitCode),
+--- a/lib/clang_runner.dart
++++ b/lib/clang_runner.dart
+@@ -10,6 +10,8 @@
+ 
+ import 'android_clang_runner.dart';
+ import 'native_clang_runner.dart';
++import 'run_title.dart';
++import 'source_selection.dart';
+ 
+ /// Native C/C++ compiler backend for QFLIForge.
+ ///
+@@ -29,10 +31,13 @@
+     '.cpp',
+     '.cc',
+     '.cxx',
+-    '.h',
+-    '.hpp',
+-    '.hh',
+   };
++
++  /// Header files are readable/editable and are pulled in through `#include`,
++  /// but they are never an executable translation unit. Long-pressing one in
++  /// the editor must fail explicitly instead of re-selecting a different
++  /// program's `main`.
++  static const _headerExtensions = <String>{'.h', '.hpp', '.hh'};
+ 
+   final ProcessSupervisor _supervisor;
+   final String? _toolchainDirectory;
+@@ -43,27 +48,52 @@
+     required String entryFile,
+   }) async {
+     final extension = p.extension(entryFile).toLowerCase();
++    if (_headerExtensions.contains(extension)) {
++      return _unavailable(
++        '头文件不能单独运行，请在 .c/.cpp 源文件中运行。',
++        projectPath: projectPath,
++        entryFile: entryFile,
++      );
++    }
+     if (!_extensions.contains(extension)) return null;
+-    final type = extension == '.c' || extension == '.h' ? 'c' : 'cpp';
++    // The entry must be an existing, readable, supported source inside the
++    // project. Resolve symlinks on both sides so a link inside the project
++    // cannot launch a program outside it. Invalid entries fail with 127 and
++    // never fall back to the default main.
++    final invalid = _entryError(projectPath, entryFile);
++    if (invalid != null) {
++      return _unavailable(invalid, projectPath: projectPath, entryFile: entryFile);
++    }
++    final type = extension == '.c' ? 'c' : 'cpp';
+     if (Platform.isAndroid) {
+       return AndroidClangRunner().run(
+         type: type,
+         projectPath: projectPath,
+         entryFile: entryFile,
++        sources: _selectedSources(projectPath, entryFile),
+       );
+     }
+     if (Platform.isIOS) {
+       return NativeClangRunner(
+         backendName: 'iOS Clang/WASI',
+         runIdPrefix: 'ios',
+-      ).run(type: type, projectPath: projectPath, entryFile: entryFile);
++      ).run(
++        type: type,
++        projectPath: projectPath,
++        entryFile: entryFile,
++        sources: _selectedSources(projectPath, entryFile),
++      );
+     }
+     if (AppPaths.isDesktop) {
+       final List<String> sources;
+       try {
+-        sources = _collectSources(projectPath);
++        sources = _selectedSources(projectPath, entryFile);
+       } catch (error) {
+-        return _unavailable('$error');
++        return _unavailable(
++          '$error',
++          projectPath: projectPath,
++          entryFile: entryFile,
++        );
+       }
+       final projectType =
+           sources.any((source) => p.extension(source).toLowerCase() != '.c')
+@@ -71,7 +101,11 @@
+           : 'c';
+       final compiler = await _findCompiler(projectType, projectPath);
+       if (compiler == null) {
+-        return _unavailable('未找到可用的 C/C++ 编译工具链。');
++        return _unavailable(
++          '未找到可用的 C/C++ 编译工具链。',
++          projectPath: projectPath,
++          entryFile: entryFile,
++        );
+       }
+       return _runDesktop(
+         compiler: compiler,
+@@ -85,6 +119,49 @@
+       type: type,
+       projectPath: projectPath,
+       entryFile: entryFile,
++    );
++  }
++
++  /// Returns an English reason when [entryFile] cannot be run inside
++  /// [projectPath], or null when it is a valid in-project C/C++ source.
++  String? _entryError(String projectPath, String entryFile) {
++    final project = Directory(projectPath);
++    if (!project.existsSync()) return '工程目录不可读取。';
++    final file = File(entryFile);
++    if (!file.existsSync()) return '入口文件不存在。';
++    final String root;
++    final String resolved;
++    try {
++      root = project.resolveSymbolicLinksSync();
++      resolved = file.resolveSymbolicLinksSync();
++    } on FileSystemException {
++      return '入口文件不可读取。';
++    }
++    if (!p.isWithin(root, resolved) && !p.equals(root, resolved)) {
++      return '入口文件不在工程内。';
++    }
++    return null;
++  }
++
++  /// Project translation units to compile for [entryFile].
++  ///
++  /// All `.c/.cc/.cpp/.cxx` units are enumerated, then
++  /// [selectRunSources] keeps the requested entry and ordinary helpers and
++  /// drops only other unambiguous top-level `main` definitions.
++  List<String> _selectedSources(String projectPath, String entryFile) {
++    final all = _collectSources(projectPath);
++    return selectRunSources(
++      entryFile: p.normalize(p.absolute(entryFile)),
++      allSources: all.map((path) => p.normalize(p.absolute(path))).toList(),
++      readSource: (path) {
++        final file = File(path);
++        if (!file.existsSync()) return null;
++        try {
++          return file.readAsStringSync();
++        } on FileSystemException {
++          return null;
++        }
++      },
+     );
+   }
+ 
+@@ -317,7 +394,7 @@
+ 
+     unawaited(start());
+     return ProgramRunResult(
+-      title: '运行 ${p.basename(entryFile)}（${compiler.label} $type）',
++      title: runTitle(projectPath: projectPath, entryFile: entryFile),
+       stdout: stdout.stream,
+       stderr: stderr.stream,
+       exitCode: exitCode.future,
+@@ -373,7 +450,7 @@
+     }
+     if (fallbackToC) return null;
+     return ProgramRunResult(
+-      title: '运行 ${p.basename(entryFile)}（HarmonyOS Clang $type）',
++      title: runTitle(projectPath: projectPath, entryFile: entryFile),
+       stdout: stdout.stream,
+       stderr: stderr.stream,
+       exitCode: result.future,
+@@ -411,7 +488,11 @@
+     }
+   }
+ 
+-  ProgramRunResult _unavailable(String message) {
++  ProgramRunResult _unavailable(
++    String message, {
++    required String projectPath,
++    required String entryFile,
++  }) {
+     final stderr = StreamController<String>();
+     scheduleMicrotask(
+       () => stderr
+@@ -419,7 +500,7 @@
+         ..close(),
+     );
+     return ProgramRunResult(
+-      title: '编译工具链不可用',
++      title: runTitle(projectPath: projectPath, entryFile: entryFile),
+       stdout: const Stream<String>.empty(),
+       stderr: stderr.stream,
+       exitCode: Future<int>.value(kProgramNotRunExitCode),
+--- a/lib/main.dart
++++ b/lib/main.dart
+@@ -33,7 +33,7 @@
+   showHomeTabs: false,
+   runtimeKind: 'clang-c-cpp-native-and-desktop',
+   runtimeStatus: 'unavailable',
+-  supportedFileExtensions: ['.c', '.h', '.cpp', '.cc', '.cxx', '.hpp', '.hh'],
++  supportedFileExtensions: ['.c', '.cpp', '.cc', '.cxx'],
+   entryFileNames: ['main.c', 'src/main.c', 'main.cpp', 'src/main.cpp'],
+ );
+ 
+--- a/lib/native_clang_runner.dart
++++ b/lib/native_clang_runner.dart
+@@ -1,8 +1,9 @@
+ import 'dart:async';
+ 
+ import 'package:flutter/services.dart';
+-import 'package:path/path.dart' as p;
+ import 'package:qfli_studio_core/services/studio_profile.dart';
++
++import 'run_title.dart';
+ 
+ /// Streams one compilation/run through a platform's bundled native backend.
+ class NativeClangRunner {
+@@ -32,6 +33,7 @@
+     required String type,
+     required String projectPath,
+     required String entryFile,
++    List<String>? sources,
+   }) async {
+     final runId = '$runIdPrefix-${++_nextRunId}';
+     final stdout = StreamController<String>();
+@@ -111,7 +113,9 @@
+           'type': type,
+           'projectPath': projectPath,
+           'entryFile': entryFile,
+-        },
++          // Explicit, project-local selection. Native consumers must validate
++          // and use it instead of re-enumerating every translation unit.
++          'sources': ?sources,        },
+       );
+       if (response?['available'] == false) {
+         unavailable = true;
+@@ -141,7 +145,7 @@
+     }
+ 
+     return ProgramRunResult(
+-      title: '运行 ${p.basename(entryFile)}（$backendName $type）',
++      title: runTitle(projectPath: projectPath, entryFile: entryFile),
+       stdout: stdout.stream,
+       stderr: stderr.stream,
+       exitCode: exitCode.future,
+--- a/lib/web_clang_runner_browser.dart
++++ b/lib/web_clang_runner_browser.dart
+@@ -1,10 +1,14 @@
+ import 'dart:async';
++import 'dart:convert';
+ import 'dart:js_interop';
+ import 'dart:typed_data';
+ 
+ import 'package:qfli_studio_core/services/platform_io.dart';
+ import 'package:qfli_studio_core/services/platform_path.dart' as p;
+ import 'package:qfli_studio_core/services/studio_profile.dart';
++
++import 'run_title.dart';
++import 'source_selection.dart';
+ 
+ @JS('Worker')
+ extension type _Worker._(JSObject _) implements JSObject {
+@@ -47,6 +51,7 @@
+     Future<void> pendingFiles = Future.value();
+     final initialFiles = <String, Uint8List>{};
+     final initialDirectories = <String>{};
++    final initialText = <String, String?>{};
+     var persistenceFailed = false;
+ 
+     Future<void> finish(int code) async {
+@@ -196,6 +201,11 @@
+             final name = p.relative(file.path, from: root);
+             final bytes = await file.readAsBytes();
+             initialFiles[name] = bytes;
++            if (isCCppSourcePath(name)) {
++              // A decode failure is recorded as null so the file is kept in
++              // the compilation set (see _decodeSource).
++              initialText[name] = _decodeSource(bytes);
++            }
+             files.add({'path': name, 'bytes': bytes});
+           } else if (file is Directory) {
+             final name = p.relative(file.path, from: root);
+@@ -204,6 +214,14 @@
+           }
+         }
+         if (finished) return;
++        // The worker receives every project file (preopens and writeback stay
++        // complete) plus the explicit compilation set: the requested entry and
++        // ordinary helpers, without another program's unambiguous `main`.
++        final selectedNames = selectRunSources(
++          entryFile: p.relative(absoluteEntry, from: root),
++          allSources: initialText.keys.toList(),
++          readSource: (name) => initialText[name],
++        );
+         final runtimeUrl = Uri.parse(
+           _baseUri.toDart,
+         ).resolve('forge-worker.bundle.js');
+@@ -253,6 +271,7 @@
+           {
+                 'runId': runId,
+                 'entryFile': p.relative(absoluteEntry, from: root),
++                'sources': selectedNames,
+                 'files': files,
+               }.jsify()
+               as JSObject,
+@@ -266,7 +285,7 @@
+ 
+     unawaited(start());
+     return ProgramRunResult(
+-      title: '运行 ${p.basename(entryFile)}（浏览器 Clang/WASI）',
++      title: runTitle(projectPath: projectPath, entryFile: entryFile),
+       stdout: stdout.stream,
+       stderr: stderr.stream,
+       exitCode: exit.future,
+@@ -275,6 +294,17 @@
+   }
+ }
+ 
++/// Strict UTF-8 decode for lexical selection. Returns null when the bytes are
++/// not valid UTF-8; `selectRunSources` then keeps the file in the compilation
++/// set instead of running a scan over replacement characters.
++String? _decodeSource(Uint8List bytes) {
++  try {
++    return const Utf8Decoder(allowMalformed: false).convert(bytes);
++  } on FormatException {
++    return null;
++  }
++}
++
+ bool _same(List<int> a, List<int> b) {
+   if (a.length != b.length) return false;
+   for (var i = 0; i < a.length; i++) {
+--- a/test/android_clang_runner_test.dart
++++ b/test/android_clang_runner_test.dart
+@@ -34,11 +34,13 @@
+     await events.close();
+   });
+ 
+-  Future<ProgramRunResult?> start([String type = 'cpp']) => runner.run(
+-    type: type,
+-    projectPath: '/projects/example',
+-    entryFile: '/projects/example/main.$type',
+-  );
++  Future<ProgramRunResult?> start([String type = 'cpp', List<String>? sources]) =>
++      runner.run(
++        type: type,
++        projectPath: '/projects/example',
++        entryFile: '/projects/example/main.$type',
++        sources: sources,
++      );
+ 
+   void emit(String kind, String key, Object value, {String? id}) {
+     events.add({'runId': id ?? runId, 'kind': kind, key: value});
+@@ -62,7 +64,7 @@
+       expect(await result.exitCode, 23);
+       expect(await output, ['ready', '']);
+       expect(await errors, ['diagnostic']);
+-      expect(result.title, contains('Android Clang'));
++      expect(result.title, 'run main.cpp');
+     },
+   );
+ 
+@@ -219,4 +221,57 @@
+     expect((await result.stderr.toList()).single, contains('无法启动编译运行'));
+     expect(cancelledRuns, [runId]);
+   });
++
++  test('forwards an explicit selected-source list to the Android bridge', () async {
++    Map<Object?, Object?>? startArguments;
++    messenger.setMockMethodCallHandler(channel, (call) async {
++      if (call.method != 'start') return null;
++      startArguments = call.arguments as Map<Object?, Object?>;
++      runId = startArguments!['runId'] as String;
++      return {'available': true};
++    });
++    final result = (await start('c', const [
++      '/projects/example/main.c',
++      '/projects/example/utils.c',
++    ]))!;
++    emit('exit', 'exitCode', 0);
++    expect(await result.exitCode, 0);
++    expect(startArguments!['sources'], const [
++      '/projects/example/main.c',
++      '/projects/example/utils.c',
++    ]);
++  });
++
++  test('omits the sources key when no selection is supplied', () async {
++    Map<Object?, Object?>? startArguments;
++    messenger.setMockMethodCallHandler(channel, (call) async {
++      if (call.method != 'start') return null;
++      startArguments = call.arguments as Map<Object?, Object?>;
++      runId = startArguments!['runId'] as String;
++      return {'available': true};
++    });
++    final result = (await start('c'))!;
++    emit('exit', 'exitCode', 0);
++    expect(await result.exitCode, 0);
++    // Absent key = legacy discovery. The Android bridge distinguishes this
++    // from an explicit (possibly invalid) selection.
++    expect(startArguments!.containsKey('sources'), isFalse);
++  });
++
++  test('forwards an explicit empty selection verbatim for rejection', () async {
++    Map<Object?, Object?>? startArguments;
++    messenger.setMockMethodCallHandler(channel, (call) async {
++      if (call.method != 'start') return null;
++      startArguments = call.arguments as Map<Object?, Object?>;
++      runId = startArguments!['runId'] as String;
++      return {'available': true};
++    });
++    final result = (await start('c', const []))!;
++    emit('exit', 'exitCode', 0);
++    expect(await result.exitCode, 0);
++    // An empty list must reach the bridge as an explicit payload, not be
++    // dropped: the bridge rejects it instead of rediscovering every file.
++    expect(startArguments!.containsKey('sources'), isTrue);
++    expect(startArguments!['sources'], isEmpty);
++  });
+ }
+--- a/test/c_app_test.dart
++++ b/test/c_app_test.dart
+@@ -126,7 +126,7 @@
+ }
+ ''');
+       final result = await runC();
+-      expect(result.title, contains('应用内 C 解释器'));
++      expect(result.title, 'run main.c');
+       expect(await stdoutOf(result), ['第 1 行', '第 2 行', '第 3 行']);
+       expect(await stderrOf(result), isEmpty);
+       expect(await result.exitCode, 7);
+@@ -298,6 +298,78 @@
+       expect(await stderrOf(result), isEmpty);
+       expect(await stdoutOf(result), ['你好']);
+     });
++
++    test('多入口：长按 main2.c 跑 main2，不跟 main.c 冲突', () async {
++      write('helper.h', 'int helper_value(void);');
++      write('helper.c', 'int helper_value(void) { return 42; }');
++      write('main.c', '''
++#include <stdio.h>
++#include "helper.h"
++int main(void) { printf("program A %d\\n", helper_value()); return 0; }
++''');
++      write('main2.c', '''
++#include <stdio.h>
++#include "helper.h"
++int main(void) { printf("program B %d\\n", helper_value()); return 0; }
++''');
++
++      final first = await runC('main.c');
++      expect(first.title, 'run main.c');
++      expect(await stderrOf(first), isEmpty);
++      expect(await stdoutOf(first), ['program A 42']);
++
++      final second = await runC('main2.c');
++      expect(second.title, 'run main2.c');
++      expect(await stderrOf(second), isEmpty);
++      expect(await stdoutOf(second), ['program B 42']);
++    });
++
++    test('头文件入口明确失败，不回头跑项目入口', () async {
++      write('helper.h', 'int helper_value(void);');
++      write('main.c', 'int main(void) { return 0; }');
++      // 生产入口是 Forge 的整链路（Clang 后端先接管），头文件必须报错。
++      final result = await cProfile.runner!.run(
++        projectPath: project.path,
++        entryFile: p.join(project.path, 'helper.h'),
++      );
++      expect(result, isNotNull);
++      expect(result!.title, 'run helper.h');
++      expect(await result.exitCode, isNot(0));
++      expect(await result.stdout.toList(), isEmpty);
++      expect((await result.stderr.toList()).join('\n'), contains('头文件'));
++    });
++
++    test('解释器保留头文件映射：main 定义在 entry.h 里也能跑', () async {
++      write('main.c', '#include "entry.h"\n');
++      write(
++        'entry.h',
++        '#include <stdio.h>\nint main(void) { puts("header entry"); return 0; }\n',
++      );
++      final result = await runC();
++      expect(result.title, 'run main.c');
++      expect(await stderrOf(result), isEmpty);
++      expect(await stdoutOf(result), ['header entry']);
++      expect(await result.exitCode, 0);
++    });
++
++    test('解释器拒绝工程外的入口，不回退默认 main', () async {
++      final container = Directory.systemTemp.createTempSync('qfli_outside_');
++      addTearDown(() {
++        if (container.existsSync()) container.deleteSync(recursive: true);
++      });
++      write('main.c', 'int main(void) { return 0; }');
++      final outside = File(p.join(container.path, 'outside.c'))
++        ..writeAsStringSync('#include <stdio.h>\nint main(void) { puts("OUTSIDE"); return 0; }\n');
++
++      final result = await const CProgramRunner().run(
++        projectPath: project.path,
++        entryFile: outside.path,
++      );
++      expect(result, isNotNull);
++      expect(await result!.exitCode, kProgramNotRunExitCode);
++      expect(await result.stdout.toList(), isEmpty);
++      expect((await result.stderr.toList()).join('\n'), contains('outside'));
++    });
+   });
+ 
+   group('原生后端', () {
+@@ -345,7 +417,7 @@
+         },
+       );
+       final result = await runC();
+-      expect(result.title, contains('原生 picoc'));
++      expect(result.title, 'run main.c');
+       expect(await stdoutOf(result), ['原生输出', '第二行']);
+       expect(await stderrOf(result), isEmpty);
+       expect(await result.exitCode, 3);
+@@ -419,7 +491,7 @@
+ ''');
+       mockNative(available: false);
+       final result = await runC();
+-      expect(result.title, contains('应用内 C 解释器'));
++      expect(result.title, 'run main.c');
+       expect(await stdoutOf(result), ['dart']);
+     });
+ 
+@@ -451,10 +523,7 @@
+         entryFile: p.join(project.path, 'main.cpp'),
+       );
+       expect(result, isNotNull);
+-      expect(
+-        result!.title,
+-        anyOf(contains('Clang'), contains('GCC'), contains('C++')),
+-      );
+-    });
+-  });
+-}
++      expect(result!.title, 'run main.cpp');
++    });
++  });
++}
+--- a/test/clang_runner_test.dart
++++ b/test/clang_runner_test.dart
+@@ -6,6 +6,7 @@
+ import 'package:qfli_c/clang_runner.dart';
+ import 'package:qfli_c/cpp_runner.dart';
+ import 'package:qfli_c/main.dart' show forgeProfile;
++import 'package:qfli_c/source_selection.dart';
+ import 'package:qfli_studio_core/services/runner_service.dart';
+ import 'package:qfli_studio_core/services/process_supervisor.dart';
+ import 'package:qfli_studio_core/services/studio_profile.dart';
+@@ -77,7 +78,7 @@
+ ''');
+ 
+       final (code, output, errors, title) = await run('src/main.c');
+-      expect(title, anyOf(contains('Clang'), contains('GCC')));
++      expect(title, 'run src/main.c');
+       expect(code, 0, reason: errors.join('\n'));
+       expect(output, ['42']);
+       expect(errors, isEmpty);
+@@ -98,7 +99,7 @@
+ ''');
+ 
+     final (code, output, errors, title) = await run('src/main.cpp');
+-    expect(title, anyOf(contains('Clang'), contains('GCC')));
++    expect(title, 'run src/main.cpp');
+     expect(code, 0, reason: errors.join('\n'));
+     expect(output, ['42']);
+     expect(errors, isEmpty);
+@@ -134,7 +135,7 @@
+     expect(code, 0, reason: errors.join('\n'));
+     expect(output, ['42']);
+     expect(errors, isEmpty);
+-    expect(title, contains('cpp'));
++    expect(title, 'run main.c');
+   });
+ 
+   test(
+@@ -162,6 +163,102 @@
+     expect(code, 0, reason: errors.join('\n'));
+     expect(output, ['4.000000']);
+     expect(errors, isEmpty);
++  });
++
++  test(
++    'runs the requested main and keeps the shared helper in a multi-main project',
++    () async {
++      copyFixture('multi_main');
++
++      final (codeA, outputA, errorsA, titleA) = await run('main.c');
++      expect(codeA, 0, reason: errorsA.join('\n'));
++      expect(outputA, ['program A 42']);
++      expect(errorsA, isEmpty);
++      expect(titleA, 'run main.c');
++
++      final (codeB, outputB, errorsB, titleB) = await run('main2.c');
++      expect(codeB, 0, reason: errorsB.join('\n'));
++      expect(outputB, ['program B 42']);
++      expect(errorsB, isEmpty);
++      expect(titleB, 'run main2.c');
++      // The two programs must differ, not merely carry different titles.
++      expect(outputA, isNot(outputB));
++    },
++  );
++
++  test('selecting main2.c drops main.c from the compile set', () async {
++    copyFixture('multi_main');
++    final all =
++        Directory(project.path)
++            .listSync(recursive: true, followLinks: false)
++            .whereType<File>()
++            .map((file) => file.path)
++            .where(
++              (path) => const ['.c', '.cc', '.cpp', '.cxx'].contains(
++                p.extension(path).toLowerCase(),
++              ),
++            )
++            .toList();
++    final selected = selectRunSources(
++      entryFile: p.join(project.path, 'main2.c'),
++      allSources: all,
++      readSource: (path) => File(path).readAsStringSync(),
++    );
++    expect(selected, contains(p.join(project.path, 'main2.c')));
++    expect(selected, contains(p.join(project.path, 'helper.c')));
++    expect(selected, isNot(contains(p.join(project.path, 'main.c'))));
++  });
++
++  test('a header entry fails explicitly instead of running a program', () async {
++    copyFixture('multi_main');
++
++    final result = await ClangProgramRunner().run(
++      projectPath: project.path,
++      entryFile: p.join(project.path, 'helper.h'),
++    );
++    expect(result, isNotNull);
++    expect(await result!.exitCode, kProgramNotRunExitCode);
++    expect(await result.stdout.toList(), isEmpty);
++    expect((await result.stderr.toList()).join('\n'), contains('头文件'));
++    expect(result.title, 'run helper.h');
++  });
++
++  test('rejects an entry outside the project without running it', () async {
++    copyFixture('multi_main');
++    final container = Directory.systemTemp.createTempSync('qfli_outside_');
++    addTearDown(() {
++      if (container.existsSync()) container.deleteSync(recursive: true);
++    });
++    final outside = File(p.join(container.path, 'outside.c'))
++      ..writeAsStringSync(
++        '#include <stdio.h>\nint main(void) { puts("OUTSIDE"); return 0; }\n',
++      );
++
++    final result = await ClangProgramRunner().run(
++      projectPath: project.path,
++      entryFile: outside.path,
++    );
++    expect(result, isNotNull);
++    expect(await result!.exitCode, kProgramNotRunExitCode);
++    expect(await result.stdout.toList(), isEmpty);
++    expect((await result.stderr.toList()).join('\n'), contains('工程内'));
++  });
++
++  test('a helper defining main is retained, not selected as the entry', () async {
++    write(
++      'main.c',
++      '#include <stdio.h>\nint answer(void);\nint main(void) { printf("%d\\n", answer()); return 0; }\n',
++    );
++    write(
++      'helper.c',
++      'static int main(void) { return 42; }\nint answer(void) { return main(); }\n',
++    );
++
++    final (code, output, errors, title) = await run('main.c');
++    expect(code, 0, reason: errors.join('\n'));
++    expect(output, ['42']);
++    expect(errors, isEmpty);
++    expect(title, 'run main.c');
+   });
+ 
+   test('feeds input.txt and keeps stdout and stderr separate', () async {
+@@ -273,7 +370,7 @@
+     final code = await result.exitCode;
+     expect(code, 0, reason: (await errors).join('\n'));
+     expect(await output, ['42']);
+-    expect(result.title, anyOf(contains('Clang'), contains('GCC')));
++    expect(result.title, 'run main.cpp');
+   });
+ 
+   test('allows output streams to be consumed one after another', () async {
+--- a/test/native_clang_runner_test.dart
++++ b/test/native_clang_runner_test.dart
+@@ -28,11 +28,13 @@
+     await events.close();
+   });
+ 
+-  Future<ProgramRunResult> start(String type) async => (await runner.run(
+-    type: type,
+-    projectPath: '/projects/example',
+-    entryFile: '/projects/example/main.$type',
+-  ))!;
++  Future<ProgramRunResult> start(String type, {List<String>? sources}) async =>
++      (await runner.run(
++        type: type,
++        projectPath: '/projects/example',
++        entryFile: '/projects/example/main.$type',
++        sources: sources,
++      ))!;
+ 
+   test(
+     'missing iOS toolchain reports failure for both source families',
+@@ -64,7 +66,7 @@
+       return {'available': true};
+     });
+     final result = await start('c');
+-    expect(result.title, contains('iOS Clang/WASI'));
++    expect(result.title, 'run main.c');
+     expect(await result.exitCode, 1);
+     expect(await result.stdout.toList(), isEmpty);
+     expect(await result.stderr.toList(), ['undefined symbol']);
+@@ -116,4 +118,40 @@
+     expect(await result.stdout.toList(), ['drained']);
+     expect(await result.stderr.toList(), isEmpty);
+   });
++
++  test('forwards an explicit selected-source list in the start payload', () async {
++    Map<Object?, Object?>? startArguments;
++    messenger.setMockMethodCallHandler(channel, (call) async {
++      if (call.method == 'start') {
++        startArguments = call.arguments as Map<Object?, Object?>;
++        final runId = startArguments!['runId'] as String;
++        events.add({'runId': runId, 'kind': 'exit', 'exitCode': 0});
++        return {'available': true};
++      }
++      return null;
++    });
++    await start(
++      'c',
++      sources: ['/projects/example/main.c', '/projects/example/utils.c'],
++    );
++    expect(
++      startArguments!['sources'],
++      ['/projects/example/main.c', '/projects/example/utils.c'],
++    );
++  });
++
++  test('omits the source key for legacy callers without a list', () async {
++    Map<Object?, Object?>? startArguments;
++    messenger.setMockMethodCallHandler(channel, (call) async {
++      if (call.method == 'start') {
++        startArguments = call.arguments as Map<Object?, Object?>;
++        final runId = startArguments!['runId'] as String;
++        events.add({'runId': runId, 'kind': 'exit', 'exitCode': 0});
++        return {'available': true};
++      }
++      return null;
++    });
++    await start('c');
++    expect(startArguments!.containsKey('sources'), isFalse);
++  });
+ }
+--- a/web/forge-worker.js
++++ b/web/forge-worker.js
+@@ -4,7 +4,7 @@
+ self.onmessage = async ({ data }) => {
+   if (active) return;
+   active = true;
+-  const { runId, entryFile, files } = data;
++  const { runId, entryFile, files, sources: requestedSources } = data;
+   const emit = (event) => self.postMessage({ runId, ...event });
+   const diagnostics = new OutputLines((text) => emit({ kind: "stderr", text }));
+   try {
+@@ -29,9 +29,31 @@
+       compiler.FS.mkdirTree(fullPath.slice(0, fullPath.lastIndexOf("/")));
+       compiler.FS.writeFile(fullPath, new Uint8Array(bytes));
+     }
+-    const sources = files.filter((entry) => !entry.directory).map(({ path }) => relativePath(path))
+-      .filter((path) => /\.(c|cpp|cc|cxx)$/i.test(path))
+-      .sort((a, b) => a === entryFile ? -1 : b === entryFile ? 1 : a.localeCompare(b));
++    const projectSources = files.filter((entry) => !entry.directory)
++      .map(({ path }) => relativePath(path))
++      .filter((path) => /\.(c|cpp|cc|cxx)$/i.test(path));
++    // An explicit `sources` list from the Dart runner is authoritative: it
++    // already selected the requested entry plus ordinary helpers and excluded
++    // other unambiguous main programs. Validate it instead of re-enumerating.
++    let sources;
++    if (requestedSources !== undefined) {
++      if (!Array.isArray(requestedSources) || requestedSources.length === 0) {
++        throw new Error("Invalid selected source list");
++      }
++      const projectSet = new Set(projectSources);
++      for (const path of requestedSources) {
++        if (typeof path !== "string" || !projectSet.has(relativePath(path))) {
++          throw new Error(`Selected source is not a project translation unit: ${path}`);
++        }
++      }
++      if (!requestedSources.some((path) => relativePath(path) === entryFile)) {
++        throw new Error("Selected sources do not include the entry file");
++      }
++      sources = requestedSources.map((path) => relativePath(path));
++    } else {
++      sources = projectSources
++        .sort((a, b) => a === entryFile ? -1 : b === entryFile ? 1 : a.localeCompare(b));
++    }
+     if (!sources.includes(entryFile)) throw new Error("Entry file is not a project translation unit");
+     const allocated = [];
+     const string = (value) => {
+--- /dev/null
++++ b/lib/source_selection.dart
+@@ -0,0 +1,541 @@
++/// Pure-Dart C/C++ translation-unit selection for QFLIForge.
++///
++/// The runner receives the explicitly requested entry file from the editor
++/// (a normal Run tap uses the configured project entry; a long press uses the
++/// currently open file). Every backend used to compile *all* project source
++/// units, so a project that kept two independent programs (`main.c` and
++/// `main2.c`) produced `multiple definition of 'main'` whenever one of them
++/// was requested.
++///
++/// This file owns the one rule shared by every Dart-side backend:
++///
++///   keep the selected entry, keep every ordinary helper unit, and drop only
++///   the *other* units that contain an unambiguous top-level `main`
++///   definition.
++///
++/// It intentionally does not import the in-app C runtime (`qfli_c_runtime`),
++/// whose 64-bit integer constants cannot be represented by dart2js, so the
++/// browser build graph stays valid. It is a small lexical scan, not a C
++/// preprocessor: anything it cannot decide confidently is left in the source
++/// set so the real compiler reports the diagnostic instead of a helper file
++/// being silently deleted.
++library;
++
++/// Path extensions the C/C++ backends compile as translation units.
++const Set<String> kCCppSourceExtensions = {
++  '.c',
++  '.cc',
++  '.cpp',
++  '.cxx',
++};
++
++/// Whether [path]'s extension is a C/C++ translation unit for selection.
++///
++/// Case is folded, so `MAIN.C` and `helper.CPP` are collected just like their
++/// lowercase spellings (the compiler is invoked with an explicit `-x` mode).
++bool isCCppSourcePath(String path) {
++  final dot = path.lastIndexOf('.');
++  if (dot < 0) return false;
++  final slash = path.lastIndexOf('/');
++  final backslash = path.lastIndexOf(r'\');
++  if (dot < slash || dot < backslash) return false;
++  return kCCppSourceExtensions.contains(path.substring(dot).toLowerCase());
++}
++
++/// Returns the source units to compile for the requested [entryFile].
++///
++/// [allSources] is the complete enumeration of project translation units (the
++/// caller owns filesystem walking and path normalization). [readSource] reads
++/// the text of one unit; when it returns null the unit is kept conservatively.
++///
++/// The returned list always contains exactly one element equal to [entryFile]
++/// and preserves [allSources] order for the rest. A non-entry unit is excluded
++/// only when it defines `main` unambiguously at the top level of its
++/// translation unit; ambiguous units (conditional compilation, macro-defined
++/// `main`, unreadable text) are kept.
++List<String> selectRunSources({
++  required String entryFile,
++  required List<String> allSources,
++  required String? Function(String path) readSource,
++}) {
++  final selected = <String>[];
++  var entrySeen = false;
++
++  for (final source in allSources) {
++    if (_samePath(source, entryFile)) {
++      if (!entrySeen) {
++        entrySeen = true;
++        selected.add(source);
++      }
++      continue;
++    }
++    if (definesUnambiguousMain(readSource(source))) continue;
++    selected.add(source);
++  }
++
++  if (!entrySeen) {
++    // The entry must survive even if enumeration missed it; callers validate
++    // that it exists before running.
++    selected.insert(0, entryFile);
++  }
++  return selected;
++}
++
++bool _samePath(String a, String b) {
++  if (a == b) return true;
++  // Normalize separators so Windows/POSIX callers agree without importing
++  // package:path into this pure helper.
++  return a.replaceAll(r'\', '/') == b.replaceAll(r'\', '/');
++}
++
++/// Whether [source] text contains an unambiguous top-level `main` definition.
++///
++/// Rules (all must hold):
++///   * a `main` identifier token that is not part of a longer identifier;
++///   * the token sits at global scope (brace depth zero) in the translation
++///     unit, so `namespace n { int main(){} }`, a `struct`/`class` member and
++///     a nested function are all *not* entries;
++///   * immediately followed by `(`;
++///   * not preceded by `.`, `->` or `::` (member/namespace/selector use);
++///   * not produced inside a preprocessor directive line (`#define main ...`);
++///   * not inside a conditional-compilation block (`#if`/`#ifdef`/`#ifndef`);
++///   * not declared `static` (internal linkage is never the program entry);
++///   * a global function body `{` demonstrably follows the parameter list at a
++///     non-conditional position.
++///
++/// Anything that does not positively prove a global definition (unknown
++/// macros, ambiguous preprocessing, a scan that hits EOF before the body) is
++/// treated as "not an entry", i.e. the file is kept.
++bool definesUnambiguousMain(String? source) {
++  if (source == null) return false;
++  final scan = _significantTokens(source);
++  if (scan == null) return false; // Unterminated comment/string: ambiguous.
++  // A `#define main ...` (or `#undef main`) renames the real entry point, so
++  // the file's `main` tokens no longer mean what they look like. Keep it.
++  if (scan.macroDefinesMain) return false;
++  final tokens = scan.tokens;
++
++  for (var i = 0; i < tokens.length; i++) {
++    final token = tokens[i];
++    if (token.kind != _TokenKind.identifier || token.text != 'main') continue;
++    if (token.inConditional || token.inDirective) continue;
++    if (token.braceDepth != 0) continue; // Namespace/class/function scope.
++    if (_hasInternalLinkage(tokens, i)) continue;
++
++    final previous = i > 0 ? tokens[i - 1] : null;
++    if (previous != null &&
++        previous.kind == _TokenKind.punctuator &&
++        (previous.text == '.' ||
++            previous.text == '->' ||
++            previous.text == '::')) {
++      continue;
++    }
++
++    final next = i + 1 < tokens.length ? tokens[i + 1] : null;
++    if (next == null ||
++        next.kind != _TokenKind.punctuator ||
++        next.text != '(') {
++      continue;
++    }
++
++    if (_hasGlobalFunctionBody(tokens, i)) return true;
++  }
++  return false;
++}
++
++/// True only when the `main` at [index] is followed, at global scope, by a
++/// function body `{` after its parameter list.
++///
++/// A prototype (`;`), a variable (`=`/`,`), a member/nested brace, or an EOF
++/// before any body all return false, which keeps the unit in the build so the
++/// real compiler can decide.
++bool _hasGlobalFunctionBody(List<_Token> tokens, int index) {
++  var depth = 0;
++  var sawParameterList = false;
++  for (var i = index + 1; i < tokens.length; i++) {
++    final token = tokens[i];
++    if (token.kind != _TokenKind.punctuator) continue;
++    // A body/declarator token chosen by, or spanning, a conditional-compilation
++    // region is ambiguous: keep the file for the real compiler.
++    if (token.inConditional || token.inDirective) return false;
++    if (token.braceDepth > 0 && depth == 0) return false; // Entered a scope.
++    switch (token.text) {
++      case '(':
++      case '[':
++        depth++;
++        sawParameterList = true;
++      case ')':
++      case ']':
++        depth--;
++      case '{':
++        if (depth == 0 && sawParameterList) return true; // Global body.
++        return false; // Inline member/nested body: not a global entry.
++      case '}':
++        return false;
++      case ';':
++        if (depth == 0) return false; // Prototype.
++      case '=':
++      case ',':
++        if (depth == 0) return false; // Variable, `auto main = ...`.
++    }
++  }
++  return false; // EOF before a body: ambiguous, keep.
++}
++
++/// Whether the declaration containing the `main` at [index] carries `static`.
++///
++/// `static int main(void) {...}` is internal linkage and can never be the
++/// program entry, so such a unit is kept even though it looks like a global
++/// function definition. The specifiers are scanned back to the previous
++/// declaration boundary (`;`, `}`, `{`, or the start of the token stream).
++bool _hasInternalLinkage(List<_Token> tokens, int index) {
++  for (var i = index - 1; i >= 0; i--) {
++    final token = tokens[i];
++    if (token.kind == _TokenKind.punctuator) {
++      if (token.text == ';' || token.text == '}' || token.text == '{') {
++        return false;
++      }
++      continue;
++    }
++    if (token.text == 'static') return true;
++  }
++  return false;
++}
++
++enum _TokenKind { identifier, punctuator }
++
++class _Token {
++  const _Token(
++    this.kind,
++    this.text, {
++    this.inDirective = false,
++    this.inConditional = false,
++    this.braceDepth = 0,
++  });
++
++  final _TokenKind kind;
++  final String text;
++
++  /// The token sits on a `#...` preprocessor directive line.
++  final bool inDirective;
++
++  /// The token sits inside an (open) `#if`/`#ifdef`/`#ifndef` region.
++  final bool inConditional;
++
++  /// Number of unclosed `{` before this token (0 = global scope).
++  final int braceDepth;
++}
++
++/// Scans [source] into significant identifiers and punctuators.
++///
++/// Returns null when the scan cannot be trusted: an unterminated block
++/// comment, character, normal string or raw string. Callers treat null as
++/// "ambiguous: keep the file".
++class _Scan {
++  const _Scan(this.tokens, {required this.macroDefinesMain});
++  final List<_Token> tokens;
++  final bool macroDefinesMain;
++}
++
++_Scan? _significantTokens(String rawSource) {
++  // C translation phase 2: backslash-newline splices happen before comment
++  // recognition (phase 3). Applying this first is what keeps a `main` example
++  // that straddles a `\` continuation of a `//` comment or a `#define`
++  // directive on the directive/comment side instead of being read as code.
++  final source = _spliceLineContinuations(rawSource);
++  final tokens = <_Token>[];
++  final length = source.length;
++  var i = source.startsWith('\u{FEFF}') ? 1 : 0;
++  var atLineStart = true;
++  var inDirective = false;
++  var conditionalDepth = 0;
++  var braceDepth = 0;
++  var macroDefinesMain = false;
++
++  void push(_TokenKind kind, String text) {
++    tokens.add(
++      _Token(
++        kind,
++        text,
++        inDirective: inDirective,
++        inConditional: conditionalDepth > 0,
++        braceDepth: braceDepth,
++      ),
++    );
++  }
++
++  while (i < length) {
++    final c = source[i];
++
++    if (c == '\n') {
++      atLineStart = true;
++      inDirective = false;
++      i++;
++      continue;
++    }
++    if (c == ' ' || c == '\t' || c == '\r') {
++      i++;
++      continue;
++    }
++
++    // Preprocessor directive line: consume the logical line (including
++    // backslash continuations), tracking conditional depth so a `main` inside
++    // `#if` is never treated as unambiguous. We do not expand macros; a
++    // directive that could rename `main` keeps the whole file.
++    if (c == '#' && atLineStart) {
++      final end = _directiveEnd(source, i);
++      final directive = source.substring(i, end);
++      final name = _directiveName(directive);
++      switch (name) {
++        case 'if':
++        case 'ifdef':
++        case 'ifndef':
++          conditionalDepth++;
++        case 'endif':
++          if (conditionalDepth > 0) conditionalDepth--;
++        case 'define':
++        case 'undef':
++          if (_directiveTargetsMain(directive)) macroDefinesMain = true;
++      }
++      i = end;
++      atLineStart = true;
++      inDirective = false;
++      continue;
++    }
++    if (c == '/' && i + 1 < length && source[i + 1] == '/') {
++      final lineEnd = source.indexOf('\n', i);
++      i = lineEnd < 0 ? length : lineEnd;
++      continue;
++    }
++    if (c == '/' && i + 1 < length && source[i + 1] == '*') {
++      final close = source.indexOf('*/', i + 2);
++      if (close < 0) return null; // Unterminated block comment.
++      i = close + 2;
++      // A block comment does not end the logical line: a `#` that follows it
++      // (still before any code) begins a directive line.
++      continue;
++    }
++
++    // Past comments and whitespace: this is real code, so the line is no
++    // longer at its start.
++    atLineStart = false;
++
++    if (c == '"' || c == '\'') {
++      final end = _skipQuoted(source, i, c);
++      if (end < 0) return null; // Unterminated string/char literal.
++      i = end;
++      continue;
++    }
++
++    // C++ raw string: optional encoding prefix + R"delim( ... )delim"
++    if (_isRawStringStart(source, i)) {
++      final end = _skipRawString(source, i);
++      if (end < 0) return null; // Unterminated raw string.
++      i = end;
++      continue;
++    }
++
++    if (_isIdentStart(c)) {
++      final start = i;
++      i++;
++      while (i < length && _isIdentPart(source[i])) {
++        i++;
++      }
++      push(_TokenKind.identifier, source.substring(start, i));
++      continue;
++    }
++
++    // Multi-character C++ selectors we care about.
++    if (c == '-' && i + 1 < length && source[i + 1] == '>') {
++      push(_TokenKind.punctuator, '->');
++      i += 2;
++      continue;
++    }
++    if (c == ':' && i + 1 < length && source[i + 1] == ':') {
++      push(_TokenKind.punctuator, '::');
++      i += 2;
++      continue;
++    }
++
++    // Braces change the translation-unit scope used to reject member and
++    // nested `main` definitions. The opening brace is recorded at the outer
++    // depth, the closing brace at the inner depth, so a token between the
++    // braces that opens a scope sits at the outer depth.
++    if (c == '{') {
++      push(_TokenKind.punctuator, c);
++      braceDepth++;
++      i++;
++      continue;
++    }
++    if (c == '}') {
++      if (braceDepth > 0) braceDepth--;
++      push(_TokenKind.punctuator, c);
++      i++;
++      continue;
++    }
++
++    push(_TokenKind.punctuator, c);
++    i++;
++  }
++
++  return _Scan(tokens, macroDefinesMain: macroDefinesMain);
++}
++
++/// C translation phase 2: delete every backslash immediately followed by a
++/// newline (`\n`, `\r\n` or `\r`).
++///
++/// This must run before comment/directive scanning, because a splice can join a
++/// following line into a `//` comment or into a `#define` body.
++String _spliceLineContinuations(String source) {
++  if (!source.contains(r'\')) return source;
++  final out = StringBuffer();
++  var i = 0;
++  while (i < source.length) {
++    if (source[i] == r'\' && i + 1 < source.length) {
++      final next = source[i + 1];
++      if (next == '\n') {
++        i += 2;
++        continue;
++      }
++      if (next == '\r') {
++        if (i + 2 < source.length && source[i + 2] == '\n') {
++          i += 3;
++        } else {
++          i += 2;
++        }
++        continue;
++      }
++    }
++    out.write(source[i]);
++    i++;
++  }
++  return out.toString();
++}
++
++/// Index just past a preprocessor directive, spanning backslash-newline
++/// continuations. A directive ends at the first newline not preceded by `\`.
++/// (Run after splicing; this stays as defense for callers that pass raw text.)
++int _directiveEnd(String source, int start) {
++  var i = start;
++  while (i < source.length) {
++    final newline = source.indexOf('\n', i);
++    if (newline < 0) return source.length;
++    var backslashes = 0;
++    var j = newline - 1;
++    while (j >= start && source[j] == r'\') {
++      backslashes++;
++      j--;
++    }
++    if (backslashes.isEven) return newline;
++    i = newline + 1;
++  }
++  return source.length;
++}
++
++/// Whether a `#define`/`#undef` directive names `main`.
++///
++/// Continuations are already spliced away by [_spliceLineContinuations], and
++/// comments are stripped here because C allows them between the directive name
++/// and the macro name (`#define /* name */ main qfli_main`). This does not
++/// expand macros; it only checks the directive's own name.
++bool _directiveTargetsMain(String directive) {
++  final withoutComments = _stripComments(directive);
++  return RegExp(r'^\s*#\s*(?:define|undef)\s+main\b').hasMatch(withoutComments);
++}
++
++/// Removes `/* ... */` and `// ...` comment text from one logical line.
++String _stripComments(String text) {
++  final out = StringBuffer();
++  var i = 0;
++  while (i < text.length) {
++    if (text[i] == '/' && i + 1 < text.length && text[i + 1] == '*') {
++      final close = text.indexOf('*/', i + 2);
++      if (close < 0) {
++        out.write(' ');
++        break;
++      }
++      out.write(' ');
++      i = close + 2;
++      continue;
++    }
++    if (text[i] == '/' && i + 1 < text.length && text[i + 1] == '/') {
++      break;
++    }
++    out.write(text[i]);
++    i++;
++  }
++  return out.toString();
++}
++
++String _directiveName(String directive) {
++  var i = 1;
++  while (i < directive.length && directive[i].trim().isEmpty) {
++    i++;
++  }
++  final rest = directive.substring(i).trimLeft();
++  final match = RegExp(r'^[A-Za-z]+').firstMatch(rest);
++  return match?.group(0) ?? '';
++}
++
++bool _isRawStringStart(String source, int index) {
++  // Bare R", or an encoding prefix directly before it: u8R", uR", UR", LR".
++  if (source[index] == 'R') {
++    return index + 1 < source.length && source[index + 1] == '"';
++  }
++  if (source[index] == 'u' &&
++      index + 2 < source.length &&
++      source[index + 1] == '8' &&
++      source[index + 2] == 'R') {
++    return index + 3 < source.length && source[index + 3] == '"';
++  }
++  if ((source[index] == 'u' ||
++          source[index] == 'U' ||
++          source[index] == 'L') &&
++      index + 1 < source.length &&
++      source[index + 1] == 'R') {
++    return index + 2 < source.length && source[index + 2] == '"';
++  }
++  return false;
++}
++
++/// Returns the index just past a C++ raw string starting at [index] (which
++/// points at the `R` or its encoding prefix), or -1 when unterminated.
++int _skipRawString(String source, int index) {
++  var i = index;
++  while (i < source.length && source[i] != 'R') {
++    i++;
++  }
++  i++; // Past `R`.
++  if (i >= source.length || source[i] != '"') return -1;
++  i++;
++  final delimiterStart = i;
++  final openParen = source.indexOf('(', i);
++  if (openParen < 0 || openParen - delimiterStart > 16) return -1;
++  final delimiter = source.substring(delimiterStart, openParen);
++  final terminator = ')$delimiter"';
++  final close = source.indexOf(terminator, openParen + 1);
++  if (close < 0) return -1;
++  return close + terminator.length;
++}
++
++/// Returns the index just past a quoted literal starting at [index], or -1.
++int _skipQuoted(String source, int index, String quote) {
++  var i = index + 1;
++  while (i < source.length) {
++    final c = source[i];
++    if (c == r'\') {
++      i += 2;
++      continue;
++    }
++    if (c == quote) return i + 1;
++    if (c == '\n') return -1; // Newline inside a normal literal is invalid.
++    i++;
++  }
++  return -1;
++}
++
++bool _isIdentStart(String c) =>
++    c.isNotEmpty && (RegExp(r'[A-Za-z_$]').hasMatch(c));
++
++bool _isIdentPart(String c) =>
++    c.isNotEmpty && (RegExp(r'[A-Za-z0-9_$]').hasMatch(c));
+--- /dev/null
++++ b/lib/run_title.dart
+@@ -0,0 +1,28 @@
++import 'package:path/path.dart' as p;
++
++/// Short command-style label for one QFLIForge run.
++///
++/// Contract: `run <project-relative entry path>`, identical for success,
++/// unavailable toolchains and interpreter fallback. It never carries backend
++/// names such as Clang, GCC or "interpreter". Program stdout/stderr and the
++/// numeric exit status are unaffected.
++///
++/// The relative path is derived with an explicit `package:path` context chosen
++/// from the path shape (Windows drive/UNC vs POSIX) rather than the platform
++/// default, so a browser build never resolves through the default URL path
++/// context and a Windows path never goes through POSIX semantics.
++String runTitle({required String projectPath, required String entryFile}) {
++  final context = _pathContextFor(entryFile);
++  final relative = context.relative(
++    context.normalize(entryFile),
++    from: context.normalize(projectPath),
++  );
++  return 'run ${relative.replaceAll(r'\', '/')}';
++}
++
++/// Windows paths start with a drive (`C:\`) or a UNC share (`\\server\`).
++p.Context _pathContextFor(String entryFile) {
++  final isWindows = p.windows.isAbsolute(entryFile) &&
++      (p.windows.rootPrefix(entryFile).isNotEmpty);
++  return isWindows ? p.windows : p.posix;
++}
+--- /dev/null
++++ b/test/source_selection_test.dart
+@@ -0,0 +1,450 @@
++import 'package:flutter_test/flutter_test.dart';
++import 'package:qfli_c/source_selection.dart';
++
++/// Lexical-boundary coverage for the one C/C++ source-selection rule.
++///
++/// The rule decides only whether a non-entry unit contains an unambiguous
++/// top-level `main` *definition*. Anything it cannot decide must stay in the
++/// compilation set, so all "unsure" fixtures assert `false` (keep the file).
++void main() {
++  group('definesUnambiguousMain: real definitions', () {
++    test('classic C main definition', () {
++      expect(
++        definesUnambiguousMain('int main(void) { return 0; }\n'),
++        isTrue,
++      );
++    });
++
++    test('main with argc/argv', () {
++      expect(
++        definesUnambiguousMain('int main(int argc, char **argv) { return 0; }\n'),
++        isTrue,
++      );
++    });
++
++    test('main spanning lines', () {
++      expect(
++        definesUnambiguousMain('int\nmain\n(\nvoid\n)\n{\nreturn 0;\n}\n'),
++        isTrue,
++      );
++    });
++
++    test('C++ main using std::', () {
++      expect(
++        definesUnambiguousMain(
++          'int main() { std::cout << "hi"; return 0; }\n',
++        ),
++        isTrue,
++      );
++    });
++  });
++
++  group('definesUnambiguousMain: comments', () {
++    test('line comment', () {
++      expect(
++        definesUnambiguousMain('// int main(void) { return 0; }\nint helper(){}\n'),
++        isFalse,
++      );
++    });
++
++    test('block comment', () {
++      expect(
++        definesUnambiguousMain('/* int main() { } */ void helper(void) {}\n'),
++        isFalse,
++      );
++    });
++
++    test('main word inside a comment about the program', () {
++      expect(
++        definesUnambiguousMain('// call main() to start\nint answer(void){return 42;}\n'),
++        isFalse,
++      );
++    });
++  });
++
++  group('definesUnambiguousMain: strings', () {
++    test('normal string mentions main(', () {
++      expect(
++        definesUnambiguousMain('const char *s = "main()";\n'),
++        isFalse,
++      );
++    });
++
++    test('escaped quote then main(', () {
++      expect(
++        definesUnambiguousMain('const char *s = "\\"main()\\"";\n'),
++        isFalse,
++      );
++    });
++
++    test('character literal', () {
++      expect(definesUnambiguousMain("char c = ')'; int helper(void){}\n"), isFalse);
++    });
++
++    test('raw string contains main definition', () {
++      expect(
++        definesUnambiguousMain('const char *s = R"(int main() { return 0; })";\n'),
++        isFalse,
++      );
++    });
++
++    test('raw string with delimiter', () {
++      expect(
++        definesUnambiguousMain('auto s = R"x(int main(){} )x";\n'),
++        isFalse,
++      );
++    });
++  });
++
++  group('definesUnambiguousMain: not a definition', () {
++    test('prototype only', () {
++      expect(definesUnambiguousMain('int main(void);\n'), isFalse);
++    });
++
++    test('struct field named main', () {
++      expect(definesUnambiguousMain('struct S { int main; };\n'), isFalse);
++    });
++
++    test('integer variable named main', () {
++      expect(definesUnambiguousMain('int main = 5;\n'), isFalse);
++    });
++
++    test('member call obj.main()', () {
++      expect(
++        definesUnambiguousMain('int helper(void) { return obj.main(); }\n'),
++        isFalse,
++      );
++    });
++
++    test('pointer member call p->main()', () {
++      expect(
++        definesUnambiguousMain('int helper(void) { return p->main(); }\n'),
++        isFalse,
++      );
++    });
++
++    test('namespace-qualified Foo::main()', () {
++      expect(
++        definesUnambiguousMain('int Foo::main() { return 0; }\n'),
++        isFalse,
++      );
++    });
++
++    test('member function declaration in a class', () {
++      expect(
++        definesUnambiguousMain('class C { int main(); };;\n'),
++        isFalse,
++      );
++    });
++
++    test('inline member definition inside a class', () {
++      expect(
++        definesUnambiguousMain('class C { public: int main() { return 0; } };\n'),
++        isFalse,
++      );
++    });
++
++    test('inline member definition inside a struct', () {
++      expect(
++        definesUnambiguousMain('struct S { int main() { return 0; } };\n'),
++        isFalse,
++      );
++    });
++
++    test('main inside a namespace definition', () {
++      expect(
++        definesUnambiguousMain('namespace n { int main() { return 0; } }\n'),
++        isFalse,
++      );
++      expect(
++        definesUnambiguousMain(
++          'namespace outer { namespace inner { int main(){ return 0; } } }\n',
++        ),
++        isFalse,
++      );
++    });
++
++    test('nested function main inside another function', () {
++      expect(
++        definesUnambiguousMain('void run(void) { int main() { return 0; } }\n'),
++        isFalse,
++      );
++    });
++
++    test('body that never closes before EOF is ambiguous', () {
++      expect(
++        definesUnambiguousMain('int main(int argc, char **argv)\n'),
++        isFalse,
++      );
++      expect(definesUnambiguousMain('int main(void)\n'), isFalse);
++    });
++
++    test('function pointer variable', () {
++      expect(
++        definesUnambiguousMain('int (*main)(void) = 0;\n'),
++        isFalse,
++      );
++    });
++
++    test('identifier merely containing main', () {
++      expect(
++        definesUnambiguousMain('int mainLoop(void) { return 0; }\n'),
++        isFalse,
++      );
++      expect(
++        definesUnambiguousMain('int domain(void) { return 0; }\n'),
++        isFalse,
++      );
++    });
++  });
++
++  group('definesUnambiguousMain: ambiguous preprocessing is kept', () {
++    test('main under #if 0', () {
++      expect(
++        definesUnambiguousMain('#if 0\nint main(void) { return 1; }\n#endif\n'),
++        isFalse,
++      );
++    });
++
++    test('main selected by #ifdef', () {
++      expect(
++        definesUnambiguousMain(
++          '#ifdef USE_B\nint main(void){ return 1; }\n#endif\n',
++        ),
++        isFalse,
++      );
++    });
++
++    test('paired conditional programs are both ambiguous', () {
++      const source =
++          '#ifdef A\nint main(void){ return 1; }\n#else\nint main(void){ return 2; }\n#endif\n';
++      expect(definesUnambiguousMain(source), isFalse);
++    });
++
++    test('macro-defined main', () {
++      expect(definesUnambiguousMain('#define main qfli_main\nint main(void){}\n'), isFalse);
++    });
++
++    test('macro-defined main split across a continuation line', () {
++      expect(
++        definesUnambiguousMain('#define \\\n  main qfli_main\nint main(void){}\n'),
++        isFalse,
++      );
++    });
++
++    test('#undef main keeps the file', () {
++      expect(definesUnambiguousMain('#undef main\nint main(void){}\n'), isFalse);
++    });
++
++    test('directive with a backslash continuation keeps its condition block', () {
++      // The `#if 0 \` continues onto the next line: the body must stay in the
++      // conditional region and therefore stay ambiguous.
++      expect(
++        definesUnambiguousMain('#if 0 \\\n/* keep */\nint main(void){ return 1; }\n#endif\n'),
++        isFalse,
++      );
++    });
++
++    test('comment before the hash still marks a directive line', () {
++      expect(
++        definesUnambiguousMain('/* c */ #define main qfli_main\nint main(void){}\n'),
++        isFalse,
++      );
++    });
++
++    test('unterminated block comment is ambiguous', () {
++      expect(definesUnambiguousMain('int helper(void){}\n/* int main(){}'), isFalse);
++    });
++
++    test('unterminated raw string is ambiguous', () {
++      expect(definesUnambiguousMain('const char *s = R"(oops\n'), isFalse);
++    });
++  });
++
++  group('definesUnambiguousMain: reviewer false positives are retained', () {
++    test('static helper main has internal linkage, not the entry', () {
++      expect(
++        definesUnambiguousMain(
++          'static int main(void) { return 42; }\nint answer(void) { return main(); }\n',
++        ),
++        isFalse,
++      );
++    });
++
++    test('main body chosen by #if with a semicolon #else is ambiguous', () {
++      expect(
++        definesUnambiguousMain(
++          'int main(void)\n#if USE_MAIN\n{ return 99; }\n#else\n;\n#endif\nint answer(void) { return 42; }\n',
++        ),
++        isFalse,
++      );
++    });
++
++    test('backslash-CRLF macro continuation swallows the next line', () {
++      expect(
++        definesUnambiguousMain(
++          '#define UNUSED \\\r\nint main(void) { return 99; }\r\nint answer(void) { return 42; }\r\n',
++        ),
++        isFalse,
++      );
++    });
++
++    test('backslash-LF line splice joins the next line into the // comment', () {
++      expect(
++        definesUnambiguousMain(
++          '// unused example \\\nint main(void) { return 99; }\nint answer(void) { return 42; }\n',
++        ),
++        isFalse,
++      );
++    });
++
++    test('comment between define and the macro name is still a rename', () {
++      expect(
++        definesUnambiguousMain(
++          '#define /* name */ main qfli_main\nint main(void) { return 99; }\nint answer(void) { return 42; }\n',
++        ),
++        isFalse,
++      );
++    });
++
++    test('selectRunSources keeps the helper for every reviewer case', () {
++      const cases = <String>[
++        'static int main(void) { return 42; }\nint answer(void) { return main(); }\n',
++        'int main(void)\n#if USE_MAIN\n{ return 99; }\n#else\n;\n#endif\nint answer(void) { return 42; }\n',
++        '#define UNUSED \\\r\nint main(void) { return 99; }\r\nint answer(void) { return 42; }\r\n',
++        '// unused example \\\nint main(void) { return 99; }\nint answer(void) { return 42; }\n',
++        '#define /* name */ main qfli_main\nint main(void) { return 99; }\nint answer(void) { return 42; }\n',
++      ];
++      for (final source in cases) {
++        final selected = selectRunSources(
++          entryFile: 'entry.c',
++          allSources: ['entry.c', 'helper.c'],
++          readSource: (path) => path == 'helper.c' ? source : null,
++        );
++        expect(selected, ['entry.c', 'helper.c'], reason: source);
++      }
++    });
++
++    test('a genuine global main is still detected beside these forms', () {
++      expect(
++        definesUnambiguousMain('int main(void) { return 0; }\n'),
++        isTrue,
++      );
++      expect(
++        definesUnambiguousMain(
++          'static int unused(void) { return 1; }\nint main(int argc, char **argv) { return 0; }\n',
++        ),
++        isTrue,
++      );
++    });
++  });
++
++  group('definesUnambiguousMain: top level outside conditionals still counts', () {
++    test('unconditional main after a closed conditional helper', () {
++      expect(
++        definesUnambiguousMain(
++          '#ifdef X\nint helper(void){return 1;}\n#endif\nint main(void){return 0;}\n',
++        ),
++        isTrue,
++      );
++    });
++  });
++
++  group('selectRunSources', () {
++    String? Function(String) reader(Map<String, String> files) =>
++        (path) => files[path];
++
++    test('keeps entry and helpers, drops the other main program', () {
++      final files = {
++        'proj/main.c': 'int main(void){ return 1; }\n',
++        'proj/main2.c': 'int main(void){ return 2; }\n',
++        'proj/utils.c': 'int helper(void){ return 42; }\n',
++      };
++      final selected = selectRunSources(
++        entryFile: 'proj/main2.c',
++        allSources: ['proj/main.c', 'proj/main2.c', 'proj/utils.c'],
++        readSource: reader(files),
++      );
++      expect(selected, ['proj/main2.c', 'proj/utils.c']);
++      expect(selected, isNot(contains('proj/main.c')));
++      expect(selected, contains('proj/main2.c'));
++      expect(selected, contains('proj/utils.c'));
++    });
++
++    test('keeps the entry even when enumeration omitted it', () {
++      final selected = selectRunSources(
++        entryFile: 'proj/main2.c',
++        allSources: ['proj/main.c', 'proj/utils.c'],
++        readSource: reader({'proj/main.c': 'int main(void){return 1;}\n'}),
++      );
++      expect(selected.first, 'proj/main2.c');
++      expect(selected, contains('proj/utils.c'));
++      expect(selected, isNot(contains('proj/main.c')));
++    });
++
++    test('does not drop a helper that only mentions main in text', () {
++      final files = {
++        'proj/help.c':
++            '// call main()\nconst char *k = "main()";\nint helper(void){return 1;}\n',
++      };
++      final selected = selectRunSources(
++        entryFile: 'proj/entry.c',
++        allSources: ['proj/entry.c', 'proj/help.c'],
++        readSource: reader(files),
++      );
++      expect(selected, ['proj/entry.c', 'proj/help.c']);
++    });
++
++    test('keeps an ambiguous conditional unit for compiler diagnostics', () {
++      final files = {
++        'proj/conditional.c':
++            '#ifdef A\nint main(void){return 1;}\n#endif\nint helper(void){return 2;}\n',
++      };
++      final selected = selectRunSources(
++        entryFile: 'proj/entry.c',
++        allSources: ['proj/entry.c', 'proj/conditional.c'],
++        readSource: reader(files),
++      );
++      expect(selected, contains('proj/conditional.c'));
++    });
++
++    test('unreadable unit is kept', () {
++      final selected = selectRunSources(
++        entryFile: 'proj/entry.c',
++        allSources: ['proj/entry.c', 'proj/missing.c'],
++        readSource: (path) => null,
++      );
++      expect(selected, ['proj/entry.c', 'proj/missing.c']);
++    });
++
++    test('selects the requested program with Windows separators', () {
++      final files = {
++        r'proj\main.c': 'int main(void){return 1;}\n',
++        r'proj\main2.c': 'int main(void){return 2;}\n',
++      };
++      final selected = selectRunSources(
++        entryFile: r'proj\main2.c',
++        allSources: [r'proj\main.c', r'proj\main2.c'],
++        readSource: reader(files),
++      );
++      expect(selected, [r'proj\main2.c']);
++    });
++  });
++
++  group('isCCppSourcePath', () {
++    test('accepts C/C++ extensions case-insensitively', () {
++      expect(isCCppSourcePath('a/main.c'), isTrue);
++      expect(isCCppSourcePath('a/MAIN.C'), isTrue);
++      expect(isCCppSourcePath('a/helper.CPP'), isTrue);
++      expect(isCCppSourcePath('a/x.cc'), isTrue);
++      expect(isCCppSourcePath('a/x.cxx'), isTrue);
++    });
++
++    test('rejects headers and other languages', () {
++      expect(isCCppSourcePath('a/helper.h'), isFalse);
++      expect(isCCppSourcePath('a/helper.hpp'), isFalse);
++      expect(isCCppSourcePath('a/main.py'), isFalse);
++      expect(isCCppSourcePath('a/noext'), isFalse);
++    });
++  });
++}
+--- /dev/null
++++ b/test/run_title_test.dart
+@@ -0,0 +1,103 @@
++import 'package:flutter_test/flutter_test.dart';
++import 'package:qfli_c/run_title.dart';
++
++/// The run header is one short command shape for every backend:
++/// `run <project-relative entry path>`.
++void main() {
++  group('runTitle POSIX paths', () {
++    test('relative to the project root', () {
++      expect(
++        runTitle(projectPath: '/home/me/proj', entryFile: '/home/me/proj/main.c'),
++        'run main.c',
++      );
++    });
++
++    test('keeps a nested source directory', () {
++      expect(
++        runTitle(
++          projectPath: '/home/me/proj',
++          entryFile: '/home/me/proj/src/main2.c',
++        ),
++        'run src/main2.c',
++      );
++    });
++
++    test('renders an alternate program file name', () {
++      expect(
++        runTitle(
++          projectPath: '/data/app_flutter/demo',
++          entryFile: '/data/app_flutter/demo/main2.c',
++        ),
++        'run main2.c',
++      );
++    });
++  });
++
++  group('runTitle Windows paths', () {
++    test('drive-rooted path uses the Windows context', () {
++      expect(
++        runTitle(
++          projectPath: r'C:\Users\me\proj',
++          entryFile: r'C:\Users\me\proj\src\main.c',
++        ),
++        'run src/main.c',
++      );
++    });
++
++    test('drive letter case does not matter for the relative path', () {
++      expect(
++        runTitle(
++          projectPath: r'C:\proj',
++          entryFile: r'C:\proj\main2.cpp',
++        ),
++        'run main2.cpp',
++      );
++    });
++
++    test('UNC path uses the Windows context', () {
++      expect(
++        runTitle(
++          projectPath: r'\\server\share\proj',
++          entryFile: r'\\server\share\proj\src\main.c',
++        ),
++        'run src/main.c',
++      );
++    });
++  });
++
++  group('runTitle platform independence', () {
++    test('POSIX input stays POSIX on a Windows host and vice versa', () {
++      // Explicit contexts mean the result depends only on path shape, so the
++      // same inputs yield the same labels on every host, including Web.
++      expect(
++        runTitle(projectPath: '/p', entryFile: '/p/a/main.c'),
++        'run a/main.c',
++      );
++      expect(
++        runTitle(projectPath: r'D:\p', entryFile: r'D:\p\a\main.c'),
++        'run a/main.c',
++      );
++    });
++
++    test('never carries a backend or toolchain label', () {
++      final title = runTitle(
++        projectPath: '/p',
++        entryFile: '/p/main.c',
++      );
++      for (final label in const [
++        'Clang',
++        'GCC',
++        'clang',
++        'gcc',
++        'WASI',
++        'HarmonyOS',
++        '解释器',
++        'picoc',
++        '运行',
++        '编译工具链',
++      ]) {
++        expect(title, isNot(contains(label)));
++      }
++    });
++  });
++}
+--- /dev/null
++++ b/test/fixtures/desktop_native/multi_main/helper.c
+@@ -0,0 +1,3 @@
++int helper_value(void) {
++    return 42;
++}
+--- /dev/null
++++ b/test/fixtures/desktop_native/multi_main/helper.h
+@@ -0,0 +1 @@
++int helper_value(void);
+--- /dev/null
++++ b/test/fixtures/desktop_native/multi_main/main.c
+@@ -0,0 +1,8 @@
++#include <stdio.h>
++
++int helper_value(void);
++
++int main(void) {
++    printf("program A %d\n", helper_value());
++    return 0;
++}
+--- /dev/null
++++ b/test/fixtures/desktop_native/multi_main/main2.c
+@@ -0,0 +1,8 @@
++#include <stdio.h>
++
++int helper_value(void);
++
++int main(void) {
++    printf("program B %d\n", helper_value());
++    return 0;
++}
+--- a/.trellis/spec/backend/android-runtime.md
++++ b/.trellis/spec/backend/android-runtime.md
+@@ -19,7 +19,7 @@
+ 
+ MethodChannel `qfli_forge/native` exposes:
+ 
+-- `start({runId: String, type: 'c'|'cpp', projectPath: String, entryFile: String})`
++- `start({runId: String, type: 'c'|'cpp', projectPath: String, entryFile: String, sources?: String[]})`
+   returns `{available: bool}`. Paths must identify a readable project and entry.
+ - `cancel({runId: String})` cancels that accepted run.
+ 
+@@ -158,3 +158,7 @@
+   layout, release on load failure, and tolerate absent/failing progress channels.
+   Verify Kotlin/resources through local build/lint. Device visual checks remain
+   deferred under the user's instruction to avoid debugging.
++
++## Selected-entry runs
++
++The optional sources list follows [source-selection.md](./source-selection.md). It restricts compilation inputs while preserving the complete project and existing execution/cleanup contracts. Validate explicit lists and use legacy discovery only when the list is absent.
+--- a/.trellis/spec/backend/desktop-runtime.md
++++ b/.trellis/spec/backend/desktop-runtime.md
+@@ -23,7 +23,8 @@
+ 
+ ## 3. Contracts
+ 
+-- Discover all .c/.cpp/.cc/.cxx translation units irrespective of entry suffix.
++- Discover all .c/.cpp/.cc/.cxx translation units, then apply the selected-entry
++  contract in [source-selection.md](./source-selection.md) before compilation.
+ - Use the C++ linker if any C++ unit exists, including a C main project.
+ - Compile each .c unit as C; use explicit -x c or -x c++ so case-insensitive
+   file discovery does not depend on compiler extension inference.
+--- a/.trellis/spec/backend/index.md
++++ b/.trellis/spec/backend/index.md
+@@ -21,6 +21,7 @@
+ | [Logging Guidelines](./logging-guidelines.md) | Structured logging, log levels | To fill |
+ | [Native Toolchain](./native-toolchain.md) | LLVM host tools, OHOS cross build, runtime validation gates | Recorded |
+ | [Android Runtime](./android-runtime.md) | Android LLVM packages, process isolation, streaming and cancellation | Recorded |
++| [Source Selection](./source-selection.md) | Selected-entry compilation, concise run labels, and native/browser source lists | Recorded |
+ | [Desktop Runtime](./desktop-runtime.md) | Mixed translation units, language modes, libm, process cleanup and verification | Recorded |
+ | [Portable Runtime](./portable-runtime.md) | LLVM/WASI resources, interpreter limits, exceptions, cancellation and iOS channels | Recorded |
+ | [Web Runtime](./web-runtime.md) | Browser compiler workers, WASI I/O, durable project storage and actual UI verification | Recorded |
+--- a/.trellis/spec/backend/portable-runtime.md
++++ b/.trellis/spec/backend/portable-runtime.md
+@@ -102,3 +102,7 @@
+ 
+ Wrong: complete iOS cancellation from a timer while the compiler still owns
+ resources. Correct: wait for native cleanup and the drained terminal event.
++
++## Selected-entry runs
++
++The optional sources list follows [source-selection.md](./source-selection.md). It restricts compilation inputs while preserving the complete project and existing execution/cleanup contracts. Validate explicit lists and use legacy discovery only when the list is absent.
+--- a/.trellis/spec/backend/web-runtime.md
++++ b/.trellis/spec/backend/web-runtime.md
+@@ -138,3 +138,7 @@
+ Wrong: create replacement nodes before deleting their original types, or use
+ recursive deletion to clear a directory conflict. Correct: remove old types
+ in depth order and reject a nonempty live directory without deleting its child.
++
++## Selected-entry runs
++
++The optional sources list follows [source-selection.md](./source-selection.md). It restricts compilation inputs while preserving the complete project and existing execution/cleanup contracts. Validate explicit lists and use legacy discovery only when the list is absent.
+--- /dev/null
++++ b/.trellis/spec/backend/source-selection.md
+@@ -0,0 +1,77 @@
++# C/C++ selected-entry execution
++
++## 1. Scope / Trigger
++
++Applies to source_selection.dart, run_title.dart, the C/Clang/native/browser runners and native source-list consumers. This connects the shared editor gesture to actual compilation inputs.
++
++## 2. Signatures
++
++```dart
++List<String> selectRunSources({
++  required String entryFile,
++  required List<String> allSources,
++  required String? Function(String path) readSource,
++});
++bool definesUnambiguousMain(String? source);
++String runTitle({required String projectPath, required String entryFile});
++```
++
++NativeClangRunner.run accepts optional List<String>? sources. The native start payload carries optional sources: String[] of absolute paths. The browser worker carries optional sources: String[] of project-relative paths alongside the complete files snapshot.
++
++## 3. Contracts
++
++- Shared editor click uses the configured/default project entry. Long press passes the active saved file as entryFile without rewriting project configuration.
++- Keep the selected translation unit and ordinary C/C++ helpers. Exclude other files only when their own global main definition is unambiguous.
++- Comments, ordinary/character/raw strings, prototypes, internal-linkage static functions and class/namespace/member functions named main do not identify a program entry.
++- Apply C backslash-newline splicing for LF and CRLF before recognizing comments or preprocessing directives. A continued line comment or macro example is not executable source. Treat comments as whitespace when interpreting directive names and macro targets.
++- Conditional ambiguity applies to both the function signature and its body. A top-level declaration followed by a conditionally compiled body is not an unambiguous entry definition.
++- Conditional compilation and macro ambiguity are retained for compiler diagnostics. This is not a C preprocessor or full C++ parser; do not silently discard uncertain helpers.
++- Callers validate the selected file. Native filesystem runners check existing readable source files and project containment using normalized absolute and resolved real paths, including symlink targets, before selection or execution. Browser callers validate canonical project-local snapshot paths. Headers remain available to compilation but are not runnable entries. Never substitute another main for an invalid selected file.
++- Desktop, interpreter and browser share one Dart selector. Native consumers validate and use an explicit list; they do not rediscover the project when a list is supplied. Only an absent sources key preserves legacy discovery. Present-null, an empty list, a non-list value or a malformed item is an error; never coerce it into absence by filtering or takeIf.
++- Native lists contain existing project-local .c/.cpp/.cc/.cxx files and include the selected entry. Browser entries must also occur in the uploaded source set.
++- Selection changes compilation inputs, not the include-file map or project snapshot. The C interpreter must retain every header, even when a header defines main and is included by the selected source. Preserve input.txt, assets, browser preopens and conflict-safe writeback.
++- Preserve per-unit language modes, mixed linking, diagnostics, stdout/stderr, exit codes and cancellation cleanup.
++- Run labels use run plus the project-relative entry with forward slashes and no backend branding. Never filter program output to remove phrases resembling old UI text.
++- The shared terminal renders the prompt and suppresses app-generated exit-0 footers.
++- The unregistered OHOS Clang channel stays unavailable. Its existing C fallback consumes selected sources; passing a payload does not establish a new runtime.
++
++## 4. Validation and Error Matrix
++
++| Condition | Required behavior |
++| --- | --- |
++| main and main2 both define entry programs | Run the selected program plus normal helpers |
++| Helper mentions main in comments, literals or declarations | Keep the helper |
++| Ownership depends on preprocessing | Keep the ambiguous unit and preserve compiler diagnostics |
++| Entry missing, unreadable, outside project (including a symlink escape) or a header | Fail explicitly with not-run status; do not execute it or default main |
++| Explicit list empty, invalid or omitting entry | Error/not-run result; no rediscovery |
++| Older caller omits list | Preserve legacy discovery |
++| Compile/link/run failure or accepted stop | Preserve existing diagnostics and failure/cancel status |
++| Success | Restore prompt without a synthetic completion paragraph |
++
++## 5. Good / Base / Bad Cases
++
++- Good: main2.c runs with helper.cpp while the independent main.c is excluded.
++- Base: channel tests prove source transport; actual device execution needs a separate app check.
++- Bad: change only the title, filter by filename, duplicate lexical detectors across bridges, or discard a helper containing a namespace main.
++
++## 6. Tests Required
++
++- Real desktop compilation proves distinct default/alternate outputs and preserves mixed helpers.
++- Real C interpreter runs honor the same selection and retain a header-defined entry included by the selected .c file. Desktop and interpreter tests reject an external entry with no program output.
++- Selector tests cover literals/raw strings, comments, prototypes, nested scopes, static helper main, conditional function bodies, LF/CRLF continuations, comments inside macro directives, ambiguity and invalid entries. Pair lexical counterexamples with real helper-linking tests when available.
++- Channel tests assert sources transport and preserve output/error/cancel behavior.
++- Browser checks verify authoritative lists separately from the complete project snapshot.
++- iOS remains compilable with portable runtime enabled or disabled; Windows tests cannot establish Xcode/device execution.
++- Shared UI regressions prove continuous scrollback, silent success and tap/long-press/tap routing.
++- Record existing shared Web adapter blockers separately from this task's regressions.
++
++## 7. Wrong vs Correct
++
++Wrong: compile every main and merely display the active filename.
++Correct: route entryFile into the compilation set before backend execution.
++
++Wrong: use a raw main( substring or discard conditional helpers for convenience.
++Correct: identify an unambiguous global definition and preserve uncertain code.
++
++Wrong: read sources then ignore it in native collection.
++Correct: consume explicit lists and rediscover only when the field is absent.
+\ No newline at end of file

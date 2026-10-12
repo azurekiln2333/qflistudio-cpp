@@ -1,0 +1,7 @@
+{"file": ".trellis/spec/backend/desktop-runtime.md", "reason": "Preserve mixed translation units, language modes, diagnostics and cancellation"}
+{"file": ".trellis/spec/backend/android-runtime.md", "reason": "Native start/cancel event protocol and Android lifecycle contract"}
+{"file": ".trellis/spec/backend/portable-runtime.md", "reason": "iOS portable compiler source-list and cleanup contracts"}
+{"file": ".trellis/spec/backend/web-runtime.md", "reason": "Browser import graph, complete project assets and writeback"}
+{"file": ".trellis/spec/guides/code-reuse-thinking-guide.md", "reason": "Avoid repeated source selection across platform bridges"}
+{"file": ".trellis/tasks/10-09-unified-terminal-current-file/research/findings.md", "reason": "Existing shared UI, C gaps and concurrent ownership"}
+{"file": ".trellis/spec/backend/source-selection.md", "reason": "Selected-entry and run-label contracts implemented in this task"}

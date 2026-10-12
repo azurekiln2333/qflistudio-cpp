@@ -1,0 +1,111 @@
+diff --git a/include/executor/executor.h b/include/executor/executor.h
+index 35680f4..fbe2779 100644
+--- a/include/executor/executor.h
++++ b/include/executor/executor.h
+@@ -231,6 +231,10 @@ public:
+     atomicNotifyAll();
+   }
+ 
++  bool isStopped() const noexcept {
++    return StopToken.load(std::memory_order_relaxed) != 0;
++  }
++
+ private:
+   /// Run Wasm bytecode expression for initialization.
+   Expect<void> runExpression(Runtime::StackManager &StackMgr,
+diff --git a/include/host/wasi/inode.h b/include/host/wasi/inode.h
+index 4b519eb..a7b6b87 100644
+--- a/include/host/wasi/inode.h
++++ b/include/host/wasi/inode.h
+@@ -888,7 +888,11 @@ public:
+ 
+   void close(const INode &Fd) noexcept;
+   /// Concurrently poll for events.
++#if WASMEDGE_OS_LINUX || WASMEDGE_OS_MACOS
++  void wait(const std::function<bool()> &IsStopped = {}) noexcept;
++#else
+   void wait() noexcept;
++#endif
+ 
+   /// Return number of events.
+   ///
+diff --git a/lib/host/wasi/inode-linux.cpp b/lib/host/wasi/inode-linux.cpp
+index c059109..ba6f570 100644
+--- a/lib/host/wasi/inode-linux.cpp
++++ b/lib/host/wasi/inode-linux.cpp
+@@ -1815,7 +1815,7 @@ void Poller::write(const INode &Node, TriggerType Trigger,
+   }
+ }
+ 
+-void Poller::wait() noexcept {
++void Poller::wait(const std::function<bool()> &IsStopped) noexcept {
+   for (const auto &[NodeFd, FdData] : OldFdDatas) {
+     if (auto Iter = FdDatas.find(NodeFd); Iter == FdDatas.end()) {
+       // Remove unused event, ignore failed.
+@@ -1827,8 +1827,12 @@ void Poller::wait() noexcept {
+   }
+ 
+   EPollEvents.resize(Events.size());
+-  const int Count =
+-      ::epoll_wait(Fd, EPollEvents.data(), EPollEvents.size(), -1);
++  int Count;
++  do {
++    if (IsStopped && IsStopped()) return;
++    Count = ::epoll_wait(Fd, EPollEvents.data(), EPollEvents.size(),
++                         IsStopped ? 10 : -1);
++  } while (Count == 0);
+   if (unlikely(Count < 0)) {
+     const auto Error = fromErrNo(errno);
+     for (auto &Event : Events) {
+diff --git a/lib/host/wasi/inode-macos.cpp b/lib/host/wasi/inode-macos.cpp
+index 982ec55..4c4aedd 100644
+--- a/lib/host/wasi/inode-macos.cpp
++++ b/lib/host/wasi/inode-macos.cpp
+@@ -1567,7 +1567,7 @@ void Poller::write(const INode &Node, TriggerType Trigger,
+   }
+ }
+ 
+-void Poller::wait() noexcept {
++void Poller::wait(const std::function<bool()> &IsStopped) noexcept {
+   // Clean up ZOMBIE events (Events we used to want, but don't anymore)
+   for (const auto &[NodeFd, FdData] : OldFdDatas) {
+     auto Iter = FdDatas.find(NodeFd);
+@@ -1601,8 +1601,13 @@ void Poller::wait() noexcept {
+   }
+ 
+   KEvents.resize(Events.size());
+-  const int Count =
+-      ::kevent(Fd, nullptr, 0, KEvents.data(), KEvents.size(), nullptr);
++  const timespec Slice{0, 10000000};
++  int Count;
++  do {
++    if (IsStopped && IsStopped()) return;
++    Count = ::kevent(Fd, nullptr, 0, KEvents.data(), KEvents.size(),
++                     IsStopped ? &Slice : nullptr);
++  } while (Count == 0);
+   if (unlikely(Count < 0)) {
+     const auto Error = fromErrNo(errno);
+     for (auto &Event : Events) {
+diff --git a/lib/host/wasi/wasifunc.cpp b/lib/host/wasi/wasifunc.cpp
+index 069b42f..f1a800d 100644
+--- a/lib/host/wasi/wasifunc.cpp
++++ b/lib/host/wasi/wasifunc.cpp
+@@ -1733,10 +1733,18 @@ Expect<uint32_t> WasiPollOneoff<Trigger>::body(
+         assumingUnreachable();
+       }
+     }
++#if WASMEDGE_OS_LINUX || WASMEDGE_OS_MACOS
++    const auto *Executor = Frame.getExecutor();
++    Poller.wait([Executor] { return Executor && Executor->isStopped(); });
++    const bool Interrupted = Executor && Executor->isStopped();
++#else
+     Poller.wait();
++    const bool Interrupted = false;
++#endif
+     *NEvents = EndianValue<__wasi_size_t>(Poller.result()).le();
+     Poller.reset();
+     this->Env.releasePoller(std::move(Poller));
++    if (Interrupted) return Unexpect(ErrCode::Value::Interrupted);
+   }
+ 
+   return __WASI_ERRNO_SUCCESS;

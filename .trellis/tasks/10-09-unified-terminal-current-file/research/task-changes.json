@@ -1,0 +1,158 @@
+[
+  {
+    "path": "android/app/src/main/kotlin/com/example/qflistudio/c/NativeCompilerBridge.kt",
+    "new_for_task": false,
+    "tracked": true,
+    "sha256": "6552c572c3573e494d5f9f908f66c0c37a66043deb801558bb5174a719a56ef6"
+  },
+  {
+    "path": "ios/Runner/NativeCompilerBridge.mm",
+    "new_for_task": false,
+    "tracked": false,
+    "sha256": "511d4975c20c41ef2bb62ceb29e47a0f3b3b7e2815329cc140fe9217a7c7fdcb"
+  },
+  {
+    "path": "lib/c_runner.dart",
+    "new_for_task": false,
+    "tracked": true,
+    "sha256": "9fa386e1f4cb57ad697085d6c98e69b93d17a512b52deb363e953018559b415c"
+  },
+  {
+    "path": "lib/clang_runner.dart",
+    "new_for_task": false,
+    "tracked": true,
+    "sha256": "2ad6bd030ae2016721b5e9002b80a16579bc889d75e9f590210d657b85887495"
+  },
+  {
+    "path": "lib/main.dart",
+    "new_for_task": false,
+    "tracked": true,
+    "sha256": "9586c7d922c53d93b0dc0052fd0d2ec6c6e998025dd047234a48a4703c2ec1e5"
+  },
+  {
+    "path": "lib/native_clang_runner.dart",
+    "new_for_task": false,
+    "tracked": false,
+    "sha256": "7e33df0ca5970ea9f86a9653f7897f67adae29012e3df93a15c3139a9db688d1"
+  },
+  {
+    "path": "lib/web_clang_runner_browser.dart",
+    "new_for_task": false,
+    "tracked": false,
+    "sha256": "06d531a8d3c38ff01c36a9a3950ae35dc1bf8f13cae0c86198722b7566309563"
+  },
+  {
+    "path": "test/android_clang_runner_test.dart",
+    "new_for_task": false,
+    "tracked": true,
+    "sha256": "734f63faeb83bfbcb93497d95e5dd7ffd74d0d8b6ba26aaeba594a46db1a79cc"
+  },
+  {
+    "path": "test/c_app_test.dart",
+    "new_for_task": false,
+    "tracked": true,
+    "sha256": "c647e5934f1a41e7199680be215eaedfd072044c61e880dfe068c7312254c9ed"
+  },
+  {
+    "path": "test/clang_runner_test.dart",
+    "new_for_task": false,
+    "tracked": true,
+    "sha256": "eee4431d07bb519ce367807225c85adb8449b416264581c199d57bce0a7f2691"
+  },
+  {
+    "path": "test/native_clang_runner_test.dart",
+    "new_for_task": false,
+    "tracked": false,
+    "sha256": "700a4c78ec0040f266b03617fd59eb970483ba065ef62ac03cb7dec0cc8daa89"
+  },
+  {
+    "path": "web/forge-worker.js",
+    "new_for_task": false,
+    "tracked": false,
+    "sha256": "5415daaf1bea5a43cd4d726eb4df25e4bf56efc12b14b044b4bb8b545be4ad10"
+  },
+  {
+    "path": "lib/source_selection.dart",
+    "new_for_task": true,
+    "tracked": false,
+    "sha256": "075f214a492c22b3447a01cd22c435bdce2e9b87af360fd298d7875b1a502fbb"
+  },
+  {
+    "path": "lib/run_title.dart",
+    "new_for_task": true,
+    "tracked": false,
+    "sha256": "4223c8d9877dcdb0cc947e3e4bfb01c74318f65427deb688fb8da1e4619f9a74"
+  },
+  {
+    "path": "test/source_selection_test.dart",
+    "new_for_task": true,
+    "tracked": false,
+    "sha256": "dc7d52df3d686fab6d1e0c6c1e5518a56930ea32b9267038c2f3782c0cc82816"
+  },
+  {
+    "path": "test/run_title_test.dart",
+    "new_for_task": true,
+    "tracked": false,
+    "sha256": "13a6bfa7f40d46c1679530927b580763cb9ed7ca57c967ab586d881db97df8f5"
+  },
+  {
+    "path": "test/fixtures/desktop_native/multi_main/helper.c",
+    "new_for_task": true,
+    "tracked": false,
+    "sha256": "6548fc4208a35376d75ee2e4857d166429329f2a3b6cc3e274e2bf1ae180b88b"
+  },
+  {
+    "path": "test/fixtures/desktop_native/multi_main/helper.h",
+    "new_for_task": true,
+    "tracked": false,
+    "sha256": "4be5865f96e794d878c59155b4f57536bcc29a86ff46feb5a9f537578dd67b10"
+  },
+  {
+    "path": "test/fixtures/desktop_native/multi_main/main.c",
+    "new_for_task": true,
+    "tracked": false,
+    "sha256": "2d509a9e9d2cc2bf2cfd883c064866bce431b662d119662e4f9e139907f22078"
+  },
+  {
+    "path": "test/fixtures/desktop_native/multi_main/main2.c",
+    "new_for_task": true,
+    "tracked": false,
+    "sha256": "f03d0101742e4d549b34a3646070241c67793212b29ffea62b01eeefd10135fb"
+  },
+  {
+    "path": ".trellis/spec/backend/android-runtime.md",
+    "new_for_task": false,
+    "tracked": true,
+    "sha256": "a33d547f88c5ee6b729c4d927d7ea441567ad9de42ecdf1f4d858eee20878289"
+  },
+  {
+    "path": ".trellis/spec/backend/desktop-runtime.md",
+    "new_for_task": false,
+    "tracked": false,
+    "sha256": "2451fc658cc24cd0b96f1fc5f8384d5bb36c0298a7119c212c562ec9df1f3f24"
+  },
+  {
+    "path": ".trellis/spec/backend/index.md",
+    "new_for_task": false,
+    "tracked": false,
+    "sha256": "10ccaaf4a6ba3953fdf5344e3483f2cef186016ad28a880df7422d99f019d53f"
+  },
+  {
+    "path": ".trellis/spec/backend/portable-runtime.md",
+    "new_for_task": false,
+    "tracked": false,
+    "sha256": "da42d59fdf93b2cc9c637a4547bac3435054e161b3c2fcea8ab77e3a36a64584"
+  },
+  {
+    "path": ".trellis/spec/backend/web-runtime.md",
+    "new_for_task": false,
+    "tracked": false,
+    "sha256": "c9cb238cbf9de3676e9c28180be66f54c35a24d3e63982d2185edd714f57c782"
+  },
+  {
+    "path": ".trellis/spec/backend/source-selection.md",
+    "new_for_task": true,
+    "tracked": false,
+    "sha256": "ad74db4395b696cc3811f1ddd7b68920f67637c57e0a36c393e6a4cca32bee8d"
+  }
+]

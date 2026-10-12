@@ -1,0 +1,10 @@
+{
+  "authoredCount": 100,
+  "validatedCount": 100,
+  "target": 100,
+  "phase": "live-verified-ready-to-merge",
+  "blocker": null,
+  "done": true,
+  "updatedAt": "2026-10-12",
+  "notes": "C track (ids 1-100) authored; C++ track (ids 1-100) reviewed. Canonical verification: tool/verify_forge_content.dart 200/200 (WSL clang18/g++13), negative_probe.dart 10/10 (incl. relative-file write isolation). Live shared core equals staged source: 100 C + 100 C++ tutorials and examples each, 0 rows differ; no weighted= placeholders; 100 distinct explains/language; foreign rows preserved. flutter test 174/174; task toolbox analyze No issues. Repo-root sample strays (demo.txt/data.bin/sample.txt) removed after content+path verification; harnesses isolate via WSL mktemp+cd with cleanup trap. Scratch checkers removed; canonical tools remain. No commit/archive."
+}

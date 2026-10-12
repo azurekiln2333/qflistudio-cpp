@@ -1,0 +1,7 @@
+{"file":".trellis/spec/backend/native-toolchain.md","reason":"Native execution evidence and honest platform capability claims"}
+{"file":".trellis/spec/backend/android-runtime.md","reason":"Cancellation, diagnostics and mixed-language invariants"}
+{"file":".trellis/spec/backend/desktop-runtime.md","reason":"Mixed translation units, compiler errors and supervised cleanup"}
+{"file":".trellis/spec/backend/portable-runtime.md","reason":"Compiler recovery, WASI resources, exception behavior and iOS channel ownership"}
+{"file":".trellis/spec/backend/web-runtime.md","reason":"Browser import graph, worker lifecycle, durable storage and actual compiler/UI gates"}
+{"file":".trellis/tasks/10-01-cross-platform-native-runtime/research/platform-audit.md","reason":"Verify scope and desktop regressions against audit"}
+{"file":".trellis/tasks/10-01-cross-platform-native-runtime/research/platform-status.md","reason":"Keep implementation and verified platform behavior separate"}

@@ -1,0 +1,38 @@
+{
+  "wasiSdk": {
+    "version": "33.0",
+    "url": "https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-33/wasi-sdk-33.0-x86_64-linux.tar.gz",
+    "archive": "wasi-sdk-33.0-x86_64-linux.tar.gz",
+    "directory": "wasi-sdk-33.0-x86_64-linux",
+    "sha256": "0ba8b5bfaeb2adf3f29bab5841d76cf5318ab8e1642ea195f88baba1abd47bce"
+  },
+  "wasmedge": {
+    "commit": "845df599e7b71c98b0c77990c3aa3a10022bbaae",
+    "url": "https://codeload.github.com/WasmEdge/WasmEdge/tar.gz/845df599e7b71c98b0c77990c3aa3a10022bbaae",
+    "archive": "wasmedge-845df599.tar.gz",
+    "directory": "WasmEdge-845df599e7b71c98b0c77990c3aa3a10022bbaae",
+    "sha256": "70c117f3c9bc22d6e3f83077167154336fd66f7f12c6373979de12d79386a197"
+  },
+  "llvm22": {
+    "version": "22.1.0",
+    "commit": "4434dabb69916856b824f68a64b029c67175e532",
+    "url": "https://codeload.github.com/llvm/llvm-project/tar.gz/4434dabb69916856b824f68a64b029c67175e532",
+    "archive": "llvm-22.1.0.tar.gz",
+    "directory": "llvm-project-4434dabb69916856b824f68a64b029c67175e532",
+    "sha256": "8d1c513efc817c7b4bef634156e6666e19462de2044c64e8f2df4fdd375a0600"
+  },
+  "fmt": {
+    "version": "11.0.2",
+    "url": "https://codeload.github.com/fmtlib/fmt/tar.gz/refs/tags/11.0.2",
+    "archive": "fmt-11.0.2.tar.gz",
+    "directory": "fmt-11.0.2",
+    "sha256": "6cb1e6d37bdcb756dbbe59be438790db409cdb4868c66e888d5df9f13f7c027f"
+  },
+  "spdlog": {
+    "version": "1.13.0",
+    "url": "https://codeload.github.com/gabime/spdlog/tar.gz/refs/tags/v1.13.0",
+    "archive": "spdlog-1.13.0.tar.gz",
+    "directory": "spdlog-1.13.0",
+    "sha256": "534f2ee1a4dcbeb22249856edfb2be76a1cf4f708a20b0ac2ed090ee24cfdbc9"
+  }
+}

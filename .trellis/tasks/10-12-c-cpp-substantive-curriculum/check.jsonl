@@ -1,0 +1,8 @@
+{"file":".trellis/tasks/10-12-c-cpp-substantive-curriculum/research/verification-plan.md","reason":"Authoritative verification plan: independently re-derive compiler evidence, native compile/run every sample, non-overlapping sample, reject interpreter fallback (R1), enumerate standard_unavailable (R2)"}
+{"file":".trellis/tasks/10-12-c-cpp-substantive-curriculum/prd.md","reason":"Check AC1-AC6: 200-pair count and balance, schema completeness, foreign-row preservation, app display+run, native verification, workspace confinement"}
+{"file":".trellis/tasks/10-12-c-cpp-substantive-curriculum/design.md","reason":"Verify emitted aggregate schema matches the parser contract, C/C++ curricula are distinct, and the coordinated merge preserves foreign rows"}
+{"file":".trellis/tasks/10-12-c-cpp-substantive-curriculum/research/content-audit.md","reason":"Re-verify placeholder evidence and integration blocker are resolved, not worked around"}
+{"file":".trellis/spec/backend/desktop-runtime.md","reason":"Confirm verifier uses real compiler execution and preserves diagnostics/exit codes"}
+{"file":".trellis/spec/frontend/forge-tools.md","reason":"Confirm no templated/placeholder content remains and claims are backed by execution"}
+{"file":".trellis/spec/guides/code-reuse-thinking-guide.md","reason":"Confirm no duplicated pipeline logic and foreign rows are preserved without drift"}
+{"file":".trellis/spec/frontend/forge-curriculum.md","reason":"Recorded executable contract: model/generator/verify/merge signatures, aggregate schema, standards ceiling, foreign-row preservation, extension selection, tests"}

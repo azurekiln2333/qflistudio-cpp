@@ -65,6 +65,21 @@ internal class NativeCompilerBridge(
             result.error("invalid_run", "编译运行参数不完整。", null)
             return
         }
+        // An absent `sources` key means a legacy caller (discover sources).
+        // A present key is authoritative and must be a valid, non-empty list of
+        // absolute paths; anything else is rejected here, so an invalid
+        // selection can never fall back to rediscovery or the default main.
+        val requestedSources: List<String>? = if (call.hasArgument("sources")) {
+            when (val parsed = parseRequestedSources(call.argument<Any?>("sources"))) {
+                is RequestedSources -> parsed.paths
+                is RequestedSourcesError -> {
+                    result.error("invalid_run", parsed.message, null)
+                    return
+                }
+            }
+        } else {
+            null
+        }
         if (sink == null) {
             result.error("missing_listener", "编译运行输出通道未连接。", null)
             return
@@ -74,7 +89,7 @@ internal class NativeCompilerBridge(
             result.success(mapOf("available" to false))
             return
         }
-        val run = NativeRun(id, File(projectPath), File(entryPath), abi)
+        val run = NativeRun(id, File(projectPath), File(entryPath), abi, requestedSources)
         if (!active.compareAndSet(null, run)) {
             result.error("runner_busy", "已有程序正在编译或运行。", null)
             return
@@ -98,6 +113,37 @@ internal class NativeCompilerBridge(
         main.post { sink?.success(mapOf("runId" to id, "kind" to kind, key to value)) }
     }
 
+    /** Parsed `sources` payload: either the validated paths or an error. */
+    private sealed interface RequestedSourcesResult
+    private class RequestedSources(val paths: List<String>) : RequestedSourcesResult
+    private class RequestedSourcesError(val message: String) : RequestedSourcesResult
+
+    /**
+     * Validates a present `sources` argument.
+     *
+     * The presence of the key already means the Dart runner chose the compile
+     * set, so an empty list, a non-list, a non-string element, a blank entry
+     * or a relative path is a hard error. It must never collapse to "no
+     * selection" (which would rediscover every file and could run another
+     * program's main).
+     */
+    private fun parseRequestedSources(raw: Any?): RequestedSourcesResult {
+        if (raw !is List<*>) {
+            return RequestedSourcesError("选择的源文件列表格式无效。")
+        }
+        if (raw.isEmpty()) {
+            return RequestedSourcesError("选择的源文件列表为空。")
+        }
+        val paths = ArrayList<String>(raw.size)
+        for (element in raw) {
+            if (element !is String || element.isBlank() || !File(element).isAbsolute) {
+                return RequestedSourcesError("选择的源文件路径无效：$element")
+            }
+            paths.add(element)
+        }
+        return RequestedSources(paths)
+    }
+
     override fun close() {
         active.get()?.cancel()
         methods.setMethodCallHandler(null)
@@ -112,6 +158,7 @@ internal class NativeCompilerBridge(
         val project: File,
         val entry: File,
         val abi: String,
+        val requestedSources: List<String>?,
     ) {
         @Volatile var cancelled = false
             private set
@@ -131,7 +178,9 @@ internal class NativeCompilerBridge(
                 }
             }
             killGroup()
-            running.destroy()
+            // Android destroy() closes pipes; a completed child still has output to drain.
+            try { running.exitValue() }
+            catch (_: IllegalThreadStateException) { running.destroy() }
             killGroup()
         }
 
@@ -143,7 +192,7 @@ internal class NativeCompilerBridge(
             if (cancelled) return 130
             val toolchain = AndroidToolchain.prepare(context, abi)
             if (cancelled) return 130
-            val sources = collectSources(root)
+            val sources = selectSources(root)
             check(sources.isNotEmpty()) { "工程中没有可编译的源文件。" }
             val build = File(context.cacheDir, "forge-runs").apply { mkdirs() }
             val work = File.createTempFile("run-", "", build).apply { delete(); mkdirs() }
@@ -176,6 +225,37 @@ internal class NativeCompilerBridge(
                     runProgram = true, input = File(root, "input.txt").takeIf { it.isFile },
                 )
             } finally { work.deleteRecursively() }
+        }
+
+        /**
+         * Translation units to compile.
+         *
+         * An explicit [requestedSources] list from Dart is authoritative: it
+         * already selected the requested entry plus ordinary helpers and
+         * excluded other unambiguous main programs. Each entry must be a
+         * project-local readable source; a bad list is an error, never a
+         * silent fall back to re-enumerating every file (which could compile
+         * a different program's main). Without a list, legacy discovery is
+         * kept for older callers.
+         */
+        private fun selectSources(root: File): List<File> {
+            val requested = requestedSources ?: return collectSources(root)
+            check(requested.isNotEmpty()) { "选择的源文件列表为空。" }
+            val entryPath = entry.canonicalPath
+            val extensions = setOf("c", "cpp", "cc", "cxx")
+            val resolved = ArrayList<File>(requested.size)
+            for (path in requested) {
+                val file = File(path).canonicalFile
+                check(file.isFile && file.extension.lowercase() in extensions &&
+                    file.path.startsWith(root.path + File.separator)) {
+                    "选择的源文件不可读取或不在工程内：$path"
+                }
+                resolved.add(file)
+            }
+            check(resolved.any { it.path == entryPath }) { "选择的源文件不包含入口文件。" }
+            // Entry first, matching the picoc/desktop convention; helpers keep
+            // their given order.
+            return resolved.sortedByDescending { it.path == entryPath }
         }
 
         private fun collectSources(root: File): List<File> {

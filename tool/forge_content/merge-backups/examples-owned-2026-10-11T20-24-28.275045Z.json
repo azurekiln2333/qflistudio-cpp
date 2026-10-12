@@ -1,0 +1,5004 @@
+{
+  "entries": [
+    {
+      "id": "c-example-001",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C 示例 001: 数据建模与不变量",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示数据建模与不变量，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "数据建模与不变量",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {1, 3, 5}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=22",
+      "inputFixtures": {
+        "case": "fixture-1",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-001-lesson"
+    },
+    {
+      "id": "c-example-002",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C 示例 002: 输入校验与错误边界",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示输入校验与错误边界，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "输入校验与错误边界",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {2, 4, 6}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=28",
+      "inputFixtures": {
+        "case": "fixture-2",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-002-lesson"
+    },
+    {
+      "id": "c-example-003",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C 示例 003: 文件格式与编码",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示文件格式与编码，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "文件格式与编码",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {3, 5, 7}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=34",
+      "inputFixtures": {
+        "case": "fixture-3",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-003-lesson"
+    },
+    {
+      "id": "c-example-004",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C 示例 004: 日志与可观测性",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示日志与可观测性，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "日志与可观测性",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {4, 6, 8}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=40",
+      "inputFixtures": {
+        "case": "fixture-4",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-004-lesson"
+    },
+    {
+      "id": "c-example-005",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C 示例 005: 缓存与失效策略",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示缓存与失效策略，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "缓存与失效策略",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {5, 7, 9}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=46",
+      "inputFixtures": {
+        "case": "fixture-5",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-005-lesson"
+    },
+    {
+      "id": "c-example-006",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C 示例 006: 队列与批处理",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示队列与批处理，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "队列与批处理",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {6, 8, 10}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=52",
+      "inputFixtures": {
+        "case": "fixture-6",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-006-lesson"
+    },
+    {
+      "id": "c-example-007",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C 示例 007: 分页与排序",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示分页与排序，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "分页与排序",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {7, 9, 11}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=58",
+      "inputFixtures": {
+        "case": "fixture-7",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-007-lesson"
+    },
+    {
+      "id": "c-example-008",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C 示例 008: 配置与环境隔离",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示配置与环境隔离，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "配置与环境隔离",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {8, 10, 12}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=64",
+      "inputFixtures": {
+        "case": "fixture-8",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-008-lesson"
+    },
+    {
+      "id": "c-example-009",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C 示例 009: 并发与资源生命周期",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示并发与资源生命周期，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "并发与资源生命周期",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {9, 11, 13}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=70",
+      "inputFixtures": {
+        "case": "fixture-9",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-009-lesson"
+    },
+    {
+      "id": "c-example-010",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C 示例 010: 测试夹具与回归",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示测试夹具与回归，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "测试夹具与回归",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {10, 12, 14}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=76",
+      "inputFixtures": {
+        "case": "fixture-10",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-010-lesson"
+    },
+    {
+      "id": "c-example-011",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C 示例 011: 性能测量与优化",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示性能测量与优化，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "性能测量与优化",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {11, 13, 15}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=82",
+      "inputFixtures": {
+        "case": "fixture-11",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-011-lesson"
+    },
+    {
+      "id": "c-example-012",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C 示例 012: 安全边界与最小权限",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示安全边界与最小权限，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "安全边界与最小权限",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {12, 14, 16}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=88",
+      "inputFixtures": {
+        "case": "fixture-12",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-012-lesson"
+    },
+    {
+      "id": "c-example-013",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C 示例 013: 网络协议与重试",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示网络协议与重试，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "网络协议与重试",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {13, 15, 17}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=94",
+      "inputFixtures": {
+        "case": "fixture-13",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-013-lesson"
+    },
+    {
+      "id": "c-example-014",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C 示例 014: 持久化与迁移",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示持久化与迁移，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "持久化与迁移",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {14, 16, 18}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=100",
+      "inputFixtures": {
+        "case": "fixture-14",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-014-lesson"
+    },
+    {
+      "id": "c-example-015",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C 示例 015: 命令行工具设计",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示命令行工具设计，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "命令行工具设计",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {15, 17, 19}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=106",
+      "inputFixtures": {
+        "case": "fixture-15",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-015-lesson"
+    },
+    {
+      "id": "c-example-016",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C 示例 016: 模块边界与依赖方向",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示模块边界与依赖方向，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "模块边界与依赖方向",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {16, 18, 20}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=112",
+      "inputFixtures": {
+        "case": "fixture-16",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-016-lesson"
+    },
+    {
+      "id": "c-example-017",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C 示例 017: 状态机与事件流",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示状态机与事件流，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "状态机与事件流",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {17, 19, 21}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=118",
+      "inputFixtures": {
+        "case": "fixture-17",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-017-lesson"
+    },
+    {
+      "id": "c-example-018",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C 示例 018: 时间、时区与截止时间",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示时间、时区与截止时间，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "时间、时区与截止时间",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {18, 20, 22}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=124",
+      "inputFixtures": {
+        "case": "fixture-18",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-018-lesson"
+    },
+    {
+      "id": "c-example-019",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C 示例 019: 文本处理与国际化",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示文本处理与国际化，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "文本处理与国际化",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {19, 21, 23}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=130",
+      "inputFixtures": {
+        "case": "fixture-19",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-019-lesson"
+    },
+    {
+      "id": "c-example-020",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C 示例 020: 故障恢复与幂等性",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示故障恢复与幂等性，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "故障恢复与幂等性",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {20, 22, 24}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=136",
+      "inputFixtures": {
+        "case": "fixture-20",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-020-lesson"
+    },
+    {
+      "id": "c-example-021",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C 示例 021: 资源打包与发布",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示资源打包与发布，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "资源打包与发布",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {21, 23, 25}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=142",
+      "inputFixtures": {
+        "case": "fixture-21",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-021-lesson"
+    },
+    {
+      "id": "c-example-022",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C 示例 022: 增量计算与差分",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示增量计算与差分，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "增量计算与差分",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {22, 24, 26}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=148",
+      "inputFixtures": {
+        "case": "fixture-22",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-022-lesson"
+    },
+    {
+      "id": "c-example-023",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C 示例 023: API 契约与版本兼容",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示API 契约与版本兼容，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "API 契约与版本兼容",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {23, 25, 27}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=154",
+      "inputFixtures": {
+        "case": "fixture-23",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-023-lesson"
+    },
+    {
+      "id": "c-example-024",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C 示例 024: 真实项目重构练习",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示真实项目重构练习，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "真实项目重构练习",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {24, 26, 28}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=160",
+      "inputFixtures": {
+        "case": "fixture-24",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-024-lesson"
+    },
+    {
+      "id": "c-example-025",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C 示例 025: 数据建模与不变量",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示数据建模与不变量，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "数据建模与不变量",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {25, 27, 29}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=166",
+      "inputFixtures": {
+        "case": "fixture-25",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-025-lesson"
+    },
+    {
+      "id": "c-example-026",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 026: 输入校验与错误边界",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示输入校验与错误边界，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "输入校验与错误边界",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {26, 28, 30}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=172",
+      "inputFixtures": {
+        "case": "fixture-26",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-026-lesson"
+    },
+    {
+      "id": "c-example-027",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 027: 文件格式与编码",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示文件格式与编码，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "文件格式与编码",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {27, 29, 31}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=178",
+      "inputFixtures": {
+        "case": "fixture-27",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-027-lesson"
+    },
+    {
+      "id": "c-example-028",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 028: 日志与可观测性",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示日志与可观测性，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "日志与可观测性",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {28, 30, 32}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=184",
+      "inputFixtures": {
+        "case": "fixture-28",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-028-lesson"
+    },
+    {
+      "id": "c-example-029",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 029: 缓存与失效策略",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示缓存与失效策略，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "缓存与失效策略",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {29, 31, 33}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=190",
+      "inputFixtures": {
+        "case": "fixture-29",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-029-lesson"
+    },
+    {
+      "id": "c-example-030",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 030: 队列与批处理",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示队列与批处理，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "队列与批处理",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {30, 32, 34}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=196",
+      "inputFixtures": {
+        "case": "fixture-30",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-030-lesson"
+    },
+    {
+      "id": "c-example-031",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 031: 分页与排序",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示分页与排序，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "分页与排序",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {31, 33, 35}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=202",
+      "inputFixtures": {
+        "case": "fixture-31",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-031-lesson"
+    },
+    {
+      "id": "c-example-032",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 032: 配置与环境隔离",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示配置与环境隔离，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "配置与环境隔离",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {32, 34, 36}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=208",
+      "inputFixtures": {
+        "case": "fixture-32",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-032-lesson"
+    },
+    {
+      "id": "c-example-033",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 033: 并发与资源生命周期",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示并发与资源生命周期，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "并发与资源生命周期",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {33, 35, 37}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=214",
+      "inputFixtures": {
+        "case": "fixture-33",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-033-lesson"
+    },
+    {
+      "id": "c-example-034",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 034: 测试夹具与回归",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示测试夹具与回归，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "测试夹具与回归",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {34, 36, 38}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=220",
+      "inputFixtures": {
+        "case": "fixture-34",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-034-lesson"
+    },
+    {
+      "id": "c-example-035",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 035: 性能测量与优化",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示性能测量与优化，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "性能测量与优化",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {35, 37, 39}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=226",
+      "inputFixtures": {
+        "case": "fixture-35",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-035-lesson"
+    },
+    {
+      "id": "c-example-036",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 036: 安全边界与最小权限",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示安全边界与最小权限，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "安全边界与最小权限",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {36, 38, 40}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=232",
+      "inputFixtures": {
+        "case": "fixture-36",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-036-lesson"
+    },
+    {
+      "id": "c-example-037",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 037: 网络协议与重试",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示网络协议与重试，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "网络协议与重试",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {37, 39, 41}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=238",
+      "inputFixtures": {
+        "case": "fixture-37",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-037-lesson"
+    },
+    {
+      "id": "c-example-038",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 038: 持久化与迁移",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示持久化与迁移，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "持久化与迁移",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {38, 40, 42}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=244",
+      "inputFixtures": {
+        "case": "fixture-38",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-038-lesson"
+    },
+    {
+      "id": "c-example-039",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 039: 命令行工具设计",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示命令行工具设计，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "命令行工具设计",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {39, 41, 43}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=250",
+      "inputFixtures": {
+        "case": "fixture-39",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-039-lesson"
+    },
+    {
+      "id": "c-example-040",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 040: 模块边界与依赖方向",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示模块边界与依赖方向，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "模块边界与依赖方向",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {40, 42, 44}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=256",
+      "inputFixtures": {
+        "case": "fixture-40",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-040-lesson"
+    },
+    {
+      "id": "c-example-041",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 041: 状态机与事件流",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示状态机与事件流，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "状态机与事件流",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {41, 43, 45}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=262",
+      "inputFixtures": {
+        "case": "fixture-41",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-041-lesson"
+    },
+    {
+      "id": "c-example-042",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 042: 时间、时区与截止时间",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示时间、时区与截止时间，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "时间、时区与截止时间",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {42, 44, 46}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=268",
+      "inputFixtures": {
+        "case": "fixture-42",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-042-lesson"
+    },
+    {
+      "id": "c-example-043",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 043: 文本处理与国际化",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示文本处理与国际化，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "文本处理与国际化",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {43, 45, 47}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=274",
+      "inputFixtures": {
+        "case": "fixture-43",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-043-lesson"
+    },
+    {
+      "id": "c-example-044",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 044: 故障恢复与幂等性",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示故障恢复与幂等性，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "故障恢复与幂等性",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {44, 46, 48}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=280",
+      "inputFixtures": {
+        "case": "fixture-44",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-044-lesson"
+    },
+    {
+      "id": "c-example-045",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 045: 资源打包与发布",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示资源打包与发布，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "资源打包与发布",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {45, 47, 49}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=286",
+      "inputFixtures": {
+        "case": "fixture-45",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-045-lesson"
+    },
+    {
+      "id": "c-example-046",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 046: 增量计算与差分",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示增量计算与差分，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "增量计算与差分",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {46, 48, 50}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=292",
+      "inputFixtures": {
+        "case": "fixture-46",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-046-lesson"
+    },
+    {
+      "id": "c-example-047",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 047: API 契约与版本兼容",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示API 契约与版本兼容，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "API 契约与版本兼容",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {47, 49, 51}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=298",
+      "inputFixtures": {
+        "case": "fixture-47",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-047-lesson"
+    },
+    {
+      "id": "c-example-048",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 048: 真实项目重构练习",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示真实项目重构练习，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "真实项目重构练习",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {48, 50, 52}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=304",
+      "inputFixtures": {
+        "case": "fixture-48",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-048-lesson"
+    },
+    {
+      "id": "c-example-049",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 049: 数据建模与不变量",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示数据建模与不变量，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "数据建模与不变量",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {49, 51, 53}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=310",
+      "inputFixtures": {
+        "case": "fixture-49",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-049-lesson"
+    },
+    {
+      "id": "c-example-050",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 050: 输入校验与错误边界",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示输入校验与错误边界，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "输入校验与错误边界",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {50, 52, 54}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=316",
+      "inputFixtures": {
+        "case": "fixture-50",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-050-lesson"
+    },
+    {
+      "id": "c-example-051",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 051: 文件格式与编码",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示文件格式与编码，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "文件格式与编码",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {51, 53, 55}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=322",
+      "inputFixtures": {
+        "case": "fixture-51",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-051-lesson"
+    },
+    {
+      "id": "c-example-052",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 052: 日志与可观测性",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示日志与可观测性，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "日志与可观测性",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {52, 54, 56}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=328",
+      "inputFixtures": {
+        "case": "fixture-52",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-052-lesson"
+    },
+    {
+      "id": "c-example-053",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 053: 缓存与失效策略",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示缓存与失效策略，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "缓存与失效策略",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {53, 55, 57}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=334",
+      "inputFixtures": {
+        "case": "fixture-53",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-053-lesson"
+    },
+    {
+      "id": "c-example-054",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 054: 队列与批处理",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示队列与批处理，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "队列与批处理",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {54, 56, 58}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=340",
+      "inputFixtures": {
+        "case": "fixture-54",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-054-lesson"
+    },
+    {
+      "id": "c-example-055",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 055: 分页与排序",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示分页与排序，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "分页与排序",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {55, 57, 59}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=346",
+      "inputFixtures": {
+        "case": "fixture-55",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-055-lesson"
+    },
+    {
+      "id": "c-example-056",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 056: 配置与环境隔离",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示配置与环境隔离，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "配置与环境隔离",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {56, 58, 60}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=352",
+      "inputFixtures": {
+        "case": "fixture-56",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-056-lesson"
+    },
+    {
+      "id": "c-example-057",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 057: 并发与资源生命周期",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示并发与资源生命周期，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "并发与资源生命周期",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {57, 59, 61}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=358",
+      "inputFixtures": {
+        "case": "fixture-57",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-057-lesson"
+    },
+    {
+      "id": "c-example-058",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 058: 测试夹具与回归",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示测试夹具与回归，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "测试夹具与回归",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {58, 60, 62}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=364",
+      "inputFixtures": {
+        "case": "fixture-58",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-058-lesson"
+    },
+    {
+      "id": "c-example-059",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 059: 性能测量与优化",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示性能测量与优化，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "性能测量与优化",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {59, 61, 63}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=370",
+      "inputFixtures": {
+        "case": "fixture-59",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-059-lesson"
+    },
+    {
+      "id": "c-example-060",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 060: 安全边界与最小权限",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示安全边界与最小权限，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "安全边界与最小权限",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {60, 62, 64}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=376",
+      "inputFixtures": {
+        "case": "fixture-60",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-060-lesson"
+    },
+    {
+      "id": "c-example-061",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 061: 网络协议与重试",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示网络协议与重试，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "网络协议与重试",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {61, 63, 65}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=382",
+      "inputFixtures": {
+        "case": "fixture-61",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-061-lesson"
+    },
+    {
+      "id": "c-example-062",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 062: 持久化与迁移",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示持久化与迁移，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "持久化与迁移",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {62, 64, 66}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=388",
+      "inputFixtures": {
+        "case": "fixture-62",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-062-lesson"
+    },
+    {
+      "id": "c-example-063",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 063: 命令行工具设计",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示命令行工具设计，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "命令行工具设计",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {63, 65, 67}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=394",
+      "inputFixtures": {
+        "case": "fixture-63",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-063-lesson"
+    },
+    {
+      "id": "c-example-064",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 064: 模块边界与依赖方向",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示模块边界与依赖方向，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "模块边界与依赖方向",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {64, 66, 68}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=400",
+      "inputFixtures": {
+        "case": "fixture-64",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-064-lesson"
+    },
+    {
+      "id": "c-example-065",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 065: 状态机与事件流",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示状态机与事件流，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "状态机与事件流",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {65, 67, 69}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=406",
+      "inputFixtures": {
+        "case": "fixture-65",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-065-lesson"
+    },
+    {
+      "id": "c-example-066",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 066: 时间、时区与截止时间",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示时间、时区与截止时间，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "时间、时区与截止时间",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {66, 68, 70}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=412",
+      "inputFixtures": {
+        "case": "fixture-66",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-066-lesson"
+    },
+    {
+      "id": "c-example-067",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 067: 文本处理与国际化",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示文本处理与国际化，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "文本处理与国际化",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {67, 69, 71}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=418",
+      "inputFixtures": {
+        "case": "fixture-67",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-067-lesson"
+    },
+    {
+      "id": "c-example-068",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 068: 故障恢复与幂等性",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示故障恢复与幂等性，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "故障恢复与幂等性",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {68, 70, 72}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=424",
+      "inputFixtures": {
+        "case": "fixture-68",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-068-lesson"
+    },
+    {
+      "id": "c-example-069",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 069: 资源打包与发布",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示资源打包与发布，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "资源打包与发布",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {69, 71, 73}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=430",
+      "inputFixtures": {
+        "case": "fixture-69",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-069-lesson"
+    },
+    {
+      "id": "c-example-070",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C 示例 070: 增量计算与差分",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示增量计算与差分，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "增量计算与差分",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {70, 72, 74}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=436",
+      "inputFixtures": {
+        "case": "fixture-70",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-070-lesson"
+    },
+    {
+      "id": "c-example-071",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C 示例 071: API 契约与版本兼容",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示API 契约与版本兼容，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "API 契约与版本兼容",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {71, 73, 75}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=442",
+      "inputFixtures": {
+        "case": "fixture-71",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-071-lesson"
+    },
+    {
+      "id": "c-example-072",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C 示例 072: 真实项目重构练习",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示真实项目重构练习，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "真实项目重构练习",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {72, 74, 76}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=448",
+      "inputFixtures": {
+        "case": "fixture-72",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-072-lesson"
+    },
+    {
+      "id": "c-example-073",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C 示例 073: 数据建模与不变量",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示数据建模与不变量，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "数据建模与不变量",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {73, 75, 77}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=454",
+      "inputFixtures": {
+        "case": "fixture-73",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-073-lesson"
+    },
+    {
+      "id": "c-example-074",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C 示例 074: 输入校验与错误边界",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示输入校验与错误边界，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "输入校验与错误边界",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {74, 76, 78}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=460",
+      "inputFixtures": {
+        "case": "fixture-74",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-074-lesson"
+    },
+    {
+      "id": "c-example-075",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C 示例 075: 文件格式与编码",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示文件格式与编码，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "文件格式与编码",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {75, 77, 79}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=466",
+      "inputFixtures": {
+        "case": "fixture-75",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-075-lesson"
+    },
+    {
+      "id": "c-example-076",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C 示例 076: 日志与可观测性",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示日志与可观测性，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "日志与可观测性",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {76, 78, 80}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=472",
+      "inputFixtures": {
+        "case": "fixture-76",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-076-lesson"
+    },
+    {
+      "id": "c-example-077",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C 示例 077: 缓存与失效策略",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示缓存与失效策略，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "缓存与失效策略",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {77, 79, 81}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=478",
+      "inputFixtures": {
+        "case": "fixture-77",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-077-lesson"
+    },
+    {
+      "id": "c-example-078",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C 示例 078: 队列与批处理",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示队列与批处理，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "队列与批处理",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {78, 80, 82}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=484",
+      "inputFixtures": {
+        "case": "fixture-78",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-078-lesson"
+    },
+    {
+      "id": "c-example-079",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C 示例 079: 分页与排序",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示分页与排序，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "分页与排序",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {79, 81, 83}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=490",
+      "inputFixtures": {
+        "case": "fixture-79",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-079-lesson"
+    },
+    {
+      "id": "c-example-080",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C 示例 080: 配置与环境隔离",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示配置与环境隔离，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "配置与环境隔离",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {80, 82, 84}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=496",
+      "inputFixtures": {
+        "case": "fixture-80",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-080-lesson"
+    },
+    {
+      "id": "c-example-081",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C 示例 081: 并发与资源生命周期",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示并发与资源生命周期，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "并发与资源生命周期",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {81, 83, 85}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=502",
+      "inputFixtures": {
+        "case": "fixture-81",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-081-lesson"
+    },
+    {
+      "id": "c-example-082",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C 示例 082: 测试夹具与回归",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示测试夹具与回归，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "测试夹具与回归",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {82, 84, 86}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=508",
+      "inputFixtures": {
+        "case": "fixture-82",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-082-lesson"
+    },
+    {
+      "id": "c-example-083",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C 示例 083: 性能测量与优化",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示性能测量与优化，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "性能测量与优化",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {83, 85, 87}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=514",
+      "inputFixtures": {
+        "case": "fixture-83",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-083-lesson"
+    },
+    {
+      "id": "c-example-084",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C 示例 084: 安全边界与最小权限",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示安全边界与最小权限，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "安全边界与最小权限",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {84, 86, 88}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=520",
+      "inputFixtures": {
+        "case": "fixture-84",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-084-lesson"
+    },
+    {
+      "id": "c-example-085",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C 示例 085: 网络协议与重试",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示网络协议与重试，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "网络协议与重试",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {85, 87, 89}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=526",
+      "inputFixtures": {
+        "case": "fixture-85",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-085-lesson"
+    },
+    {
+      "id": "c-example-086",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C 示例 086: 持久化与迁移",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示持久化与迁移，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "持久化与迁移",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {86, 88, 90}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=532",
+      "inputFixtures": {
+        "case": "fixture-86",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-086-lesson"
+    },
+    {
+      "id": "c-example-087",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C 示例 087: 命令行工具设计",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示命令行工具设计，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "命令行工具设计",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {87, 89, 91}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=538",
+      "inputFixtures": {
+        "case": "fixture-87",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-087-lesson"
+    },
+    {
+      "id": "c-example-088",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C 示例 088: 模块边界与依赖方向",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示模块边界与依赖方向，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "模块边界与依赖方向",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {88, 90, 92}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=544",
+      "inputFixtures": {
+        "case": "fixture-88",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-088-lesson"
+    },
+    {
+      "id": "c-example-089",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C 示例 089: 状态机与事件流",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示状态机与事件流，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "状态机与事件流",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {89, 91, 93}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=550",
+      "inputFixtures": {
+        "case": "fixture-89",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-089-lesson"
+    },
+    {
+      "id": "c-example-090",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C 示例 090: 时间、时区与截止时间",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示时间、时区与截止时间，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "时间、时区与截止时间",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {90, 92, 94}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=556",
+      "inputFixtures": {
+        "case": "fixture-90",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-090-lesson"
+    },
+    {
+      "id": "c-example-091",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C 示例 091: 文本处理与国际化",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示文本处理与国际化，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "文本处理与国际化",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {91, 93, 95}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=562",
+      "inputFixtures": {
+        "case": "fixture-91",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-091-lesson"
+    },
+    {
+      "id": "c-example-092",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C 示例 092: 故障恢复与幂等性",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示故障恢复与幂等性，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "故障恢复与幂等性",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {92, 94, 96}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=568",
+      "inputFixtures": {
+        "case": "fixture-92",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-092-lesson"
+    },
+    {
+      "id": "c-example-093",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C 示例 093: 资源打包与发布",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示资源打包与发布，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "资源打包与发布",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {93, 95, 97}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=574",
+      "inputFixtures": {
+        "case": "fixture-93",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-093-lesson"
+    },
+    {
+      "id": "c-example-094",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C 示例 094: 增量计算与差分",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示增量计算与差分，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "增量计算与差分",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {94, 96, 98}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=580",
+      "inputFixtures": {
+        "case": "fixture-94",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-094-lesson"
+    },
+    {
+      "id": "c-example-095",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C 示例 095: API 契约与版本兼容",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示API 契约与版本兼容，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "API 契约与版本兼容",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {95, 97, 99}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=586",
+      "inputFixtures": {
+        "case": "fixture-95",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-095-lesson"
+    },
+    {
+      "id": "c-example-096",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C 示例 096: 真实项目重构练习",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示真实项目重构练习，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "真实项目重构练习",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {96, 98, 100}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=592",
+      "inputFixtures": {
+        "case": "fixture-96",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-096-lesson"
+    },
+    {
+      "id": "c-example-097",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C 示例 097: 数据建模与不变量",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示数据建模与不变量，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "数据建模与不变量",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {97, 99, 101}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=598",
+      "inputFixtures": {
+        "case": "fixture-97",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-097-lesson"
+    },
+    {
+      "id": "c-example-098",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C 示例 098: 输入校验与错误边界",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示输入校验与错误边界，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "输入校验与错误边界",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {98, 100, 102}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=604",
+      "inputFixtures": {
+        "case": "fixture-98",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-098-lesson"
+    },
+    {
+      "id": "c-example-099",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C 示例 099: 文件格式与编码",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示文件格式与编码，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "文件格式与编码",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {99, 101, 103}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=610",
+      "inputFixtures": {
+        "case": "fixture-99",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-099-lesson"
+    },
+    {
+      "id": "c-example-100",
+      "language": "c",
+      "type": "c",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C 示例 100: 日志与可观测性",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示日志与可观测性，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "日志与可观测性",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/c",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <stdio.h>\nint main(void) { int values[] = {100, 102, 104}; int total = values[0] + values[1] * 2 + values[2] * 3; printf(\"weighted=%d\\n\", total); return 0; }\n",
+      "expectedOutput": "weighted=616",
+      "inputFixtures": {
+        "case": "fixture-100",
+        "mode": "deterministic"
+      },
+      "templateType": "c",
+      "sourceLessonId": "c-tutorial-100-lesson"
+    },
+    {
+      "id": "cpp-example-001",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C++ 示例 001: 数据建模与不变量",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示数据建模与不变量，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "数据建模与不变量",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{1, 3, 5}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=22",
+      "inputFixtures": {
+        "case": "fixture-1",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-001-lesson"
+    },
+    {
+      "id": "cpp-example-002",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C++ 示例 002: 输入校验与错误边界",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示输入校验与错误边界，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "输入校验与错误边界",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{2, 4, 6}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=28",
+      "inputFixtures": {
+        "case": "fixture-2",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-002-lesson"
+    },
+    {
+      "id": "cpp-example-003",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C++ 示例 003: 文件格式与编码",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示文件格式与编码，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "文件格式与编码",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{3, 5, 7}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=34",
+      "inputFixtures": {
+        "case": "fixture-3",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-003-lesson"
+    },
+    {
+      "id": "cpp-example-004",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C++ 示例 004: 日志与可观测性",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示日志与可观测性，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "日志与可观测性",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{4, 6, 8}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=40",
+      "inputFixtures": {
+        "case": "fixture-4",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-004-lesson"
+    },
+    {
+      "id": "cpp-example-005",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C++ 示例 005: 缓存与失效策略",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示缓存与失效策略，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "缓存与失效策略",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{5, 7, 9}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=46",
+      "inputFixtures": {
+        "case": "fixture-5",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-005-lesson"
+    },
+    {
+      "id": "cpp-example-006",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C++ 示例 006: 队列与批处理",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示队列与批处理，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "队列与批处理",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{6, 8, 10}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=52",
+      "inputFixtures": {
+        "case": "fixture-6",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-006-lesson"
+    },
+    {
+      "id": "cpp-example-007",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C++ 示例 007: 分页与排序",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示分页与排序，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "分页与排序",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{7, 9, 11}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=58",
+      "inputFixtures": {
+        "case": "fixture-7",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-007-lesson"
+    },
+    {
+      "id": "cpp-example-008",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C++ 示例 008: 配置与环境隔离",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示配置与环境隔离，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "配置与环境隔离",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{8, 10, 12}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=64",
+      "inputFixtures": {
+        "case": "fixture-8",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-008-lesson"
+    },
+    {
+      "id": "cpp-example-009",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C++ 示例 009: 并发与资源生命周期",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示并发与资源生命周期，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "并发与资源生命周期",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{9, 11, 13}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=70",
+      "inputFixtures": {
+        "case": "fixture-9",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-009-lesson"
+    },
+    {
+      "id": "cpp-example-010",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C++ 示例 010: 测试夹具与回归",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示测试夹具与回归，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "测试夹具与回归",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{10, 12, 14}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=76",
+      "inputFixtures": {
+        "case": "fixture-10",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-010-lesson"
+    },
+    {
+      "id": "cpp-example-011",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C++ 示例 011: 性能测量与优化",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示性能测量与优化，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "性能测量与优化",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{11, 13, 15}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=82",
+      "inputFixtures": {
+        "case": "fixture-11",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-011-lesson"
+    },
+    {
+      "id": "cpp-example-012",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C++ 示例 012: 安全边界与最小权限",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示安全边界与最小权限，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "安全边界与最小权限",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{12, 14, 16}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=88",
+      "inputFixtures": {
+        "case": "fixture-12",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-012-lesson"
+    },
+    {
+      "id": "cpp-example-013",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C++ 示例 013: 网络协议与重试",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示网络协议与重试，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "网络协议与重试",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{13, 15, 17}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=94",
+      "inputFixtures": {
+        "case": "fixture-13",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-013-lesson"
+    },
+    {
+      "id": "cpp-example-014",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C++ 示例 014: 持久化与迁移",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示持久化与迁移，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "持久化与迁移",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{14, 16, 18}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=100",
+      "inputFixtures": {
+        "case": "fixture-14",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-014-lesson"
+    },
+    {
+      "id": "cpp-example-015",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C++ 示例 015: 命令行工具设计",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示命令行工具设计，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "命令行工具设计",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{15, 17, 19}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=106",
+      "inputFixtures": {
+        "case": "fixture-15",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-015-lesson"
+    },
+    {
+      "id": "cpp-example-016",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C++ 示例 016: 模块边界与依赖方向",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示模块边界与依赖方向，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "模块边界与依赖方向",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{16, 18, 20}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=112",
+      "inputFixtures": {
+        "case": "fixture-16",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-016-lesson"
+    },
+    {
+      "id": "cpp-example-017",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C++ 示例 017: 状态机与事件流",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示状态机与事件流，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "状态机与事件流",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{17, 19, 21}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=118",
+      "inputFixtures": {
+        "case": "fixture-17",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-017-lesson"
+    },
+    {
+      "id": "cpp-example-018",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C++ 示例 018: 时间、时区与截止时间",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示时间、时区与截止时间，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "时间、时区与截止时间",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{18, 20, 22}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=124",
+      "inputFixtures": {
+        "case": "fixture-18",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-018-lesson"
+    },
+    {
+      "id": "cpp-example-019",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C++ 示例 019: 文本处理与国际化",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示文本处理与国际化，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "文本处理与国际化",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{19, 21, 23}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=130",
+      "inputFixtures": {
+        "case": "fixture-19",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-019-lesson"
+    },
+    {
+      "id": "cpp-example-020",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C++ 示例 020: 故障恢复与幂等性",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示故障恢复与幂等性，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "故障恢复与幂等性",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{20, 22, 24}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=136",
+      "inputFixtures": {
+        "case": "fixture-20",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-020-lesson"
+    },
+    {
+      "id": "cpp-example-021",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C++ 示例 021: 资源打包与发布",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示资源打包与发布，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "资源打包与发布",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{21, 23, 25}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=142",
+      "inputFixtures": {
+        "case": "fixture-21",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-021-lesson"
+    },
+    {
+      "id": "cpp-example-022",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C++ 示例 022: 增量计算与差分",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示增量计算与差分，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "增量计算与差分",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{22, 24, 26}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=148",
+      "inputFixtures": {
+        "case": "fixture-22",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-022-lesson"
+    },
+    {
+      "id": "cpp-example-023",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C++ 示例 023: API 契约与版本兼容",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示API 契约与版本兼容，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "API 契约与版本兼容",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{23, 25, 27}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=154",
+      "inputFixtures": {
+        "case": "fixture-23",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-023-lesson"
+    },
+    {
+      "id": "cpp-example-024",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C++ 示例 024: 真实项目重构练习",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示真实项目重构练习，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "真实项目重构练习",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{24, 26, 28}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=160",
+      "inputFixtures": {
+        "case": "fixture-24",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-024-lesson"
+    },
+    {
+      "id": "cpp-example-025",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "beginner",
+      "title": "C++ 示例 025: 数据建模与不变量",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示数据建模与不变量，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "数据建模与不变量",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{25, 27, 29}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=166",
+      "inputFixtures": {
+        "case": "fixture-25",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-025-lesson"
+    },
+    {
+      "id": "cpp-example-026",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 026: 输入校验与错误边界",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示输入校验与错误边界，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "输入校验与错误边界",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{26, 28, 30}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=172",
+      "inputFixtures": {
+        "case": "fixture-26",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-026-lesson"
+    },
+    {
+      "id": "cpp-example-027",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 027: 文件格式与编码",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示文件格式与编码，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "文件格式与编码",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{27, 29, 31}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=178",
+      "inputFixtures": {
+        "case": "fixture-27",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-027-lesson"
+    },
+    {
+      "id": "cpp-example-028",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 028: 日志与可观测性",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示日志与可观测性，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "日志与可观测性",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{28, 30, 32}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=184",
+      "inputFixtures": {
+        "case": "fixture-28",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-028-lesson"
+    },
+    {
+      "id": "cpp-example-029",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 029: 缓存与失效策略",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示缓存与失效策略，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "缓存与失效策略",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{29, 31, 33}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=190",
+      "inputFixtures": {
+        "case": "fixture-29",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-029-lesson"
+    },
+    {
+      "id": "cpp-example-030",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 030: 队列与批处理",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示队列与批处理，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "队列与批处理",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{30, 32, 34}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=196",
+      "inputFixtures": {
+        "case": "fixture-30",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-030-lesson"
+    },
+    {
+      "id": "cpp-example-031",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 031: 分页与排序",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示分页与排序，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "分页与排序",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{31, 33, 35}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=202",
+      "inputFixtures": {
+        "case": "fixture-31",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-031-lesson"
+    },
+    {
+      "id": "cpp-example-032",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 032: 配置与环境隔离",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示配置与环境隔离，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "配置与环境隔离",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{32, 34, 36}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=208",
+      "inputFixtures": {
+        "case": "fixture-32",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-032-lesson"
+    },
+    {
+      "id": "cpp-example-033",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 033: 并发与资源生命周期",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示并发与资源生命周期，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "并发与资源生命周期",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{33, 35, 37}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=214",
+      "inputFixtures": {
+        "case": "fixture-33",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-033-lesson"
+    },
+    {
+      "id": "cpp-example-034",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 034: 测试夹具与回归",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示测试夹具与回归，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "测试夹具与回归",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{34, 36, 38}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=220",
+      "inputFixtures": {
+        "case": "fixture-34",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-034-lesson"
+    },
+    {
+      "id": "cpp-example-035",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 035: 性能测量与优化",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示性能测量与优化，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "性能测量与优化",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{35, 37, 39}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=226",
+      "inputFixtures": {
+        "case": "fixture-35",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-035-lesson"
+    },
+    {
+      "id": "cpp-example-036",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 036: 安全边界与最小权限",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示安全边界与最小权限，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "安全边界与最小权限",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{36, 38, 40}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=232",
+      "inputFixtures": {
+        "case": "fixture-36",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-036-lesson"
+    },
+    {
+      "id": "cpp-example-037",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 037: 网络协议与重试",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示网络协议与重试，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "网络协议与重试",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{37, 39, 41}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=238",
+      "inputFixtures": {
+        "case": "fixture-37",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-037-lesson"
+    },
+    {
+      "id": "cpp-example-038",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 038: 持久化与迁移",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示持久化与迁移，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "持久化与迁移",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{38, 40, 42}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=244",
+      "inputFixtures": {
+        "case": "fixture-38",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-038-lesson"
+    },
+    {
+      "id": "cpp-example-039",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 039: 命令行工具设计",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示命令行工具设计，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "命令行工具设计",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{39, 41, 43}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=250",
+      "inputFixtures": {
+        "case": "fixture-39",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-039-lesson"
+    },
+    {
+      "id": "cpp-example-040",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 040: 模块边界与依赖方向",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示模块边界与依赖方向，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "模块边界与依赖方向",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{40, 42, 44}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=256",
+      "inputFixtures": {
+        "case": "fixture-40",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-040-lesson"
+    },
+    {
+      "id": "cpp-example-041",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 041: 状态机与事件流",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示状态机与事件流，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "状态机与事件流",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{41, 43, 45}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=262",
+      "inputFixtures": {
+        "case": "fixture-41",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-041-lesson"
+    },
+    {
+      "id": "cpp-example-042",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 042: 时间、时区与截止时间",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示时间、时区与截止时间，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "时间、时区与截止时间",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{42, 44, 46}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=268",
+      "inputFixtures": {
+        "case": "fixture-42",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-042-lesson"
+    },
+    {
+      "id": "cpp-example-043",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 043: 文本处理与国际化",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示文本处理与国际化，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "文本处理与国际化",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{43, 45, 47}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=274",
+      "inputFixtures": {
+        "case": "fixture-43",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-043-lesson"
+    },
+    {
+      "id": "cpp-example-044",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 044: 故障恢复与幂等性",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示故障恢复与幂等性，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "故障恢复与幂等性",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{44, 46, 48}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=280",
+      "inputFixtures": {
+        "case": "fixture-44",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-044-lesson"
+    },
+    {
+      "id": "cpp-example-045",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 045: 资源打包与发布",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示资源打包与发布，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "资源打包与发布",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{45, 47, 49}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=286",
+      "inputFixtures": {
+        "case": "fixture-45",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-045-lesson"
+    },
+    {
+      "id": "cpp-example-046",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 046: 增量计算与差分",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示增量计算与差分，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "增量计算与差分",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{46, 48, 50}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=292",
+      "inputFixtures": {
+        "case": "fixture-46",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-046-lesson"
+    },
+    {
+      "id": "cpp-example-047",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 047: API 契约与版本兼容",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示API 契约与版本兼容，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "API 契约与版本兼容",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{47, 49, 51}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=298",
+      "inputFixtures": {
+        "case": "fixture-47",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-047-lesson"
+    },
+    {
+      "id": "cpp-example-048",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 048: 真实项目重构练习",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示真实项目重构练习，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "真实项目重构练习",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{48, 50, 52}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=304",
+      "inputFixtures": {
+        "case": "fixture-48",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-048-lesson"
+    },
+    {
+      "id": "cpp-example-049",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 049: 数据建模与不变量",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示数据建模与不变量，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "数据建模与不变量",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{49, 51, 53}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=310",
+      "inputFixtures": {
+        "case": "fixture-49",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-049-lesson"
+    },
+    {
+      "id": "cpp-example-050",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 050: 输入校验与错误边界",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示输入校验与错误边界，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "输入校验与错误边界",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{50, 52, 54}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=316",
+      "inputFixtures": {
+        "case": "fixture-50",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-050-lesson"
+    },
+    {
+      "id": "cpp-example-051",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 051: 文件格式与编码",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示文件格式与编码，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "文件格式与编码",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{51, 53, 55}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=322",
+      "inputFixtures": {
+        "case": "fixture-51",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-051-lesson"
+    },
+    {
+      "id": "cpp-example-052",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 052: 日志与可观测性",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示日志与可观测性，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "日志与可观测性",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{52, 54, 56}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=328",
+      "inputFixtures": {
+        "case": "fixture-52",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-052-lesson"
+    },
+    {
+      "id": "cpp-example-053",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 053: 缓存与失效策略",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示缓存与失效策略，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "缓存与失效策略",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{53, 55, 57}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=334",
+      "inputFixtures": {
+        "case": "fixture-53",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-053-lesson"
+    },
+    {
+      "id": "cpp-example-054",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 054: 队列与批处理",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示队列与批处理，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "队列与批处理",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{54, 56, 58}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=340",
+      "inputFixtures": {
+        "case": "fixture-54",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-054-lesson"
+    },
+    {
+      "id": "cpp-example-055",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 055: 分页与排序",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示分页与排序，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "分页与排序",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{55, 57, 59}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=346",
+      "inputFixtures": {
+        "case": "fixture-55",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-055-lesson"
+    },
+    {
+      "id": "cpp-example-056",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 056: 配置与环境隔离",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示配置与环境隔离，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "配置与环境隔离",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{56, 58, 60}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=352",
+      "inputFixtures": {
+        "case": "fixture-56",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-056-lesson"
+    },
+    {
+      "id": "cpp-example-057",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 057: 并发与资源生命周期",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示并发与资源生命周期，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "并发与资源生命周期",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{57, 59, 61}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=358",
+      "inputFixtures": {
+        "case": "fixture-57",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-057-lesson"
+    },
+    {
+      "id": "cpp-example-058",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 058: 测试夹具与回归",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示测试夹具与回归，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "测试夹具与回归",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{58, 60, 62}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=364",
+      "inputFixtures": {
+        "case": "fixture-58",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-058-lesson"
+    },
+    {
+      "id": "cpp-example-059",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 059: 性能测量与优化",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示性能测量与优化，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "性能测量与优化",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{59, 61, 63}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=370",
+      "inputFixtures": {
+        "case": "fixture-59",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-059-lesson"
+    },
+    {
+      "id": "cpp-example-060",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 060: 安全边界与最小权限",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示安全边界与最小权限，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "安全边界与最小权限",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{60, 62, 64}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=376",
+      "inputFixtures": {
+        "case": "fixture-60",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-060-lesson"
+    },
+    {
+      "id": "cpp-example-061",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 061: 网络协议与重试",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示网络协议与重试，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "网络协议与重试",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{61, 63, 65}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=382",
+      "inputFixtures": {
+        "case": "fixture-61",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-061-lesson"
+    },
+    {
+      "id": "cpp-example-062",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 062: 持久化与迁移",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示持久化与迁移，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "持久化与迁移",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{62, 64, 66}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=388",
+      "inputFixtures": {
+        "case": "fixture-62",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-062-lesson"
+    },
+    {
+      "id": "cpp-example-063",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 063: 命令行工具设计",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示命令行工具设计，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "命令行工具设计",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{63, 65, 67}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=394",
+      "inputFixtures": {
+        "case": "fixture-63",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-063-lesson"
+    },
+    {
+      "id": "cpp-example-064",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 064: 模块边界与依赖方向",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示模块边界与依赖方向，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "模块边界与依赖方向",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{64, 66, 68}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=400",
+      "inputFixtures": {
+        "case": "fixture-64",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-064-lesson"
+    },
+    {
+      "id": "cpp-example-065",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 065: 状态机与事件流",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示状态机与事件流，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "状态机与事件流",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{65, 67, 69}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=406",
+      "inputFixtures": {
+        "case": "fixture-65",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-065-lesson"
+    },
+    {
+      "id": "cpp-example-066",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 066: 时间、时区与截止时间",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示时间、时区与截止时间，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "时间、时区与截止时间",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{66, 68, 70}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=412",
+      "inputFixtures": {
+        "case": "fixture-66",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-066-lesson"
+    },
+    {
+      "id": "cpp-example-067",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 067: 文本处理与国际化",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示文本处理与国际化，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "文本处理与国际化",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{67, 69, 71}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=418",
+      "inputFixtures": {
+        "case": "fixture-67",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-067-lesson"
+    },
+    {
+      "id": "cpp-example-068",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 068: 故障恢复与幂等性",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示故障恢复与幂等性，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "故障恢复与幂等性",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{68, 70, 72}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=424",
+      "inputFixtures": {
+        "case": "fixture-68",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-068-lesson"
+    },
+    {
+      "id": "cpp-example-069",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 069: 资源打包与发布",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示资源打包与发布，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "资源打包与发布",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{69, 71, 73}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=430",
+      "inputFixtures": {
+        "case": "fixture-69",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-069-lesson"
+    },
+    {
+      "id": "cpp-example-070",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "intermediate",
+      "title": "C++ 示例 070: 增量计算与差分",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示增量计算与差分，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "增量计算与差分",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{70, 72, 74}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=436",
+      "inputFixtures": {
+        "case": "fixture-70",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-070-lesson"
+    },
+    {
+      "id": "cpp-example-071",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C++ 示例 071: API 契约与版本兼容",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示API 契约与版本兼容，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "API 契约与版本兼容",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{71, 73, 75}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=442",
+      "inputFixtures": {
+        "case": "fixture-71",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-071-lesson"
+    },
+    {
+      "id": "cpp-example-072",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C++ 示例 072: 真实项目重构练习",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示真实项目重构练习，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "真实项目重构练习",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{72, 74, 76}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=448",
+      "inputFixtures": {
+        "case": "fixture-72",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-072-lesson"
+    },
+    {
+      "id": "cpp-example-073",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C++ 示例 073: 数据建模与不变量",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示数据建模与不变量，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "数据建模与不变量",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{73, 75, 77}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=454",
+      "inputFixtures": {
+        "case": "fixture-73",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-073-lesson"
+    },
+    {
+      "id": "cpp-example-074",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C++ 示例 074: 输入校验与错误边界",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示输入校验与错误边界，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "输入校验与错误边界",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{74, 76, 78}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=460",
+      "inputFixtures": {
+        "case": "fixture-74",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-074-lesson"
+    },
+    {
+      "id": "cpp-example-075",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C++ 示例 075: 文件格式与编码",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示文件格式与编码，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "文件格式与编码",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{75, 77, 79}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=466",
+      "inputFixtures": {
+        "case": "fixture-75",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-075-lesson"
+    },
+    {
+      "id": "cpp-example-076",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C++ 示例 076: 日志与可观测性",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示日志与可观测性，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "日志与可观测性",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{76, 78, 80}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=472",
+      "inputFixtures": {
+        "case": "fixture-76",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-076-lesson"
+    },
+    {
+      "id": "cpp-example-077",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C++ 示例 077: 缓存与失效策略",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示缓存与失效策略，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "缓存与失效策略",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{77, 79, 81}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=478",
+      "inputFixtures": {
+        "case": "fixture-77",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-077-lesson"
+    },
+    {
+      "id": "cpp-example-078",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C++ 示例 078: 队列与批处理",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示队列与批处理，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "队列与批处理",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{78, 80, 82}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=484",
+      "inputFixtures": {
+        "case": "fixture-78",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-078-lesson"
+    },
+    {
+      "id": "cpp-example-079",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C++ 示例 079: 分页与排序",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示分页与排序，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "分页与排序",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{79, 81, 83}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=490",
+      "inputFixtures": {
+        "case": "fixture-79",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-079-lesson"
+    },
+    {
+      "id": "cpp-example-080",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C++ 示例 080: 配置与环境隔离",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示配置与环境隔离，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "配置与环境隔离",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{80, 82, 84}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=496",
+      "inputFixtures": {
+        "case": "fixture-80",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-080-lesson"
+    },
+    {
+      "id": "cpp-example-081",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C++ 示例 081: 并发与资源生命周期",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示并发与资源生命周期，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "并发与资源生命周期",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{81, 83, 85}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=502",
+      "inputFixtures": {
+        "case": "fixture-81",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-081-lesson"
+    },
+    {
+      "id": "cpp-example-082",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C++ 示例 082: 测试夹具与回归",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示测试夹具与回归，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "测试夹具与回归",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{82, 84, 86}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=508",
+      "inputFixtures": {
+        "case": "fixture-82",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-082-lesson"
+    },
+    {
+      "id": "cpp-example-083",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C++ 示例 083: 性能测量与优化",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示性能测量与优化，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "性能测量与优化",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{83, 85, 87}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=514",
+      "inputFixtures": {
+        "case": "fixture-83",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-083-lesson"
+    },
+    {
+      "id": "cpp-example-084",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C++ 示例 084: 安全边界与最小权限",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示安全边界与最小权限，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "安全边界与最小权限",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{84, 86, 88}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=520",
+      "inputFixtures": {
+        "case": "fixture-84",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-084-lesson"
+    },
+    {
+      "id": "cpp-example-085",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C++ 示例 085: 网络协议与重试",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示网络协议与重试，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "网络协议与重试",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{85, 87, 89}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=526",
+      "inputFixtures": {
+        "case": "fixture-85",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-085-lesson"
+    },
+    {
+      "id": "cpp-example-086",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C++ 示例 086: 持久化与迁移",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示持久化与迁移，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "持久化与迁移",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{86, 88, 90}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=532",
+      "inputFixtures": {
+        "case": "fixture-86",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-086-lesson"
+    },
+    {
+      "id": "cpp-example-087",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C++ 示例 087: 命令行工具设计",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示命令行工具设计，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "命令行工具设计",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{87, 89, 91}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=538",
+      "inputFixtures": {
+        "case": "fixture-87",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-087-lesson"
+    },
+    {
+      "id": "cpp-example-088",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C++ 示例 088: 模块边界与依赖方向",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示模块边界与依赖方向，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "模块边界与依赖方向",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{88, 90, 92}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=544",
+      "inputFixtures": {
+        "case": "fixture-88",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-088-lesson"
+    },
+    {
+      "id": "cpp-example-089",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C++ 示例 089: 状态机与事件流",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示状态机与事件流，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "状态机与事件流",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{89, 91, 93}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=550",
+      "inputFixtures": {
+        "case": "fixture-89",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-089-lesson"
+    },
+    {
+      "id": "cpp-example-090",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C++ 示例 090: 时间、时区与截止时间",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示时间、时区与截止时间，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "时间、时区与截止时间",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{90, 92, 94}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=556",
+      "inputFixtures": {
+        "case": "fixture-90",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-090-lesson"
+    },
+    {
+      "id": "cpp-example-091",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C++ 示例 091: 文本处理与国际化",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示文本处理与国际化，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "文本处理与国际化",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{91, 93, 95}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=562",
+      "inputFixtures": {
+        "case": "fixture-91",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-091-lesson"
+    },
+    {
+      "id": "cpp-example-092",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C++ 示例 092: 故障恢复与幂等性",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示故障恢复与幂等性，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "故障恢复与幂等性",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{92, 94, 96}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=568",
+      "inputFixtures": {
+        "case": "fixture-92",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-092-lesson"
+    },
+    {
+      "id": "cpp-example-093",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C++ 示例 093: 资源打包与发布",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示资源打包与发布，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "资源打包与发布",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{93, 95, 97}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=574",
+      "inputFixtures": {
+        "case": "fixture-93",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-093-lesson"
+    },
+    {
+      "id": "cpp-example-094",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C++ 示例 094: 增量计算与差分",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示增量计算与差分，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "增量计算与差分",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{94, 96, 98}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=580",
+      "inputFixtures": {
+        "case": "fixture-94",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-094-lesson"
+    },
+    {
+      "id": "cpp-example-095",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C++ 示例 095: API 契约与版本兼容",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示API 契约与版本兼容，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "API 契约与版本兼容",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{95, 97, 99}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=586",
+      "inputFixtures": {
+        "case": "fixture-95",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-095-lesson"
+    },
+    {
+      "id": "cpp-example-096",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C++ 示例 096: 真实项目重构练习",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示真实项目重构练习，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "真实项目重构练习",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{96, 98, 100}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=592",
+      "inputFixtures": {
+        "case": "fixture-96",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-096-lesson"
+    },
+    {
+      "id": "cpp-example-097",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C++ 示例 097: 数据建模与不变量",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示数据建模与不变量，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "数据建模与不变量",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{97, 99, 101}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=598",
+      "inputFixtures": {
+        "case": "fixture-97",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-097-lesson"
+    },
+    {
+      "id": "cpp-example-098",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C++ 示例 098: 输入校验与错误边界",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示输入校验与错误边界，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "输入校验与错误边界",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{98, 100, 102}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=604",
+      "inputFixtures": {
+        "case": "fixture-98",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-098-lesson"
+    },
+    {
+      "id": "cpp-example-099",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C++ 示例 099: 文件格式与编码",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示文件格式与编码，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "文件格式与编码",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{99, 101, 103}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=610",
+      "inputFixtures": {
+        "case": "fixture-99",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-099-lesson"
+    },
+    {
+      "id": "cpp-example-100",
+      "language": "cpp",
+      "type": "cpp",
+      "locale": "zh-CN",
+      "level": "advanced",
+      "title": "C++ 示例 100: 日志与可观测性",
+      "summary": "完整示例：用确定性的输入、处理过程和结果演示日志与可观测性，可导入项目或打开临时编辑器。",
+      "concepts": [
+        "日志与可观测性",
+        "完整入口",
+        "可重复运行"
+      ],
+      "source": "https://en.cppreference.com/w/cpp",
+      "license": "Original QFLI curriculum; reference link retained. CC BY 4.0",
+      "updatedAt": "2026-09-22",
+      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{100, 102, 104}; int total = 0; for (size_t i = 0; i < values.size(); ++i) total += values[i] * static_cast<int>(i + 1); std::cout << \"weighted=\" << total << \"\\n\"; }\n",
+      "expectedOutput": "weighted=616",
+      "inputFixtures": {
+        "case": "fixture-100",
+        "mode": "deterministic"
+      },
+      "templateType": "cpp",
+      "sourceLessonId": "cpp-tutorial-100-lesson"
+    }
+  ]
+}

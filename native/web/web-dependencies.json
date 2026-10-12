@@ -1,0 +1,15 @@
+{
+  "emsdk": {
+    "version": "4.0.23",
+    "url": "https://codeload.github.com/emscripten-core/emsdk/tar.gz/refs/tags/4.0.23",
+    "archive": "emsdk-4.0.23.tar.gz",
+    "directory": "emsdk-4.0.23",
+    "sha256": "a91a4c1f42dbb0345faac093161e27d43e9b6964840d8c8d80976ab8d3eaf2d3",
+    "release": "aaa43392544d695232b70eda706d751f18980c2a"
+  },
+  "wasiShim": {
+    "package": "@bjorn3/browser_wasi_shim",
+    "version": "0.4.2",
+    "integrity": "sha512-/iHkCVUG3VbcbmEHn5iIUpIrh7a7WPiwZ3sHy4HZKZzBdSadwdddYDZAII2zBvQYV0Lfi8naZngPCN7WPHI/hA=="
+  }
+}

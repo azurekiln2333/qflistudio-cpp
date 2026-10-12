@@ -1,0 +1,17 @@
+{
+  "generatedAt": "2026-10-11T20:24:28.221985Z",
+  "mode": "apply",
+  "stagedTutorials": 200,
+  "stagedExamples": 200,
+  "liveOwnedTutorialsBefore": 200,
+  "liveOwnedExamplesBefore": 200,
+  "liveForeignTutorials": 1420,
+  "liveForeignExamples": 1420,
+  "stagedTutorialsSha": "1c7b4c16",
+  "liveTutorialsSha": "02a8cad8",
+  "liveExamplesSha": "79d8d7a0",
+  "stagingErrors": [],
+  "scopeErrors": [],
+  "result": "applied",
+  "backupDir": "D:\\MyNewProjects\\qfli_c\\tool\\forge_content\\merge-backups"
+}

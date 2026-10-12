@@ -1,0 +1,17 @@
+{
+  "generatedAt": "2026-10-11T20:23:06.648948Z",
+  "mode": "dry-run",
+  "stagedTutorials": 200,
+  "stagedExamples": 200,
+  "liveOwnedTutorialsBefore": 200,
+  "liveOwnedExamplesBefore": 200,
+  "liveForeignTutorials": 1420,
+  "liveForeignExamples": 1420,
+  "stagedTutorialsSha": "1c7b4c16",
+  "liveTutorialsSha": "02a8cad8",
+  "liveExamplesSha": "79d8d7a0",
+  "stagingErrors": [],
+  "scopeErrors": [],
+  "stub": "D:\\MyNewProjects\\qfli_c\\tool",
+  "result": "dry-run"
+}

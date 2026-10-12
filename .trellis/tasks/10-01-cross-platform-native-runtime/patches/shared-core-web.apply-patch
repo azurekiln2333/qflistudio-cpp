@@ -1,0 +1,3171 @@
+*** Begin Patch
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/community/community_widgets.dart
+@@
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ 
+ import 'package:flutter/material.dart';
+ import 'package:flutter/services.dart';
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/editor/ai_panel.dart
+@@
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ 
+ import 'package:flutter/material.dart';
+ import 'package:flutter/services.dart';
+-import 'package:path/path.dart' as p;
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
+ 
+ import '../services/ai_service.dart';
+ import '../store/settings_store.dart';
+@@
+     }
+     final fullPath = p.join(widget.projectPath, relative);
+     try {
+-      await File(fullPath).parent.create(recursive: true);
+-      await File(fullPath).writeAsString(block.code ?? '', flush: true);
++      await studioFile(fullPath).parent.create(recursive: true);
++      await studioFile(fullPath).writeAsString(block.code ?? '', flush: true);
+     } on FileSystemException catch (e) {
+       if (!mounted) return;
+       ScaffoldMessenger.of(
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/editor/editor_controller.dart
+@@
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ 
+ import 'package:flutter/scheduler.dart';
+ import 'package:flutter/widgets.dart';
+-import 'package:path/path.dart' as p;
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
+ import 'package:re_editor/re_editor.dart';
+ 
+ import '../services/file_encoding.dart';
+@@
+       return null;
+     }
+ 
+-    final file = File(path);
++    final file = studioFile(path);
+     try {
+       final stat = await file.stat();
+       if (_disposed) return 'Editor closed';
+@@
+     final write = () async {
+       if (previous != null) await previous;
+       try {
+-        final file = File(open.path);
++        final file = studioFile(open.path);
+         if (backup) {
+           await FileBackup.backupBeforeOverwrite(
+             file,
+@@
+     final open = files[index];
+     if (open.readOnly) return '历史快照只读';
+     try {
+-      final bytes = await File(open.path).readAsBytes();
+-      open.modifiedAt = (await File(open.path).stat()).modified;
++      final bytes = await studioFile(open.path).readAsBytes();
++      open.modifiedAt = (await studioFile(open.path).stat()).modified;
+       final text = TextCodec.byName(encoding).decode(bytes);
+       open.encoding = encoding;
+       open.controller.text = text;
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/editor/editor_fonts.dart
+@@
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ 
+ import 'package:flutter/foundation.dart';
+ import 'package:flutter/material.dart';
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/editor/editor_page.dart
+@@
+ import 'dart:async';
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ 
+ import 'package:flutter/material.dart';
+ import 'package:flutter/services.dart';
+-import 'package:path/path.dart' as p;
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
+ import 'package:re_editor/re_editor.dart';
+ 
+ import '../models/project.dart';
+@@
+     final opened = <String>[];
+     for (final rel in session.openFiles) {
+       final abs = p.isAbsolute(rel) ? rel : p.join(widget.project.path, rel);
+-      if (!File(abs).existsSync()) continue;
++      if (!studioFile(abs).existsSync()) continue;
+       final error = await _editor.openPath(abs, cursor: session.cursors[rel]);
+       if (!mounted) return;
+       if (error == null) opened.add(rel);
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/editor/file_explorer.dart
+@@
+ import 'dart:async';
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ 
+ import 'package:flutter/material.dart';
+-import 'package:path/path.dart' as p;
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
+ 
+ import '../models/project.dart';
+ import '../store/project_store.dart';
+@@
+       }
+     }
+ 
+-    walk(Directory(rootPath));
++    walk(studioDirectory(rootPath));
+     return results;
+   }
+ 
+@@
+     final remembered = widget.store.projectById(
+       widget.store.lastBrowsedProjectId,
+     );
+-    _browsing = (remembered != null && Directory(remembered.path).existsSync())
++    _browsing = (remembered != null && studioDirectory(remembered.path).existsSync())
+         ? remembered
+         : widget.project;
+     _rebuildRoot();
+@@
+     if (!mounted) return;
+     for (final rel in session.expandedDirs) {
+       final abs = p.isAbsolute(rel) ? rel : p.join(_browsing.path, rel);
+-      if (!Directory(abs).existsSync()) continue;
++      if (!studioDirectory(abs).existsSync()) continue;
+       _expanded.add(abs);
+       if (!_children.containsKey(abs)) {
+         unawaited(_loadChildren(FileNode(
+@@
+     }
+     if (name == null || !mounted) return;
+     final path = p.join(dirPath, name);
+-    if (Directory(path).existsSync() || File(path).existsSync()) {
++    if (studioDirectory(path).existsSync() || studioFile(path).existsSync()) {
+       ScaffoldMessenger.of(
+         context,
+       ).showSnackBar(SnackBar(content: Text('“$name”已存在')));
+@@
+     }
+     try {
+       if (isDir) {
+-        await Directory(path).create();
++        await studioDirectory(path).create();
+       } else {
+-        await File(path).writeAsString('');
++        await studioFile(path).writeAsString('');
+       }
+     } on FileSystemException catch (e) {
+       if (mounted) {
+@@
+     if (!confirmed || !mounted) return;
+     // 先压缩备份到回收站 files_bin，失败则中止删除。
+     final backupError = await RecycleBin.backupEntry(
+-      node.isDir ? Directory(node.path) : File(node.path),
++      node.isDir ? studioDirectory(node.path) : studioFile(node.path),
+       projectName: _browsing.name,
+     );
+     if (backupError != null) {
+@@
+     }
+     try {
+       final entity = node.isDir
+-          ? Directory(node.path)
+-          : File(node.path) as FileSystemEntity;
++          ? studioDirectory(node.path)
++          : studioFile(node.path) as FileSystemEntity;
+       await entity.delete(recursive: true);
+     } on FileSystemException catch (e) {
+       if (mounted) {
+@@
+                       .indexWhere((f) => p.equals(f.path, node.path));
+                   if (idx >= 0 && !widget.editor.files[idx].readOnly) {
+                     widget.editor.files[idx].controller.text =
+-                        await File(node.path).readAsString();
++                        await studioFile(node.path).readAsString();
+                   }
+                 },
+               ),
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/editor/highlight_themes.dart
+@@
+ import 'package:flutter/material.dart';
+-import 'package:path/path.dart' as p;
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
+ import 'package:re_editor/re_editor.dart';
+ import 'package:re_highlight/re_highlight.dart';
+ import 'package:re_highlight/languages/c.dart';
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/editor/open_file.dart
+@@
+ import 'package:flutter/widgets.dart';
+-import 'package:path/path.dart' as p;
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
+ import 'package:re_editor/re_editor.dart';
+ 
+ /// 编辑器中一个已打开的文件（对应一个标签页）。
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/editor/project_history.dart
+@@
+ import 'dart:convert';
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ 
+-import 'package:path/path.dart' as p;
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
+ 
+ /// 项目内会话记忆文件（`<项目>/history.json`）：
+ /// - 每个文件的光标位置（打开文件时自动定位）
+@@
+ 
+ abstract final class ProjectHistory {
+   static File historyFile(String projectPath) =>
+-      File(p.join(projectPath, 'history.json'));
++      studioFile(p.join(projectPath, 'history.json'));
+ 
+   static Future<ProjectSession> load(String projectPath) async {
+     try {
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/editor/terminal_pane.dart
+@@
+ import 'dart:async';
+ import 'dart:convert';
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ 
+ import 'package:flutter/material.dart';
+ import 'editor_fonts.dart';
+ import 'package:flutter/services.dart';
+-import 'package:path/path.dart' as p;
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
+ 
+ import '../i18n/studio_localizations.dart';
+ import '../services/process_supervisor.dart';
+@@
+     }
+     final String source;
+     try {
+-      source = await File(entryFile).readAsString();
++      source = await studioFile(entryFile).readAsString();
+     } on FileSystemException catch (error) {
+       appendSystem('无法读取 SQL 文件：${error.message}');
+       return;
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/editor/textmate_grammar.dart
+@@
+-import 'package:path/path.dart' as p;
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
+ import 'package:re_highlight/re_highlight.dart';
+ 
+ import 'highlight_import.dart';
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/models/project.dart
+@@
+ import 'dart:math';
+ 
+-import 'package:path/path.dart' as p;
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
+ 
+ import '../config/api_config.dart';
+ 
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/pages/file_history_page.dart
+@@
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ 
+ import 'package:flutter/material.dart';
+-import 'package:path/path.dart' as p;
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
+ 
+ import '../services/file_backup.dart';
+ 
+@@
+   @override
+   Widget build(BuildContext context) {
+     final scheme = Theme.of(context).colorScheme;
+-    final original = File(originalPath);
++    final original = studioFile(originalPath);
+     final relative = p.isWithin(projectPath, originalPath)
+         ? p.relative(originalPath, from: projectPath)
+         : p.basename(originalPath);
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/pages/git_page.dart
+@@
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ 
+ import 'package:flutter/material.dart';
+ import '../editor/editor_fonts.dart';
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/pages/home_page.dart
+@@
+ import 'dart:async';
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ 
+ import 'package:flutter/material.dart';
+ 
+@@
+     Project project, {
+     String? initialOpenFile,
+   }) async {
+-    if (!project.isCloud && !Directory(project.path).existsSync()) {
++    if (!project.isCloud && !studioDirectory(project.path).existsSync()) {
+       ScaffoldMessenger.of(context).showSnackBar(
+         SnackBar(
+           content: Text(
+@@
+   /// 批量移除目录已不存在的项目记录（不涉及磁盘删除）。
+   Future<void> _removeMissingProjects(BuildContext context) async {
+     final missing = widget.store.projects
+-        .where((p) => !p.isCloud && !Directory(p.path).existsSync())
++        .where((p) => !p.isCloud && !studioDirectory(p.path).existsSync())
+         .toList();
+     if (missing.isEmpty) {
+       ScaffoldMessenger.of(context).showSnackBar(
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/pages/local_content_pages.dart
+@@
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ 
+ import 'package:flutter/material.dart';
+ 
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/pages/points_page.dart
+@@
+ import 'dart:convert';
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ 
+ import 'package:flutter/material.dart';
+-import 'package:path/path.dart' as p;
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
+ 
+ import '../services/api_client.dart';
+ import '../services/app_paths.dart';
+@@
+     final userId = widget.auth.user?.id;
+     final root = await AppPaths.storageDirectory();
+     if (root != null && userId != null) {
+-      _cacheFile = File(p.join(root, 'points_$userId.json'));
++      _cacheFile = studioFile(p.join(root, 'points_$userId.json'));
+       try {
+         final data =
+             jsonDecode(await _cacheFile!.readAsString())
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/pages/quick_tools_page.dart
+@@
+ import 'dart:async';
+ import 'dart:convert';
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ 
+ import 'package:flutter/material.dart';
+ import '../editor/editor_fonts.dart';
+ import 'package:flutter/services.dart';
+-import 'package:path/path.dart' as p;
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
+ 
+ import '../i18n/studio_localizations.dart';
+ import '../services/studio_profile.dart';
+@@
+ 
+   Future<String?> _resolveWorkingDirectory() async {
+     for (final project in widget.store.projects) {
+-      if (!project.isCloud && Directory(project.path).existsSync()) {
++      if (!project.isCloud && studioDirectory(project.path).existsSync()) {
+         return project.path;
+       }
+     }
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/pages/recovery_page.dart
+@@
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ 
+ import 'package:flutter/material.dart';
+ import 'package:intl/intl.dart';
+-import 'package:path/path.dart' as p;
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
+ 
+ import '../services/app_paths.dart';
+ import '../services/picker_service.dart';
+@@
+           name: entry.name,
+         );
+       } else if (entry.originalPath != null &&
+-          FileSystemEntity.typeSync(defaultPath, followLinks: false) !=
++          studioEntityTypeSync(defaultPath, followLinks: false) !=
+               FileSystemEntityType.notFound) {
+         defaultPath = AppPaths.availableProjectPath(
+           directory: p.dirname(defaultPath),
+@@
+     try {
+       await RecoveryService.restore(entry, destination);
+       if (widget.kind == RecoveryKind.projects &&
+-          await Directory(destination).exists()) {
++          await studioDirectory(destination).exists()) {
+         final result = await widget.store.addExisting(destination);
+         if (result.error != null) {
+           throw FileSystemException('文件已恢复，但项目登记失败：${result.error}');
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/pages/settings_page.dart
+@@
+ import 'dart:convert';
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ import 'dart:typed_data';
+ 
+ import 'package:flutter/material.dart';
+-import 'package:path/path.dart' as p;
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
+ 
+ import '../editor/ai_panel.dart';
+ import '../services/app_paths.dart';
+@@
+       final path = location.path;
+       final uri = location.uri;
+       if (path != null && path.isNotEmpty) {
+-        await File(path).writeAsString(archive, flush: true);
++        await studioFile(path).writeAsString(archive, flush: true);
+       } else if (uri != null && uri.isNotEmpty) {
+         await PickerService.writeUri(
+           uri,
+@@
+ 
+   Future<String> _readPickedDocument(PickedDocument picked) async {
+     final path = picked.path;
+-    if (path != null && path.isNotEmpty) return File(path).readAsString();
++    if (path != null && path.isNotEmpty) return studioFile(path).readAsString();
+     final uri = picked.uri;
+     if (uri != null && uri.isNotEmpty) {
+       return utf8.decode(await PickerService.readUri(uri));
+@@
+   Future<Project?> _pickProject() async {
+     final projects = widget.store!.projects
+         .where(
+-          (project) => !project.isCloud && Directory(project.path).existsSync(),
++          (project) => !project.isCloud && studioDirectory(project.path).existsSync(),
+         )
+         .toList();
+     if (projects.isEmpty) {
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/pages/terminax_terminal_page.dart
+@@
+ import 'dart:async';
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ 
+ import 'package:flutter/material.dart';
+ import 'package:flutter/services.dart';
+@@
+ 
+   Future<String?> _resolveWorkingDirectory() async {
+     for (final project in widget.store.projects) {
+-      if (!project.isCloud && Directory(project.path).existsSync()) {
++      if (!project.isCloud && studioDirectory(project.path).existsSync()) {
+         return project.path;
+       }
+     }
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/services/ai_service.dart
+@@
+ import 'dart:async';
+ import 'dart:convert';
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ 
+ /// AI 回复中的一段内容：纯文本或代码块。
+ class AiSegment {
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/services/api_client.dart
+@@
+ import 'dart:async';
+ import 'dart:convert';
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ 
+ import 'package:flutter/foundation.dart';
+ import 'package:http/http.dart' as http;
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/services/app_paths.dart
+@@
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ 
+ import 'package:flutter/foundation.dart';
+-import 'package:path/path.dart' as p;
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
+ import 'package:path_provider/path_provider.dart';
+ 
+ import 'file_service.dart';
+@@
+       _writableFuture ??= _findWritableDirectory();
+ 
+   static Future<String?> _findWritableDirectory() async {
++    if (kIsWeb) {
++      await initializeStudioStorage();
++      return studioCurrentDirectory.path;
++    }
+     final candidates = <String>[];
+ 
+     Future<void> tryAdd(Future<Directory?> Function() getter) async {
+@@
+       if (value != null && value.isNotEmpty) candidates.add(value);
+     }
+     try {
+-      if (Directory.current.path.isNotEmpty) {
+-        candidates.add(Directory.current.path);
++      if (studioCurrentDirectory.path.isNotEmpty) {
++        candidates.add(studioCurrentDirectory.path);
+       }
+     } catch (_) {}
+ 
+@@
+       _storageFuture ??= _findStorageDirectory();
+ 
+   static Future<String?> _findStorageDirectory() async {
++    if (kIsWeb) {
++      await initializeStudioStorage();
++      return studioCurrentDirectory.path;
++    }
+     // 三个 Store 共享一次探测；第一个候选成功后立即返回。
+     for (final getter in [
+       getApplicationSupportDirectory,
+@@
+   static Future<String?> projectsRoot({bool create = false}) async {
+     final base = await storageDirectory();
+     if (base == null) return null;
+-    final dir = Directory(p.join(base, 'projects'));
++    final dir = studioDirectory(p.join(base, 'projects'));
+     if (create) {
+       try {
+         await dir.create(recursive: true);
+@@
+       throw const FileSystemException('项目名称无效');
+     }
+     bool occupied(String path) =>
+-        FileSystemEntity.typeSync(path, followLinks: false) !=
++        studioEntityTypeSync(path, followLinks: false) !=
+         FileSystemEntityType.notFound;
+     final original = p.join(directory, trimmed);
+     if (!occupied(original)) return original;
+@@
+     String language = '',
+   }) {
+     final root = languageProjectsRoot(location, type: type, language: language);
+-    final directory = Directory(
++    final directory = studioDirectory(
+       availableProjectPath(directory: root, name: name),
+     );
+     // Reserve the directory before template/archive writes yield to another creator.
+@@
+   /// 通过写入并删除探针文件验证目录可写。
+   static Future<bool> _isWritable(String dirPath) async {
+     try {
+-      if (!await Directory(dirPath).exists()) return false;
+-      final probe = File(
++      if (!await studioDirectory(dirPath).exists()) return false;
++      final probe = studioFile(
+         p.join(
+           dirPath,
+           '$_probeMarker${DateTime.now().microsecondsSinceEpoch}_${_probeId++}',
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/services/avatar_cache.dart
+@@
+ import 'dart:convert';
+-import 'dart:io';
+-import 'dart:typed_data';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ import 'dart:ui' as ui;
+ 
+ import 'package:http/http.dart' as http;
+-import 'package:path/path.dart' as p;
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
+ 
+ import 'app_paths.dart';
+ 
+@@
+     if (uri == null || !['http', 'https'].contains(uri.scheme)) return null;
+     final base = await AppPaths.storageDirectory();
+     if (base == null) return null;
+-    final directory = Directory(p.join(base, 'avatar_cache'));
++    final directory = studioDirectory(p.join(base, 'avatar_cache'));
+     await directory.create(recursive: true);
+     final name = base64Url.encode(utf8.encode(key)).replaceAll('=', '');
+-    final metadata = File(p.join(directory.path, '$name.json'));
++    final metadata = studioFile(p.join(directory.path, '$name.json'));
+     File? previous;
+     if (await metadata.exists()) {
+       try {
+@@
+         if (data is Map && data['file'] is String) {
+           final cachedName = data['file'] as String;
+           if (cachedName == p.basename(cachedName)) {
+-            previous = File(p.join(directory.path, cachedName));
++            previous = studioFile(p.join(directory.path, cachedName));
+             if (data['url'] == url && await previous.exists()) return previous;
+           }
+         }
+@@
+     final content = bytes.takeBytes();
+     final codec = await ui.instantiateImageCodec(content, targetWidth: 256);
+     codec.dispose();
+-    final image = File(
++    final image = studioFile(
+       p.join(
+         directory.path,
+         '$name-${DateTime.now().microsecondsSinceEpoch}.image',
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/services/cloud_sync_service.dart
+@@
+ import 'dart:async';
+ import 'dart:convert';
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ 
+-import 'package:path/path.dart' as p;
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
+ 
+ import '../config/api_config.dart';
+ 
+@@
+     if (env != null && env.isNotEmpty) return env;
+     final base = await AppPaths.storageDirectory();
+     return p.join(
+-      base ?? Directory.systemTemp.path,
++      base ?? studioSystemTemp.path,
+       'cloud_projects',
+       Uri.encodeComponent(ApiConfig.origin),
+     );
+@@
+                 cloudId,
+               )
+             : p.join(await _cacheRoot(), cloudId));
+-    await Directory(localPath).create(recursive: true);
++    await studioDirectory(localPath).create(recursive: true);
+     return CloudSyncService._(cloudId: cloudId, localPath: localPath);
+   }
+ 
+   /// 镜像目录中是否已有任何文件。
+   bool existsAnyFile() {
+-    final dir = Directory(localPath);
++    final dir = studioDirectory(localPath);
+     if (!dir.existsSync()) return false;
+     for (final entity in dir.listSync(recursive: true, followLinks: false)) {
+       if (entity is File) return true;
+@@
+       final remotePaths = <String>{};
+       for (final info in remote) {
+         remotePaths.add(info.path);
+-        final local = File(p.join(localPath, info.path));
++        final local = studioFile(p.join(localPath, info.path));
+         final exists = local.existsSync();
+         if (onlyIfMissing && exists) continue;
+         if (exists &&
+@@
+   }
+ 
+   Future<void> _prune(String dir, String root, Set<String> keep) async {
+-    await for (final entity in Directory(dir).list(followLinks: false)) {
++    await for (final entity in studioDirectory(dir).list(followLinks: false)) {
+       final rel = p.relative(entity.path, from: root).replaceAll(r'\', '/');
+       if (entity is Directory) {
+         await _prune(entity.path, root, keep);
+-        if (await Directory(entity.path).list().isEmpty) {
++        if (await studioDirectory(entity.path).list().isEmpty) {
+           await entity.delete();
+         }
+       } else if (!keep.contains(rel)) {
+@@
+       return await pushBytes(
+         token,
+         absolutePath,
+-        await File(absolutePath).readAsBytes(),
++        await studioFile(absolutePath).readAsBytes(),
+       );
+     } on FileSystemException catch (e) {
+       return '读取同步文件失败：${e.message}';
+@@
+           ? [const TemplateFile('src/.gitkeep', '')]
+           : template.files;
+       for (final file in files) {
+-        await Directory(
++        await studioDirectory(
+           p.dirname(p.join(service.localPath, file.path)),
+         ).create(recursive: true);
+-        await File(
++        await studioFile(
+           p.join(service.localPath, file.path),
+         ).writeAsString(file.content, flush: true);
+         await service.pushFile(token, p.join(service.localPath, file.path));
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/services/code_formatter.dart
+@@
+ import 'dart:convert';
+ 
+-import 'package:path/path.dart' as p;
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
+ 
+ /// 代码格式化结果。
+ class FormatResult {
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/services/code_import_service.dart
+@@
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ 
+-import 'package:path/path.dart' as p;
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
+ 
+ import '../models/project.dart';
+ import '../models/tutorial.dart';
+@@
+     required String projectName,
+     bool overwrite = false,
+   }) async {
+-    final type = FileSystemEntity.typeSync(file.path, followLinks: false);
++    final type = studioEntityTypeSync(file.path, followLinks: false);
+     if (type != FileSystemEntityType.notFound) {
+       if (type != FileSystemEntityType.file || !overwrite) {
+         throw CodeImportException(CodeImportFailure.fileExists, file.path);
+@@
+       final temporaryDirectory = await file.parent.createTemp(
+         '.qfli-code-import-',
+       );
+-      final temporaryFile = File(p.join(temporaryDirectory.path, 'source'));
++      final temporaryFile = studioFile(p.join(temporaryDirectory.path, 'source'));
+       try {
+         await temporaryFile.writeAsString(code, flush: true);
+         final backupError = await FileBackup.backupBeforeOverwrite(
+@@
+         if (backupError != null) {
+           throw FileSystemException(backupError, file.path);
+         }
+-        final targetType = FileSystemEntity.typeSync(
++        final targetType = studioEntityTypeSync(
+           file.path,
+           followLinks: false,
+         );
+@@
+     try {
+       await file.create(exclusive: true);
+     } on FileSystemException {
+-      if (FileSystemEntity.typeSync(file.path, followLinks: false) !=
++      if (studioEntityTypeSync(file.path, followLinks: false) !=
+           FileSystemEntityType.notFound) {
+         throw CodeImportException(CodeImportFailure.fileExists, file.path);
+       }
+@@
+   }) async {
+     _validateFileName(fileName);
+     final base = location ?? await AppPaths.storageDirectory();
+-    if (base == null || base.trim().isEmpty || !Directory(base).existsSync()) {
++    if (base == null || base.trim().isEmpty || !studioDirectory(base).existsSync()) {
+       throw const CodeImportException(CodeImportFailure.storageUnavailable);
+     }
+-    final snippets = Directory(p.join(base, 'code_snippets'));
++    final snippets = studioDirectory(p.join(base, 'code_snippets'));
+     await snippets.create(recursive: true);
+     final directory = await snippets.createTemp('snippet_');
+     final template = _templateForType(example.type);
+@@
+       p.dirname(template?.mainFile ?? 'src/snippet.txt'),
+       fileName,
+     );
+-    final file = File(p.join(directory.path, entryFile));
++    final file = studioFile(p.join(directory.path, entryFile));
+     try {
+       await file.parent.create(recursive: true);
+       await _writeFile(file, example.code, projectName: example.title);
+@@
+     required String fileName,
+   }) {
+     _validateFileName(fileName);
+-    final directory = Directory(project.path);
++    final directory = studioDirectory(project.path);
+     if (project.isCloud ||
+         project.path.trim().isEmpty ||
+         !directory.existsSync()) {
+@@
+     required String fileName,
+     bool overwrite = false,
+   }) async {
+-    final file = File(
++    final file = studioFile(
+       destinationPath(project: project, example: example, fileName: fileName),
+     );
+-    final directory = Directory(project.path);
++    final directory = studioDirectory(project.path);
+     await file.parent.create(recursive: true);
+     final projectRoot = directory.resolveSymbolicLinksSync();
+     final parentPath = file.parent.resolveSymbolicLinksSync();
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/services/example_code_store.dart
+@@
+ import 'dart:convert';
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ 
+ import 'package:flutter/foundation.dart';
+-import 'package:path/path.dart' as p;
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
+ 
+ import '../models/tutorial.dart';
+ import 'app_paths.dart';
+@@
+       throw const FileSystemException('未找到可写的存储目录');
+     }
+     final file = _storage =
+-        _storageOverride ?? File(p.join(root!, 'examples.json'));
++        _storageOverride ?? studioFile(p.join(root!, 'examples.json'));
+     if (!await file.exists() || _disposed) return;
+     final loaded = <String, ExampleCode>{};
+     try {
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/services/file_backup.dart
+@@
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ import 'dart:convert';
+ 
+ import 'package:flutter/foundation.dart';
+ import 'package:intl/intl.dart';
+-import 'package:path/path.dart' as p;
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
+ 
+ import 'app_paths.dart';
+ 
+@@
+   static Future<Directory> directory() async {
+     final base = baseOverride ?? await AppPaths.storageDirectory();
+     if (base == null) throw const FileSystemException('未找到应用数据目录');
+-    return Directory(p.join(base, dirName));
++    return studioDirectory(p.join(base, dirName));
+   }
+ 
+   /// 把文件当前磁盘内容备份为带时间戳的副本（覆盖写入前调用）。
+@@
+       if (!await file.exists()) return null;
+       final base = baseOverride ?? await AppPaths.storageDirectory();
+       if (base == null) return '未找到应用数据目录';
+-      final projectDir = Directory(
++      final projectDir = studioDirectory(
+         p.join(base, dirName, _sanitize(projectName)),
+       );
+       await projectDir.create(recursive: true);
+@@
+       final stamp = _stamp(DateTime.now());
+       var target = p.join(projectDir.path, '$name-$stamp$ext');
+       var i = 1;
+-      while (await File(target).exists()) {
++      while (await studioFile(target).exists()) {
+         target = p.join(projectDir.path, '$name-$stamp-${i++}$ext');
+       }
+       await file.copy(target);
+-      await File('$target.metadata.json').writeAsString(
++      await studioFile('$target.metadata.json').writeAsString(
+         jsonEncode({
+           'originalPath': p.normalize(file.absolute.path),
+           'projectName': projectName,
+@@
+     try {
+       final base = baseOverride ?? await AppPaths.storageDirectory();
+       if (base == null) return const [];
+-      final dir = Directory(p.join(base, dirName, _sanitize(projectName)));
++      final dir = studioDirectory(p.join(base, dirName, _sanitize(projectName)));
+       if (!dir.existsSync()) return const [];
+       final name = p.basenameWithoutExtension(original.path);
+       final ext = p.extension(original.path);
+@@
+         if (entity is! File) continue;
+         final match = pattern.firstMatch(p.basename(entity.path));
+         if (match == null) continue;
+-        final metadata = File('${entity.path}.metadata.json');
++        final metadata = studioFile('${entity.path}.metadata.json');
+         if (await metadata.exists()) {
+           try {
+             final data =
+@@
+       projectName: projectName,
+     );
+     if (error != null) throw FileSystemException(error);
+-    await Directory(p.dirname(original.path)).create(recursive: true);
++    await studioDirectory(p.dirname(original.path)).create(recursive: true);
+     await version.file.copy(original.path);
+   }
+ 
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/services/file_service.dart
+@@
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ 
+ import 'package:flutter/material.dart';
+-import 'package:path/path.dart' as p;
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
+ 
+ /// 文件系统相关工具方法。
+ abstract final class FileService {
+@@
+ 
+   /// 列出目录内容：文件夹优先，名称不区分大小写排序。
+   static List<FileSystemEntity> listSortedSync(String dirPath) {
+-    final entities = Directory(dirPath).listSync(followLinks: false);
++    final entities = studioDirectory(dirPath).listSync(followLinks: false);
+     int rank(FileSystemEntity e) => e is Directory ? 0 : 1;
+     String name(FileSystemEntity e) => p.basename(e.path).toLowerCase();
+     entities.sort((a, b) {
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/services/git_service.dart
+@@
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ 
+ /// git 命令结果。
+ typedef GitResult = ({String stdout, String stderr, int exitCode});
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/services/local_web_server.dart
+@@
+ import 'dart:async';
+ import 'dart:convert';
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ 
+-import 'package:path/path.dart' as p;
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
+ 
+ import 'studio_profile.dart';
+ 
+@@
+       var path = Uri.decodeComponent(request.uri.path);
+       if (path.endsWith('/')) path += 'index.html';
+       final relative = path.replaceFirst(RegExp(r'^/'), '');
+-      var file = File(p.join(rootDir, relative));
++      var file = studioFile(p.join(rootDir, relative));
+       // 防目录穿越。
+       final root = p.canonicalize(rootDir);
+       if (!p.isWithin(root, p.canonicalize(file.path))) {
+@@
+         return;
+       }
+       if (!file.existsSync()) {
+-        file = File(p.join(rootDir, 'index.html'));
++        file = studioFile(p.join(rootDir, 'index.html'));
+       }
+       if (!file.existsSync()) {
+-        file = File(p.join(rootDir, 'src', 'index.html'));
++        file = studioFile(p.join(rootDir, 'src', 'index.html'));
+       }
+       if (!file.existsSync()) {
+         await _respond(request, HttpStatus.notFound, 'Not Found');
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/services/online_program.dart
+@@
+ import 'dart:convert';
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ 
+-import 'package:path/path.dart' as p;
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
+ 
+ import 'api_client.dart';
+ 
+@@
+       }
+     }
+ 
+-    await collect(Directory(projectPath));
++    await collect(studioDirectory(projectPath));
+     if (!files.any((file) => file['path'] == entry)) {
+       throw ApiException('在线项目副本缺少入口文件');
+     }
+*** Add File: D:/MyNewProjects/qfli_studio_core/lib/services/platform_io.dart
++export 'platform_io_native.dart'
++    if (dart.library.js_interop) 'platform_io_browser.dart';
+*** Add File: D:/MyNewProjects/qfli_studio_core/lib/services/platform_io_browser.dart
++import 'dart:async';
++import 'dart:convert';
++import 'dart:io' as io;
++import 'dart:js_interop';
++import 'dart:math';
++
++import 'package:file/file.dart' as file;
++import 'package:file/memory.dart';
++import 'package:flutter/foundation.dart';
++import 'package:web/web.dart' as web;
++
++import 'studio_profile.dart';
++
++export 'dart:io' hide Platform;
++
++// Browser flags never query dart:io's unsupported Platform implementation.
++abstract final class Platform {
++  static const isWindows = false;
++  static const isMacOS = false;
++  static const isLinux = false;
++  static const isAndroid = false;
++  static const isIOS = false;
++  static const isFuchsia = false;
++  static const operatingSystem = 'web';
++  static const pathSeparator = '/';
++  static const environment = <String, String>{};
++}
++
++const _root = '/qfli';
++web.IDBDatabase? _database;
++Future<void>? _initialization;
++Future<void> _writes = Future.value();
++var _loading = true;
++var _dirty = false;
++var _scheduled = false;
++String? _revision;
++final _writerId =
++    '${DateTime.now().microsecondsSinceEpoch}-'
++    '${List.generate(4, (_) => Random().nextInt(1 << 30)).join('-')}';
++var _commitSequence = 0;
++MemoryFileSystem _newMemory() => MemoryFileSystem(
++  opHandle: (_, operation) {
++    if (!_loading &&
++        operation != FileSystemOp.read &&
++        operation != FileSystemOp.exists) {
++      _markDirty();
++    }
++  },
++);
++var _memory = _newMemory();
++
++io.File studioFile(String path) => _StoredFile(_memory.file(path));
++io.Directory studioDirectory(String path) =>
++    _StoredDirectory(_memory.directory(path));
++io.Directory get studioCurrentDirectory => studioDirectory(_root);
++io.Directory get studioSystemTemp => studioDirectory('/tmp');
++Future<io.FileSystemEntityType> studioEntityType(
++  String path, {
++  bool followLinks = true,
++}) => _memory.type(path, followLinks: followLinks);
++io.FileSystemEntityType studioEntityTypeSync(
++  String path, {
++  bool followLinks = true,
++}) => _memory.typeSync(path, followLinks: followLinks);
++
++io.FileSystemException _storageError(Object error, String operation) =>
++    error is io.FileSystemException
++    ? error
++    : io.FileSystemException(
++        'Browser project storage failed to $operation: $error',
++        _root,
++      );
++
++Future<void> initializeStudioStorage() async {
++  try {
++    await (_initialization ??= _initialize());
++  } catch (error) {
++    _database?.close();
++    _database = null;
++    _initialization = null;
++    _loading = true;
++    _memory = _newMemory();
++    throw _storageError(error, 'initialize');
++  }
++}
++
++@visibleForTesting
++Future<void> reloadStudioStorageForTesting({
++  bool discardUnsaved = false,
++}) async {
++  if (discardUnsaved) {
++    await _writes.catchError((Object _) {});
++  } else {
++    await flushStudioStorage();
++  }
++  _database?.close();
++  _database = null;
++  _initialization = null;
++  _writes = Future.value();
++  _loading = true;
++  _dirty = false;
++  _revision = null;
++  _memory = _newMemory();
++  await initializeStudioStorage();
++}
++
++@visibleForTesting
++void closeStudioStorageForTesting() => _database!.close();
++
++@visibleForTesting
++Future<void> reconnectStudioStorageForTesting() async {
++  try {
++    _database?.close();
++    _database = await _openDatabase();
++  } catch (error) {
++    throw _storageError(error, 'reconnect');
++  }
++}
++
++Future<web.IDBDatabase> _openDatabase() async {
++  final opened = Completer<web.IDBDatabase>();
++  final request = web.window.indexedDB.open(
++    'qfli-studio-${StudioProfile.current?.id ?? 'qflistudio'}',
++    1,
++  );
++  request.onupgradeneeded = ((web.Event _) {
++    try {
++      (request.result as web.IDBDatabase).createObjectStore('filesystem');
++    } catch (error) {
++      if (!opened.isCompleted) {
++        opened.completeError(_storageError(error, 'upgrade'));
++      }
++    }
++  }).toJS;
++  request.onsuccess = ((web.Event _) {
++    final database = request.result as web.IDBDatabase;
++    if (opened.isCompleted) {
++      database.close();
++    } else {
++      opened.complete(database);
++    }
++  }).toJS;
++  request.onerror = ((web.Event _) {
++    if (!opened.isCompleted) {
++      opened.completeError(
++        const io.FileSystemException(
++          'Browser project storage failed to open',
++          _root,
++        ),
++      );
++    }
++  }).toJS;
++  request.onblocked = ((web.Event _) {
++    if (!opened.isCompleted) {
++      opened.completeError(
++        const io.FileSystemException(
++          'Browser project storage upgrade is blocked',
++          _root,
++        ),
++      );
++    }
++  }).toJS;
++  return opened.future;
++}
++
++Future<void> _initialize() async {
++  _database = await _openDatabase();
++  final loaded = Completer<Object?>();
++  final read = _database!
++      .transaction('filesystem'.toJS, 'readonly')
++      .objectStore('filesystem')
++      .get('snapshot'.toJS);
++  read.onsuccess = ((web.Event _) => loaded.complete(
++    read.result.dartify(),
++  )).toJS;
++  read.onerror = ((web.Event _) => loaded.completeError(
++    const io.FileSystemException(
++      'Browser project storage failed to load',
++      _root,
++    ),
++  )).toJS;
++  final encoded = await loaded.future;
++  _memory.directory(_root).createSync(recursive: true);
++  _memory.directory('/tmp').createSync(recursive: true);
++  if (encoded != null) {
++    if (encoded is! String) {
++      throw const FormatException('Invalid browser filesystem snapshot');
++    }
++    final snapshot = jsonDecode(encoded) as Map<String, dynamic>;
++    _revision = snapshot['revision'] as String?;
++    if (snapshot['version'] != 1) {
++      throw const FormatException('Unsupported browser filesystem version');
++    }
++    final entries = snapshot['entries'] as List;
++    for (final raw in entries) {
++      final entry = raw as Map<String, dynamic>;
++      final path = entry['path'] as String;
++      if (!_memory.path.isAbsolute(path) ||
++          path == '/' ||
++          path == '/tmp' ||
++          path.startsWith('/tmp/') ||
++          _memory.path.normalize(path) != path) {
++        throw const FormatException('Invalid browser filesystem path');
++      }
++      if (entry['directory'] == true) {
++        _memory.directory(path).createSync(recursive: true);
++      } else {
++        final target = _memory.file(path);
++        target.parent.createSync(recursive: true);
++        target.writeAsBytesSync(base64Decode(entry['bytes'] as String));
++        target.setLastModifiedSync(DateTime.parse(entry['modified'] as String));
++      }
++    }
++  }
++  _memory.currentDirectory = _root;
++  _loading = false;
++}
++
++void _markDirty() {
++  if (_loading) return;
++  _dirty = true;
++  if (_scheduled) return;
++  _scheduled = true;
++  scheduleMicrotask(() {
++    _scheduled = false;
++    unawaited(
++      flushStudioStorage().catchError((Object error) {
++        debugPrint('Browser project storage: $error');
++      }),
++    );
++  });
++}
++
++Future<void> flushStudioStorage() async {
++  await initializeStudioStorage();
++  final previous = _writes;
++  final current = previous.catchError((Object _) {}).then((_) async {
++    if (!_dirty) return;
++    try {
++      final entries = <Map<String, Object>>[];
++      for (final entity in _persistentEntities()) {
++        if (entity is file.Directory) {
++          entries.add({'path': entity.path, 'directory': true});
++        } else if (entity is file.File) {
++          entries.add({
++            'path': entity.path,
++            'bytes': base64Encode(entity.readAsBytesSync()),
++            'modified': entity.lastModifiedSync().toIso8601String(),
++          });
++        }
++      }
++      final nextRevision = '$_writerId-${++_commitSequence}';
++      final encoded = jsonEncode({
++        'version': 1,
++        'revision': nextRevision,
++        'entries': entries,
++      });
++      _dirty = false;
++      await _commitSnapshot(encoded, nextRevision);
++    } catch (error) {
++      _dirty = true;
++      throw _storageError(error, 'save');
++    }
++  });
++  _writes = current;
++  await current;
++}
++
++Iterable<file.FileSystemEntity> _persistentEntities() sync* {
++  // MemoryFileSystem's root listing returns relative names; bind them to '/'.
++  for (final child in _memory.directory('/').listSync(followLinks: false)) {
++    final path = _memory.path.join('/', child.path);
++    if (path == '/tmp') continue;
++    if (child is file.Directory) {
++      final directory = _memory.directory(path);
++      yield directory;
++      yield* directory.listSync(recursive: true, followLinks: false);
++    } else if (child is file.File) {
++      yield _memory.file(path);
++    }
++  }
++}
++
++Future<void> _commitSnapshot(String encoded, String nextRevision) async {
++  final transaction = _database!.transaction('filesystem'.toJS, 'readwrite');
++  final store = transaction.objectStore('filesystem');
++  final currentSnapshot = store.get('snapshot'.toJS);
++  final committed = Completer<void>();
++  io.FileSystemException? conflict;
++  transaction.oncomplete = ((web.Event _) {
++    _revision = nextRevision;
++    committed.complete();
++  }).toJS;
++  transaction.onabort = ((web.Event _) {
++    if (!committed.isCompleted) {
++      committed.completeError(
++        conflict ??
++            const io.FileSystemException(
++              'Browser project save was aborted',
++              _root,
++            ),
++      );
++    }
++  }).toJS;
++  transaction.onerror = ((web.Event _) {
++    if (!committed.isCompleted) {
++      committed.completeError(
++        const io.FileSystemException(
++          'Browser project storage is full or unavailable',
++          _root,
++        ),
++      );
++    }
++  }).toJS;
++  currentSnapshot.onsuccess = ((web.Event _) {
++    try {
++      final previous = currentSnapshot.result.dartify();
++      final currentRevision = previous == null
++          ? null
++          : (jsonDecode(previous as String)
++                as Map<String, dynamic>)['revision'];
++      if (currentRevision != _revision) {
++        conflict = const io.FileSystemException(
++          'Project storage changed in another browser tab. Reload before saving.',
++          _root,
++        );
++        transaction.abort();
++        return;
++      }
++      store.put(encoded.toJS, 'snapshot'.toJS);
++    } catch (error) {
++      conflict = _storageError(error, 'save');
++      transaction.abort();
++    }
++  }).toJS;
++  await committed.future;
++}
++
++abstract class _StoredEntity<
++  T extends file.FileSystemEntity,
++  D extends io.FileSystemEntity
++>
++    extends file.ForwardingFileSystemEntity<T, D> {
++  _StoredEntity(this.delegate);
++  @override
++  final D delegate;
++  @override
++  file.FileSystem get fileSystem => _memory;
++  @override
++  file.File wrapFile(io.File delegate) => _StoredFile(delegate);
++  @override
++  file.Directory wrapDirectory(io.Directory delegate) =>
++      _StoredDirectory(delegate);
++  @override
++  file.Link wrapLink(io.Link delegate) => _memory.link(delegate.path);
++  @override
++  Future<T> rename(String path) async {
++    final result = super.renameSync(path);
++    _markDirty();
++    await flushStudioStorage();
++    return result;
++  }
++
++  @override
++  T renameSync(String path) {
++    final result = super.renameSync(path);
++    _markDirty();
++    return result;
++  }
++
++  @override
++  Future<T> delete({bool recursive = false}) async {
++    final result = await super.delete(recursive: recursive);
++    await flushStudioStorage();
++    return result;
++  }
++}
++
++class _StoredFile extends _StoredEntity<file.File, io.File>
++    with file.ForwardingFile {
++  _StoredFile(super.delegate);
++  @override
++  Future<file.File> create({
++    bool recursive = false,
++    bool exclusive = false,
++  }) async {
++    createSync(recursive: recursive, exclusive: exclusive);
++    await flushStudioStorage();
++    return this;
++  }
++
++  @override
++  void createSync({bool recursive = false, bool exclusive = false}) {
++    if (exclusive && existsSync()) {
++      throw io.FileSystemException('File already exists', path);
++    }
++    delegate.createSync(recursive: recursive, exclusive: exclusive);
++  }
++
++  @override
++  Future<file.File> writeAsBytes(
++    List<int> bytes, {
++    io.FileMode mode = io.FileMode.write,
++    bool flush = false,
++  }) async {
++    delegate.writeAsBytesSync(bytes, mode: mode, flush: flush);
++    await flushStudioStorage();
++    return this;
++  }
++
++  @override
++  Future<file.File> writeAsString(
++    String value, {
++    io.FileMode mode = io.FileMode.write,
++    Encoding encoding = utf8,
++    bool flush = false,
++  }) => writeAsBytes(encoding.encode(value), mode: mode, flush: flush);
++  @override
++  Future<file.File> copy(String path) async {
++    final result = wrapFile(delegate.copySync(path));
++    await flushStudioStorage();
++    return result;
++  }
++}
++
++class _StoredDirectory extends _StoredEntity<file.Directory, io.Directory>
++    with file.ForwardingDirectory<file.Directory> {
++  _StoredDirectory(super.delegate);
++  @override
++  file.Directory childDirectory(String name) =>
++      wrapDirectory(_memory.directory(_memory.path.join(path, name)));
++  @override
++  file.File childFile(String name) =>
++      wrapFile(_memory.file(_memory.path.join(path, name)));
++  @override
++  file.Link childLink(String name) =>
++      _memory.link(_memory.path.join(path, name));
++  @override
++  Future<file.Directory> create({bool recursive = false}) async {
++    delegate.createSync(recursive: recursive);
++    await flushStudioStorage();
++    return this;
++  }
++
++  @override
++  Future<file.Directory> createTemp([String? prefix]) async {
++    final result = wrapDirectory(delegate.createTempSync(prefix));
++    await flushStudioStorage();
++    return result;
++  }
++}
+*** Add File: D:/MyNewProjects/qfli_studio_core/lib/services/platform_io_native.dart
++import 'dart:io';
++
++export 'dart:io';
++
++File studioFile(String path) => File(path);
++Directory studioDirectory(String path) => Directory(path);
++Directory get studioCurrentDirectory => Directory.current;
++Directory get studioSystemTemp => Directory.systemTemp;
++Future<FileSystemEntityType> studioEntityType(
++  String path, {
++  bool followLinks = true,
++}) => FileSystemEntity.type(path, followLinks: followLinks);
++FileSystemEntityType studioEntityTypeSync(
++  String path, {
++  bool followLinks = true,
++}) => FileSystemEntity.typeSync(path, followLinks: followLinks);
++Future<void> initializeStudioStorage() async {}
++Future<void> flushStudioStorage() async {}
+*** Add File: D:/MyNewProjects/qfli_studio_core/lib/services/platform_path.dart
++export 'platform_path_native.dart'
++    if (dart.library.js_interop) 'platform_path_browser.dart';
+*** Add File: D:/MyNewProjects/qfli_studio_core/lib/services/platform_path_browser.dart
++import 'package:path/path.dart' as path;
++
++export 'package:path/path.dart'
++    show Context, Style, PathException, posix, windows, url;
++
++// Virtual project paths share the browser filesystem's POSIX root, not page URLs.
++final context = path.Context(style: path.Style.posix, current: '/qfli');
++path.Style get style => context.style;
++String get current => context.current;
++String get separator => context.separator;
++final absolute = context.absolute;
++final basename = context.basename;
++final basenameWithoutExtension = context.basenameWithoutExtension;
++final dirname = context.dirname;
++final extension = context.extension;
++final rootPrefix = context.rootPrefix;
++final isAbsolute = context.isAbsolute;
++final isRelative = context.isRelative;
++final isRootRelative = context.isRootRelative;
++final join = context.join;
++final joinAll = context.joinAll;
++final split = context.split;
++final canonicalize = context.canonicalize;
++final normalize = context.normalize;
++final relative = context.relative;
++final isWithin = context.isWithin;
++final equals = context.equals;
++final hash = context.hash;
++final withoutExtension = context.withoutExtension;
++final setExtension = context.setExtension;
++String fromUri(Object? uri) => context.fromUri(uri!);
++final toUri = context.toUri;
++String prettyUri(Object? uri) => context.prettyUri(uri!);
+*** Add File: D:/MyNewProjects/qfli_studio_core/lib/services/platform_path_native.dart
++export 'package:path/path.dart';
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/services/process_supervisor.dart
+@@
+ import 'dart:async';
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ 
+ /// Starts a process for [ProcessSupervisor].
+ ///
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/services/project_archive_service.dart
+@@
+ import 'dart:convert';
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ 
+-import 'package:path/path.dart' as p;
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
+ 
+ import '../models/project.dart';
+ import 'project_config.dart';
+@@
+   }
+ 
+   static Future<String> exportProject(Project project) async {
+-    final root = Directory(project.path);
++    final root = studioDirectory(project.path);
+     if (!root.existsSync()) {
+       throw const ProjectArchiveException('项目目录不存在');
+     }
+@@
+     if (files is! List) {
+       throw const ProjectArchiveException('归档缺少 files 列表');
+     }
+-    final root = Directory(targetDirectory);
++    final root = studioDirectory(targetDirectory);
+     await root.create(recursive: true);
+     final paths = <String>{};
+     for (final raw in files) {
+@@
+       if (!paths.add(relative)) {
+         throw ProjectArchiveException('归档包含重复路径：$relative');
+       }
+-      final target = File(p.joinAll([root.path, ...relative.split('/')]));
++      final target = studioFile(p.joinAll([root.path, ...relative.split('/')]));
+       if (!p.isWithin(root.path, target.path) &&
+           p.normalize(root.path) != p.normalize(target.path)) {
+         throw const ProjectArchiveException('归档路径越界');
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/services/project_config.dart
+@@
+ import 'dart:convert';
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ 
+-import 'package:path/path.dart' as p;
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
+ 
+ /// 项目级配置文件：`<项目根>/.qfli/project.json`。
+ ///
+@@
+   /// 读取完整配置；文件不存在或内容损坏返回 null。
+   static Map<String, dynamic>? read(String projectRoot) {
+     try {
+-      final file = File(configPath(projectRoot));
++      final file = studioFile(configPath(projectRoot));
+       if (!file.existsSync()) return null;
+       final data = jsonDecode(file.readAsStringSync());
+       return data is Map ? Map<String, dynamic>.from(data) : null;
+@@
+       if (!existing.containsKey('createdAt')) {
+         existing['createdAt'] = DateTime.now().toIso8601String();
+       }
+-      final file = File(configPath(projectRoot));
++      final file = studioFile(configPath(projectRoot));
+       await file.parent.create(recursive: true);
+       await file.writeAsString(
+         const JsonEncoder.withIndent('  ').convert(existing),
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/services/recovery_service.dart
+@@
+ import 'dart:convert';
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ 
+ import 'package:archive/archive.dart';
+-import 'package:path/path.dart' as p;
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
+ 
+ import 'app_paths.dart';
+ import 'file_backup.dart';
+@@
+       if (entity is! File || entity.path.endsWith('.metadata.json')) continue;
+       if (recycle && p.extension(entity.path).toLowerCase() != '.zip') continue;
+       Map<String, dynamic> metadata = {};
+-      final metadataFile = File('${entity.path}.metadata.json');
++      final metadataFile = studioFile('${entity.path}.metadata.json');
+       if (await metadataFile.exists()) {
+         try {
+           metadata =
+@@
+     }
+     final target = p.normalize(destination);
+     if (entry.archive) {
+-      if (await FileSystemEntity.type(target, followLinks: false) !=
++      if (await studioEntityType(target, followLinks: false) !=
+           FileSystemEntityType.notFound) {
+         throw const FileSystemException('恢复位置已存在，请选择其他位置');
+       }
+@@
+       }
+       final base = await AppPaths.storageDirectory();
+       if (base == null) throw const FileSystemException('未找到应用数据目录');
+-      final staging = await Directory(base).createTemp('.qfli-restore-');
++      final staging = await studioDirectory(base).createTemp('.qfli-restore-');
+       try {
+         for (final member in archive.files) {
+           final normalized = member.name.replaceAll('\\', '/');
+@@
+             throw const FormatException('回收记录包含非法路径');
+           }
+           if (member.isFile) {
+-            await Directory(p.dirname(full)).create(recursive: true);
+-            await File(full).writeAsBytes(member.content);
++            await studioDirectory(p.dirname(full)).create(recursive: true);
++            await studioFile(full).writeAsBytes(member.content);
+           } else {
+-            await Directory(full).create(recursive: true);
++            await studioDirectory(full).create(recursive: true);
+           }
+         }
+         final source = p.join(staging.path, rootNames.single);
+-        await Directory(p.dirname(target)).create(recursive: true);
+-        final entity = await FileSystemEntity.type(source);
++        await studioDirectory(p.dirname(target)).create(recursive: true);
++        final entity = await studioEntityType(source);
+         if (entity == FileSystemEntityType.directory) {
+-          await _copyDirectory(Directory(source), Directory(target));
++          await _copyDirectory(studioDirectory(source), studioDirectory(target));
+         } else {
+-          await File(source).copy(target);
++          await studioFile(source).copy(target);
+         }
+       } finally {
+         await staging.delete(recursive: true);
+@@
+       if (p.equals(target, entry.file.absolute.path)) {
+         throw const FileSystemException('不能覆盖备份本身');
+       }
+-      final original = File(target);
++      final original = studioFile(target);
+       if (await original.exists()) {
+         final error = await FileBackup.backupBeforeOverwrite(
+           original,
+@@
+         );
+         if (error != null) throw FileSystemException(error);
+       }
+-      await Directory(p.dirname(target)).create(recursive: true);
++      await studioDirectory(p.dirname(target)).create(recursive: true);
+       await entry.file.copy(target);
+     }
+   }
+@@
+     await for (final entity in source.list(followLinks: false)) {
+       final output = p.join(target.path, p.basename(entity.path));
+       if (entity is Directory) {
+-        await _copyDirectory(entity, Directory(output));
++        await _copyDirectory(entity, studioDirectory(output));
+       } else if (entity is File) {
+         await entity.copy(output);
+       }
+@@
+ 
+   static Future<void> delete(RecoveryEntry entry) async {
+     await entry.file.delete();
+-    final metadata = File('${entry.file.path}.metadata.json');
++    final metadata = studioFile('${entry.file.path}.metadata.json');
+     if (await metadata.exists()) await metadata.delete();
+   }
+ }
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/services/recycle_bin.dart
+@@
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ import 'dart:convert';
+ 
+ import 'package:archive/archive.dart';
+ import 'package:flutter/foundation.dart';
+-import 'package:path/path.dart' as p;
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
+ 
+ import 'app_paths.dart';
+ import 'project_config.dart';
+@@
+     if (bin != projectsBin && bin != filesBin) throw ArgumentError.value(bin);
+     final base = baseOverride ?? await AppPaths.storageDirectory();
+     if (base == null) throw const FileSystemException('未找到应用数据目录');
+-    return Directory(p.join(base, 'recyclebin', bin));
++    return studioDirectory(p.join(base, 'recyclebin', bin));
+   }
+ 
+   /// 删除整个项目文件夹前的备份。返回错误信息，null 表示成功。
+@@
+       if (base == null) {
+         return '未找到可写的应用数据目录，无法备份到回收站';
+       }
+-      final binDir = Directory(p.join(base, 'recyclebin', bin));
++      final binDir = studioDirectory(p.join(base, 'recyclebin', bin));
+       await binDir.create(recursive: true);
+-      final target = File(
++      final target = studioFile(
+         p.join(
+           binDir.path,
+           await _zipName(
+@@
+       final metadata = bin == projectsBin
+           ? ProjectConfig.readMetadata(sourcePath)
+           : null;
+-      await File('${target.path}.metadata.json').writeAsString(
++      await studioFile('${target.path}.metadata.json').writeAsString(
+         jsonEncode({
+           'originalPath': p.normalize(p.absolute(sourcePath)),
+           'projectName': metadata?.name ?? namePrefix,
+@@
+         : '$prefix-${p.basename(sourcePath)}-$stamp';
+     var name = '$base.zip';
+     var i = 1;
+-    while (File(p.join(binDir.path, name)).existsSync()) {
++    while (studioFile(p.join(binDir.path, name)).existsSync()) {
+       name = '$base-${i++}.zip';
+     }
+     return name;
+@@
+     String fsPath,
+     String archivePath,
+   ) async {
+-    final type = FileSystemEntity.typeSync(fsPath, followLinks: false);
++    final type = studioEntityTypeSync(fsPath, followLinks: false);
+     if (type == FileSystemEntityType.directory) {
+       archive.add(ArchiveFile.directory('$archivePath/'));
+-      for (final entity in Directory(fsPath).listSync(followLinks: false)) {
++      for (final entity in studioDirectory(fsPath).listSync(followLinks: false)) {
+         await _addToArchive(
+           archive,
+           entity.path,
+@@
+         );
+       }
+     } else if (type == FileSystemEntityType.file) {
+-      final bytes = await File(fsPath).readAsBytes();
++      final bytes = await studioFile(fsPath).readAsBytes();
+       archive.add(ArchiveFile.bytes(archivePath, bytes));
+     }
+     // 符号链接等类型跳过，避免环引用。
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/services/resource_import_service.dart
+@@
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ 
+-import 'package:path/path.dart' as p;
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
+ 
+ import 'picker_service.dart';
+ 
+@@
+     required String destinationDirectory,
+     required ResourceConflictResolver resolveConflict,
+   }) async {
+-    await Directory(destinationDirectory).create(recursive: true);
++    await studioDirectory(destinationDirectory).create(recursive: true);
+     var imported = 0;
+     var skipped = 0;
+     final errors = <String>[];
+     for (var index = 0; index < documents.length; index++) {
+       final document = documents[index];
+       final name = _safeName(document, index);
+-      final destination = File(p.join(destinationDirectory, name));
++      final destination = studioFile(p.join(destinationDirectory, name));
+       try {
+         if (destination.existsSync()) {
+           if (!await resolveConflict(name)) {
+@@
+ 
+   static Future<List<int>> _read(PickedDocument document) async {
+     final path = document.path;
+-    if (path != null && path.isNotEmpty) return File(path).readAsBytes();
++    if (path != null && path.isNotEmpty) return studioFile(path).readAsBytes();
+     final uri = document.uri;
+     if (uri != null && uri.isNotEmpty) return PickerService.readUri(uri);
+     throw const FileSystemException('系统未返回可读资源');
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/services/runner_service.dart
+@@
+ import 'dart:async';
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ 
+ import 'package:flutter/services.dart';
+-import 'package:path/path.dart' as p;
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
+ 
+ import 'app_paths.dart';
+ import 'local_web_server.dart';
+@@
+       final path = p.normalize(
+         p.join(root, configuredEntry.replaceAll('\\', '/')),
+       );
+-      if (p.isWithin(root, path) && File(path).existsSync()) {
++      if (p.isWithin(root, path) && studioFile(path).existsSync()) {
+         try {
+-          final resolvedRoot = Directory(root).resolveSymbolicLinksSync();
+-          final resolvedPath = File(path).resolveSymbolicLinksSync();
++          final resolvedRoot = studioDirectory(root).resolveSymbolicLinksSync();
++          final resolvedPath = studioFile(path).resolveSymbolicLinksSync();
+           if (p.isWithin(resolvedRoot, resolvedPath)) return path;
+         } on FileSystemException {
+           // A stale or inaccessible explicit entry falls back to legacy names.
+@@
+       ..._defaultEntryNames,
+     ];
+     for (final name in candidates) {
+-      final f = File(p.join(projectPath, name));
++      final f = studioFile(p.join(projectPath, name));
+       if (f.existsSync()) return f.path;
+     }
+     return null;
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/services/structured_content_service.dart
+@@
+ import 'dart:convert';
+ 
+ import 'package:flutter/services.dart';
+-import 'package:path/path.dart' as p;
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
+ 
+ class JsonAnalysis {
+   const JsonAnalysis({
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/services/task_activity_service.dart
+@@
+ import 'dart:async';
+ import 'dart:convert';
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ import 'dart:math';
+ 
+ import 'package:flutter/foundation.dart';
+-import 'package:path/path.dart' as p;
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
+ 
+ import '../community/models.dart';
+ import '../store/auth_store.dart';
+@@
+       _storage = _storageOverride;
+     } else {
+       final root = await AppPaths.storageDirectory();
+-      _storage = root == null ? null : File(p.join(root, 'daily_tasks.json'));
++      _storage = root == null ? null : studioFile(p.join(root, 'daily_tasks.json'));
+     }
+     final file = _storage;
+     if (file == null || !await file.exists()) {
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/store/auth_store.dart
+@@
+ import 'dart:async';
+ import 'dart:convert';
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ 
+ import 'package:flutter/foundation.dart';
+-import 'package:path/path.dart' as p;
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
+ 
+ import '../community/models.dart';
+ import '../config/api_config.dart';
+@@
+   Future<File> _resolveStorage() async {
+     final base = await AppPaths.storageDirectory();
+     if (base == null) throw const FileSystemException('未找到可写目录');
+-    return File(p.join(base, 'auth.json'));
++    return studioFile(p.join(base, 'auth.json'));
+   }
+ 
+   Future<void> _persist() {
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/store/project_store.dart
+@@
+ import 'dart:async';
+ import 'dart:convert';
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ 
+ import 'package:flutter/foundation.dart';
+-import 'package:path/path.dart' as p;
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
+ 
+ import '../models/project.dart';
+ import '../models/tutorial.dart';
+@@
+ ({List<Project> projects, String? browsedId}) _readProjectRegistry(
+   String path,
+ ) {
+-  final file = File(path);
++  final file = studioFile(path);
+   if (!file.existsSync()) return (projects: <Project>[], browsedId: null);
+   final data = jsonDecode(file.readAsStringSync());
+   if (data is! Map || data['projects'] is! List) {
+@@
+     if (base == null) {
+       throw const FileSystemException('未找到可写的存储目录');
+     }
+-    return File(p.join(base, 'projects.json'));
++    return studioFile(p.join(base, 'projects.json'));
+   }
+ 
+   Future<void> _persist({VoidCallback? onFailure, Project? registering}) {
+@@
+         temporaryDirectory = await file.parent.createTemp(
+           '.qfli-project-registry-',
+         );
+-        temporaryFile = File(p.join(temporaryDirectory.path, 'registry.json'));
++        temporaryFile = studioFile(p.join(temporaryDirectory.path, 'registry.json'));
+         await temporaryFile.writeAsString(encoded, flush: true);
+         await temporaryFile.rename(file.path);
+         _pendingLocalRegistrations.remove(registering);
+@@
+       return (error: '项目名称不能包含 \\ / : * ? " < > | 等字符', project: null);
+     }
+     final locationPath = location.trim();
+-    final dir = Directory(locationPath);
++    final dir = studioDirectory(locationPath);
+     if (locationPath.isEmpty || !dir.existsSync()) {
+       return (error: '位置目录不存在：$locationPath', project: null);
+     }
+@@
+       );
+       createdDirectory = directory;
+       fullPath = directory.path;
+-      await Directory(p.join(fullPath, 'src')).create(recursive: true);
++      await studioDirectory(p.join(fullPath, 'src')).create(recursive: true);
+       for (final file in files ?? template.files) {
+-        final target = File(p.join(fullPath, file.path));
++        final target = studioFile(p.join(fullPath, file.path));
+         await target.parent.create(recursive: true);
+         await target.create(exclusive: true);
+         await target.writeAsString(file.content, flush: true);
+@@
+   Future<ProjectResult> addExisting(String rawPath) async {
+     final path = rawPath.trim().replaceAll('"', '');
+     if (path.isEmpty) return (error: '请输入项目路径', project: null);
+-    final dir = Directory(path);
++    final dir = studioDirectory(path);
+     if (!dir.existsSync()) return (error: '目录不存在：$path', project: null);
+     final normalized = p.normalize(dir.absolute.path);
+     if (_projects.any(
+@@
+   /// 并移出列表。返回错误信息，null 表示成功。
+   Future<String?> deleteProject(Project project) async {
+     if (project.isCloud) return '云端项目请在云端管理中删除';
+-    final dir = Directory(project.path);
++    final dir = studioDirectory(project.path);
+     if (dir.existsSync()) {
+       final backupError = await RecycleBin.backupProject(
+         dir,
+@@
+     }
+ 
+     try {
+-      scan(Directory(dirPath));
++      scan(studioDirectory(dirPath));
+     } on FileSystemException {
+       return '';
+     }
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/store/settings_store.dart
+@@
+ import 'dart:convert';
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ 
+ import 'package:flutter/material.dart';
+ import 'package:flutter/foundation.dart';
+-import 'package:path/path.dart' as p;
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
+ 
+ import '../services/app_paths.dart';
+ import '../editor/highlight_import.dart';
+@@
+   Future<File> _resolveStorage() async {
+     final base = await AppPaths.storageDirectory();
+     if (base == null) throw const FileSystemException('未找到可写的存储目录');
+-    return File(p.join(base, 'settings.json'));
++    return studioFile(p.join(base, 'settings.json'));
+   }
+ 
+   Future<void> _persist() {
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/terminal/shell/local_shell_io.dart
+@@
+ import 'dart:async';
+ import 'dart:convert';
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ 
+ import 'package:flutter/foundation.dart';
+ 
+@@
+ 
+ class LocalShellBackend extends BaseShellBackend {
+   LocalShellBackend({String? workingDirectory}) {
+-    cwd = workingDirectory ?? homeDirectory ?? Directory.current.path;
++    cwd = workingDirectory ?? homeDirectory ?? studioCurrentDirectory.path;
+   }
+ 
+   static const String _powerShellPreamble =
+@@
+         ? (env['USERPROFILE'] ?? env['HOMEDRIVE'])
+         : env['HOME'];
+     if (home != null && home.isNotEmpty) return home;
+-    return Directory.current.path;
++    return studioCurrentDirectory.path;
+   }
+ 
+   @override
+@@
+       return;
+     }
+ 
+-    final directory = Directory(cwd);
+-    final workingDirectory = directory.existsSync() ? cwd : Directory.current.path;
++    final directory = studioDirectory(cwd);
++    final workingDirectory = directory.existsSync() ? cwd : studioCurrentDirectory.path;
+ 
+     final argv = _buildCommand(shell, command);
+     final ManagedProcess process;
+@@
+   @override
+   Future<bool> changeDirectory(String target) async {
+     final resolved = resolvePath(target);
+-    final directory = Directory(resolved);
++    final directory = studioDirectory(resolved);
+ 
+     if (!directory.existsSync()) {
+       emitLine('cd: 目录不存在: $target', OutputKind.stderr);
+@@
+       }
+     }
+ 
+-    if (_isRooted(path)) return Directory(path).absolute.path;
++    if (_isRooted(path)) return studioDirectory(path).absolute.path;
+ 
+-    final relative = Directory(
++    final relative = studioDirectory(
+       '$cwd${Platform.pathSeparator}'
+       '${path.replaceAll('/', Platform.pathSeparator)}',
+     );
+@@
+ 
+     // Not found relative to the session cwd: fall back to the host process
+     // directory so that drive-less Windows paths still resolve.
+-    final fallback = Directory(path);
++    final fallback = studioDirectory(path);
+     if (fallback.existsSync()) return fallback.absolute.path;
+ 
+     return relative.absolute.path;
+*** Update File: D:/MyNewProjects/qfli_studio_core/lib/widgets/code_snippet.dart
+@@
+-import 'dart:io';
++import 'package:qfli_studio_core/services/platform_io.dart';
+ 
+ import 'package:flutter/material.dart';
+ import 'package:flutter/services.dart';
+@@
+           imported = (project: registered.project!, path: snippet.path);
+         } catch (_) {
+           try {
+-            await Directory(snippet.project.path).delete(recursive: true);
++            await studioDirectory(snippet.project.path).delete(recursive: true);
+           } on FileSystemException {
+             // This directory belongs to the failed import, not an existing project.
+           }
+@@
+           fileName: fileName,
+         );
+         var overwrite = false;
+-        if (await FileSystemEntity.type(target, followLinks: false) ==
++        if (await studioEntityType(target, followLinks: false) ==
+             FileSystemEntityType.file) {
+           if (!mounted) return;
+           overwrite = await _confirmReplacement(fileName);
+*** Update File: D:/MyNewProjects/qfli_studio_core/pubspec.yaml
+@@
+ 
+   path_provider: ^2.1.5
+   file_selector: ^1.0.3
+-  path: ^1.9.1
++  path: ^1.9.1
++  file: ^7.0.1
++  web: ^1.1.1
+   path_provider_ohos: ^2.2.1
+   re_editor: ^0.10.0
+   archive: ^4.0.7
+*** Add File: D:/MyNewProjects/qfli_studio_core/test/code_editor_browser_input_test.dart
++@TestOn('browser')
++library;
++
++import 'dart:async';
++
++import 'package:flutter/material.dart';
++import 'package:flutter/semantics.dart';
++import 'package:flutter/services.dart';
++import 'package:flutter_test/flutter_test.dart';
++import 'package:re_editor/re_editor.dart';
++
++class _SaveIntent extends Intent {
++  const _SaveIntent();
++}
++
++SemanticsNode _textField(WidgetTester tester) => tester.semantics
++    .simulatedAccessibilityTraversal()
++    .singleWhere((node) => node.getSemanticsData().flagsCollection.isTextField);
++
++Future<void> _mount(
++  WidgetTester tester,
++  CodeLineEditingController controller,
++  FocusNode focus, {
++  bool readOnly = false,
++}) => tester.pumpWidget(
++  MaterialApp(
++    home: CodeEditor(
++      controller: controller,
++      focusNode: focus,
++      readOnly: readOnly,
++      autocompleteSymbols: false,
++    ),
++  ),
++);
++
++Future<void> _sendDelta(
++  WidgetTester tester, {
++  required String oldText,
++  required String inserted,
++  required int start,
++  required int end,
++  required int selection,
++}) async {
++  final client =
++      tester.testTextInput.log
++              .lastWhere((call) => call.method == 'TextInput.setClient')
++              .arguments
++          as List<dynamic>;
++  final completed = Completer<void>();
++  // TestTextInput exposes full-value updates only; inject the platform delta message.
++  tester.binding.defaultBinaryMessenger.handlePlatformMessage(
++    SystemChannels.textInput.name,
++    SystemChannels.textInput.codec.encodeMethodCall(
++      MethodCall('TextInputClient.updateEditingStateWithDeltas', [
++        client.first,
++        {
++          'deltas': [
++            {
++              'oldText': oldText,
++              'deltaText': inserted,
++              'deltaStart': start,
++              'deltaEnd': end,
++              'selectionBase': selection,
++              'selectionExtent': selection,
++              'composingBase': -1,
++              'composingExtent': -1,
++            },
++          ],
++        },
++      ]),
++    ),
++    (_) => completed.complete(),
++  );
++  await completed.future;
++  await tester.pump();
++}
++
++void main() {
++  testWidgets(
++    'Web save reaches the ancestor and respects explicit overrides',
++    (tester) async {
++      final controller = CodeLineEditingController.fromText('save me');
++      final focus = FocusNode();
++      var outerSaves = 0;
++      var editorSaves = 0;
++      Future<void> mount({bool override = false}) => tester.pumpWidget(
++        MaterialApp(
++          home: Shortcuts(
++            shortcuts: const {
++              SingleActivator(LogicalKeyboardKey.keyS, control: true):
++                  _SaveIntent(),
++            },
++            child: Actions(
++              actions: {
++                _SaveIntent: CallbackAction<_SaveIntent>(
++                  onInvoke: (_) {
++                    outerSaves++;
++                    return null;
++                  },
++                ),
++              },
++              child: CodeEditor(
++                controller: controller,
++                focusNode: focus,
++                shortcutOverrideActions: override
++                    ? {
++                        CodeShortcutSaveIntent:
++                            CallbackAction<CodeShortcutSaveIntent>(
++                              onInvoke: (_) {
++                                editorSaves++;
++                                return null;
++                              },
++                            ),
++                      }
++                    : null,
++              ),
++            ),
++          ),
++        ),
++      );
++      Future<void> saveKey() async {
++        await tester.sendKeyDownEvent(LogicalKeyboardKey.controlLeft);
++        await tester.sendKeyEvent(LogicalKeyboardKey.keyS);
++        await tester.sendKeyUpEvent(LogicalKeyboardKey.controlLeft);
++      }
++
++      try {
++        await mount();
++        focus.requestFocus();
++        await tester.pump();
++        await saveKey();
++        expect(outerSaves, 1);
++        expect(editorSaves, 0);
++        await mount(override: true);
++        await saveKey();
++        expect(outerSaves, 1);
++        expect(editorSaves, 1);
++      } finally {
++        await tester.pumpWidget(const SizedBox());
++        await tester.pump(const Duration(milliseconds: 60));
++        focus.dispose();
++        controller.dispose();
++      }
++    },
++    variant: const TargetPlatformVariant({TargetPlatform.windows}),
++    semanticsEnabled: false,
++  );
++
++  testWidgets(
++    'browser semantics supports focus, selection and multiline edits',
++    (tester) async {
++      final semantics = tester.ensureSemantics();
++      final controller = CodeLineEditingController.fromText('abc\nkeep');
++      final focus = FocusNode();
++      try {
++        await _mount(tester, controller, focus);
++        var field = _textField(tester);
++        expect(field.getSemanticsData().flagsCollection.isMultiline, isTrue);
++        expect(field.getSemanticsData().value, 'abc');
++        field.owner!.performAction(field.id, SemanticsAction.focus);
++        await tester.pump();
++        expect(focus.hasFocus, isTrue);
++        field = _textField(tester);
++        expect(
++          field.getSemanticsData().hasAction(SemanticsAction.setText),
++          isTrue,
++        );
++        field.owner!.performAction(field.id, SemanticsAction.setSelection, {
++          'base': 1,
++          'extent': 2,
++        });
++        await tester.pump();
++        expect(controller.selection.baseOffset, 1);
++        expect(controller.selection.extentOffset, 2);
++        expect(
++          _textField(tester).getSemanticsData().textSelection,
++          const TextSelection(baseOffset: 1, extentOffset: 2),
++        );
++        field.owner!.performAction(
++          field.id,
++          SemanticsAction.setText,
++          'edited\nsecond',
++        );
++        await tester.pump();
++        expect(controller.text, 'edited\nsecond\nkeep');
++        expect(_textField(tester).getSemanticsData().value, 'second');
++      } finally {
++        await tester.pumpWidget(const SizedBox());
++        await tester.pump(const Duration(milliseconds: 60));
++        focus.dispose();
++        controller.dispose();
++        semantics.dispose();
++      }
++    },
++    variant: const TargetPlatformVariant({TargetPlatform.windows}),
++    semanticsEnabled: false,
++  );
++
++  testWidgets(
++    'browser delta input preserves characters, newline and replacement',
++    (tester) async {
++      final controller = CodeLineEditingController.fromText('abc\nkeep');
++      final focus = FocusNode();
++      try {
++        await _mount(tester, controller, focus);
++        focus.requestFocus();
++        await tester.pump();
++        controller.selection = const CodeLineSelection.collapsed(
++          index: 0,
++          offset: 3,
++        );
++        await tester.pump();
++        final config = tester.testTextInput.setClientArgs!;
++        expect(config['enableDeltaModel'], isTrue);
++        expect((config['inputType'] as Map)['name'], 'TextInputType.multiline');
++        await _sendDelta(
++          tester,
++          oldText: 'abc',
++          inserted: '!',
++          start: 3,
++          end: 3,
++          selection: 4,
++        );
++        expect(controller.text, 'abc!\nkeep');
++        await _sendDelta(
++          tester,
++          oldText: 'abc!',
++          inserted: '\n',
++          start: 4,
++          end: 4,
++          selection: 5,
++        );
++        expect(controller.text, 'abc!\n\nkeep');
++        controller.selectAll();
++        await tester.pump();
++        const replacement =
++            '#include <stdio.h>\nint main(void) { return 7; }\n';
++        await _sendDelta(
++          tester,
++          oldText: 'abc!',
++          inserted: replacement,
++          start: 0,
++          end: 4,
++          selection: replacement.length,
++        );
++        expect(controller.text, replacement);
++      } finally {
++        await tester.pumpWidget(const SizedBox());
++        await tester.pump(const Duration(milliseconds: 60));
++        focus.dispose();
++        controller.dispose();
++      }
++    },
++    variant: const TargetPlatformVariant({TargetPlatform.windows}),
++    semanticsEnabled: false,
++  );
++
++  testWidgets(
++    'accessible browser full-value input preserves multiline source',
++    (tester) async {
++      final semantics = tester.ensureSemantics();
++      final controller = CodeLineEditingController.fromText('abc\nkeep');
++      final focus = FocusNode();
++      try {
++        await _mount(tester, controller, focus);
++        focus.requestFocus();
++        await tester.pump();
++        expect(
++          tester.testTextInput.setClientArgs!['enableDeltaModel'],
++          isFalse,
++        );
++        controller.selection = const CodeLineSelection.collapsed(
++          index: 0,
++          offset: 3,
++        );
++        await tester.pump();
++        tester.testTextInput.updateEditingValue(
++          const TextEditingValue(
++            text: 'abc!',
++            selection: TextSelection.collapsed(offset: 4),
++            composing: TextRange(start: 3, end: 4),
++          ),
++        );
++        await tester.pump();
++        expect(controller.text, 'abc!\nkeep');
++        expect(controller.composing, const TextRange(start: 3, end: 4));
++        tester.testTextInput.updateEditingValue(
++          const TextEditingValue(
++            text: 'abc!',
++            selection: TextSelection(baseOffset: 1, extentOffset: 2),
++          ),
++        );
++        await tester.pump();
++        expect(controller.selection.baseOffset, 1);
++        expect(controller.selection.extentOffset, 2);
++        expect(controller.composing, TextRange.empty);
++        controller.selectAll();
++        await tester.pump();
++        const source = '#include <stdio.h>\nint main(void) { return 7; }\n';
++        tester.testTextInput.updateEditingValue(
++          const TextEditingValue(
++            text: source,
++            selection: TextSelection.collapsed(offset: source.length),
++          ),
++        );
++        await tester.pump();
++        expect(controller.text, source);
++        tester.testTextInput.updateEditingValue(
++          const TextEditingValue(
++            text: '//typed',
++            selection: TextSelection.collapsed(offset: 7),
++          ),
++        );
++        await tester.pump();
++        expect(controller.text, '$source//typed');
++        tester.testTextInput.updateEditingValue(
++          const TextEditingValue(
++            text: '//typed\n',
++            selection: TextSelection.collapsed(offset: 8),
++          ),
++        );
++        await tester.pump();
++        expect(controller.text, '$source//typed\n');
++        await _mount(tester, controller, focus, readOnly: true);
++        tester.testTextInput.updateEditingValue(
++          const TextEditingValue(
++            text: 'denied',
++            selection: TextSelection.collapsed(offset: 6),
++          ),
++        );
++        await tester.pump();
++        expect(controller.text, '$source//typed\n');
++      } finally {
++        await tester.pumpWidget(const SizedBox());
++        await tester.pump(const Duration(milliseconds: 60));
++        focus.dispose();
++        controller.dispose();
++        semantics.dispose();
++      }
++    },
++    variant: const TargetPlatformVariant({TargetPlatform.windows}),
++    semanticsEnabled: false,
++  );
++
++  testWidgets(
++    'enabling browser semantics updates an active input connection',
++    (tester) async {
++      final controller = CodeLineEditingController.fromText('abc');
++      final focus = FocusNode();
++      SemanticsHandle? semantics;
++      try {
++        await _mount(tester, controller, focus);
++        focus.requestFocus();
++        await tester.pump();
++        expect(tester.testTextInput.setClientArgs!['enableDeltaModel'], isTrue);
++        semantics = tester.ensureSemantics();
++        await tester.pump();
++        final configuration =
++            tester.testTextInput.log
++                    .lastWhere(
++                      (call) => call.method == 'TextInput.updateConfig',
++                    )
++                    .arguments
++                as Map<dynamic, dynamic>;
++        expect(configuration['enableDeltaModel'], isFalse);
++        controller.selectAll();
++        await tester.pump();
++        tester.testTextInput.updateEditingValue(
++          const TextEditingValue(
++            text: 'after\nactivation',
++            selection: TextSelection.collapsed(offset: 16),
++          ),
++        );
++        await tester.pump();
++        expect(controller.text, 'after\nactivation');
++      } finally {
++        await tester.pumpWidget(const SizedBox());
++        await tester.pump(const Duration(milliseconds: 60));
++        focus.dispose();
++        controller.dispose();
++        semantics?.dispose();
++      }
++    },
++    variant: const TargetPlatformVariant({TargetPlatform.windows}),
++    semanticsEnabled: false,
++  );
++
++  testWidgets(
++    'read-only browser semantics cannot change source',
++    (tester) async {
++      final semantics = tester.ensureSemantics();
++      final controller = CodeLineEditingController.fromText('unchanged');
++      final focus = FocusNode();
++      try {
++        await _mount(tester, controller, focus, readOnly: true);
++        var field = _textField(tester);
++        expect(field.getSemanticsData().flagsCollection.isReadOnly, isTrue);
++        field.owner!.performAction(field.id, SemanticsAction.focus);
++        await tester.pump();
++        field = _textField(tester);
++        expect(
++          field.getSemanticsData().hasAction(SemanticsAction.setText),
++          isFalse,
++        );
++        expect(tester.testTextInput.hasAnyClients, isFalse);
++        field.owner!.performAction(field.id, SemanticsAction.setText, 'denied');
++        expect(controller.text, 'unchanged');
++      } finally {
++        await tester.pumpWidget(const SizedBox());
++        await tester.pump(const Duration(milliseconds: 60));
++        focus.dispose();
++        controller.dispose();
++        semantics.dispose();
++      }
++    },
++    variant: const TargetPlatformVariant({TargetPlatform.windows}),
++    semanticsEnabled: false,
++  );
++}
+*** Add File: D:/MyNewProjects/qfli_studio_core/test/platform_storage_browser_test.dart
++@TestOn('browser')
++library;
++
++import 'dart:async';
++import 'dart:convert';
++import 'dart:js_interop';
++
++import 'package:flutter_test/flutter_test.dart';
++import 'package:qfli_studio_core/editor/editor_controller.dart';
++import 'package:qfli_studio_core/models/project.dart';
++import 'package:qfli_studio_core/services/app_paths.dart';
++import 'package:qfli_studio_core/services/platform_io_browser.dart';
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
++import 'package:qfli_studio_core/services/project_config.dart';
++import 'package:qfli_studio_core/services/project_templates.dart';
++import 'package:qfli_studio_core/services/runner_service.dart';
++import 'package:qfli_studio_core/services/studio_profile.dart';
++import 'package:qfli_studio_core/store/project_store.dart';
++import 'package:web/web.dart' as web;
++
++Future<web.IDBDatabase> _openPeer() async {
++  final opened = Completer<web.IDBDatabase>();
++  final request = web.window.indexedDB.open(
++    'qfli-studio-browser-storage-tests',
++    1,
++  );
++  request.onsuccess = ((web.Event _) => opened.complete(
++    request.result as web.IDBDatabase,
++  )).toJS;
++  request.onerror = ((web.Event _) => opened.completeError(
++    StateError('Peer storage connection failed'),
++  )).toJS;
++  return opened.future;
++}
++
++Future<String> _peerSnapshot({String? filePath, String? replacement}) async {
++  final database = await _openPeer();
++  try {
++    final completed = Completer<String>();
++    final transaction = database.transaction(
++      'filesystem'.toJS,
++      filePath == null && replacement == null ? 'readonly' : 'readwrite',
++    );
++    final store = transaction.objectStore('filesystem');
++    final request = store.get('snapshot'.toJS);
++    late String encoded;
++    request.onsuccess = ((web.Event _) {
++      encoded = request.result.dartify() as String;
++      if (filePath != null) {
++        final snapshot = jsonDecode(encoded) as Map<String, dynamic>;
++        snapshot['revision'] = 'peer-${DateTime.now().microsecondsSinceEpoch}';
++        (snapshot['entries'] as List).add({
++          'path': filePath,
++          'bytes': base64Encode(utf8.encode('peer content')),
++          'modified': DateTime.now().toIso8601String(),
++        });
++        encoded = jsonEncode(snapshot);
++        store.put(encoded.toJS, 'snapshot'.toJS);
++      } else if (replacement != null) {
++        encoded = replacement;
++        store.put(encoded.toJS, 'snapshot'.toJS);
++      }
++    }).toJS;
++    transaction.oncomplete = ((web.Event _) => completed.complete(
++      encoded,
++    )).toJS;
++    transaction.onabort = ((web.Event _) => completed.completeError(
++      StateError('Peer transaction failed'),
++    )).toJS;
++    return await completed.future;
++  } finally {
++    database.close();
++  }
++}
++
++void main() {
++  TestWidgetsFlutterBinding.ensureInitialized();
++  late String root;
++  setUpAll(() async {
++    StudioProfile.current = const StudioProfile(
++      id: 'browser-storage-tests',
++      appTitle: 'Storage Tests',
++      templates: [ProjectTemplate.c, ProjectTemplate.cpp],
++    );
++    root = (await AppPaths.storageDirectory())!;
++  });
++
++  test(
++    'binary files, rename, empty directories and deletion survive reload',
++    () async {
++      final directory = studioDirectory('$root/storage-test');
++      if (await directory.exists()) await directory.delete(recursive: true);
++      await directory.create(recursive: true);
++      await studioDirectory('${directory.path}/empty').create();
++      final source = studioFile('${directory.path}/before.dat');
++      await source.writeAsBytes([0, 255, 10, 128], flush: true);
++      await source.rename('${directory.path}/after.dat');
++      await reloadStudioStorageForTesting();
++      expect(await studioFile('${directory.path}/after.dat').readAsBytes(), [
++        0,
++        255,
++        10,
++        128,
++      ]);
++      expect(studioFile(source.path).existsSync(), isFalse);
++      expect(studioDirectory('${directory.path}/empty').existsSync(), isTrue);
++      await studioFile('${directory.path}/after.dat').delete();
++      await reloadStudioStorageForTesting();
++      expect(studioFile('${directory.path}/after.dat').existsSync(), isFalse);
++      await studioDirectory(directory.path).delete(recursive: true);
++    },
++  );
++
++  test(
++    'projects and saved C++ source reopen through the shared store',
++    () async {
++      final store = ProjectStore();
++      await store.load();
++      final location = (await AppPaths.projectsRoot(create: true))!;
++      final result = await store.createProject(
++        name: 'Browser C++',
++        location: location,
++        template: ProjectTemplate.cpp,
++      );
++      expect(result.error, isNull);
++      final project = result.project!;
++      expect(project.path, startsWith('/qfli/'));
++      expect(project.path, isNot(contains('://')));
++      final source = studioFile('${project.path}/src/main.cpp');
++      await source.writeAsString(
++        '#include <cstdio>\nint main() { std::puts("42"); }\n',
++        flush: true,
++      );
++      await reloadStudioStorageForTesting();
++      final reopened = ProjectStore();
++      await reopened.load();
++      expect(
++        reopened.projects.any(
++          (item) => item.id == project.id && item.path == project.path,
++        ),
++        isTrue,
++      );
++      expect(
++        await studioFile(source.path).readAsString(),
++        contains('std::puts("42")'),
++      );
++      store.dispose();
++      reopened.dispose();
++    },
++  );
++
++  test(
++    'project and configured entry paths stay in the virtual filesystem',
++    () async {
++      final location = AppPaths.languageProjectsRoot('projects', type: 'cpp');
++      expect(location, '/qfli/projects/${ProjectTemplate.cpp.directoryName}');
++      expect(p.current, '/qfli');
++      expect(p.separator, '/');
++      final project = '$location/Runner Path';
++      final entry = '$project/src/custom entry.CPP';
++      await studioDirectory('$project/src').create(recursive: true);
++      await studioFile(entry).writeAsString('int main() {}', flush: true);
++      await ProjectConfig.write(
++        projectRoot: project,
++        name: 'Runner Path',
++        language: 'C++',
++        type: 'cpp',
++        entryFile: 'src/custom entry.CPP',
++        strict: true,
++      );
++      expect(RunnerService.findEntry(project), entry);
++      expect(p.relative(entry, from: project), 'src/custom entry.CPP');
++      expect(studioFile(p.relative(entry)).absolute.path, entry);
++      final runner = _CapturedRunner();
++      final previous = StudioProfile.current;
++      StudioProfile.current = StudioProfile(
++        id: previous!.id,
++        appTitle: previous.appTitle,
++        templates: previous.templates,
++        runner: runner,
++      );
++      try {
++        final result = await RunnerService.runProject(
++          projectPath: project,
++          entryFile: entry,
++        );
++        expect(runner.projectPath, project);
++        expect(runner.entryFile, entry);
++        expect(await result!.stdout!.toList(), ['42']);
++        expect(await result.exitCode, 0);
++      } finally {
++        StudioProfile.current = previous;
++        await studioDirectory(project).delete(recursive: true);
++      }
++    },
++  );
++
++  test(
++    'exclusive creation cannot overwrite an existing browser file',
++    () async {
++      final source = studioFile('$root/exclusive-test.c');
++      await source.writeAsString('kept', flush: true);
++      await expectLater(
++        source.create(exclusive: true),
++        throwsA(isA<FileSystemException>()),
++      );
++      expect(await source.readAsString(), 'kept');
++      await source.delete();
++    },
++  );
++
++  test(
++    'custom project locations persist while temporary files stay temporary',
++    () async {
++      final store = ProjectStore();
++      await store.load();
++      await studioDirectory('/workspace').create(recursive: true);
++      final result = await store.createProject(
++        name: 'Custom Location',
++        location: '/workspace',
++        template: ProjectTemplate.c,
++      );
++      expect(result.error, isNull);
++      final path = result.project!.path;
++      expect(path, startsWith('/workspace/'));
++      await studioFile(
++        '$path/src/custom.c',
++      ).writeAsString('persistent', flush: true);
++      await studioFile(
++        '/tmp/temporary.c',
++      ).writeAsString('temporary', flush: true);
++      await reloadStudioStorageForTesting();
++      expect(
++        await studioFile('$path/src/custom.c').readAsString(),
++        'persistent',
++      );
++      expect(studioFile('/tmp/temporary.c').existsSync(), isFalse);
++      final reopened = ProjectStore();
++      await reopened.load();
++      expect(reopened.projects.any((project) => project.path == path), isTrue);
++      await studioDirectory(path).delete(recursive: true);
++      store.dispose();
++      reopened.dispose();
++    },
++  );
++
++  test('a stale tab cannot replace a committed peer snapshot', () async {
++    final localPath = '$root/conflict-local.c';
++    final peerPath = '$root/conflict-peer.c';
++    await studioFile(localPath).writeAsString('original', flush: true);
++    final peerSnapshot = await _peerSnapshot(filePath: peerPath);
++    await expectLater(
++      studioFile(localPath).writeAsString('stale edit', flush: true),
++      throwsA(
++        isA<FileSystemException>().having(
++          (error) => error.message,
++          'message',
++          contains('another browser tab'),
++        ),
++      ),
++    );
++    expect(await _peerSnapshot(), peerSnapshot);
++    await reloadStudioStorageForTesting(discardUnsaved: true);
++    expect(await studioFile(peerPath).readAsString(), 'peer content');
++    expect(await studioFile(localPath).readAsString(), 'original');
++    await studioFile(peerPath).delete();
++    await studioFile(localPath).delete();
++  });
++
++  test(
++    'transaction failure retains bytes and the editor can save again',
++    () async {
++      final source = studioFile('$root/retry-save.cpp');
++      await source.writeAsString('original', flush: true);
++      final controller = EditorController(
++        project: Project.create(name: 'Retry Save', path: root),
++      );
++      try {
++        expect(await controller.openPath(source.path), isNull);
++        final open = controller.current!;
++        open.controller.text = 'unsaved bytes';
++        closeStudioStorageForTesting();
++        final error = await controller.saveFile(open);
++        expect(error, contains('Browser project storage failed to save'));
++        await expectLater(
++          flushStudioStorage(),
++          throwsA(isA<FileSystemException>()),
++        );
++        expect(open.dirty, isTrue);
++        expect(await studioFile(source.path).readAsString(), 'unsaved bytes');
++        await reconnectStudioStorageForTesting();
++        await flushStudioStorage();
++        open.controller.text = 'retry bytes';
++        expect(await controller.saveFile(open), isNull);
++        expect(open.dirty, isFalse);
++        await reloadStudioStorageForTesting();
++        expect(await studioFile(source.path).readAsString(), 'retry bytes');
++        await studioFile(source.path).delete();
++      } finally {
++        controller.dispose();
++        await reconnectStudioStorageForTesting();
++      }
++    },
++  );
++
++  test(
++    'invalid durable snapshots report a filesystem error and can recover',
++    () async {
++      final source = studioFile('$root/initialize-retry.c');
++      await source.writeAsString('preserved', flush: true);
++      final snapshot = await _peerSnapshot();
++      try {
++        await _peerSnapshot(replacement: '{"version":99}');
++        await expectLater(
++          reloadStudioStorageForTesting(discardUnsaved: true),
++          throwsA(isA<FileSystemException>()),
++        );
++      } finally {
++        await _peerSnapshot(replacement: snapshot);
++        await initializeStudioStorage();
++      }
++      expect(await studioFile(source.path).readAsString(), 'preserved');
++      await studioFile(source.path).delete();
++    },
++  );
++}
++
++class _CapturedRunner implements ProgramRunner {
++  String? projectPath;
++  String? entryFile;
++  @override
++  Future<ProgramRunResult?> run({
++    required String projectPath,
++    required String entryFile,
++  }) async {
++    this.projectPath = projectPath;
++    this.entryFile = entryFile;
++    return ProgramRunResult(
++      title: 'Path Test',
++      stdout: Stream.value('42'),
++      stderr: const Stream.empty(),
++      exitCode: Future.value(0),
++    );
++  }
++}
+*** Add File: D:/MyNewProjects/qfli_studio_core/test/platform_storage_native_test.dart
++import 'dart:io' as io;
++
++import 'package:flutter/foundation.dart';
++import 'package:flutter_test/flutter_test.dart';
++import 'package:path/path.dart' as native_path;
++import 'package:qfli_studio_core/services/platform_io.dart';
++import 'package:qfli_studio_core/services/platform_path.dart' as p;
++
++void main() {
++  test('native path semantics match the existing path library', () {
++    expect(p.style, native_path.style);
++    expect(p.current, native_path.current);
++    expect(p.separator, native_path.separator);
++    expect(
++      p.absolute('projects', 'C++'),
++      native_path.absolute('projects', 'C++'),
++    );
++    expect(
++      p.join('projects', 'source.c'),
++      native_path.join('projects', 'source.c'),
++    );
++  }, skip: kIsWeb);
++  test(
++    'platform storage preserves the native filesystem and IO types',
++    () async {
++      final temporary = await io.Directory.systemTemp.createTemp(
++        'qfli-storage-',
++      );
++      try {
++        final file = studioFile('${temporary.path}/binary.dat');
++        expect(file, isA<io.File>());
++        await file.writeAsBytes([0, 255, 10], flush: true);
++        expect(await io.File(file.path).readAsBytes(), [0, 255, 10]);
++        expect(studioEntityTypeSync(file.path), io.FileSystemEntityType.file);
++        final renamed = await file.rename('${temporary.path}/renamed.dat');
++        expect(await renamed.readAsBytes(), [0, 255, 10]);
++        expect(await io.File(file.path).exists(), isFalse);
++        await flushStudioStorage();
++      } finally {
++        await temporary.delete(recursive: true);
++      }
++    },
++    skip: kIsWeb,
++  );
++}
+*** Update File: D:/MyNewProjects/qfli_studio_core/vendor/re_editor/lib/src/_code_editable.dart
+@@
+       cursorWidth: widget.cursorWidth,
+       padding: widget.padding,
+       readOnly: widget.readOnly,
++      inputController: widget.inputController,
+       // Enable long text rendering when the find is on.
+       maxLengthSingleLineRendering: widget.findController.value != null
+           ? null
+*** Update File: D:/MyNewProjects/qfli_studio_core/vendor/re_editor/lib/src/_code_field.dart
+@@
+   final double floatingCursorWidth;
+   final EdgeInsetsGeometry padding;
+   final bool readOnly;
++  final _CodeInputController inputController;
+   final int? maxLengthSingleLineRendering;
+   final LayerLink startHandleLayerLink;
+   final LayerLink endHandleLayerLink;
+@@
+     floatingCursorWidth,
+     required this.padding,
+     required this.readOnly,
++    required this.inputController,
+     this.maxLengthSingleLineRendering,
+     required this.startHandleLayerLink,
+     required this.endHandleLayerLink,
+@@
+     floatingCursorWidth: floatingCursorWidth,
+     padding: padding,
+     readOnly: readOnly,
++    inputController: inputController,
+     maxLengthSingleLineRendering: maxLengthSingleLineRendering,
+     startHandleLayerLink: startHandleLayerLink,
+     endHandleLayerLink: endHandleLayerLink,
+@@
+       ..floatingCursorWidth = floatingCursorWidth
+       ..padding = padding
+       ..readOnly = readOnly
++      ..inputController = inputController
+       ..maxLengthSingleLineRendering = maxLengthSingleLineRendering
+       ..startHandleLayerLink = startHandleLayerLink
+       ..endHandleLayerLink = endHandleLayerLink;
+@@
+   ValueChanged<List<CodeLineRenderParagraph>> _onRenderParagraphsChanged;
+   EdgeInsetsGeometry _padding;
+   bool _readOnly;
++  _CodeInputController _inputController;
+   int? _maxLengthSingleLineRendering;
+   Color? _chunkIndicatorColor;
+ 
+@@
+     required double floatingCursorWidth,
+     required EdgeInsetsGeometry padding,
+     required bool readOnly,
++    required _CodeInputController inputController,
+     int? maxLengthSingleLineRendering,
+     required LayerLink startHandleLayerLink,
+     required LayerLink endHandleLayerLink,
+@@
+     _onRenderParagraphsChanged = onRenderParagraphsChanged,
+     _padding = padding,
+     _readOnly = readOnly,
++    _inputController = inputController,
+     _maxLengthSingleLineRendering = maxLengthSingleLineRendering,
+     _chunkIndicatorColor = chunkIndicatorColor,
+     _paint = Paint(),
+@@
+     }
+     _codes = value;
+     markNeedsLayout();
++    if (kIsWeb) markNeedsSemanticsUpdate();
+   }
+ 
+   set selection(CodeLineSelection value) {
+@@
+       _foregroundRender.find<_CodeFieldCursorPainter>().willDraw = _selection.isCollapsed;
+     }
+     markNeedsLayout();
++    if (kIsWeb) markNeedsSemanticsUpdate();
+   }
+ 
+   set highlightSelections(List<CodeLineSelection>? value) {
+@@
+     }
+     _hasFocus = value;
+     markNeedsPaint();
++    if (kIsWeb) markNeedsSemanticsUpdate();
+   }
+ 
+   set highlighter(_CodeHighlighter value) {
+@@
+     }
+     _readOnly = value;
+     markNeedsPaint();
++    if (kIsWeb) markNeedsSemanticsUpdate();
++  }
++
++  set inputController(_CodeInputController value) {
++    if (identical(_inputController, value)) return;
++    _inputController = value;
++    if (kIsWeb) markNeedsSemanticsUpdate();
+   }
+ 
+   set maxLengthSingleLineRendering(int? value) {
+@@
+   @override
+   bool hitTestSelf(Offset position) => true;
+ 
++  @override
++  void describeSemanticsConfiguration(SemanticsConfiguration config) {
++    super.describeSemanticsConfiguration(config);
++    if (!kIsWeb) return;
++    // The browser semantics strategy edits this same per-line IME buffer.
++    final TextEditingValue value = _inputController.currentTextEditingValue!;
++    config
++      ..isSemanticBoundary = true
++      ..isTextField = true
++      ..isMultiline = true
++      ..isEnabled = true
++      ..isFocused = _hasFocus
++      ..isReadOnly = _readOnly
++      ..textDirection = TextDirection.ltr
++      ..value = value.text
++      ..textSelection = value.selection
++      ..onFocus = _inputController.ensureInput
++      ..onTap = _inputController.ensureInput;
++    if (_hasFocus) {
++      config.onSetSelection = _inputController.setSemanticsSelection;
++      if (!_readOnly) config.onSetText = _inputController.setSemanticsText;
++    }
++  }
++
+   @override
+   void attach(covariant PipelineOwner owner) {
+     super.attach(owner);
+*** Update File: D:/MyNewProjects/qfli_studio_core/vendor/re_editor/lib/src/_code_input.dart
+@@
+     _autocompleteSymbols = autocompleteSymbols {
+     _controller.addListener(_onCodeEditingChanged);
+     _focusNode.addListener(_onFocusChanged);
++    if (kIsWeb) {
++      SemanticsBinding.instance.addSemanticsEnabledListener(_onSemanticsEnabledChanged);
++    }
+   }
+ 
+   void bindEditor(GlobalKey key) {
+@@
+     // print('update text ${newValue.text}');
+     // print('update selection ${newValue.selection}');
+     // print('update composing ${newValue.composing}');
++    _applyEditingValue(newValue);
++    // _Trace.end('updateEditingValue all');
++  }
++
++  void _applyEditingValue(TextEditingValue newValue) {
+     if (newValue.usePrefix) {
+       if (newValue.selection.isCollapsed && newValue.selection.start == 0) {
+         _controller.deleteBackward();
+@@
+       _controller.edit(newValue);
+     }
+     notifyListeners();
+-    // _Trace.end('updateEditingValue all');
+   }
+ 
+   @override
+   void updateEditingValue(TextEditingValue textEditingValue) {
++    if (!kIsWeb || _readOnly || !_hasInputConnection ||
++        textEditingValue == _remoteEditingValue) {
++      return;
++    }
++    _remoteEditingValue = textEditingValue;
++    _applyEditingValue(textEditingValue);
+   }
+ 
+   @override
+@@
+     }
+   }
+ 
++  void setSemanticsText(String text) {
++    if (_readOnly) return;
++    final int index = selection.baseIndex;
++    _controller.selection = CodeLineSelection(
++      baseIndex: index,
++      baseOffset: 0,
++      extentIndex: index,
++      extentOffset: codeLines[index].length,
++    );
++    _controller.edit(TextEditingValue(
++      text: text,
++      selection: TextSelection.collapsed(offset: text.length),
++    ).removePrefixIfNecessary());
++    notifyListeners();
++  }
++
++  void setSemanticsSelection(TextSelection value) {
++    if (!value.isValid) return;
++    value = _buildTextEditingValue().copyWith(selection: value)
++        .removePrefixIfNecessary().selection;
++    final int index = selection.baseIndex;
++    final int length = codeLines[index].length;
++    _controller.selection = CodeLineSelection(
++      baseIndex: index,
++      baseOffset: value.baseOffset.clamp(0, length).toInt(),
++      extentIndex: index,
++      extentOffset: value.extentOffset.clamp(0, length).toInt(),
++    );
++  }
++
+   @override
+   void notifyListeners() {
+     // Do nothing here.
+@@
+ 
+   @override
+   void dispose() {
++    if (kIsWeb) {
++      SemanticsBinding.instance.removeSemanticsEnabledListener(_onSemanticsEnabledChanged);
++    }
+     super.dispose();
+     _closeInputConnectionIfNeeded();
+     _controller.removeListener(_onCodeEditingChanged);
+@@
+     _openOrCloseInputConnectionIfNeeded();
+   }
+ 
++  void _onSemanticsEnabledChanged() {
++    final BuildContext? context = _editorKey?.currentContext;
++    if (!_hasInputConnection || context == null) return;
++    _textInputConnection!.updateConfig(_buildInputConfiguration(context));
++  }
++
++  _TextInputConfiguration _buildInputConfiguration(BuildContext context) {
++    return _TextInputConfiguration(
++      flutterViewId: View.maybeOf(context)?.viewId ?? 0,
++      // Web semantics omits beforeinput, so its deltas lose inserted text.
++      enableDeltaModel: !kIsWeb || !SemanticsBinding.instance.semanticsEnabled,
++      inputType: kIsWeb ? TextInputType.multiline : TextInputType.text,
++      inputAction: TextInputAction.newline,
++      autocorrect: false,
++      smartDashesType: SmartDashesType.disabled,
++      smartQuotesType: SmartQuotesType.disabled,
++      textCapitalization: TextCapitalization.none,
++      keyboardAppearance: Theme.of(context).brightness,
++    );
++  }
++
+   void _openOrCloseInputConnectionIfNeeded() {
+     if (_focusNode.hasFocus && !_readOnly) {
+       if (_focusNode.consumeKeyboardToken()) {
+@@
+       // Fix PlatformException issue on new flutter version.
+       // See https://github.com/reqable/re-editor/issues/83
+       final TextInputConnection connection = TextInput.attach(this,
+-        _TextInputConfiguration(
+-          flutterViewId: View.maybeOf(context)?.viewId ?? 0,
+-          enableDeltaModel: true,
+-          inputAction: TextInputAction.newline,
+-          autocorrect: false,
+-          smartDashesType: SmartDashesType.disabled,
+-          smartQuotesType: SmartQuotesType.disabled,
+-          textCapitalization: TextCapitalization.none,
+-          keyboardAppearance: Theme.of(context).brightness,
+-        ),
++        _buildInputConfiguration(context),
+       );
+       _remoteEditingValue = _buildTextEditingValue();
+       connection.setEditingState(_remoteEditingValue!);
+@@
+     required this.flutterViewId,
+     required super.enableDeltaModel,
+     required super.inputAction,
++    super.inputType,
+     super.autocorrect = false,
+     super.smartDashesType = SmartDashesType.disabled,
+     super.smartQuotesType = SmartQuotesType.disabled,
+@@
+     };
+   }
+ 
+-}
++}
+*** Update File: D:/MyNewProjects/qfli_studio_core/vendor/re_editor/lib/src/_code_shortcuts.dart
+@@
+   Widget build(BuildContext context) {
+     final Map<Type, Action<Intent>> actions = {};
+     for (final Intent intent in kCodeShortcutIntents.values) {
++      // Let the application's ancestor shortcut handle Web saves by default.
++      if (kIsWeb && intent is CodeShortcutSaveIntent) {
++        continue;
++      }
+       // Do not add editable actions when read only.
+       if (intent is CodeShortcutEditableIntent && readOnly) {
+         continue;
+*** End Patch

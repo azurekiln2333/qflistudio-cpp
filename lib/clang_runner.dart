@@ -9,11 +9,15 @@ import 'package:qfli_studio_core/services/process_supervisor.dart';
 import 'package:qfli_studio_core/services/studio_profile.dart';
 
 import 'android_clang_runner.dart';
+import 'native_clang_runner.dart';
+import 'run_title.dart';
+import 'source_selection.dart';
 
 /// Native C/C++ compiler backend for QFLIForge.
 ///
 /// Desktop builds use an installed or bundled compiler. Android streams native
-/// compilation and execution through its platform bridge.
+/// compilation and execution through its platform bridge. iOS compiles to WASI
+/// modules and executes them using its bundled interpreter.
 class ClangProgramRunner implements ProgramRunner {
   ClangProgramRunner({
     ProcessSupervisor? supervisor,
@@ -27,10 +31,13 @@ class ClangProgramRunner implements ProgramRunner {
     '.cpp',
     '.cc',
     '.cxx',
-    '.h',
-    '.hpp',
-    '.hh',
   };
+
+  /// Header files are readable/editable and are pulled in through `#include`,
+  /// but they are never an executable translation unit. Long-pressing one in
+  /// the editor must fail explicitly instead of re-selecting a different
+  /// program's `main`.
+  static const _headerExtensions = <String>{'.h', '.hpp', '.hh'};
 
   final ProcessSupervisor _supervisor;
   final String? _toolchainDirectory;
@@ -41,23 +48,69 @@ class ClangProgramRunner implements ProgramRunner {
     required String entryFile,
   }) async {
     final extension = p.extension(entryFile).toLowerCase();
+    if (_headerExtensions.contains(extension)) {
+      return _unavailable(
+        '头文件不能单独运行，请在 .c/.cpp 源文件中运行。',
+        projectPath: projectPath,
+        entryFile: entryFile,
+      );
+    }
     if (!_extensions.contains(extension)) return null;
-    final type = extension == '.c' || extension == '.h' ? 'c' : 'cpp';
+    // The entry must be an existing, readable, supported source inside the
+    // project. Resolve symlinks on both sides so a link inside the project
+    // cannot launch a program outside it. Invalid entries fail with 127 and
+    // never fall back to the default main.
+    final invalid = _entryError(projectPath, entryFile);
+    if (invalid != null) {
+      return _unavailable(invalid, projectPath: projectPath, entryFile: entryFile);
+    }
+    final type = extension == '.c' ? 'c' : 'cpp';
     if (Platform.isAndroid) {
       return AndroidClangRunner().run(
         type: type,
         projectPath: projectPath,
         entryFile: entryFile,
+        sources: _selectedSources(projectPath, entryFile),
+      );
+    }
+    if (Platform.isIOS) {
+      return NativeClangRunner(
+        backendName: 'iOS Clang/WASI',
+        runIdPrefix: 'ios',
+      ).run(
+        type: type,
+        projectPath: projectPath,
+        entryFile: entryFile,
+        sources: _selectedSources(projectPath, entryFile),
       );
     }
     if (AppPaths.isDesktop) {
-      final compiler = await _findCompiler(type, projectPath);
+      final List<String> sources;
+      try {
+        sources = _selectedSources(projectPath, entryFile);
+      } catch (error) {
+        return _unavailable(
+          '$error',
+          projectPath: projectPath,
+          entryFile: entryFile,
+        );
+      }
+      final projectType =
+          sources.any((source) => p.extension(source).toLowerCase() != '.c')
+          ? 'cpp'
+          : 'c';
+      final compiler = await _findCompiler(projectType, projectPath);
       if (compiler == null) {
-        return _unavailable('未找到可用的 C/C++ 编译工具链。');
+        return _unavailable(
+          '未找到可用的 C/C++ 编译工具链。',
+          projectPath: projectPath,
+          entryFile: entryFile,
+        );
       }
       return _runDesktop(
         compiler: compiler,
-        type: type,
+        type: projectType,
+        sources: sources,
         projectPath: projectPath,
         entryFile: entryFile,
       );
@@ -66,6 +119,49 @@ class ClangProgramRunner implements ProgramRunner {
       type: type,
       projectPath: projectPath,
       entryFile: entryFile,
+    );
+  }
+
+  /// Returns an English reason when [entryFile] cannot be run inside
+  /// [projectPath], or null when it is a valid in-project C/C++ source.
+  String? _entryError(String projectPath, String entryFile) {
+    final project = Directory(projectPath);
+    if (!project.existsSync()) return '工程目录不可读取。';
+    final file = File(entryFile);
+    if (!file.existsSync()) return '入口文件不存在。';
+    final String root;
+    final String resolved;
+    try {
+      root = project.resolveSymbolicLinksSync();
+      resolved = file.resolveSymbolicLinksSync();
+    } on FileSystemException {
+      return '入口文件不可读取。';
+    }
+    if (!p.isWithin(root, resolved) && !p.equals(root, resolved)) {
+      return '入口文件不在工程内。';
+    }
+    return null;
+  }
+
+  /// Project translation units to compile for [entryFile].
+  ///
+  /// All `.c/.cc/.cpp/.cxx` units are enumerated, then
+  /// [selectRunSources] keeps the requested entry and ordinary helpers and
+  /// drops only other unambiguous top-level `main` definitions.
+  List<String> _selectedSources(String projectPath, String entryFile) {
+    final all = _collectSources(projectPath);
+    return selectRunSources(
+      entryFile: p.normalize(p.absolute(entryFile)),
+      allSources: all.map((path) => p.normalize(p.absolute(path))).toList(),
+      readSource: (path) {
+        final file = File(path);
+        if (!file.existsSync()) return null;
+        try {
+          return file.readAsStringSync();
+        } on FileSystemException {
+          return null;
+        }
+      },
     );
   }
 
@@ -171,6 +267,7 @@ class ClangProgramRunner implements ProgramRunner {
   ProgramRunResult _runDesktop({
     required _Compiler compiler,
     required String type,
+    required List<String> sources,
     required String projectPath,
     required String entryFile,
   }) {
@@ -182,8 +279,8 @@ class ClangProgramRunner implements ProgramRunner {
     final done = Completer<void>();
 
     Future<void> start() async {
+      var code = kProgramNotRunExitCode;
       try {
-        final sources = _collectSources(projectPath, type);
         final build = Directory(p.join(projectPath, '.qfli', 'build', 'forge'))
           ..createSync(recursive: true);
         final output = p.join(
@@ -192,7 +289,7 @@ class ClangProgramRunner implements ProgramRunner {
         );
         if (sources.isEmpty) {
           stderr.add('工程中没有可编译的源文件。');
-          return _finish(exitCode, kProgramNotRunExitCode);
+          return;
         }
         final includeArgs = <String>['-I', projectPath];
         final includeDir = Directory(p.join(projectPath, 'include'));
@@ -207,18 +304,20 @@ class ClangProgramRunner implements ProgramRunner {
           cCompiler = await _findCompiler('c', projectPath);
           if (cCompiler == null) {
             stderr.add('工程包含 C 源文件，但未找到可用的 C 编译器。');
-            return _finish(exitCode, kProgramNotRunExitCode);
+            return;
           }
         }
         final objects = <String>[];
         for (var index = 0; index < sources.length; index++) {
+          if (cancelled) return;
           final source = sources[index];
-          final driver = p.extension(source).toLowerCase() == '.c'
-              ? cCompiler ?? compiler
-              : compiler;
+          final isC = p.extension(source).toLowerCase() == '.c';
+          final driver = isC ? cCompiler ?? compiler : compiler;
           final object = p.join(build.path, 'unit_$index.o');
           objects.add(object);
           final compile = await _supervisor.start(driver.executable, [
+            '-x',
+            isC ? 'c' : 'c++',
             '-std=${driver.standard}',
             ...includeArgs,
             '-c',
@@ -229,31 +328,38 @@ class ClangProgramRunner implements ProgramRunner {
           current = compile;
           if (cancelled) {
             await compile.cancel();
-            return _finish(exitCode, 130);
+            return;
           }
           await Future.wait([
             _pipe(compile.stdout, stderr),
             _pipe(compile.stderr, stderr),
           ]);
           final compileCode = await compile.exitCode;
-          if (compileCode != 0) return _finish(exitCode, compileCode);
+          if (cancelled || compileCode != 0) {
+            code = compileCode;
+            return;
+          }
         }
         final link = await _supervisor.start(compiler.executable, [
           ...objects,
+          if (Platform.isLinux) '-lm',
           '-o',
           output,
         ], workingDirectory: projectPath);
         current = link;
         if (cancelled) {
           await link.cancel();
-          return _finish(exitCode, 130);
+          return;
         }
         await Future.wait([
           _pipe(link.stdout, stderr),
           _pipe(link.stderr, stderr),
         ]);
         final linkCode = await link.exitCode;
-        if (linkCode != 0) return _finish(exitCode, linkCode);
+        if (cancelled || linkCode != 0) {
+          code = linkCode;
+          return;
+        }
 
         final program = await _supervisor.start(
           output,
@@ -263,7 +369,7 @@ class ClangProgramRunner implements ProgramRunner {
         current = program;
         if (cancelled) {
           await program.cancel();
-          return _finish(exitCode, 130);
+          return;
         }
         final input = File(p.join(projectPath, 'input.txt'));
         if (input.existsSync()) program.stdin.write(await input.readAsString());
@@ -272,14 +378,14 @@ class ClangProgramRunner implements ProgramRunner {
           _pipe(program.stdout, stdout),
           _pipe(program.stderr, stderr),
         ]);
-        _finish(exitCode, await program.exitCode);
+        code = await program.exitCode;
       } on ProcessException catch (error) {
-        stderr.add(error.message);
-        _finish(exitCode, kProgramNotRunExitCode);
+        if (!cancelled) stderr.add(error.message);
       } catch (error) {
-        stderr.add('$error');
-        _finish(exitCode, kProgramNotRunExitCode);
+        if (!cancelled) stderr.add('$error');
       } finally {
+        await current?.cancel();
+        _finish(exitCode, cancelled ? 130 : code);
         unawaited(stdout.close());
         unawaited(stderr.close());
         if (!done.isCompleted) done.complete();
@@ -288,11 +394,12 @@ class ClangProgramRunner implements ProgramRunner {
 
     unawaited(start());
     return ProgramRunResult(
-      title: '运行 ${p.basename(entryFile)}（${compiler.label} $type）',
+      title: runTitle(projectPath: projectPath, entryFile: entryFile),
       stdout: stdout.stream,
       stderr: stderr.stream,
       exitCode: exitCode.future,
       cancel: () async {
+        if (exitCode.isCompleted) return;
         cancelled = true;
         await current?.cancel();
         await done.future;
@@ -343,17 +450,15 @@ class ClangProgramRunner implements ProgramRunner {
     }
     if (fallbackToC) return null;
     return ProgramRunResult(
-      title: '运行 ${p.basename(entryFile)}（HarmonyOS Clang $type）',
+      title: runTitle(projectPath: projectPath, entryFile: entryFile),
       stdout: stdout.stream,
       stderr: stderr.stream,
       exitCode: result.future,
     );
   }
 
-  List<String> _collectSources(String projectPath, String type) {
-    final extensions = type == 'c'
-        ? const {'.c'}
-        : const {'.cpp', '.cc', '.cxx', '.c'};
+  List<String> _collectSources(String projectPath) {
+    const extensions = {'.cpp', '.cc', '.cxx', '.c'};
     final root = Directory(projectPath);
     final sources = <String>[];
     if (!root.existsSync()) return sources;
@@ -383,7 +488,11 @@ class ClangProgramRunner implements ProgramRunner {
     }
   }
 
-  ProgramRunResult _unavailable(String message) {
+  ProgramRunResult _unavailable(
+    String message, {
+    required String projectPath,
+    required String entryFile,
+  }) {
     final stderr = StreamController<String>();
     scheduleMicrotask(
       () => stderr
@@ -391,7 +500,7 @@ class ClangProgramRunner implements ProgramRunner {
         ..close(),
     );
     return ProgramRunResult(
-      title: '编译工具链不可用',
+      title: runTitle(projectPath: projectPath, entryFile: entryFile),
       stdout: const Stream<String>.empty(),
       stderr: stderr.stream,
       exitCode: Future<int>.value(kProgramNotRunExitCode),

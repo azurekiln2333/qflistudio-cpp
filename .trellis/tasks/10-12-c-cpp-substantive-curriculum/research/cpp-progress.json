@@ -1,0 +1,28 @@
+{
+  "phase": "final-verification-complete",
+  "done": true,
+  "updatedAt": "2026-10-12",
+  "canonicalValidationCommand": "dart run tool/verify_forge_content.dart",
+  "results": {
+    "nativeVerifier": "200/200 passed (100 C + 100 C++), 0 failed, 0 shape errors",
+    "negativeProbes": "10/10 passed (nonzero exit, program stderr captured, timeout, compile error, C++23 cap rejected, C++20/C17 within cap, relative-file write isolated, repo cwd clean)",
+    "pipelineTests": "20/20 (test/forge_content_pipeline_test.dart)",
+    "fullSuite": "173/173 (flutter test)",
+    "taskOwnedAnalyze": "clean (no issues)"
+  },
+  "harnessHardening": [
+    "asserts compile success AND program exit status AND byte-exact stdout AND empty stderr AND no-timeout (was stdout-only)",
+    "standard cap enforced: c++23 rejected; fallbacks stop at c++20/c17; never compiles above the app ceiling",
+    "each sample runs in its own mktemp -d working dir with an EXIT trap cleanup; relative file writes stay in the temp dir, repo cwd untouched",
+    "timeout distinguished from compiler_unavailable"
+  ],
+  "scratchRemoved": ["tool/forge_content/probe_native.dart", "tool/forge_content/check_topics.dart"],
+  "retainedVerification": [
+    "tool/forge_content/verify_forge_content.dart (+ thin tool/verify_forge_content.dart)",
+    "tool/forge_content/negative_probe.dart",
+    "tool/forge_content/merge_forge_content.dart (+ thin tool/merge_forge_content.dart)",
+    "test/forge_content_pipeline_test.dart"
+  ],
+  "sharedCoreMerge": "applied by coordinator (forge-merge-applied.json: 200 replaced, 1420+1420 foreign preserved, 0 errors)",
+  "note": "No sibling write, no install, no commit/archive. Backups under qfli_c/tool/forge_content/merge-backups."
+}

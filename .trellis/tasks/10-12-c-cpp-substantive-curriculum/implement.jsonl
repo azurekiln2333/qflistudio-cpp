@@ -1,0 +1,9 @@
+{"file":".trellis/tasks/10-12-c-cpp-substantive-curriculum/prd.md","reason":"Requirements R1-R7 and acceptance criteria AC1-AC6 for 200 paired C/C++ topics (100 C + 100 C++)"}
+{"file":".trellis/tasks/10-12-c-cpp-substantive-curriculum/design.md","reason":"Pipeline architecture, aggregate entries schema, integration approach A, 200-topic outline, native-first verifier"}
+{"file":".trellis/tasks/10-12-c-cpp-substantive-curriculum/implement.md","reason":"Execution order, validation commands, two-worker ownership split, coordinated merge and own-row rollback"}
+{"file":".trellis/tasks/10-12-c-cpp-substantive-curriculum/research/content-audit.md","reason":"Confirmed app entry/import/run flow, placeholder evidence, Java/Python blueprint, release-minimum and merge constraints"}
+{"file":".trellis/tasks/10-12-c-cpp-substantive-curriculum/research/verification-plan.md","reason":"Reviewer verification strategy: native-first execution, compiler-capability risks, standards ceiling, integration acceptance, non-overlap protocol"}
+{"file":".trellis/spec/backend/desktop-runtime.md","reason":"Real desktop compiler contract for executing and verifying authored C/C++ samples"}
+{"file":".trellis/spec/frontend/forge-tools.md","reason":"Forge product contract: precision, verification discipline, no sample-data placeholders"}
+{"file":".trellis/spec/guides/code-reuse-thinking-guide.md","reason":"Reuse the core Java/Python generator+verifier pattern instead of a new pipeline"}
+{"file":".trellis/spec/frontend/forge-curriculum.md","reason":"Executable content author/generate/verify/merge contract: model+generator signatures, aggregate schema, standards<=C17/C++20, no hidden files, extension selection, foreign-row preservation and metadata rules"}

@@ -1,0 +1,18 @@
+diff --git a/lib/api/CMakeLists.txt b/lib/api/CMakeLists.txt
+--- a/lib/api/CMakeLists.txt
++++ b/lib/api/CMakeLists.txt
+@@ -186,12 +186,14 @@ if(WASMEDGE_BUILD_STATIC_LIB)
+ 
+   if(CMAKE_AR_NAME STREQUAL "libtool")
+     add_custom_command(OUTPUT "libwasmedge.a"
++      COMMAND ${CMAKE_COMMAND} -E rm -f libwasmedge.a
+       COMMAND ${CMAKE_AR} -static -o libwasmedge.a ${WASMEDGE_STATIC_LIB_LIBTOOL_FILES} $<TARGET_OBJECTS:wasmedgeCAPI>
+       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+       DEPENDS ${WASMEDGE_STATIC_LIB_DEPS} wasmedgeCAPI
+     )
+   else()
+     add_custom_command(OUTPUT "libwasmedge.a"
++      COMMAND ${CMAKE_COMMAND} -E rm -f libwasmedge.a
+       ${WASMEDGE_STATIC_LIB_AR_CMDS}
+       ${WASMEDGE_STATIC_LLVM_LIB_AR_CMDS}
+       COMMAND ${CMAKE_AR} -qcs libwasmedge.a $<TARGET_OBJECTS:wasmedgeCAPI> objs/*/*.o

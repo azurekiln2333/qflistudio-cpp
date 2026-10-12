@@ -34,11 +34,13 @@ void main() {
     await events.close();
   });
 
-  Future<ProgramRunResult?> start([String type = 'cpp']) => runner.run(
-    type: type,
-    projectPath: '/projects/example',
-    entryFile: '/projects/example/main.$type',
-  );
+  Future<ProgramRunResult?> start([String type = 'cpp', List<String>? sources]) =>
+      runner.run(
+        type: type,
+        projectPath: '/projects/example',
+        entryFile: '/projects/example/main.$type',
+        sources: sources,
+      );
 
   void emit(String kind, String key, Object value, {String? id}) {
     events.add({'runId': id ?? runId, 'kind': kind, key: value});
@@ -62,7 +64,7 @@ void main() {
       expect(await result.exitCode, 23);
       expect(await output, ['ready', '']);
       expect(await errors, ['diagnostic']);
-      expect(result.title, contains('Android Clang'));
+      expect(result.title, 'run main.cpp');
     },
   );
 
@@ -218,5 +220,58 @@ void main() {
     expect(await result.stdout.toList(), isEmpty);
     expect((await result.stderr.toList()).single, contains('无法启动编译运行'));
     expect(cancelledRuns, [runId]);
+  });
+
+  test('forwards an explicit selected-source list to the Android bridge', () async {
+    Map<Object?, Object?>? startArguments;
+    messenger.setMockMethodCallHandler(channel, (call) async {
+      if (call.method != 'start') return null;
+      startArguments = call.arguments as Map<Object?, Object?>;
+      runId = startArguments!['runId'] as String;
+      return {'available': true};
+    });
+    final result = (await start('c', const [
+      '/projects/example/main.c',
+      '/projects/example/utils.c',
+    ]))!;
+    emit('exit', 'exitCode', 0);
+    expect(await result.exitCode, 0);
+    expect(startArguments!['sources'], const [
+      '/projects/example/main.c',
+      '/projects/example/utils.c',
+    ]);
+  });
+
+  test('omits the sources key when no selection is supplied', () async {
+    Map<Object?, Object?>? startArguments;
+    messenger.setMockMethodCallHandler(channel, (call) async {
+      if (call.method != 'start') return null;
+      startArguments = call.arguments as Map<Object?, Object?>;
+      runId = startArguments!['runId'] as String;
+      return {'available': true};
+    });
+    final result = (await start('c'))!;
+    emit('exit', 'exitCode', 0);
+    expect(await result.exitCode, 0);
+    // Absent key = legacy discovery. The Android bridge distinguishes this
+    // from an explicit (possibly invalid) selection.
+    expect(startArguments!.containsKey('sources'), isFalse);
+  });
+
+  test('forwards an explicit empty selection verbatim for rejection', () async {
+    Map<Object?, Object?>? startArguments;
+    messenger.setMockMethodCallHandler(channel, (call) async {
+      if (call.method != 'start') return null;
+      startArguments = call.arguments as Map<Object?, Object?>;
+      runId = startArguments!['runId'] as String;
+      return {'available': true};
+    });
+    final result = (await start('c', const []))!;
+    emit('exit', 'exitCode', 0);
+    expect(await result.exitCode, 0);
+    // An empty list must reach the bridge as an explicit payload, not be
+    // dropped: the bridge rejects it instead of rediscovering every file.
+    expect(startArguments!.containsKey('sources'), isTrue);
+    expect(startArguments!['sources'], isEmpty);
   });
 }

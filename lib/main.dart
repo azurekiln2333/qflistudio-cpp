@@ -33,7 +33,7 @@ final StudioProfile forgeProfile = StudioProfile(
   showHomeTabs: false,
   runtimeKind: 'clang-c-cpp-native-and-desktop',
   runtimeStatus: 'unavailable',
-  supportedFileExtensions: ['.c', '.h', '.cpp', '.cc', '.cxx', '.hpp', '.hh'],
+  supportedFileExtensions: ['.c', '.cpp', '.cc', '.cxx'],
   entryFileNames: ['main.c', 'src/main.c', 'main.cpp', 'src/main.cpp'],
 );
 

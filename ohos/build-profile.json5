@@ -21,11 +21,11 @@
         "material": {
           "certpath": "C:\\Users\\lichengyu\\.ohos\\config\\default_ohos_EyK2s6zPODEbf3XHtkcGYQQuAS6k-HePGMeNPRNUwSI=.cer",
           "keyAlias": "debugKey",
-          "keyPassword": "0000001AF8DDAFC6BF7B8AB016D29FF257708648515AEC0DC395C2ED391F06FB6712BE5D505B6CF8243A",
+          "keyPassword": "0000001B1141E5776EB90379B6F344EBFA41EEF743B14167BCE4B44166C7485619EA3BDB9570EACDAD87FC",
           "profile": "C:\\Users\\lichengyu\\.ohos\\config\\default_ohos_EyK2s6zPODEbf3XHtkcGYQQuAS6k-HePGMeNPRNUwSI=.p7b",
           "signAlg": "SHA256withECDSA",
           "storeFile": "C:\\Users\\lichengyu\\.ohos\\config\\default_ohos_EyK2s6zPODEbf3XHtkcGYQQuAS6k-HePGMeNPRNUwSI=.p12",
-          "storePassword": "0000001A972F17E9ABC2EC4B69A992A013D5CFE9453D2F4E5F13D5BBABBDFBF87AB7E72FF6FFDADB0A95"
+          "storePassword": "0000001B25E1C73C7F35B3BE44757ACA20B05EC80F12D5CF0A0B2F1004B60FE2FD2600C025F1B748C95D7B"
         }
       }
     ],

@@ -1,0 +1,206 @@
+[
+  {
+    "path": "android/app/src/main/kotlin/com/example/qflistudio/c/AndroidToolchain.kt",
+    "sha256": "8A6A85FDACEC0D6DF2A796B7A15F1F8B2C66C1AE96559D364E4A8D0E8F4D7950"
+  },
+  {
+    "path": "android/app/src/main/kotlin/com/example/qflistudio/c/MainActivity.kt",
+    "sha256": "5BF973D75391057D3839B2EE4A3B4877F034E0468ADFCA4F7D158C81633891B2"
+  },
+  {
+    "path": "android/app/src/main/kotlin/com/example/qflistudio/c/NativeCompilerBridge.kt",
+    "sha256": "ED10AA007C60AC66B81064F45B23B8925EA20AB6370806CEED576466DE4F212F"
+  },
+  {
+    "path": "ios/Runner/NativeCompilerBridge.h",
+    "sha256": "4C2C7CC945191746A92EDC9E166B67E58D9613E0AC00786D0C8A7110BE47C89E"
+  },
+  {
+    "path": "ios/Runner/NativeCompilerBridge.mm",
+    "sha256": "19DDF97A1ECEFE057D72D0E640211972D6A792D1EC3B532C432B5257BDCA47E2"
+  },
+  {
+    "path": "lib/android_clang_runner.dart",
+    "sha256": "7D7E3297985522F8088F59C62DBD85A2FA37E854926BCC2ECF35E301C087A10D"
+  },
+  {
+    "path": "lib/android_startup.dart",
+    "sha256": "689319EB9928025E25D18421889198169446355D51EC23176997B860FB062887"
+  },
+  {
+    "path": "lib/c_runner.dart",
+    "sha256": "F72F67718A947E43CDAC24F4BC3B1DBAF23D08A1D6923D018EF45B188839F80F"
+  },
+  {
+    "path": "lib/clang_runner.dart",
+    "sha256": "F29A44732E0035FFE747DC90D14F74EE544518D5099CBB61034BE176EA0AA8FB"
+  },
+  {
+    "path": "lib/cpp_runner.dart",
+    "sha256": "23C7EAB026E85E726A936ED2C3E3C8CC49FB67961084466AE572D0A424F7AAF2"
+  },
+  {
+    "path": "lib/forge_integer_tools.dart",
+    "sha256": "862B8ACFD45F844B0C8667C1C56BE765AFB4BCA974AA0DBF37F305AE4C6340D4"
+  },
+  {
+    "path": "lib/forge_runner_browser.dart",
+    "sha256": "93DFEE7BE9C2EFCD9A59634767297E5080B8F8483F6BB5E1B565F0F71F5AE2CF"
+  },
+  {
+    "path": "lib/forge_runner_native.dart",
+    "sha256": "A7719006C0C9218B96946F5E9CB86BD84DECB3B4037815AA55938456B3C7A5B7"
+  },
+  {
+    "path": "lib/forge_runner.dart",
+    "sha256": "072AAD7A4617CB8C3CB471978F2A0197125965603F751F6322B501670F828DF8"
+  },
+  {
+    "path": "lib/forge_tools_page.dart",
+    "sha256": "E62391E1D730A2720B25B660C53017E2DBE6B49C7A5F9C67B87E0C49F30CA901"
+  },
+  {
+    "path": "lib/main.dart",
+    "sha256": "E18E092388838D4685BA5C1E6CFE60470617873E6DA5DD3C62F84CFAE29CE013"
+  },
+  {
+    "path": "lib/native_clang_runner.dart",
+    "sha256": "3AC44589DA19D63552A80AB1772E0051CE6F8DBBA99356729F0468F564FC5A4A"
+  },
+  {
+    "path": "lib/web_clang_runner_browser.dart",
+    "sha256": "D925D83C6C63378FA0A6381BA7B23F677B2A685B02D69F530B77D0D09120C277"
+  },
+  {
+    "path": "lib/web_clang_runner_stub.dart",
+    "sha256": "181A5C0542F4A476785D1C2289D30EAF21A326757F7E1ED7CC03E28B8A7F54B8"
+  },
+  {
+    "path": "lib/web_clang_runner.dart",
+    "sha256": "B1EBD1DD92DEE2ACBEE18D6F83CB51E6D9CCAACB36B8D6D7B1AF8E1E82E3FFD0"
+  },
+  {
+    "path": "native/include/qfli_wasm_limits.h",
+    "sha256": "75DB415EE6B40C872046AD47BF65C1AEE74DF9234574ACBDABB24F47BA504A28"
+  },
+  {
+    "path": "native/src/platform_ohos.c",
+    "sha256": "BC3E4B7A9F7BA117EC000D32D16CBBEC95881C9A0FEF48FBEB3AA73F6980EE4A"
+  },
+  {
+    "path": "native/src/qfli_c_bridge.c",
+    "sha256": "FBEC2923ACED27EC15C2C28AEE43B10E5EB6F49B3B8BFDA9AEDFB3E3A2F93826"
+  },
+  {
+    "path": "native/src/qfli_c_bridge.h",
+    "sha256": "B0090467B24DC0C5F84EE63ACCD97CCB88DBDD132087719DFDD612B2DBBB3C9A"
+  },
+  {
+    "path": "native/src/qfli_c_napi.cpp",
+    "sha256": "61FFDFEFB8D30FB1D4BF1FFC70F0E2E07A30EED67BE5B14C97F380658F20F405"
+  },
+  {
+    "path": "ohos/entry/src/main/ets/plugins/GeneratedPluginRegistrant.ets",
+    "sha256": "CCDEAC9291D7939DF7433479050B4E137B917CAE99C831A0BBE19AF611898C2B"
+  },
+  {
+    "path": "test/android_clang_runner_test.dart",
+    "sha256": "39BCE476E607263326D8D694EC5A75F097623C195E7C6073313CB527DF6824B0"
+  },
+  {
+    "path": "test/android_startup_test.dart",
+    "sha256": "F7E845CFA0849FF17C56EB8C18AC112B68B73A77FA2F3286ECE912217A9F8E7A"
+  },
+  {
+    "path": "test/c_app_test.dart",
+    "sha256": "09F8D81CD016D6E06C31705CD542704D4BAA4E1C842133E3E942C2DE50FA58F0"
+  },
+  {
+    "path": "test/clang_runner_test.dart",
+    "sha256": "0932DDC9B6E2970760D2EA3DC89D5C0C105C46488D268D46F5860A603D350CAB"
+  },
+  {
+    "path": "test/fixtures/desktop_native/cancel/main.c",
+    "sha256": "2B669975A56B5C4C84F2B99557804371BAD05A6D8ACD9D60009F0140158D4A30"
+  },
+  {
+    "path": "test/fixtures/desktop_native/io/input.txt",
+    "sha256": "6E2AE11DAD0616F66BBB2B6E6556F580BB987FD911D7132AA6BEE2BFC7CC7B52"
+  },
+  {
+    "path": "test/fixtures/desktop_native/io/main.c",
+    "sha256": "ED8E77BAE7B4A730E69462B3424BA7F875C0B49A06A39CC137D2E9816D62E79D"
+  },
+  {
+    "path": "test/fixtures/desktop_native/link_error/main.c",
+    "sha256": "B3849581D59B4711B6E3303DFED6B64D72787B61C4D917E954AA0C3C3E1CDF27"
+  },
+  {
+    "path": "test/fixtures/desktop_native/math/input.txt",
+    "sha256": "2E6D31A5983A91251BFAE5AEFA1C0A19D8BA3CF601D0E8A706B4CFA9661A6B8A"
+  },
+  {
+    "path": "test/fixtures/desktop_native/math/main.c",
+    "sha256": "1F8F0BEE021715E0E3A62AE0B3B4552AC4E0F25DEE2376653C4BC4AD33EEDEFE"
+  },
+  {
+    "path": "test/fixtures/desktop_native/mixed_c_main/helper.cpp",
+    "sha256": "C0FC440A7677B9085594084C56AE9AF6B259680A5868ECF763DD7CACDAB0BC20"
+  },
+  {
+    "path": "test/fixtures/desktop_native/mixed_c_main/include/helper.h",
+    "sha256": "BDC522C57D0CA4A98BE1F89BF9D1B16A279AF52C5D574A9577A0352210AA80A5"
+  },
+  {
+    "path": "test/fixtures/desktop_native/mixed_c_main/main.c",
+    "sha256": "B9A6FE167B97F76250C53AAFB2B1C9CDD1EDAB53DD2A4C6C0C77E4400BA8EDAD"
+  },
+  {
+    "path": "test/fixtures/desktop_native/nonzero/main.c",
+    "sha256": "FE2AA0652E4A98DA7E2A2435D0B7CC2A9107953E1808E68D789FDAD276F0B975"
+  },
+  {
+    "path": "test/fixtures/portable_wasm/exceptions/main.cpp",
+    "sha256": "FDCD95A3FB53EADB8D35AF683908D8487E6E7AAA4670C68B704F39DDE52D7830"
+  },
+  {
+    "path": "test/fixtures/portable_wasm/files/data/input.txt",
+    "sha256": "084C799CD551DD1D8D5C5F9A5D593B2E931F5E36122EE5C793C1D08A19839CC0"
+  },
+  {
+    "path": "test/fixtures/portable_wasm/files/main.c",
+    "sha256": "619A72453307D5DC834D62E0C6660D8FC4755CE245864A354552252D172D9AD4"
+  },
+  {
+    "path": "test/fixtures/portable_wasm/memory/main.c",
+    "sha256": "B492F3E049B866E06FD8AFB1A40F024B79241BEBE3225F7C4C28525BC38A292F"
+  },
+  {
+    "path": "test/fixtures/portable_wasm/sleep/input.txt",
+    "sha256": "11CF8A432E2C6BC488B0609C5608C9EF7E23B88DA7971B2EB00F46D4D2126C20"
+  },
+  {
+    "path": "test/fixtures/portable_wasm/sleep/main.c",
+    "sha256": "082A856BA0E799D1477A3A6C97D9D43E40507156B88858CB43AFDF15D8956354"
+  },
+  {
+    "path": "test/fixtures/portable_wasm/trap/main.c",
+    "sha256": "A39E903F6518CC4F09645F54B116736CC8335D8DB3098F8B1A474751FD31F225"
+  },
+  {
+    "path": "test/forge_tools_test.dart",
+    "sha256": "2468949309421EE1BC8488F7F05F0BF31EB060A78126DC71B432EE75B4162A68"
+  },
+  {
+    "path": "test/native_clang_runner_test.dart",
+    "sha256": "5FC46408A605D5170A1394416C910B5D16B5869D36CC413CAF460A4ACB105EAB"
+  },
+  {
+    "path": "web/forge-wasi.js",
+    "sha256": "7CCAA109C468B78B23088307889C6F643A0CB272F7FD943177B5989D3679240E"
+  },
+  {
+    "path": "web/forge-worker.js",
+    "sha256": "A76E45548FDF355CE022988012B4DC460755B6C0635A4FEDFB32C4118439796A"
+  }
+]

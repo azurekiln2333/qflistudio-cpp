@@ -126,7 +126,7 @@ int main(void) {
 }
 ''');
       final result = await runC();
-      expect(result.title, contains('应用内 C 解释器'));
+      expect(result.title, 'run main.c');
       expect(await stdoutOf(result), ['第 1 行', '第 2 行', '第 3 行']);
       expect(await stderrOf(result), isEmpty);
       expect(await result.exitCode, 7);
@@ -298,6 +298,78 @@ int main(void) {
       expect(await stderrOf(result), isEmpty);
       expect(await stdoutOf(result), ['你好']);
     });
+
+    test('多入口：长按 main2.c 跑 main2，不跟 main.c 冲突', () async {
+      write('helper.h', 'int helper_value(void);');
+      write('helper.c', 'int helper_value(void) { return 42; }');
+      write('main.c', '''
+#include <stdio.h>
+#include "helper.h"
+int main(void) { printf("program A %d\\n", helper_value()); return 0; }
+''');
+      write('main2.c', '''
+#include <stdio.h>
+#include "helper.h"
+int main(void) { printf("program B %d\\n", helper_value()); return 0; }
+''');
+
+      final first = await runC('main.c');
+      expect(first.title, 'run main.c');
+      expect(await stderrOf(first), isEmpty);
+      expect(await stdoutOf(first), ['program A 42']);
+
+      final second = await runC('main2.c');
+      expect(second.title, 'run main2.c');
+      expect(await stderrOf(second), isEmpty);
+      expect(await stdoutOf(second), ['program B 42']);
+    });
+
+    test('头文件入口明确失败，不回头跑项目入口', () async {
+      write('helper.h', 'int helper_value(void);');
+      write('main.c', 'int main(void) { return 0; }');
+      // 生产入口是 Forge 的整链路（Clang 后端先接管），头文件必须报错。
+      final result = await cProfile.runner!.run(
+        projectPath: project.path,
+        entryFile: p.join(project.path, 'helper.h'),
+      );
+      expect(result, isNotNull);
+      expect(result!.title, 'run helper.h');
+      expect(await result.exitCode, isNot(0));
+      expect(await result.stdout.toList(), isEmpty);
+      expect((await result.stderr.toList()).join('\n'), contains('头文件'));
+    });
+
+    test('解释器保留头文件映射：main 定义在 entry.h 里也能跑', () async {
+      write('main.c', '#include "entry.h"\n');
+      write(
+        'entry.h',
+        '#include <stdio.h>\nint main(void) { puts("header entry"); return 0; }\n',
+      );
+      final result = await runC();
+      expect(result.title, 'run main.c');
+      expect(await stderrOf(result), isEmpty);
+      expect(await stdoutOf(result), ['header entry']);
+      expect(await result.exitCode, 0);
+    });
+
+    test('解释器拒绝工程外的入口，不回退默认 main', () async {
+      final container = Directory.systemTemp.createTempSync('qfli_outside_');
+      addTearDown(() {
+        if (container.existsSync()) container.deleteSync(recursive: true);
+      });
+      write('main.c', 'int main(void) { return 0; }');
+      final outside = File(p.join(container.path, 'outside.c'))
+        ..writeAsStringSync('#include <stdio.h>\nint main(void) { puts("OUTSIDE"); return 0; }\n');
+
+      final result = await const CProgramRunner().run(
+        projectPath: project.path,
+        entryFile: outside.path,
+      );
+      expect(result, isNotNull);
+      expect(await result!.exitCode, kProgramNotRunExitCode);
+      expect(await result.stdout.toList(), isEmpty);
+      expect((await result.stderr.toList()).join('\n'), contains('outside'));
+    });
   });
 
   group('原生后端', () {
@@ -345,7 +417,7 @@ int main(void) {
         },
       );
       final result = await runC();
-      expect(result.title, contains('原生 picoc'));
+      expect(result.title, 'run main.c');
       expect(await stdoutOf(result), ['原生输出', '第二行']);
       expect(await stderrOf(result), isEmpty);
       expect(await result.exitCode, 3);
@@ -419,7 +491,7 @@ int main(void) { printf("dart\\n"); return 0; }
 ''');
       mockNative(available: false);
       final result = await runC();
-      expect(result.title, contains('应用内 C 解释器'));
+      expect(result.title, 'run main.c');
       expect(await stdoutOf(result), ['dart']);
     });
 
@@ -451,10 +523,7 @@ int main(void) { printf("dart\\n"); return 0; }
         entryFile: p.join(project.path, 'main.cpp'),
       );
       expect(result, isNotNull);
-      expect(
-        result!.title,
-        anyOf(contains('Clang'), contains('GCC'), contains('C++')),
-      );
+      expect(result!.title, 'run main.cpp');
     });
   });
 }

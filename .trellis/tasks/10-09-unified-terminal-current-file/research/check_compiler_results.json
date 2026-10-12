@@ -1,0 +1,47 @@
+[
+  {
+    "case": "static_helper_main",
+    "allSourcesCompileExit": 0,
+    "allSourcesCompileError": "",
+    "programExit": 0,
+    "programOutput": "42\r\n",
+    "selectedWithoutHelperCompileExit": 1,
+    "selectedWithoutHelperCompileError": "D:\\AppData\\Local\\Temp\\cc4l4XC8.o:main.c:(.text+0xe): undefined reference to `answer'\r\ncollect2.exe: error: ld returned 1 exit status\r\n"
+  },
+  {
+    "case": "conditional_body",
+    "allSourcesCompileExit": 0,
+    "allSourcesCompileError": "",
+    "programExit": 0,
+    "programOutput": "42\r\n",
+    "selectedWithoutHelperCompileExit": 1,
+    "selectedWithoutHelperCompileError": "D:\\AppData\\Local\\Temp\\ccHvFGef.o:main.c:(.text+0xe): undefined reference to `answer'\r\ncollect2.exe: error: ld returned 1 exit status\r\n"
+  },
+  {
+    "case": "crlf_macro_continuation",
+    "allSourcesCompileExit": 0,
+    "allSourcesCompileError": "",
+    "programExit": 0,
+    "programOutput": "42\r\n",
+    "selectedWithoutHelperCompileExit": 1,
+    "selectedWithoutHelperCompileError": "D:\\AppData\\Local\\Temp\\ccszLrNp.o:main.c:(.text+0xe): undefined reference to `answer'\r\ncollect2.exe: error: ld returned 1 exit status\r\n"
+  },
+  {
+    "case": "spliced_line_comment",
+    "allSourcesCompileExit": 0,
+    "allSourcesCompileError": "",
+    "programExit": 0,
+    "programOutput": "42\r\n",
+    "selectedWithoutHelperCompileExit": 1,
+    "selectedWithoutHelperCompileError": "D:\\AppData\\Local\\Temp\\cc1CgBQk.o:main.c:(.text+0xe): undefined reference to `answer'\r\ncollect2.exe: error: ld returned 1 exit status\r\n"
+  },
+  {
+    "case": "comment_in_macro_name",
+    "allSourcesCompileExit": 0,
+    "allSourcesCompileError": "",
+    "programExit": 0,
+    "programOutput": "42\r\n",
+    "selectedWithoutHelperCompileExit": 1,
+    "selectedWithoutHelperCompileError": "D:\\AppData\\Local\\Temp\\ccwUvRlv.o:main.c:(.text+0xe): undefined reference to `answer'\r\ncollect2.exe: error: ld returned 1 exit status\r\n"
+  }
+]

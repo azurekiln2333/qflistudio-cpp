@@ -1,0 +1,3 @@
+{"file":".trellis/spec/backend/native-toolchain.md","reason":"Native compiler discovery and verification boundary"}
+{"file":".trellis/spec/backend/android-runtime.md","reason":"Existing mixed C/C++ and cancellation contracts to preserve"}
+{"file":".trellis/tasks/10-01-cross-platform-native-runtime/research/platform-audit.md","reason":"Confirmed desktop gaps and per-platform test environment"}

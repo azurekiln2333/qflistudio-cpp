@@ -7,6 +7,9 @@ import 'package:qfli_c_runtime/qfli_c_runtime.dart';
 import 'package:qfli_studio_core/services/file_encoding.dart';
 import 'package:qfli_studio_core/services/studio_profile.dart';
 
+import 'run_title.dart';
+import 'source_selection.dart';
+
 /// 用应用内的 C 运行时执行项目里的 C 代码。
 ///
 /// 两个后端，按顺序尝试：
@@ -62,11 +65,16 @@ class CProgramRunner implements ProgramRunner {
     // 不接管的类型交回内核的默认逻辑（返回 null）。
     if (p.extension(entryFile).toLowerCase() != '.c') return null;
 
-    final entry = File(entryFile);
-    if (!entry.existsSync()) return null;
+    // 入口必须是工程内、可读、受支持的源文件。越界/不存在的入口直接报
+    // 127，不能静默回退到默认 main。
+    final invalid = _entryError(projectPath, entryFile);
+    if (invalid != null) {
+      return _failure(invalid, projectPath: projectPath, entryFile: entryFile);
+    }
 
+    final entry = File(entryFile);
     final fileName = _relative(entryFile, projectPath);
-    final sources = _collectSources(projectPath);
+    final sources = _selectedSources(projectPath, entryFile);
     if (sources.isEmpty) return null;
 
     final stdin = _readStdin(projectPath);
@@ -83,7 +91,11 @@ class CProgramRunner implements ProgramRunner {
     // 2) 退回 Dart 解释器。
     final source = _readSource(entry);
     if (source == null) {
-      return _failure(fileName, '无法读取 $fileName（编码或权限问题）。');
+      return _failure(
+        '无法读取 $fileName（编码或权限问题）。',
+        projectPath: projectPath,
+        entryFile: entryFile,
+      );
     }
 
     // 项目内所有 .c / .h 一起送进去：`#include "utils.h"` 靠 files 解析，
@@ -106,11 +118,65 @@ class CProgramRunner implements ProgramRunner {
     );
 
     return ProgramRunResult(
-      title: '运行 $fileName（应用内 C 解释器）',
+      title: runTitle(projectPath: projectPath, entryFile: entryFile),
       stdout: session.stdout,
       stderr: session.stderr,
       exitCode: session.exitCode,
     );
+  }
+
+  /// Project C sources (`.c` and `.h`) to compile for [entryFile].
+  ///
+  /// Keeps the requested entry and ordinary helpers, drops only other
+  /// unambiguous top-level `main` definitions so two independent programs in
+  /// one project no longer collide in picoc/interpreter function tables. The
+  /// picoc path filters to `.c` when it builds its translation units; the
+  /// interpreter keeps `.h` files so `#include "utils.h"` resolves.
+  /// Returns an English reason when [entryFile] cannot be run inside
+  /// [projectPath], or null when it is a valid in-project C source.
+  ///
+  /// Symlinks are resolved on both sides so a link inside the project cannot
+  /// point at a program outside it.
+  String? _entryError(String projectPath, String entryFile) {
+    final project = Directory(projectPath);
+    if (!project.existsSync()) return 'project directory is not readable';
+    final file = File(entryFile);
+    if (!file.existsSync()) return 'entry file no longer exists';
+    final root = project.resolveSymbolicLinksSync();
+    final String resolved;
+    try {
+      resolved = file.resolveSymbolicLinksSync();
+    } on FileSystemException {
+      return 'entry file is not readable';
+    }
+    if (!p.isWithin(root, resolved) && !p.equals(root, resolved)) {
+      return 'entry file is outside the project';
+    }
+    return null;
+  }
+
+  /// Project sources for [entryFile]: the entry plus the other C translation
+  /// units minus any other unambiguous top-level `main`, and every `.h` file.
+  ///
+  /// Headers are include-only: they never carry the program entry and a `main`
+  /// defined inside a header must stay in the file map so `#include` resolves.
+  List<String> _selectedSources(String projectPath, String entryFile) {
+    final entry = p.normalize(p.absolute(entryFile));
+    final all = _collectSources(
+      projectPath,
+    ).map((path) => p.normalize(p.absolute(path))).toList();
+    final units = all
+        .where((path) => p.extension(path).toLowerCase() == '.c')
+        .toList();
+    final headers = all
+        .where((path) => p.extension(path).toLowerCase() == '.h')
+        .toList();
+    final selectedUnits = selectRunSources(
+      entryFile: entry,
+      allSources: units,
+      readSource: (path) => _readSource(File(path)),
+    );
+    return [...selectedUnits, ...headers];
   }
 
   /// 走原生 .so。通道不存在（没打进 .so）时返回 null，让调用方退回解释器。
@@ -145,8 +211,9 @@ class CProgramRunner implements ProgramRunner {
       return null;
     } on PlatformException catch (error) {
       return _failure(
-        p.basename(entryFile),
         '原生运行时出错：${error.message ?? error.code}',
+        projectPath: projectPath,
+        entryFile: entryFile,
       );
     }
 
@@ -174,7 +241,7 @@ class CProgramRunner implements ProgramRunner {
     });
 
     return ProgramRunResult(
-      title: '运行 ${p.basename(entryFile)}（原生 picoc 运行时）',
+      title: runTitle(projectPath: projectPath, entryFile: entryFile),
       stdout: stdout.stream,
       stderr: stderr.stream,
       exitCode: Future<int>.value(
@@ -208,14 +275,18 @@ class CProgramRunner implements ProgramRunner {
   ///
   /// 退出码用 [kProgramNotRunExitCode]（127）而不是 1：终端面板把非 0 渲染成
   /// 「（运行结束，退出码 N）」，用 1 会被读成「程序跑完报错退出」，其实没跑。
-  ProgramRunResult _failure(String fileName, String message) {
+  ProgramRunResult _failure(
+    String message, {
+    required String projectPath,
+    required String entryFile,
+  }) {
     final controller = StreamController<String>();
     scheduleMicrotask(() {
       controller.add(message);
       controller.close();
     });
     return ProgramRunResult(
-      title: '运行 $fileName',
+      title: runTitle(projectPath: projectPath, entryFile: entryFile),
       stdout: const Stream<String>.empty(),
       stderr: controller.stream,
       exitCode: Future<int>.value(kProgramNotRunExitCode),
