@@ -83,18 +83,8 @@ app.*.map.json
 /.workbuddy-ai/
 /.zcode/
 
-# Local Trellis runtime metadata. Committed knowledge (spec/, tasks/) stays tracked.
+# Local Trellis runtime metadata is tracked on purpose; keep the whole .trellis/ tree in git.
 /.dsh/
-/.trellis/.developer/
-/.trellis/.gitignore
-/.trellis/.template-hashes.json
-/.trellis/.version
-/.trellis/agents/
-/.trellis/config.yaml
-/.trellis/scripts/
-/.trellis/tasks/00-bootstrap-guidelines/
-/.trellis/workflow.md
-/.trellis/workspace/
 
 # Local diagnostic exports and shell inspection fragments
 /_*.txt

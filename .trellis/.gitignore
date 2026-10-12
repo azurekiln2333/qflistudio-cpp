@@ -1,0 +1,22 @@
+# The .trellis/ tree is tracked on purpose so any clone can resume tasks.
+# Only truly ephemeral, machine-local artifacts are ignored.
+
+# Python bytecode cache
+**/__pycache__/
+**/*.pyc
+
+# Developer identity (local, per machine)
+.developer
+
+# Current task pointer and live session runtime state
+.current-task
+.runtime/
+.ralph-state.json
+.agent-log
+.session-id
+.plan-log
+
+# Atomic update temp files / backups
+*.tmp
+*.new
+.backup-*/
