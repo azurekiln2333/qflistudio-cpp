@@ -5,6 +5,11 @@ import 'clang_runner.dart';
 import 'cpp_runner.dart';
 
 /// Routes both source families supported by QFLIForge to their native backend.
+///
+/// Platform selection happens inside [ClangProgramRunner]: Android, iOS and
+/// OHOS reach a bundled LLVM toolchain through the `qfli_forge/native` channel,
+/// while desktop spawns a compiler process directly. Both are wired there so
+/// this class only has to order the attempts.
 class ForgeProgramRunner implements ProgramRunner {
   ForgeProgramRunner({
     this.c = const CProgramRunner(),

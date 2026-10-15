@@ -39,6 +39,44 @@ class ClangProgramRunner implements ProgramRunner {
   /// program's `main`.
   static const _headerExtensions = <String>{'.h', '.hpp', '.hh'};
 
+  ///
+  /// Whether this platform reaches the compiler through the bundled-toolchain
+  /// MethodChannel (Android, iOS, OHOS) rather than spawning a local process.
+  ///
+  /// Exposed for tests and for callers that need to describe the backend.
+  /// Deliberately tolerant of OHOS: Flutter has no TargetPlatform value for it,
+  /// so the kernel's operating-system string is also consulted.
+  ///
+  static bool get usesBundledToolchainChannel {
+    if (Platform.isAndroid || Platform.isIOS) return true;
+    final String os = Platform.operatingSystem;
+    return os == 'ohos' || os == 'harmony';
+  }
+
+  ///
+  /// Builds the channel-backed runner for a bundled-toolchain platform.
+  ///
+  /// Kept as a factory so tests can inject a mock channel and event stream
+  /// without having to fake platform detection.
+  ///
+  static NativeClangRunner constructNativeRunner({
+    required MethodChannel channel,
+    required Stream<Object?> events,
+    required String backendName,
+    required String runIdPrefix,
+    bool allowCFallback = false,
+    Duration? cancellationExitTimeout,
+  }) {
+    return NativeClangRunner(
+      channel: channel,
+      events: events,
+      backendName: backendName,
+      runIdPrefix: runIdPrefix,
+      allowCFallback: allowCFallback,
+      cancellationExitTimeout: cancellationExitTimeout,
+    );
+  }
+
   final ProcessSupervisor _supervisor;
   final String? _toolchainDirectory;
 
@@ -82,6 +120,38 @@ class ClangProgramRunner implements ProgramRunner {
         projectPath: projectPath,
         entryFile: entryFile,
         sources: _selectedSources(projectPath, entryFile),
+      );
+    }
+    //
+    // OHOS 用与 Android/iOS 相同的通道协议，但走自己那套桥：
+    // ohos/entry 的 QfliCNative.ets 会 fork/exec HAP 内打包的完整 LLVM。
+    // 因为确实支持 C++20 / 标准库 / 异常，所以不留 C 回退（allowCFallback 保持 false）。
+    //
+    if (Platform.operatingSystem == 'ohos' ||
+        Platform.operatingSystem == 'harmony') {
+      final List<String> sources;
+      try {
+        sources = _selectedSources(projectPath, entryFile);
+      } catch (error) {
+        return _unavailable('$error', projectPath: projectPath, entryFile: entryFile);
+      }
+      // OHOS 桥要求 sources 必填且非空；空列表说明工程里没有可编译单元，
+      // 必须在这里拦下，不能让桥收到一个会退化成“重新发现所有文件”的请求。
+      if (sources.isEmpty) {
+        return _unavailable(
+          '工程中没有可编译的源文件。',
+          projectPath: projectPath,
+          entryFile: entryFile,
+        );
+      }
+      return NativeClangRunner(
+        backendName: 'OHOS Clang',
+        runIdPrefix: 'ohos',
+      ).run(
+        type: type,
+        projectPath: projectPath,
+        entryFile: entryFile,
+        sources: sources,
       );
     }
     if (AppPaths.isDesktop) {

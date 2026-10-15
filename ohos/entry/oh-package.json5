@@ -6,6 +6,8 @@
   "main": "",
   "author": "",
   "license": "",
-  "dependencies": {},
+  "dependencies": {
+    "libqfli_ohos_runner.so": "file:./src/main/cpp/types/libqfli_ohos_runner"
+  },
 }
 

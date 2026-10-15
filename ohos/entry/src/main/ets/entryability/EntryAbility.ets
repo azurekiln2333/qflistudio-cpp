@@ -13,6 +13,8 @@ import { window, router } from '@kit.ArkUI';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { GeneratedPluginRegistrant } from '../plugins/GeneratedPluginRegistrant';
 import { handlePickerCall, isPickerMethod } from './PickerBridge';
+// 原生 C/C++ 编译运行后端（完整 LLVM，非 picoc）。
+import { registerQfliNativeChannel } from '../plugins/QfliCNative';
 
 const CHANNEL_PLATFORM = 'qflistudio/platform';
 const CHANNEL_HUAWEI = 'qflistudio/huawei_account';
@@ -38,6 +40,20 @@ export default class EntryAbility extends FlutterAbility {
     GeneratedPluginRegistrant.registerWith(flutterEngine)
 
     const abilityContext = this.context as common.UIAbilityContext;
+
+    // 原生编译运行后端：注册 qfli_forge/native 与 qfli_forge/native/events。
+    //
+    // 这是 C/C++ 教学页面的执行路径。它链接的是 HAP 内打包的完整 LLVM 15.0.7
+    // 编译器；C++20、标准库、异常和混编的可用性以 App 实际验证为准。
+    //
+    // 这里刻意用 try/catch 包住：如果工具链资源缺失或解压失败，
+    // Dart 侧会收到 available:false 并报告不可用，而不是整个 App 起不来。
+    try {
+      registerQfliNativeChannel(flutterEngine, abilityContext);
+    } catch (e) {
+      const err = e as BusinessError;
+      console.error(`QFLI native channel unavailable: ${err.code}: ${err.message}`);
+    }
 
     // 通用平台能力：打开系统浏览器（HTML 预览用）。
     const platformChannel = new MethodChannel(
