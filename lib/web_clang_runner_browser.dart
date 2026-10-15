@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'dart:js_interop';
 import 'dart:typed_data';
 
-import 'package:qfli_studio_core/services/platform_io.dart';
-import 'package:qfli_studio_core/services/platform_path.dart' as p;
+import 'platform/platform_io.dart';
+import 'platform/platform_path.dart' as p;
 import 'package:qfli_studio_core/services/studio_profile.dart';
 
 import 'run_title.dart';

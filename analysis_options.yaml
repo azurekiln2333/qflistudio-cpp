@@ -13,6 +13,13 @@ include: package:flutter_lints/flutter.yaml
 analyzer:
   exclude:
     - vendor/**
+    # Generated build output (git-ignored, see .gitignore `**/native/build/`).
+    # It contains a staged copy of the shared core and of this app, which
+    # duplicates the real source. Excluding it keeps analysis focused on the
+    # tracked sources instead of build artifacts. Do not exclude tracked code.
+    - native/build/**
+    - build/**
+    - .dart_tool/**
 
 linter:
   # The lint rules applied to this project can be customized in the

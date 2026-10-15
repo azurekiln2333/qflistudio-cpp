@@ -18,6 +18,11 @@ dependencies:
   # c_runner.dart 直接用到（解析项目内相对路径）。
   path: ^1.9.1
 
+  # 浏览器平台存储适配层（lib/platform/）。native 上透传 dart:io，
+  # web 上用内存文件系统 + IndexedDB 持久化，取代不可用的 dart:io。
+  file: ^7.0.1
+  web: ^1.1.1
+
   cupertino_icons: ^1.0.8
 
 dependency_overrides:

@@ -1,14 +1,20 @@
 @TestOn('browser')
 library;
 
+// This is a genuine browser test that lives outside `test/` so it is excluded
+// from the default VM test run. It legitimately uses the storage facade's
+// @visibleForTesting reload helper, which the analyzer only permits from a
+// recognized test directory.
+// ignore_for_file: invalid_use_of_visible_for_testing_member
+
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:qfli_c/web_clang_runner.dart';
 import 'package:qfli_studio_core/editor/editor_controller.dart';
 import 'package:qfli_studio_core/models/project.dart';
-import 'package:qfli_studio_core/services/platform_io.dart';
-import 'package:qfli_studio_core/services/platform_io_browser.dart'
+import 'package:qfli_c/platform/platform_io.dart';
+import 'package:qfli_c/platform/platform_io_browser.dart'
     show reloadStudioStorageForTesting;
 import 'package:qfli_studio_core/services/project_templates.dart';
 import 'package:qfli_studio_core/services/studio_profile.dart';
