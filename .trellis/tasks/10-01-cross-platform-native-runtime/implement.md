@@ -1,6 +1,55 @@
 # Implementation and Validation
 
-## Current acceptance pass, 2026-10-15
+## Current acceptance pass, 2026-10-16
+
+The requested OHOS application and Android build-only acceptance is complete.
+The overall cross-platform task remains in progress for the iOS/Web gates.
+
+- [x] Reproduce installed path/mode and precise release-app execve failures.
+- [x] Probe official native-child API; record 16010004, without policy changes.
+- [x] Implement signed in-process LLVM22/WASI33 interpreter bridge and explicit
+  WASI-thread opt-in; preserve input/output/source-selection/cancel contracts.
+- [x] Pass real NAPI31, default portable19/lifecycle, native curriculum200 and
+  portable curriculum200 host gates, without interpreting these as phone proof.
+- [x] Bundle app-owned curriculum, preserve all 100 C + 100 C++ real lessons,
+  explain target differences and verify production content loading.
+- [x] Pass application Flutter178 and analysis0 using committed shared-core
+  snapshot7768b91 inside this repo; preserve the concurrently edited sibling.
+- [x] Complete final runtime review fixes and ARM64 static archives, strict
+  SDK shared links, verified resource package and recorded build provenance.
+- [x] Verify the final signed audit HAP against its exact ELF/resource inputs;
+  preserve actual-app execution as a separate gate.
+- [x] Run the full actual-app audit, including thread cancellation and all200
+  curriculum cases; record the interpreter target explicitly.
+- [x] Build and strictly verify the latest `lib/main.dart` production HAP;
+  replace-install it while retaining existing projects, then exercise ordinary
+  C++ Run, Stop (130), fresh Run and Tutorial/Examples list/detail content.
+- [x] Rebuild/inspect Android release after current curriculum changes;
+  no Android device operation.
+- [ ] Record final artifacts, update current status/journal and push all five
+  authorized C++ remotes. Preserve root OHOS signing edits and unknown LICENSE.
+
+The dated 10-15 checks below remain historical. Current architecture and host
+evidence are in `research/ohos-portable-acceptance-2026-10-16.md`; independent
+iOS/Web gates below remain open.
+
+The current runtime compiles user programs to WASI, not the native OHOS ABI.
+The signed compiler/interpreter are native ARM64 libraries. The actual-phone
+rerun passes all 212 cases: 12 basic cases, including C++ thread cancellation
+and shared-memory growth, plus all 100 C and 100 C++ examples. The summary is
+`QFLI_C_OHOS_AUDIT {ok:true,execution:interpreter,passed:212,curriculum:200}`;
+unique case evidence and exact audit HAP/log hashes are recorded in
+`research/ohos-portable-device-2026-10-16.json`. The warning-sensitive
+cancellation fixture was corrected before this complete rerun. Production UI
+verification also passes: new C++ project `ohos_cpp_verified_20261016` prints
+`Hello, QFLIStudio+!`; Stop yields terminal exit code130 and a fresh Run succeeds.
+Tutorial source/objective/output/exercise and the 200-example list with source/
+output details open normally. Existing `sss`/`tt` projects remain present after
+replacement installation. Final production HAP hashes, UI results and
+`qfli-production-{run,stop,tutorials,lesson,examples}-20261016.jpeg` screenshots
+are recorded in `research/ohos-production-ui-2026-10-16.json`.
+
+## Historical acceptance pass, 2026-10-15
 
 The user's renewed instruction authorizes OHOS app/device testing and
 conventional commits. Android remains build-only. All writes stay in
@@ -30,8 +79,8 @@ silently counted as current OHOS/Android acceptance.
 - [ ] Record final phone results and complete the acceptance commit. Keep the
   task in progress while phone or older iOS/Web gates remain open.
 
-See `ohos-status.md` for the current device blocker and continuation steps.
-Source fixes and curriculum evidence are committed as `797d9b7`, `49a7579`,
+See `ohos-status.md` for current phone progress and continuation steps.
+The 10-15 source fixes and curriculum evidence are committed as `797d9b7`, `49a7579`,
 `cccc0b8` and `7f92787`; root serializes all Git staging and commits.
 
 ## Ordered Work

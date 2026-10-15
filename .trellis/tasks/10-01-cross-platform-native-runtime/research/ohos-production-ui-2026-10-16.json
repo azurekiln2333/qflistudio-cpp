@@ -1,0 +1,101 @@
+{
+  "date": "2026-10-16",
+  "workspace": "D:\\MyNewProjects\\qfli_c",
+  "bundle": "com.azurekiln.qfli.forge",
+  "device": "nova 14 Ultra / MRT-AL10, arm64-v8a",
+  "entrypoint": "lib/main.dart",
+  "hap": "native/build/ohos-portable-production-20261016.hap",
+  "artifactVerification": {
+    "resources": {
+      "sha256": "a29e74b526e4689289d590ab35d1dee6209d9b0ccb7538554284000ef4cc5d27",
+      "resourceFiles": 4114,
+      "llvmVersion": "22.1.0",
+      "execution": "interpreter"
+    },
+    "appExecutionVerified": false,
+    "runner": {
+      "sha256": "0ab265447600eca0d6a144dae30ec2734f86cfd5bb2aa79149a9130e709314b0",
+      "neededLibraries": [
+        "libace_napi.z.so",
+        "libhilog_ndk.z.so",
+        "libc++_shared.so",
+        "libc.so"
+      ],
+      "minimumLoadAlignment": 16384
+    },
+    "hapSha256": "f7472a09e0bd8773cfd971908653a41a1f96df754ea7ca78e8b10d26f1000e69"
+  },
+  "installedWith": "hdc install -r",
+  "productionUiVerified": true,
+  "existingProjectDataPreserved": true,
+  "scratchProject": "ohos_cpp_verified_20261016",
+  "runtime": "signed LLVM 22 / WASI33 / forced WasmEdge interpreter",
+  "targetIsNativeOhosAbi": false,
+  "checks": {
+    "cppEditorRun": {
+      "ok": true,
+      "stdout": "Hello, QFLIStudio+!"
+    },
+    "editorStop": {
+      "ok": true,
+      "exit": 130,
+      "phase": "compilation"
+    },
+    "runAfterStop": {
+      "ok": true,
+      "stdout": "Hello, QFLIStudio+!"
+    },
+    "tutorialList": true,
+    "lessonDetailObjectivesSourceOutputPractice": true,
+    "exampleListCount": 200,
+    "exampleDetailSourceAndOutput": true
+  },
+  "screenshots": [
+    {
+      "purpose": "home",
+      "path": "native/build/qfli-production-home-20261016.jpeg",
+      "sha256": "f472159df5b2aca7993757e48bd0dc86f4db5e14cb0e168d42f0d21a725fd036"
+    },
+    {
+      "purpose": "run",
+      "path": "native/build/qfli-production-run-20261016.jpeg",
+      "sha256": "e0d19c2f8ea75a4f2cff1d8dc26a46afab1311664c093f287830b3cca630edb2"
+    },
+    {
+      "purpose": "stop",
+      "path": "native/build/qfli-production-stop-20261016.jpeg",
+      "sha256": "f943391d9e68971ef9706b2454958ee5e97854e9b5895d4718f0c1144b9d5bfa"
+    },
+    {
+      "purpose": "recovery",
+      "path": "native/build/qfli-production-recovery-20261016.jpeg",
+      "sha256": "a6a821f6bbd721431105de95846869ab11d5345abbcd02a40d1e5241e9a04123"
+    },
+    {
+      "purpose": "tutorials",
+      "path": "native/build/qfli-production-tutorials-20261016.jpeg",
+      "sha256": "c661a31091747538375d4059de43386d995198e1f21eca1f80b0ab866d062110"
+    },
+    {
+      "purpose": "lesson",
+      "path": "native/build/qfli-production-lesson-20261016.jpeg",
+      "sha256": "8829518eea415b9d7830c5502b216d29cd9d5017a35e4ed85c1b789a7e9cb8e6"
+    },
+    {
+      "purpose": "examples",
+      "path": "native/build/qfli-production-examples-20261016.jpeg",
+      "sha256": "a3fad1891724341287828f294b9ba5d77b806a25eff8e398e3a151cac564a28d"
+    }
+  ],
+  "terminalLayout": {
+    "path": "native/build/qfli-production-recovery.json",
+    "sha256": "28f4ca2c7cdbc60b41e325f6621bd77e09963f770575be389b0d880f13c6e0a2"
+  },
+  "uiLog": {
+    "path": "native/build/ohos-production-ui-live-20261016.log",
+    "sha256": "9729c70956213de3e56fd35333a17ecdd16d96dddf45eb31c1692e79b1ac329e"
+  },
+  "androidDeviceOperations": false,
+  "sharedCoreRevision": "7768b91a3ea3591fc9d0b333cb177d08025277e7",
+  "ownedCurriculumExact": true
+}

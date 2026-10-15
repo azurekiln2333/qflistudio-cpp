@@ -1,0 +1,1815 @@
+{
+  "compiler": "/mnt/d/MyNewProjects/qfli_c/native/build/compiler-linux/qfli_compiler_probe",
+  "runtime": "/mnt/d/MyNewProjects/qfli_c/native/build/ohos-wasi-thread-probe/runtime-probe",
+  "sdk": "/mnt/d/MyNewProjects/qfli_c/native/build/portable-deps/wasi-sdk-33.0-x86_64-linux",
+  "passed": 200,
+  "total": 200,
+  "hostOnly": true,
+  "results": [
+    {
+      "id": "c-example-001",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "Hello, C!\nQFLIForge C17\n",
+      "stderr": "",
+      "sourceSha256": "42ad3da1e4d13961c730d3d507cd09e356a4a5ed3d9baae6333eef43c1262507"
+    },
+    {
+      "id": "c-example-002",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "count=7\nprice=12.5\ngrade=B\n",
+      "stderr": "",
+      "sourceSha256": "8bbdce806802c270e2fc58e07eb635d6db05a1e87bfd9fb50400666e59d5bf98"
+    },
+    {
+      "id": "c-example-003",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "[   42]\n[42   ]\n[00042]\n[3.142]\n小明 得分 95\n",
+      "stderr": "",
+      "sourceSha256": "9ef4659cdf26607247e5d4561d92f34f2cc0f111887876602b56588e34313b8b"
+    },
+    {
+      "id": "c-example-004",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "7/2 = 3\n7.0/2 = 3.50\n7 % 2 = 1\n",
+      "stderr": "",
+      "sourceSha256": "4a9e1fda4ad64e938bed711f425c2fbce55d3912aecc72d05d1e842bc9743d35"
+    },
+    {
+      "id": "c-example-005",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "digitSum=15\neven? 1\n",
+      "stderr": "",
+      "sourceSha256": "9f5722a782629e48c29b07421ec46f14caf0050e2da6490943cd6457bed34c2a"
+    },
+    {
+      "id": "c-example-006",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "a=14 b=20 c=30\n",
+      "stderr": "",
+      "sourceSha256": "856f42eab38684a7b132bc3bc4178f6de9c7e3319474a838b7bce3a54d372b97"
+    },
+    {
+      "id": "c-example-007",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "implicit=3.00\nexplicit=3.40\ntruncated=3\n",
+      "stderr": "",
+      "sourceSha256": "c45b2c3e8abc4bfa9f857296a7af3df7b266facf301c1a9095bc99009ace41c0"
+    },
+    {
+      "id": "c-example-008",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "lower=g code=103\nupper=G code=71\ngap=32\n",
+      "stderr": "",
+      "sourceSha256": "afabc61bf4493e7b521995e718fbdfacc4b91ec7e2d1ef9906c3b07e1954dbe3"
+    },
+    {
+      "id": "c-example-009",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "positive=1 even=1\n5 > 3 = 1\n5 == 3 = 0\n",
+      "stderr": "",
+      "sourceSha256": "08068bf78afa2c0aa29de4551cce951b5c534a73c1ce69c30ab8970da78d42e0"
+    },
+    {
+      "id": "c-example-010",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "天气炎热\n",
+      "stderr": "",
+      "sourceSha256": "ac627289241e58a5b60019d153d4d9513dfb06a574eebc3ab5ded941b734d53b"
+    },
+    {
+      "id": "c-example-011",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "良好\n",
+      "stderr": "",
+      "sourceSha256": "2779cd1569f4824cf1be3b68bf1ee0fca9fe2771e730db733d48b3bdbdc6a2de"
+    },
+    {
+      "id": "c-example-012",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "42\n",
+      "stderr": "",
+      "sourceSha256": "02c02ae2616418536e1d93dd501580b08a377fd09654a213ed0ab51671cf09b8"
+    },
+    {
+      "id": "c-example-013",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "1..100 sum=5050\n5 4 3 2 1 go!\n",
+      "stderr": "",
+      "sourceSha256": "bf63045139f9a2308b8795442780036ecb62e320b032e391b9a2f3128f9fc0c3"
+    },
+    {
+      "id": "c-example-014",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "steps=25\n",
+      "stderr": "",
+      "sourceSha256": "e487e5b91afe06b898256341a464e695d940bd892215fdb757ebfc343eb0abf5"
+    },
+    {
+      "id": "c-example-015",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "value=3\n",
+      "stderr": "",
+      "sourceSha256": "1657391d76c67f896998ab9aff3535d7af929b78cb91611a7fca63f37f19e4c1"
+    },
+    {
+      "id": "c-example-016",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "sum=27\n",
+      "stderr": "",
+      "sourceSha256": "7915ada1b634ffa1c42e926be8cc730d25f3b56c260dbf81c8a8f091cd691042"
+    },
+    {
+      "id": "c-example-017",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "1*1=1 1*2=2 1*3=3 \n2*1=2 2*2=4 2*3=6 \n3*1=3 3*2=6 3*3=9 \n",
+      "stderr": "",
+      "sourceSha256": "1fe7cf78742b44a71c409323b03f29394edd2dcb312ef287540bb2de7ddf74f4"
+    },
+    {
+      "id": "c-example-018",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "   *\n  ***\n *****\n*******\n",
+      "stderr": "",
+      "sourceSha256": "8835f8d275271490adc8ddf28e56f5084a2671f082e3f0294368cb217b65a968"
+    },
+    {
+      "id": "c-example-019",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "square(5)=25\ncube(3)=27\n",
+      "stderr": "",
+      "sourceSha256": "16870f5dfb6fc385ae3dd0d18e3457d5da947930d6841d7f87b63153c5ccc72c"
+    },
+    {
+      "id": "c-example-020",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "after bump v=10\nadd(20,22)=42\n",
+      "stderr": "",
+      "sourceSha256": "7ca9d408ec45fa6fda741eb3fd79ab858f36b8089482fe35b355fa4382c3958a"
+    },
+    {
+      "id": "c-example-021",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "local=100 counter=1\nlocal=100 counter=2\nfinal counter=2\n",
+      "stderr": "",
+      "sourceSha256": "1832fe561786a22e7e1becc5fc2b1e66b9a468eee33de1123b1ed413b9603292"
+    },
+    {
+      "id": "c-example-022",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "scores[0]=90\nscores[1]=92\nscores[2]=79\nscores[3]=95\nscores[4]=67\n",
+      "stderr": "",
+      "sourceSha256": "a19769e383ce40b51b082b52a13a1b7a97cbc1c8bd2f09843d151052b68b0e4d"
+    },
+    {
+      "id": "c-example-023",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "sum=25\navg=4.17\nmax=12 min=-3\n",
+      "stderr": "",
+      "sourceSha256": "d4cee87ee0c3701455eaa42b34c53d7408c711c9dfda0d363938acfc8a9e8c36"
+    },
+    {
+      "id": "c-example-024",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "word=code len=4\nfirst=c last=e\n",
+      "stderr": "",
+      "sourceSha256": "03070739f191ff4097201db438af00c00dda29d64cefcfe5483f757ebc4a77f8"
+    },
+    {
+      "id": "c-example-025",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "len=5\ncmp=1\njoined=hello world\n",
+      "stderr": "",
+      "sourceSha256": "db4cf3bc6ee8517d6bc11d5ba6f36398157b34d3e44bbcd8e2d53b9c0d676f53"
+    },
+    {
+      "id": "c-example-026",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "17 + 5 = 22\n17 * 5 = 85\n",
+      "stderr": "",
+      "sourceSha256": "b0a23f6e041e9d8832453aee3f3d1735d156acf6a6aa170246db7835575776e3"
+    },
+    {
+      "id": "c-example-027",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "letters=10\n",
+      "stderr": "",
+      "sourceSha256": "15b76bd0feb20edc5f992c04e65eeb2e62b031a6b61ddbb808bfd9f779f55c47"
+    },
+    {
+      "id": "c-example-028",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "area=12.5664\nmaxCount=100\n",
+      "stderr": "",
+      "sourceSha256": "1bec5d7463378c2e71941c7633b7cb6fd29b86960e15e3c2b0e87a47ac29fcd6"
+    },
+    {
+      "id": "c-example-029",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "2:05\ninvalid\n",
+      "stderr": "",
+      "sourceSha256": "58235ead1f0fc26138bb62a9ba788943ee3161f910c84db3bdca4a25968f4c71"
+    },
+    {
+      "id": "c-example-030",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "i=1 candidate=9 max=4\ni=2 candidate=2 max=9\ni=3 candidate=7 max=9\nfinal max=9\n",
+      "stderr": "",
+      "sourceSha256": "075378e0701921a14deb065f7b63de9067ee36ba5ef075a56a23a87ac935a607"
+    },
+    {
+      "id": "c-example-031",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "helper=42\n",
+      "stderr": "",
+      "sourceSha256": "7a58aaeed5b621aae41e93cccfd30e434f57ddd91e10e150eb5d857cd2b94394"
+    },
+    {
+      "id": "c-example-032",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "add=42 mul=42\n",
+      "stderr": "",
+      "sourceSha256": "5140b9a92cb44acd07ad2424849c26c5fe2f1dbce689afec3cfb76b32a77df45"
+    },
+    {
+      "id": "c-example-033",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "argc=3\nargv[0]=program\nargv[1]=--verbose\nargv[2]=input.txt\n",
+      "stderr": "",
+      "sourceSha256": "01f14f1182aaec00bde930d92521decda89a5ad87ea55ad07986c45ba7d13dba"
+    },
+    {
+      "id": "c-example-034",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "avg=22.57\nabove=4\n",
+      "stderr": "",
+      "sourceSha256": "db6eef1e3b980ae4a0fbac05d1ce8645ed8571a49dd5c3a80bfacc326b0d5d65"
+    },
+    {
+      "id": "c-example-035",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "value=42\n*p=42\nafter *p=100, value=100\nsame address=1\n",
+      "stderr": "",
+      "sourceSha256": "15c17ee7764b79df38cc90bcb8cd87ff76cecb2830bc30b4cac0b7224aa36e00"
+    },
+    {
+      "id": "c-example-036",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "x=2 y=1\n",
+      "stderr": "",
+      "sourceSha256": "066faf6180f6b6f52a0924c744648d895ba7948010a99e2accd71f2346d337ac"
+    },
+    {
+      "id": "c-example-037",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "arr[2]=30\n*(arr+2)=30\np[3]=40\n*(p+1)=20\n",
+      "stderr": "",
+      "sourceSha256": "30131ee1132c0db26cbff7f988cb8c43ace882c41bb0caaa7be74d8dc94551b6"
+    },
+    {
+      "id": "c-example-038",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "count=5\nsum=45\n",
+      "stderr": "",
+      "sourceSha256": "aa78411b9ca796dcd4b360010eac1baee19e724c3d708f7c392a0ed9666d3bb5"
+    },
+    {
+      "id": "c-example-039",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "sum=30\n",
+      "stderr": "",
+      "sourceSha256": "4b67a9e45cf8acc58ff3d340b884eb57c86f316f3ac6c4526f1197aeaab79f49"
+    },
+    {
+      "id": "c-example-040",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "len=5\ncmp=1\neq=1\n",
+      "stderr": "",
+      "sourceSha256": "f0adcf7e1d8614f4f7e5ddc5dab193371f554076e4a3d8acc0afca7c1930d97b"
+    },
+    {
+      "id": "c-example-041",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "[apple]\n[banana]\n[cherry]\ncount=3\n",
+      "stderr": "",
+      "sourceSha256": "860ed7fc3aa8a9178ad93c94114571b7175fc1466b8199de0aeda08a9a643921"
+    },
+    {
+      "id": "c-example-042",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "a=(3,4)\nb=(-1,7)\na.x=13\n",
+      "stderr": "",
+      "sourceSha256": "8a9033fc86924ccb248fd782b2881aa1f61892eb8d7adaaeaecab71363ae4942"
+    },
+    {
+      "id": "c-example-043",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "小明: 88\n小红: 95\n小刚: 72\navg=85.0 best=小红\n",
+      "stderr": "",
+      "sourceSha256": "11a93fe7ae361b7351de6758996f8c3c41389bd8d91eaf2ded29743662aff869"
+    },
+    {
+      "id": "c-example-044",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "value=10\nvia arrow=10\n",
+      "stderr": "",
+      "sourceSha256": "793e3db4ce4f3337f98973407587b96213fb1305a5bb78dfbace398db4c9a761"
+    },
+    {
+      "id": "c-example-045",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "sum=4.0+6.0i\n",
+      "stderr": "",
+      "sourceSha256": "22eb05499daafd729591ec2931802e893519fbb9fb5a95f81428290ecb60900a"
+    },
+    {
+      "id": "c-example-046",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "current=green\nred value=0\n",
+      "stderr": "",
+      "sourceSha256": "5eb33a34e26cc3b3651018b7dfe045f968b8c12c69457097d4d7c0ed556eed21"
+    },
+    {
+      "id": "c-example-047",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "i=16909060\nbytes=04 03 02 01\nsize=4\n",
+      "stderr": "",
+      "sourceSha256": "601ebe39be819978717b1da3a4546478639fdedf6e895b5bd86df953f1dcc97d"
+    },
+    {
+      "id": "c-example-048",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "set bit2=1 bit5=1\ncleared bit2=0\nflags=32\n",
+      "stderr": "",
+      "sourceSha256": "1347c032190ba81ed8610d5a13ff5b3e50b278bd2916293e2a654651d6799d40"
+    },
+    {
+      "id": "c-example-049",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "read=1 write=0 exec=1\nafter add write=1\nafter remove read=0\n",
+      "stderr": "",
+      "sourceSha256": "4f9903f07d3a09f48fe813e1e80c2f44d1e52b00a11a60f7f5f3b983b0f44f07"
+    },
+    {
+      "id": "c-example-050",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "add=7\nmul=12\n",
+      "stderr": "",
+      "sourceSha256": "a412027834afa6c321a975ef03c7c03b58d19ebf307211bddf251f9b28482f40"
+    },
+    {
+      "id": "c-example-051",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "1 2 3 4 \n1 4 9 16 \n",
+      "stderr": "",
+      "sourceSha256": "6ab12dd7228048872a77b53137f01217658c2059b78abbe0d8ffbf7239a51d13"
+    },
+    {
+      "id": "c-example-052",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "0 1 4 9 16 \n",
+      "stderr": "",
+      "sourceSha256": "57f0a80f3e997eac216b8c9e6e08f06202d92a373bd8511740b358260e1fc6cf"
+    },
+    {
+      "id": "c-example-053",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "0 0 0 \n0 0 0 100 200 \n",
+      "stderr": "",
+      "sourceSha256": "ccbacceffa17e839ff0339c4129520e62dce48d6a277f3049d73e20f43f00226"
+    },
+    {
+      "id": "c-example-054",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "size=6 capacity=8\n10 20 30 40 50 60 \n",
+      "stderr": "",
+      "sourceSha256": "287343f35637cbff09479acd94018c49a5445e402a0b7846605dc62615071151"
+    },
+    {
+      "id": "c-example-055",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "sum=6\nfreed and nulled=1\n",
+      "stderr": "",
+      "sourceSha256": "85db47f59d0200e9b8596501841070c41be7a049211eb27b076af59c4fc8edd3"
+    },
+    {
+      "id": "c-example-056",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "1 2 3 \n4 5 6 \nsum=21\n",
+      "stderr": "",
+      "sourceSha256": "c3a8ad2500d12aef05745e696e00e96267a0be185580dd30cd9d65193c7907d7"
+    },
+    {
+      "id": "c-example-057",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "5! = 120\nfib(10) = 55\n",
+      "stderr": "",
+      "sourceSha256": "594c26abf82e0a83461bdbc2f7ca32847a991e7be7197e5223f9e76afa584f6d"
+    },
+    {
+      "id": "c-example-058",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "10! = 3628800\ngcd(48,36) = 12\n",
+      "stderr": "",
+      "sourceSha256": "23884db3c13e4876013d7724eba4b1d8484bb947c3a57da5a31930b11a525c4e"
+    },
+    {
+      "id": "c-example-059",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "1 2 5 5 6 9 \n",
+      "stderr": "",
+      "sourceSha256": "4e18d8b824ff5c8f83802315b1470d4455e75649a4e0e7f88a9d675edfc37fb7"
+    },
+    {
+      "id": "c-example-060",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "1 2 4 5 7 9 \n1 2 4 5 7 9 \n",
+      "stderr": "",
+      "sourceSha256": "452cb297301df046bb7628e2cf32d47d9d996523d245e7f135ab2a3a94ac2dc2"
+    },
+    {
+      "id": "c-example-061",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "3 9 10 27 38 43 82 \n",
+      "stderr": "",
+      "sourceSha256": "2638dbcfdfd1a3af54f730290642f389a9bb057690ef42a03342a5f7a865425e"
+    },
+    {
+      "id": "c-example-062",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "4 8 15 17 23 42 \n",
+      "stderr": "",
+      "sourceSha256": "24fa2f3293a46f31c006a8c51c29a4f20c43465135869bebd65ff584d3342b92"
+    },
+    {
+      "id": "c-example-063",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "find 16 -> 4\nfind 9 -> -1\n",
+      "stderr": "",
+      "sourceSha256": "4d2588dc3123417cc1334c17403468cb2ca02d6ba7128f3887773c1810069115"
+    },
+    {
+      "id": "c-example-064",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "3 2 1 \n",
+      "stderr": "",
+      "sourceSha256": "b0d62da1c178b589b128c34966c5a5bf23b2b6de7ea7e30955e66dc12615abd7"
+    },
+    {
+      "id": "c-example-065",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "line: alpha\nline: beta\ncount=2\n",
+      "stderr": "",
+      "sourceSha256": "3a6fa21f8d39387c18ad7960c48c521be9f48e6f591c18b99e27a6f34413038d"
+    },
+    {
+      "id": "c-example-066",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "read=2\nid=1 score=90\nid=2 score=85\n",
+      "stderr": "",
+      "sourceSha256": "00b4e634f37f4dc26c7b6072d95ca3719dfe6007886d7f862996545dd4a519a9"
+    },
+    {
+      "id": "c-example-067",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "errno=44\nmessage: No such file or directory\nhandled=1\n",
+      "stderr": "",
+      "sourceSha256": "338812a48dc61d04d3ed2f75a207f3d50dd50cb0f6f1951230838a61e92996d8"
+    },
+    {
+      "id": "c-example-068",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "value=42\n",
+      "stderr": "",
+      "sourceSha256": "b507976613b4a00f413ce74dd15d44fcf83dc9955e900958c0ddac94dcf1c51c"
+    },
+    {
+      "id": "c-example-069",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "rect area=12.00\ncircle area=3.14\n",
+      "stderr": "",
+      "sourceSha256": "d8c35afd8d72be4bfdaf78b8971a46f1fd3bd624fa4bc59101adbe51db29da37"
+    },
+    {
+      "id": "c-example-070",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "sum3=42\nsum4=10\n",
+      "stderr": "",
+      "sourceSha256": "c9f7bcb064d198a681fd2c08c660e44c9362b33fb685907f77749d7f3519d055"
+    },
+    {
+      "id": "c-example-071",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "square(3+1)=16\nmax=10\nflag enabled\n",
+      "stderr": "",
+      "sourceSha256": "8739fb73bccfd4eec73cef98d350a9b47f573e1750b8a28976aec12d4af79f5c"
+    },
+    {
+      "id": "c-example-072",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "os=wasi\n",
+      "stderr": "",
+      "sourceSha256": "a5108e3cae42e9f90c0d395c90659d9c93f115c647e331776e3b5f5b6b653eb3"
+    },
+    {
+      "id": "c-example-073",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "number 12\noperator +\nnumber 34\noperator *\nnumber 5\n",
+      "stderr": "",
+      "sourceSha256": "50611bc47e79a24a3ccbc576a4f2c50719c7b525ddfc374532a89229bc918a9e"
+    },
+    {
+      "id": "c-example-074",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "field[0]=alice\nfield[1]=30\nfield[2]=engineer\ntotal=3\n",
+      "stderr": "",
+      "sourceSha256": "66de4b8d827185e5ef2f183e81e16a146a3f5185a7d6f140444b5ef6cc78bfaa"
+    },
+    {
+      "id": "c-example-075",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "apple bucket=15\nbanana bucket=0\ncherry bucket=8\n",
+      "stderr": "",
+      "sourceSha256": "d4e2a2487166c7b20b17d276d5d4c3ac52865565768df30780ac7987de36a212"
+    },
+    {
+      "id": "c-example-076",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "pop=3\npop=2\n",
+      "stderr": "",
+      "sourceSha256": "998158a1fd3f1bcc7c841114f5e59f5f853d5730de762f9539ca75a8d4a74b9c"
+    },
+    {
+      "id": "c-example-077",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "add=42\n",
+      "stderr": "",
+      "sourceSha256": "b61ecd545d5958defe3e820618cfd6a0fcadc3b171f51f98b1b8719a0b345d8a"
+    },
+    {
+      "id": "c-example-078",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "make keeps builds incremental\n",
+      "stderr": "",
+      "sourceSha256": "b83b9ec674acbcf405a6d47bcfb98f41ffcbd354c1cd4760960a59b80cfff809"
+    },
+    {
+      "id": "c-example-079",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "divide=42\nchecks passed\n",
+      "stderr": "",
+      "sourceSha256": "77c304ff19e9d74779b7ba74699e09c317cf201eec5e2de13e8ad299bbb9a812"
+    },
+    {
+      "id": "c-example-080",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "padded=12\npacked=8\noffset b=4\n",
+      "stderr": "",
+      "sourceSha256": "439df12fa1c81e445954822ffdaff494445af5603289c0bb04744cd78c0de1ab"
+    },
+    {
+      "id": "c-example-081",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "1 2 3 \n",
+      "stderr": "",
+      "sourceSha256": "29611321de3f09a2ee292b0da6f0526eb07c5c1c96a1d9a70524657cd57ce53f"
+    },
+    {
+      "id": "c-example-082",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "1 2 3 \n",
+      "stderr": "",
+      "sourceSha256": "3dfcc8bee5ffa2cc5b1ced388fcf07d9c8008768cd3a7ba361f2870080e4c6dd"
+    },
+    {
+      "id": "c-example-083",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "mapped=12\nevens=3 sum=12\n",
+      "stderr": "",
+      "sourceSha256": "5882397ed19119fdf6bc8d7ca3ec7e66112d79d02a2044b0013aa297345ff606"
+    },
+    {
+      "id": "c-example-084",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "result=5000000050000000\nfast=1\n",
+      "stderr": "",
+      "sourceSha256": "c7fd7330cd205fc3c0a73edb4d483e4c36505b0506cbd381ed8a132c0e66ca22"
+    },
+    {
+      "id": "c-example-085",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "ready=1 mode=3 level=5\nsize=4\n",
+      "stderr": "",
+      "sourceSha256": "0e5ddfed595ba84e19d599d6bbdc6f813a9d9f113739b20a0e0c2cffe2aadbc9"
+    },
+    {
+      "id": "c-example-086",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "deep ok x=5\nrecovered from error\n",
+      "stderr": "",
+      "sourceSha256": "5eef5895b1853a5d81c7ae13061e9385647bae17e04f76cbcbe774985215600f"
+    },
+    {
+      "id": "c-example-087",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "name\nname\nname\n",
+      "stderr": "",
+      "sourceSha256": "56e76bd7697fbaa46b91f9c00e8bffa77b0e021f7b626bb0b2d687c9b2beacc5"
+    },
+    {
+      "id": "c-example-088",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "sum=111111111011111111100\n",
+      "stderr": "",
+      "sourceSha256": "091500ac32dcb797f021d57676d8d6bc97b58e9f7e01898b1fa22382c1c28fd0"
+    },
+    {
+      "id": "c-example-089",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "port=8080 debug=1\n",
+      "stderr": "",
+      "sourceSha256": "eeacafd98120cfae95e86c9a6c11400150c01783667b18c84f7434845998d63c"
+    },
+    {
+      "id": "c-example-090",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "one=100\nmissing=1\n",
+      "stderr": "",
+      "sourceSha256": "b6e3244903ea7fb021524aa3151cf9e0c1e331889a56a914e689ada18b62858b"
+    },
+    {
+      "id": "c-example-091",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "has 3=1\nhas 5=0\ncount=3\n",
+      "stderr": "",
+      "sourceSha256": "662e953f6afccec0616d71614e04ff57a8dda6ab0926c84068aad4edb70b360a"
+    },
+    {
+      "id": "c-example-092",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "result=60\n",
+      "stderr": "",
+      "sourceSha256": "3655b45c069f4a4650d9cff30a54258f54cca7ac62084c26546d63a6a4da1425"
+    },
+    {
+      "id": "c-example-093",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "a=42 d=3.5 used=16\nafter reset used=0\n",
+      "stderr": "",
+      "sourceSha256": "68c634f04a32bc6cf85e0fdfb6cbdce22e850ebc78f36769abd5bc251fdf43c0"
+    },
+    {
+      "id": "c-example-094",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "10 20 30 \n",
+      "stderr": "",
+      "sourceSha256": "7350d52e3b0f9b3e0c99e3bdedd77042879bed24b3cfc35f80c0440df0bddb55"
+    },
+    {
+      "id": "c-example-095",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "sink=100010000000\nformula faster or equal=1\n",
+      "stderr": "",
+      "sourceSha256": "d119dcd42e2289bcbb80e8efabadae565c93a7355978bd54a74653138532f139"
+    },
+    {
+      "id": "c-example-096",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "123 -> valid\n-45 -> valid\n+0 -> valid\n- -> invalid\n12x -> invalid\n",
+      "stderr": "",
+      "sourceSha256": "9f1aa36be1ab6255c709004bde1ca606e4016bce50f34c953c60e3d2a75c3ee8"
+    },
+    {
+      "id": "c-example-097",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "e=0 result=42\ne=1\n",
+      "stderr": "",
+      "sourceSha256": "03e0f59352c02733036019793dd651fd916a0a01116bc9e5159f20b718def114"
+    },
+    {
+      "id": "c-example-098",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "value=0x12345678\n",
+      "stderr": "",
+      "sourceSha256": "f51b919839843a46c876570f6a25655a08a6ee041a35f19df648147a617e96d7"
+    },
+    {
+      "id": "c-example-099",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "mean=9.60\nmax=15.0\n",
+      "stderr": "",
+      "sourceSha256": "d0c3e36ce83d194254873b6d5279a884123cd74a5af5b90bda8c97772ac66807"
+    },
+    {
+      "id": "c-example-100",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "the=3\ncat=2\ndog=1\nbird=1\n",
+      "stderr": "",
+      "sourceSha256": "992f894707d97df9706175cf235449810984b351bb63169b92b48ab53765be96"
+    },
+    {
+      "id": "cpp-example-001",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "Hello, C++!\n一加一等于 2\n",
+      "stderr": "",
+      "sourceSha256": "aab8d22e95e172297c9e8ece4733a0cdefcba81f4089da50caca2b608f2b14a9"
+    },
+    {
+      "id": "cpp-example-002",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "count = 10\ncount = 15\n",
+      "stderr": "",
+      "sourceSha256": "8f9b6e0061e8f8e31cc10ebd51bdb8cd0eaa55d7f010041484567f31f4157932"
+    },
+    {
+      "id": "cpp-example-003",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "i=42 1\nd=3.5 1\nl=42\nc=x\n",
+      "stderr": "",
+      "sourceSha256": "d27c63368ee976a916ef884d4bf56cfb1fed00e416ad6275d45b839904c1c588"
+    },
+    {
+      "id": "cpp-example-004",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "7 + 35 = 42\n",
+      "stderr": "",
+      "sourceSha256": "3dc5a439805344d57dc3640447d861ab410a2dcb58bba262d5babd32935985ac"
+    },
+    {
+      "id": "cpp-example-005",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "Hello, World!\n长度 13\n首字符 H\nHello, World! 再见\n",
+      "stderr": "",
+      "sourceSha256": "b4603051fb7e2c97570500da076879958cc0c6484633b71e5e9b29ef84cc78f2"
+    },
+    {
+      "id": "cpp-example-006",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "size=4\nsum=100\nlast=30 size=3\n",
+      "stderr": "",
+      "sourceSha256": "f6c62fdea7ee6166c74cd260ce72acb5ea5eef4678cabbf78c7ddbce7c3de983"
+    },
+    {
+      "id": "cpp-example-007",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "1 2 3 4 \n10 20 30 40 \n",
+      "stderr": "",
+      "sourceSha256": "3e3b6cc67e2e807f988689b2220e32477fcdd77057d3650971b7cce826aa229e"
+    },
+    {
+      "id": "cpp-example-008",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "5\n6\n6\n",
+      "stderr": "",
+      "sourceSha256": "bfa732d2922c3b22c7f6c8857d3060f582bb2614077690c6583178a133a7db51"
+    },
+    {
+      "id": "cpp-example-009",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "你好，小明！\n早上好，小红！\n嗨，小刚~\n",
+      "stderr": "",
+      "sourceSha256": "708f83e5bac6e75973e5d0d9c82918edad3862b056eef85d1fd200fffee6b63f"
+    },
+    {
+      "id": "cpp-example-010",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "25\n10\n36\n",
+      "stderr": "",
+      "sourceSha256": "fb49c0941c5ecb794556b37aff0c35e0545287d610e64d0b45484bac3729b91a"
+    },
+    {
+      "id": "cpp-example-011",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "6\n25\n9\n",
+      "stderr": "",
+      "sourceSha256": "97250f2408697d4638b7d86edbb7b19fa98b3e8619273fd23e671827b457dc10"
+    },
+    {
+      "id": "cpp-example-012",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "zero small small medium large \n",
+      "stderr": "",
+      "sourceSha256": "f3a527ef9933a96ecd136f9c6ca9b8f4722b36f1fd35c01b7d9583c79bea5a61"
+    },
+    {
+      "id": "cpp-example-013",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "sum=55\n3 2 1 \n0 1 2 \n1 3 \n",
+      "stderr": "",
+      "sourceSha256": "9746c6fcdb9f2367d50332ba17a2861fab5d6010a3a2de697d83f30b2e09a6b1"
+    },
+    {
+      "id": "cpp-example-014",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "apples=3\n1 2.5 z\n",
+      "stderr": "",
+      "sourceSha256": "f4b8e1f2454762c9cb44e030f3d12db465935a0e83f13ddb5170e69c09c3f855"
+    },
+    {
+      "id": "cpp-example-015",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "size=5\nsum=15\nfront=100 back=5\n",
+      "stderr": "",
+      "sourceSha256": "08bf621f0a7b0d3f85b578e966d70aa02ea6004d650388920f2acabf5f2a9918"
+    },
+    {
+      "id": "cpp-example-016",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "age=18\n1 pi 3.14\ntuple size=3\n",
+      "stderr": "",
+      "sourceSha256": "1149b13d5538ef1e8de8d17fc9a48064cc661dfe9902574ce17e86c9b7c4d0c9"
+    },
+    {
+      "id": "cpp-example-017",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "blue\n5\n",
+      "stderr": "",
+      "sourceSha256": "c8b1624931c5630969bd242f7360a4db2beb3614f557a2d0f3c6e3b3c482a950"
+    },
+    {
+      "id": "cpp-example-018",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "5\n捕获异常: 除数不能为零\n程序继续\n",
+      "stderr": "",
+      "sourceSha256": "4ea21e37735eb21640260ee6f675b27f9de4c7fc7f1cc413e74ad57dfa7165d2"
+    },
+    {
+      "id": "cpp-example-019",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "取款成功 30\n业务错误: 余额不足\n",
+      "stderr": "",
+      "sourceSha256": "7483df62f45762151c5e196f96f4e4090760eed0c49a55aaca3d0e011be4e8f1"
+    },
+    {
+      "id": "cpp-example-020",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "25\n",
+      "stderr": "",
+      "sourceSha256": "be39fe70d329f0869c7dd1c8e00b999cdb3aff5d7039abbeee4087888e39707d"
+    },
+    {
+      "id": "cpp-example-021",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "Alice (25)\nline: Hello World\n",
+      "stderr": "",
+      "sourceSha256": "b6e5503bdabdd2af473eab1ea4f1635981c4806216ee9763536486815d8ff0e9"
+    },
+    {
+      "id": "cpp-example-022",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "1: 第一行\n2: 第二行\n",
+      "stderr": "",
+      "sourceSha256": "967fa46844efc8cd44df7e4361391e95cc04bc3e8745273db191a3d8add3059f"
+    },
+    {
+      "id": "cpp-example-023",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "42\nnone\n-1\n",
+      "stderr": "",
+      "sourceSha256": "29efd716398abdca1d64c89bb8b5fe0b8087ab852b1255891cbef0a4099397df"
+    },
+    {
+      "id": "cpp-example-024",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "2\n5\nello\n",
+      "stderr": "",
+      "sourceSha256": "abfd1f510a2b93076dab4875c7e74857e1a97f543b9900fa1d09652490449f5f"
+    },
+    {
+      "id": "cpp-example-025",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "1 2 3 5 9 9 \nfound 9\ncount 9 = 2\n",
+      "stderr": "",
+      "sourceSha256": "77ee048797ce2f1f17ddf573207c359f24bc43aab441b8c693c4cb4518c7312a"
+    },
+    {
+      "id": "cpp-example-026",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "9 6 5 4 3 2 1 1 \nabove 4 = 3\n",
+      "stderr": "",
+      "sourceSha256": "8b2219a8a074bef70aec215ab4e3b20890f442797b50e7042c28c309202bb9dd"
+    },
+    {
+      "id": "cpp-example-027",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "1 3 4 5 8 \n4 8 \n",
+      "stderr": "",
+      "sourceSha256": "c7042adf8185109829bf3bf63a836a543438fb606105ed9b873195118f81825c"
+    },
+    {
+      "id": "cpp-example-028",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "6! = 720\n4! = 24\n",
+      "stderr": "",
+      "sourceSha256": "eec1cb969ebcf2b86340aab7ef8f3608d4b4e2cb160eafa4e9848c1265692c0c"
+    },
+    {
+      "id": "cpp-example-029",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "5\n断言通过\n",
+      "stderr": "",
+      "sourceSha256": "5f55037ee128f4df617d5f7940a5ce6bd936c47d418fbb29a7a79f6e4b647171"
+    },
+    {
+      "id": "cpp-example-030",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "flags=5\nbit2 set? 1\nflags=4\nxor=255\n",
+      "stderr": "",
+      "sourceSha256": "aab2479815347696e5a90d430ed5256566ae31f9f12e8052eeecb5d3367c93f5"
+    },
+    {
+      "id": "cpp-example-031",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "3.14\n3.1416\n00000042\n7.....|\n",
+      "stderr": "",
+      "sourceSha256": "9ae80bbc303a0e27502b6cfac2036041ad31a1c11e7b6cc80da68a2ce5b80edd"
+    },
+    {
+      "id": "cpp-example-032",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "score=95 level=3\n102\n",
+      "stderr": "",
+      "sourceSha256": "e6287ba7148aec85003684d541dc2e9a2d2a06a91670ecdad091f2ea640941c4"
+    },
+    {
+      "id": "cpp-example-033",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "area=12\n10\n",
+      "stderr": "",
+      "sourceSha256": "5c0688b429e88d8d044aa74928332a5d287c711b0b4269f236571242d3785144"
+    },
+    {
+      "id": "cpp-example-034",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "人数 3\n平均 85.0\n最高 小红 95\n",
+      "stderr": "",
+      "sourceSha256": "5894de67b0bc130f94a14a099a2a1f0f46b5822a90c9b2a5253ea4d9e5f754e3"
+    },
+    {
+      "id": "cpp-example-035",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "2\n",
+      "stderr": "",
+      "sourceSha256": "8279820dfe46941dadc5fc78f525205d3b30acc7c87c0e051147f0ebe1b1dbc0"
+    },
+    {
+      "id": "cpp-example-036",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "(0,0)\n(3,4)\n(5,5)\n",
+      "stderr": "",
+      "sourceSha256": "961bd8b1a0f2535b2bc5b2952fa4630885e2e411a8c7dc79b05b07342d93af99"
+    },
+    {
+      "id": "cpp-example-037",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "server 7 70\n",
+      "stderr": "",
+      "sourceSha256": "802e23810f811585ccd28770935260439c35547c3fa276fab6c61cc76e5134ef"
+    },
+    {
+      "id": "cpp-example-038",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "创建 outer\n创建 inner\n销毁 inner\nmain 结束前\n销毁 outer\n",
+      "stderr": "",
+      "sourceSha256": "67839af80c933ce6d6229ba9fec02ea41141841e816f036c4ec0452c01f2f1ce"
+    },
+    {
+      "id": "cpp-example-039",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "hello 5\nhello 5\n",
+      "stderr": "",
+      "sourceSha256": "a9270dacae5957e8ef367778c70d87b79e80f45da8fd6e9ba3bd18d0158382ec"
+    },
+    {
+      "id": "cpp-example-040",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "移动构造\nb=alice\na=(moved)\n",
+      "stderr": "",
+      "sourceSha256": "243e68f8b870a176fc7f1f7e10fc61ef2d80562dc7a218f7f5d90e8f087c0b2b"
+    },
+    {
+      "id": "cpp-example-041",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "core 2\n",
+      "stderr": "",
+      "sourceSha256": "47f521c29f998b22b6d50c0236ba4351f6a636af842c2773197edd03e424c3d1"
+    },
+    {
+      "id": "cpp-example-042",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "4,6\n0 1\n",
+      "stderr": "",
+      "sourceSha256": "13c188f82c5bde3e11aa87fd943c81d9ca9a82b69f412af1a9679cfe38eac7e4"
+    },
+    {
+      "id": "cpp-example-043",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "(1, 2) -> (3, 4)\n",
+      "stderr": "",
+      "sourceSha256": "0f5d5a14c84075c7ee6a8a3662cad02006a426a2fe6ab020efc3a5c5beec5ecc"
+    },
+    {
+      "id": "cpp-example-044",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "旺财\n动物 旺财 汪\n",
+      "stderr": "",
+      "sourceSha256": "1051eb0130725db7e4a562c1557097cac6c9be1a88e32826d3199a52997f38e0"
+    },
+    {
+      "id": "cpp-example-045",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "circle 3.14159\n",
+      "stderr": "",
+      "sourceSha256": "34a5cdc97d99a2e5ed3d4253eb48c684b8a7b9a982b78845e3e74a315048a591"
+    },
+    {
+      "id": "cpp-example-046",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "[console] hello\n[file] hello\n",
+      "stderr": "",
+      "sourceSha256": "95d24b708396d9c9d0c3ebb48a9355d1502d3abe4e884d4d965f18dab9aa4082"
+    },
+    {
+      "id": "cpp-example-047",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "~Derived\n~Base\n",
+      "stderr": "",
+      "sourceSha256": "4170d9afbc47df89b5c86b3956610fe2bc15d2c8fc4def703457a0eaab1a3dcb"
+    },
+    {
+      "id": "cpp-example-048",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "acquire 1\n1\n1\n1\nrelease 1\n",
+      "stderr": "",
+      "sourceSha256": "8a20fa2635a11869dee90107875e21af20c2e89be9283ea08181062b6eb8622c"
+    },
+    {
+      "id": "cpp-example-049",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "count=1\ncount=2\ncount=1\nlocked=42\n",
+      "stderr": "",
+      "sourceSha256": "53135caaf0e4d23e3fbf1fdd0dbb6b478b72850629c508b3e31bb2319291f829"
+    },
+    {
+      "id": "cpp-example-050",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "1 4 9 16 \nsum=10\nproduct=24\n",
+      "stderr": "",
+      "sourceSha256": "b76a362c340d6efb6b63a25a973e9f58d45bc7d250d13940cd9f1992026a4fd1"
+    },
+    {
+      "id": "cpp-example-051",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "above 5: 2\n9 7 4 3 1 \n",
+      "stderr": "",
+      "sourceSha256": "cd36c2c384983e73f82b57d3170faaea29dd0bc41fdfcb236b6d613590a54c35"
+    },
+    {
+      "id": "cpp-example-052",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "total=6\n1 2\nouter=0\n",
+      "stderr": "",
+      "sourceSha256": "f4fc7006d619970f9b830e05cae8ab757c7655d9a4daed08faa2e93b864cb5b3"
+    },
+    {
+      "id": "cpp-example-053",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "25 6 10 \n",
+      "stderr": "",
+      "sourceSha256": "e8d9ccd347a5a210bc140a8043484534b9eb29f89533e52d7e8fe488534103e1"
+    },
+    {
+      "id": "cpp-example-054",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "7\n2.5\npear\n",
+      "stderr": "",
+      "sourceSha256": "c2339b2f347b9097177d21edb98acbf5e1ecc2e0fb0587285e2a4a38cc0f9cb6"
+    },
+    {
+      "id": "cpp-example-055",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "3 & 9\n9\n2.5 & 1.5\n2.5\n",
+      "stderr": "",
+      "sourceSha256": "0b0184b8cfc143b0522d916931cd2ecabee60bd4a38e7b9037a2b82ab80cc89a"
+    },
+    {
+      "id": "cpp-example-056",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "int\ndouble\nunknown\n",
+      "stderr": "",
+      "sourceSha256": "ccda1b00308576023257d6843680d11bf5067ffbb9a115703677768fcaa7a043"
+    },
+    {
+      "id": "cpp-example-057",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "11 21 31 \n21\n",
+      "stderr": "",
+      "sourceSha256": "af0893d57952965e75025f1711dbf83f32c793557beb0ee007ad9ac42ccbffdc"
+    },
+    {
+      "id": "cpp-example-058",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "2\n4\n24\n",
+      "stderr": "",
+      "sourceSha256": "f1986e9d04ce5fb55a1d861bcd8b535ca950480e2cf2f9ffa9472483287d1401"
+    },
+    {
+      "id": "cpp-example-059",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "alice=30\ncount bob=1\nalice:30 bob:25 carol:28 \n",
+      "stderr": "",
+      "sourceSha256": "248e4436a93b9c4b6aa3dc48d3dbe332a21d60628f8564537296ada59af736e2"
+    },
+    {
+      "id": "cpp-example-060",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "a=3\nsize=3\nhas b=1\n",
+      "stderr": "",
+      "sourceSha256": "bd653483ca3a2a29ee4c9f97f1c932f0f3deae3ed67483557f536e2e40ce4846"
+    },
+    {
+      "id": "cpp-example-061",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "unique=3\n1 2 3 \nhas 2=1\n",
+      "stderr": "",
+      "sourceSha256": "25a37a845903602ecb9b115890149a91ac1b0aed4447fd032ecdd61a43ab4b27"
+    },
+    {
+      "id": "cpp-example-062",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "1 2 3 \nfront=1 back=3\nsize=2 front=2\n",
+      "stderr": "",
+      "sourceSha256": "3a75ad86ea3a69889b6556f846805aa71e888d365e325575150c0c5e734e779a"
+    },
+    {
+      "id": "cpp-example-063",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "0 9 1 2 3 \nsize=4\n",
+      "stderr": "",
+      "sourceSha256": "942e1377ca074b55a86524b0286217688a586541c8e1cdad37140d67c195ee6f"
+    },
+    {
+      "id": "cpp-example-064",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "stack: 3 2 1\nqueue: 1 2 3\n",
+      "stderr": "",
+      "sourceSha256": "12e01111bd14e45d847d1e0aa4f211653b04906a53c40bfd3941f7f765c09fa1"
+    },
+    {
+      "id": "cpp-example-065",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "42\nhello\nindex=1\nvisit:hello\n",
+      "stderr": "",
+      "sourceSha256": "52d84332a2e8d28652e571f0bf5e33305570b5d8f6f9488bf0ab85d4a5b4943a"
+    },
+    {
+      "id": "cpp-example-066",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "apple,3;pear,5;\ntotal=8\n",
+      "stderr": "",
+      "sourceSha256": "d9aa58a5e00d9ddca5be8ccec14dbd7fed5541f1fd727595c73099d775b319af"
+    },
+    {
+      "id": "cpp-example-067",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "result=5\nerror: Invalid argument\n",
+      "stderr": "",
+      "sourceSha256": "4e44e0e06eb673c980b13a4ec2f2ec7b1fe79e02b5baae1b13407629073e31a5"
+    },
+    {
+      "id": "cpp-example-068",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "5\n5\n",
+      "stderr": "",
+      "sourceSha256": "b9fba8d54e6c37a1ea16ac211b4225c4aee44cd4ccf6d1313646820a1cb282c9"
+    },
+    {
+      "id": "cpp-example-069",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "3\nderived\n1\n",
+      "stderr": "",
+      "sourceSha256": "c38737fa7456efccaa113e84bd6710129520627518fef37fb54f1563da54fe49"
+    },
+    {
+      "id": "cpp-example-070",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "0 1\n",
+      "stderr": "",
+      "sourceSha256": "f315386aa82ac254ddff98119a6521ecb991cad0ca0f4214d60f003eacfc9ecf"
+    },
+    {
+      "id": "cpp-example-071",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "enter\nworking\ncleanup\n",
+      "stderr": "",
+      "sourceSha256": "7f241db5bd8b7a6b858195382efa5b06acf2c50b016c8000379959d756cc7fe5"
+    },
+    {
+      "id": "cpp-example-072",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "sum=10\n",
+      "stderr": "",
+      "sourceSha256": "4626b5f6a3229f6110b07fd6fbbe5ccd90c576513ce30f29656fca19b9fad060"
+    },
+    {
+      "id": "cpp-example-073",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "all tests passed\n",
+      "stderr": "",
+      "sourceSha256": "3593251df4db635aaaef163f4323d06cf9630745b90f8bbf74fe1e55b21b47c2"
+    },
+    {
+      "id": "cpp-example-074",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "42\n",
+      "stderr": "",
+      "sourceSha256": "906426d2cf72b94fb47fd77271691a57d97740ab8fbd8f1f3a29b7ce5f3ebd9d"
+    },
+    {
+      "id": "cpp-example-075",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "apple left 7\npear insufficient\ntotal=12\n",
+      "stderr": "",
+      "sourceSha256": "e1eddb6096bdfffca71417d72e40ce8cde3803f059d09072c245240ea82f032a"
+    },
+    {
+      "id": "cpp-example-076",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "integral\nfloating point\nother\n1\n",
+      "stderr": "",
+      "sourceSha256": "00d28bfffd91b3be51e1ad5e69a149182c651e770075db7f99de56e2bf30410e"
+    },
+    {
+      "id": "cpp-example-077",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "10\n4\na 1 2.5 \n",
+      "stderr": "",
+      "sourceSha256": "9a99f1802df532ad6e04013d8f01cd0c714f31e4c975c813058eaf24b1e74d25"
+    },
+    {
+      "id": "cpp-example-078",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "42\n42\nhi\n",
+      "stderr": "",
+      "sourceSha256": "e838750dcf7e4f57e380c07efd292f5836926f4eff400ef5a2a45f709ae4227c"
+    },
+    {
+      "id": "cpp-example-079",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "7\nfoobar\n",
+      "stderr": "",
+      "sourceSha256": "a791583e988257d101019a20fe870633153676362437861154719f51cba822dd"
+    },
+    {
+      "id": "cpp-example-080",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "copy: hello\nmove: world\n",
+      "stderr": "",
+      "sourceSha256": "aa97f8007dd4b2924f2e4c8b1267a289115a689d8b3c6538dfd9e3cf48c5d45f"
+    },
+    {
+      "id": "cpp-example-081",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "1\n1\n0\n5\n",
+      "stderr": "",
+      "sourceSha256": "9574b8c33cfeb60486467fb3592fb6b116c76ef6ddca80efd2e9fa7deb705cc1"
+    },
+    {
+      "id": "cpp-example-082",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "10\n10\n",
+      "stderr": "",
+      "sourceSha256": "04256fd20d95e071c225c7afa959c4e143e51277d967e9432385d88a4d5f5318"
+    },
+    {
+      "id": "cpp-example-083",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "9\n",
+      "stderr": "",
+      "sourceSha256": "3f9cbd42b17de89a00e92c28f6c037309f4566033120ffff5bdd341271a405c1"
+    },
+    {
+      "id": "cpp-example-084",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "1 2 3 \n3 2 1 \n",
+      "stderr": "",
+      "sourceSha256": "bc14da21fa7f99f7ebea2f4a7f582b1298a650828628bfe3a37c9e8710b50e46"
+    },
+    {
+      "id": "cpp-example-085",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "42\nhi\n",
+      "stderr": "",
+      "sourceSha256": "d5c1550f69f5bc9835624b64467b593aa55a447109ddab593f89f3158ef7c922"
+    },
+    {
+      "id": "cpp-example-086",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "size=100\nallocations>0=1\n",
+      "stderr": "",
+      "sourceSha256": "dd41723e4275b2f45e5ed7689ca7ddb8320b5f7bd1c2ec14ec08e3a6cdd4ef8d"
+    },
+    {
+      "id": "cpp-example-087",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "6\n22\n11\n",
+      "stderr": "",
+      "sourceSha256": "48dd8a6f54c350e1688dd53ae88375fc10df77a2b513cfc26b3d99878c45b932"
+    },
+    {
+      "id": "cpp-example-088",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "4 16 36 \n4 16 \n",
+      "stderr": "",
+      "sourceSha256": "052a59fd10c1c1fa2ad26b0851e587fd9049232c95da0e17f41d3935ba48bb39"
+    },
+    {
+      "id": "cpp-example-089",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "1 0 0\n0\n",
+      "stderr": "",
+      "sourceSha256": "8dc3efb22f70f287544e355c8399fa5a975d474ee364cdd41557ff557ad3b4d5"
+    },
+    {
+      "id": "cpp-example-090",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "sum=30\n",
+      "stderr": "",
+      "sourceSha256": "464e06cae3b8c18b5a4e30baf1d50a7411504a598e1ac3df86f55eac66579790"
+    },
+    {
+      "id": "cpp-example-091",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "total=15\n",
+      "stderr": "",
+      "sourceSha256": "f4e72607cc4389a663300c4bc30766f4b26ac4498b5200535787a08a760056ed"
+    },
+    {
+      "id": "cpp-example-092",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "counter=4000\n",
+      "stderr": "",
+      "sourceSha256": "57db4167ae600528762e9b9d64e89d025897d673bf5d36a7023351012373dcf5"
+    },
+    {
+      "id": "cpp-example-093",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "data=42\n",
+      "stderr": "",
+      "sourceSha256": "2b5a5b5473b6e85a6c1c7340eb9c44b2894722794dd647966e3cb474c7da2923"
+    },
+    {
+      "id": "cpp-example-094",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "second second\n",
+      "stderr": "",
+      "sourceSha256": "d2d5e1066905c6c4cb3a85c9c74195a574fb11046468b156ca30031867ea2923"
+    },
+    {
+      "id": "cpp-example-095",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "1\n0\n",
+      "stderr": "",
+      "sourceSha256": "6cc993dc147bda5ae717b7cfb2237ad451838dd2dc4f91a6a70be38d57e9fd4b"
+    },
+    {
+      "id": "cpp-example-096",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "sum=499999500000\nmeasured=1\n",
+      "stderr": "",
+      "sourceSha256": "02fa0bf6cc95003d9838f10ffcba8b9ae1762ec45fc8cfd47218adf4f64312ca"
+    },
+    {
+      "id": "cpp-example-097",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "25\n42\n",
+      "stderr": "",
+      "sourceSha256": "96ce2112b2014cec12fd63ae90fce31d34e068aaf3780489a644da5a9a1973f9"
+    },
+    {
+      "id": "cpp-example-098",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "10 25 \n10 25\n",
+      "stderr": "",
+      "sourceSha256": "6976c1943d944f779525d8ca7b46debf436851b4a81358b7f7059bddf6ab9594"
+    },
+    {
+      "id": "cpp-example-099",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "bob:3500 alice:5000 carol:7000 \nfound 7000\n",
+      "stderr": "",
+      "sourceSha256": "af1e9afed3214ace2e150526e4db0dcce9ab229dc784b2f0857a029a4abb00c5"
+    },
+    {
+      "id": "cpp-example-100",
+      "ok": true,
+      "compileExit": 0,
+      "exit": 0,
+      "stdout": "7\n9\n",
+      "stderr": "",
+      "sourceSha256": "20a1081ccacd50aaef49ba1e5c1600a1fc4398ecf37aeca6a509e8e3e9d4d9e4"
+    }
+  ],
+  "threadsEnabled": true,
+  "execution": "wasmedge-interpreter",
+  "generatedAt": "2026-10-15T19:45:40.953327+00:00",
+  "compilerSha256": "e09099acd231d8f69c53ae41e9f37453a8112e0fe67cdb77c6bdb94c738808af",
+  "runtimeSha256": "42ee63eb1c0f84a5773a08574b59b49f8f63fef0b12f75dbe987357e357a851a"
+}
