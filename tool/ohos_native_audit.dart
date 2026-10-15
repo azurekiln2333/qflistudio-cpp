@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
 import 'package:qfli_c/native_clang_runner.dart';
 
+import 'forge_content/forge_topics.dart';
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(
@@ -34,6 +36,7 @@ Future<void> audit() async {
       String? output,
       String? error,
       bool emptyOutput = false,
+      bool exactOutput = false,
       List<String>? sources,
     }) async {
       current = name;
@@ -75,16 +78,22 @@ Future<void> audit() async {
       final out = (await stdout).join('\n');
       final err = (await stderr).join('\n');
       if (code != exit ||
-          output != null && !out.contains(output) ||
+          output != null &&
+              (exactOutput
+                  ? out.trimRight() != output.trimRight()
+                  : !out.contains(output)) ||
           error != null && !err.contains(error)) {
         throw StateError('$name exit=$code stdout=$out stderr=$err');
       }
       if (emptyOutput && out.isNotEmpty) {
         throw StateError('Stale program output: $out');
       }
+      if (exactOutput && err.isNotEmpty) {
+        throw StateError('$name unexpected stderr: $err');
+      }
       results.add(name);
       debugPrintSynchronously(
-        'QFLI_C_OHOS_CASE ${jsonEncode({'name': name, 'exit': code, 'stdout': out, 'stderr': err})}',
+        'QFLI_C_OHOS_CASE ${jsonEncode({'name': name, 'exit': code, 'stdout': out.length > 512 ? '${out.substring(0, 512)} [${out.length} chars]' : out, 'stderr': err})}',
       );
     }
 
@@ -230,8 +239,28 @@ int main(void) {
       '#include <stdio.h>\nint main(void) { puts("$unicodeLine"); return 0; }',
       output: unicodeLine,
     );
+    for (final topic in forgeTopics) {
+      for (final file in root.listSync().whereType<File>()) {
+        if ({'.c', '.cpp', '.cc', '.cxx'}.contains(p.extension(file.path))) {
+          await file.delete();
+        }
+      }
+      final input = File(p.join(root.path, 'input.txt'));
+      if (topic.input case final String text) {
+        await input.writeAsString(text);
+      } else if (await input.exists()) {
+        await input.delete();
+      }
+      await check(
+        topic.exampleId,
+        topic.code,
+        type: topic.language,
+        output: topic.output,
+        exactOutput: true,
+      );
+    }
     debugPrintSynchronously(
-      'QFLI_C_OHOS_AUDIT ${jsonEncode({'ok': true, 'cases': results})}',
+      'QFLI_C_OHOS_AUDIT ${jsonEncode({'ok': true, 'passed': results.length, 'curriculum': forgeTopics.length})}',
     );
   } catch (error, stack) {
     debugPrintSynchronously(
