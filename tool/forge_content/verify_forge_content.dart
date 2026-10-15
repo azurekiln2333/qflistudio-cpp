@@ -34,7 +34,9 @@ Future<void> main(List<String> args) async {
   final tutorialFile = File('${staging.path}/forge_tutorials.json');
   final exampleFile = File('${staging.path}/forge_examples.json');
   if (!tutorialFile.existsSync() || !exampleFile.existsSync()) {
-    stderr.writeln('Staged rows missing. Run generate_forge_content.dart first.');
+    stderr.writeln(
+      'Staged rows missing. Run generate_forge_content.dart first.',
+    );
     exitCode = 2;
     return;
   }
@@ -45,7 +47,9 @@ Future<void> main(List<String> args) async {
   final topics = forgeTopics;
   final cCount = topics.where((t) => t.isC).length;
   final cppCount = topics.length - cCount;
-  stdout.writeln('Authored: ${topics.length} topics ($cCount C, $cppCount C++).');
+  stdout.writeln(
+    'Authored: ${topics.length} topics ($cCount C, $cppCount C++).',
+  );
 
   final native = WslNativeCompiler();
   if (requireNative) {
@@ -218,7 +222,9 @@ Future<void> main(List<String> args) async {
     flush: true,
   );
 
-  stdout.writeln('Staged assets: ${tutorials.length} tutorials, ${examples.length} examples.');
+  stdout.writeln(
+    'Staged assets: ${tutorials.length} tutorials, ${examples.length} examples.',
+  );
   stdout.writeln('Native: $pass passed, $fail failed of ${topics.length}.');
   if (shapeErrors.isNotEmpty) {
     stdout.writeln('Shape errors (${shapeErrors.length}):');
@@ -241,7 +247,12 @@ String? _crossCheck(
   if (lesson == null) return 'missing tutorial lesson ${topic.tutorialId}';
   if (lesson['code'] != topic.code) return 'tutorial code mismatch';
   if (lesson['output'] != topic.output) return 'tutorial output mismatch';
-  if (lesson['objective'] != topic.objective) return 'tutorial objective mismatch';
+  if (lesson['portableOutput'] != topic.portableOutput) {
+    return 'tutorial portable output mismatch';
+  }
+  if (lesson['objective'] != topic.objective) {
+    return 'tutorial objective mismatch';
+  }
   if (!_sameList(lesson['pitfalls'], topic.pitfalls)) {
     return 'tutorial pitfalls mismatch';
   }
@@ -252,6 +263,9 @@ String? _crossCheck(
   if (example['code'] != topic.code) return 'example code mismatch';
   if (example['expectedOutput'] != topic.output) {
     return 'example expectedOutput mismatch';
+  }
+  if (example['portableExpectedOutput'] != topic.portableOutput) {
+    return 'example portable output mismatch';
   }
   if (example['templateType'] != topic.language) {
     return 'example templateType mismatch';
@@ -269,9 +283,13 @@ List<String> _checkShape(
 ) {
   final errors = <String>[];
   final cTutorials = tutorials.values.where((e) => e['language'] == 'c').length;
-  final cppTutorials = tutorials.values.where((e) => e['language'] == 'cpp').length;
+  final cppTutorials = tutorials.values
+      .where((e) => e['language'] == 'cpp')
+      .length;
   final cExamples = examples.values.where((e) => e['language'] == 'c').length;
-  final cppExamples = examples.values.where((e) => e['language'] == 'cpp').length;
+  final cppExamples = examples.values
+      .where((e) => e['language'] == 'cpp')
+      .length;
   if (cTutorials < 100) errors.add('C tutorials $cTutorials < 100');
   if (cppTutorials < 100) errors.add('C++ tutorials $cppTutorials < 100');
   if (cExamples < 100) errors.add('C examples $cExamples < 100');
@@ -305,12 +323,20 @@ List<String> _checkShape(
   }
 
   // C and C++ concept coverage must be genuinely distinct.
-  final cConcepts = <String>{for (final t in topics.where((t) => t.isC)) ...t.concepts};
-  final cppConcepts = <String>{for (final t in topics.where((t) => !t.isC)) ...t.concepts};
+  final cConcepts = <String>{
+    for (final t in topics.where((t) => t.isC)) ...t.concepts,
+  };
+  final cppConcepts = <String>{
+    for (final t in topics.where((t) => !t.isC)) ...t.concepts,
+  };
   final overlap = cConcepts.intersection(cppConcepts).length;
-  final minSize = cConcepts.length < cppConcepts.length ? cConcepts.length : cppConcepts.length;
+  final minSize = cConcepts.length < cppConcepts.length
+      ? cConcepts.length
+      : cppConcepts.length;
   if (minSize > 0 && overlap * 2 > minSize) {
-    errors.add('C and C++ concept coverage too similar (overlap $overlap of $minSize)');
+    errors.add(
+      'C and C++ concept coverage too similar (overlap $overlap of $minSize)',
+    );
   }
   return errors;
 }

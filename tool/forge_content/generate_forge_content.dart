@@ -115,62 +115,66 @@ void _check(List<ForgeTopic> topics) {
   }
 }
 
-Map<String, dynamic> _tutorialEntry(ForgeTopic t, String stamp) => <String, dynamic>{
-  'id': t.tutorialId,
-  'language': t.language,
-  'type': t.language,
-  'locale': 'zh-CN',
-  'level': t.level,
-  'title': t.title,
-  'summary': t.summary,
-  'concepts': t.concepts,
-  'source': t.isC ? 'QFLI C 教程（原创）' : 'QFLI C++ 教程（原创）',
-  'license': 'Original QFLI curriculum. CC BY 4.0',
-  'updatedAt': stamp,
-  'lessons': <Map<String, dynamic>>[
+Map<String, dynamic> _tutorialEntry(ForgeTopic t, String stamp) =>
     <String, dynamic>{
-      'id': '${t.tutorialId}-lesson',
+      'id': t.tutorialId,
+      'language': t.language,
+      'type': t.language,
+      'locale': 'zh-CN',
+      'level': t.level,
       'title': t.title,
       'summary': t.summary,
       'concepts': t.concepts,
-      'objective': t.objective,
-      'prerequisites': t.prerequisites,
-      'explain': t.explain,
-      'code': t.code,
-      'output': t.output,
-      'pitfalls': t.pitfalls,
-      'exercises': <Map<String, String>>[
-        for (final task in t.tasks)
-          <String, String>{
-            'prompt': task.prompt,
-            'hint': task.hint,
-            'answer': task.answer,
-          },
+      'source': t.isC ? 'QFLI C 教程（原创）' : 'QFLI C++ 教程（原创）',
+      'license': 'Original QFLI curriculum. CC BY 4.0',
+      'updatedAt': stamp,
+      'lessons': <Map<String, dynamic>>[
+        <String, dynamic>{
+          'id': '${t.tutorialId}-lesson',
+          'title': t.title,
+          'summary': t.summary,
+          'concepts': t.concepts,
+          'objective': t.objective,
+          'prerequisites': t.prerequisites,
+          'explain': t.explain,
+          'code': t.code,
+          'output': t.output,
+          if (t.portableOutput != null) 'portableOutput': t.portableOutput,
+          'pitfalls': t.pitfalls,
+          'exercises': <Map<String, String>>[
+            for (final task in t.tasks)
+              <String, String>{
+                'prompt': task.prompt,
+                'hint': task.hint,
+                'answer': task.answer,
+              },
+          ],
+        },
       ],
-    },
-  ],
-};
+    };
 
-Map<String, dynamic> _exampleEntry(ForgeTopic t, String stamp) => <String, dynamic>{
-  'id': t.exampleId,
-  'language': t.language,
-  'type': t.language,
-  'locale': 'zh-CN',
-  'level': t.level,
-  'title': '示例 ${t.paddedId}：${_topicName(t.title)}',
-  'summary': t.summary,
-  'concepts': <String>[...t.concepts, '标准：${t.standard}'],
-  'source': t.isC ? 'QFLI C 示例（原创）' : 'QFLI C++ 示例（原创）',
-  'license': 'Original QFLI curriculum. CC BY 4.0',
-  'updatedAt': stamp,
-  'code': t.code,
-  'expectedOutput': t.output,
-  'inputFixtures': t.input == null
-      ? <String, String>{}
-      : <String, String>{'stdin': t.input!},
-  'templateType': t.language,
-  'sourceLessonId': '${t.tutorialId}-lesson',
-};
+Map<String, dynamic> _exampleEntry(ForgeTopic t, String stamp) =>
+    <String, dynamic>{
+      'id': t.exampleId,
+      'language': t.language,
+      'type': t.language,
+      'locale': 'zh-CN',
+      'level': t.level,
+      'title': '示例 ${t.paddedId}：${_topicName(t.title)}',
+      'summary': t.summary,
+      'concepts': <String>[...t.concepts, '标准：${t.standard}'],
+      'source': t.isC ? 'QFLI C 示例（原创）' : 'QFLI C++ 示例（原创）',
+      'license': 'Original QFLI curriculum. CC BY 4.0',
+      'updatedAt': stamp,
+      'code': t.code,
+      'expectedOutput': t.output,
+      if (t.portableOutput != null) 'portableExpectedOutput': t.portableOutput,
+      'inputFixtures': t.input == null
+          ? <String, String>{}
+          : <String, String>{'stdin': t.input!},
+      'templateType': t.language,
+      'sourceLessonId': '${t.tutorialId}-lesson',
+    };
 
 /// `C 001：第一个程序` -> `第一个程序`.
 String _topicName(String title) {
@@ -178,7 +182,8 @@ String _topicName(String title) {
   return index >= 0 ? title.substring(index + 1).trim() : title;
 }
 
-String _stamp() {  final now = DateTime.now().toUtc();
+String _stamp() {
+  final now = DateTime.now().toUtc();
   final y = now.year.toString().padLeft(4, '0');
   final m = now.month.toString().padLeft(2, '0');
   final d = now.day.toString().padLeft(2, '0');

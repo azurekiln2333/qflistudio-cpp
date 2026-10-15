@@ -43,6 +43,7 @@ class ForgeTopic {
     this.pitfalls = const <String>[],
     this.prerequisites = const <String>[],
     this.input,
+    this.portableOutput,
     this.tasks = const <ForgeTask>[],
   });
 
@@ -68,6 +69,9 @@ class ForgeTopic {
 
   /// Exact stdout the program prints (normalized by the verifier).
   final String output;
+
+  /// Target-dependent output for WASI errno values and platform macros.
+  final String? portableOutput;
 
   /// Standard used to compile the paired example (`c17`, `c++20`, ...).
   final String standard;

@@ -12,6 +12,7 @@ import 'package:qfli_studio_core/store/project_store.dart';
 import 'package:qfli_studio_core/store/settings_store.dart';
 
 import 'forge_runner.dart';
+import 'forge_content_repository.dart';
 import 'forge_tools_page.dart';
 import 'android_startup.dart';
 
@@ -28,6 +29,7 @@ final StudioProfile forgeProfile = StudioProfile(
   templates: [ProjectTemplate.empty, ProjectTemplate.c, ProjectTemplate.cpp],
   runner: ForgeProgramRunner(),
   toolsPageBuilder: (_) => const ForgeToolsPage(),
+  contentRepositoryFactory: ForgeContentRepository.new,
   isOffline: true,
   productKey: StudioProductCatalog.forgeKey,
   showHomeTabs: false,

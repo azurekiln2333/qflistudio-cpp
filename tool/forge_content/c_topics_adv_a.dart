@@ -17,7 +17,8 @@ const List<ForgeTopic> cTopicsAdvA = <ForgeTopic>[
     summary: '用 FILE* 读写文本文件。',
     explain:
         'fopen 返回 FILE*，失败返回 NULL，必须检查。fgets 逐行读取（带缓冲区大小），fprintf 写文本。用完必须 fclose，否则数据可能没落盘。读文件循环用 while (fgets(...)) 判断是否到文件尾。示例自建一个临时文件再读它，保证可重复运行。',
-    code: '#include <stdio.h>\n'
+    code:
+        '#include <stdio.h>\n'
         '\n'
         'int main(void) {\n'
         '    FILE *w = fopen("demo.txt", "w");\n'
@@ -61,7 +62,8 @@ const List<ForgeTopic> cTopicsAdvA = <ForgeTopic>[
     summary: '按字节读写数据结构。',
     explain:
         'fwrite 把内存中的一段字节写到文件，fread 反过来读回。把结构体数组整块写出去、整块读回来很常见。注意字节序和结构体填充会随平台变化，跨平台持久化要自己定义格式。fseek 可以定位到文件的任意位置。',
-    code: '#include <stdio.h>\n'
+    code:
+        '#include <stdio.h>\n'
         '\n'
         'typedef struct { int id; int score; } Record;\n'
         '\n'
@@ -87,7 +89,8 @@ const List<ForgeTopic> cTopicsAdvA = <ForgeTopic>[
       ForgeTask(
         prompt: '用 fseek 读取第二个记录。',
         hint: 'fseek(f, sizeof(Record), SEEK_SET) 再 fread 一个。',
-        answer: 'fseek(f, (long)sizeof(Record), SEEK_SET);\nfread(&one, sizeof(Record), 1, f);',
+        answer:
+            'fseek(f, (long)sizeof(Record), SEEK_SET);\nfread(&one, sizeof(Record), 1, f);',
       ),
     ],
   ),
@@ -102,16 +105,18 @@ const List<ForgeTopic> cTopicsAdvA = <ForgeTopic>[
     prerequisites: <String>['C 065'],
     summary: '系统调用失败时问 errno 为什么。',
     explain:
-        '很多标准库和系统调用失败时会设置全局的 errno。perror 会打印「你给的说明: 系统错误信息」。strerror(errno) 返回对应的文字说明。错误处理的原则：能就地处理的就地处理，否则把错误往上返回，不要吞掉。',
-    code: '#include <stdio.h>\n'
+        '很多标准库和系统调用失败时会设置当前线程的 errno。应立即保存它，再调用其他函数。perror 会打印「你给的说明: 系统错误信息」。strerror(errno) 返回对应的文字说明。错误码数值和文案依赖平台，应用应比较 ENOENT 等符号；Linux 的 ENOENT 为 2，WASI 为 44。错误处理的原则：能就地处理的就地处理，否则把错误往上返回，不要吞掉。',
+    code:
+        '#include <stdio.h>\n'
         '#include <errno.h>\n'
         '#include <string.h>\n'
         '\n'
         'int main(void) {\n'
         '    FILE *f = fopen("no_such_file_qfli.txt", "r");\n'
         '    if (f == NULL) {\n'
-        '        printf("errno=%d\\n", errno);\n'
-        '        printf("message: %s\\n", strerror(errno));\n'
+        '        const int error = errno;\n'
+        '        printf("errno=%d\\n", error);\n'
+        '        printf("message: %s\\n", strerror(error));\n'
         '    } else {\n'
         '        fclose(f);\n'
         '    }\n'
@@ -119,6 +124,7 @@ const List<ForgeTopic> cTopicsAdvA = <ForgeTopic>[
         '    return 0;\n'
         '}\n',
     output: 'errno=2\nmessage: No such file or directory\nhandled=1\n',
+    portableOutput: 'errno=44\nmessage: No such file or directory\nhandled=1\n',
     pitfalls: <String>[
       'errno 只反映最近一次失败，检查前不要调用可能改它的函数。',
       '成功调用不会清零 errno，不能靠它判断是否成功。',
@@ -143,7 +149,8 @@ const List<ForgeTopic> cTopicsAdvA = <ForgeTopic>[
     summary: '头文件只见句柄，实现藏在 .c 里。',
     explain:
         '不透明指针是「只暴露一个指针类型，不暴露结构体定义」的封装手法：调用方只能通过函数操作句柄，无法直接访问字段。这样修改内部结构不影响调用方，也便于保持二进制兼容。示例把结构体定义和操作函数放在一起，模拟这种模块边界。',
-    code: '#include <stdio.h>\n'
+    code:
+        '#include <stdio.h>\n'
         '#include <stdlib.h>\n'
         '\n'
         'typedef struct Counter Counter;\n'
@@ -172,10 +179,7 @@ const List<ForgeTopic> cTopicsAdvA = <ForgeTopic>[
         '    return 0;\n'
         '}\n',
     output: 'value=42\n',
-    pitfalls: <String>[
-      '调用方若能看到 struct 定义，封装就失效了。',
-      '句柄的创建和销毁要配对，否则泄漏。',
-    ],
+    pitfalls: <String>['调用方若能看到 struct 定义，封装就失效了。', '句柄的创建和销毁要配对，否则泄漏。'],
     tasks: <ForgeTask>[
       ForgeTask(
         prompt: '给句柄接口加一个 counterReset 函数。',
@@ -196,7 +200,8 @@ const List<ForgeTopic> cTopicsAdvA = <ForgeTopic>[
     summary: '把一组函数指针放进结构体当接口。',
     explain:
         'C 没有类，但可以用「结构体里放函数指针」来模拟虚表。不同实现提供各自的函数，调用方通过统一的接口指针调用。标准库的 FILE 和很多驱动接口都是这个思路。示例定义一个简单的 Shape 接口和两种实现。',
-    code: '#include <stdio.h>\n'
+    code:
+        '#include <stdio.h>\n'
         '\n'
         'typedef struct Shape Shape;\n'
         'struct Shape {\n'
@@ -217,15 +222,13 @@ const List<ForgeTopic> cTopicsAdvA = <ForgeTopic>[
         '    return 0;\n'
         '}\n',
     output: 'rect area=12.00\ncircle area=3.14\n',
-    pitfalls: <String>[
-      '函数指针要用 -> 或 (*p) 调用，别写成方法语法。',
-      '每个实现都必须填充虚表里的所有函数指针。',
-    ],
+    pitfalls: <String>['函数指针要用 -> 或 (*p) 调用，别写成方法语法。', '每个实现都必须填充虚表里的所有函数指针。'],
     tasks: <ForgeTask>[
       ForgeTask(
         prompt: '给 Shape 加一个求周长的函数指针和两种实现。',
         hint: '在 struct 里加 double (*perimeter)(const Shape *)。',
-        answer: 'struct Shape { const char *name; double (*area)(const Shape *); double (*perimeter)(const Shape *); };',
+        answer:
+            'struct Shape { const char *name; double (*area)(const Shape *); double (*perimeter)(const Shape *); };',
       ),
     ],
   ),
@@ -241,7 +244,8 @@ const List<ForgeTopic> cTopicsAdvA = <ForgeTopic>[
     summary: '像 printf 那样接收不确定个数的参数。',
     explain:
         '用 <stdarg.h> 的 va_list、va_start、va_arg、va_end 可以实现变参函数。因为无法自动得知参数个数，通常约定一个「参数个数」参数或一个哨兵值。printf 是靠格式串里的占位符个数来知道要取几个参数。',
-    code: '#include <stdio.h>\n'
+    code:
+        '#include <stdio.h>\n'
         '#include <stdarg.h>\n'
         '\n'
         'int sum(int count, ...) {\n'
@@ -267,7 +271,8 @@ const List<ForgeTopic> cTopicsAdvA = <ForgeTopic>[
       ForgeTask(
         prompt: '写一个变参函数求最大值，用哨兵 0 结束。',
         hint: '循环 va_arg 直到遇到 0。',
-        answer: 'int maxSenti(int first, ...) { va_list a; va_start(a, first); int m = first, v; while ((v = va_arg(a, int)) != 0) if (v > m) m = v; va_end(a); return m; }',
+        answer:
+            'int maxSenti(int first, ...) { va_list a; va_start(a, first); int m = first, v; while ((v = va_arg(a, int)) != 0) if (v > m) m = v; va_end(a); return m; }',
       ),
     ],
   ),
@@ -283,7 +288,8 @@ const List<ForgeTopic> cTopicsAdvA = <ForgeTopic>[
     summary: '预处理在编译前做文本级替换。',
     explain:
         '预处理器在编译前工作：#define 定义常量或带参数宏，#ifdef/#ifndef 做条件编译，include guard 防止头文件被重复包含。带参数宏要整体加括号，避免运算符优先级问题。能用函数就别用宏，宏只是文本替换。',
-    code: '#include <stdio.h>\n'
+    code:
+        '#include <stdio.h>\n'
         '\n'
         '#define SQUARE(x) ((x) * (x))\n'
         '#define MAX(a, b) ((a) > (b) ? (a) : (b))\n'
@@ -298,10 +304,7 @@ const List<ForgeTopic> cTopicsAdvA = <ForgeTopic>[
         '    return 0;\n'
         '}\n',
     output: 'square(3+1)=16\nmax=10\nflag enabled\n',
-    pitfalls: <String>[
-      '宏参数不加括号会因优先级得到错误结果。',
-      '带副作用的参数如 SQUARE(i++) 会被求值两次。',
-    ],
+    pitfalls: <String>['宏参数不加括号会因优先级得到错误结果。', '带副作用的参数如 SQUARE(i++) 会被求值两次。'],
     tasks: <ForgeTask>[
       ForgeTask(
         prompt: '写一个带参数宏求三个数的最大值。',
@@ -321,8 +324,9 @@ const List<ForgeTopic> cTopicsAdvA = <ForgeTopic>[
     prerequisites: <String>['C 071'],
     summary: '同一份源码适配多种环境。',
     explain:
-        '条件编译常用于平台差异和调试开关。编译器会预定义一些平台宏，如 _WIN32、__linux__、__APPLE__。用 #if defined(...) 组合判断。注意：被条件编译排除的代码不参与编译，所以语法错误也不会被发现。',
-    code: '#include <stdio.h>\n'
+        '条件编译常用于平台差异和调试开关。编译器会预定义一些平台宏，如 _WIN32、__linux__、__APPLE__、__wasi__。宏描述编译目标环境，因此手机上的 WASI 程序识别为 wasi。用 #if defined(...) 组合判断。注意：被条件编译排除的代码不参与编译，所以语法错误也不会被发现。',
+    code:
+        '#include <stdio.h>\n'
         '\n'
         'int main(void) {\n'
         '#if defined(_WIN32)\n'
@@ -331,6 +335,8 @@ const List<ForgeTopic> cTopicsAdvA = <ForgeTopic>[
         '    const char *os = "macos";\n'
         '#elif defined(__linux__)\n'
         '    const char *os = "linux";\n'
+        '#elif defined(__wasi__)\n'
+        '    const char *os = "wasi";\n'
         '#else\n'
         '    const char *os = "unknown";\n'
         '#endif\n'
@@ -338,10 +344,8 @@ const List<ForgeTopic> cTopicsAdvA = <ForgeTopic>[
         '    return 0;\n'
         '}\n',
     output: 'os=linux\n',
-    pitfalls: <String>[
-      '不同平台的输出不同，示例输出以 Linux 为准。',
-      '条件编译块的括号/分号要成对，写错很难定位。',
-    ],
+    portableOutput: 'os=wasi\n',
+    pitfalls: <String>['不同平台的输出不同，示例输出以 Linux 为准。', '条件编译块的括号/分号要成对，写错很难定位。'],
     tasks: <ForgeTask>[
       ForgeTask(
         prompt: '增加一个 OS_NAME 宏，未定义时回退到 "unknown"。',
@@ -362,7 +366,8 @@ const List<ForgeTopic> cTopicsAdvA = <ForgeTopic>[
     summary: '把 "12 + 34" 拆成数字和运算符。',
     explain:
         '分词是编译器和配置解析的第一步：扫描字符流，把连续的数字归成一个数，把运算符各归成一个记号。实现时用一个「当前位置」指针，遇到空白跳过，遇到数字就吃到不再是数字为止。这是自底向上解析文本的基本功。',
-    code: '#include <stdio.h>\n'
+    code:
+        '#include <stdio.h>\n'
         '#include <ctype.h>\n'
         '\n'
         'int main(void) {\n'
@@ -409,7 +414,8 @@ const List<ForgeTopic> cTopicsAdvA = <ForgeTopic>[
     summary: '把一行数据解析成字段。',
     explain:
         'CSV 解析比 strtok 多几步：要处理引号包裹的字段、空字段和字段个数不一致的行。示例用逐字符扫描，遇到逗号就收一个字段。真实项目里还要处理带逗号的引号字段、转义和换行，这里演示核心流程。',
-    code: '#include <stdio.h>\n'
+    code:
+        '#include <stdio.h>\n'
         '#include <stdlib.h>\n'
         '\n'
         'int main(void) {\n'
@@ -432,10 +438,7 @@ const List<ForgeTopic> cTopicsAdvA = <ForgeTopic>[
         '    return 0;\n'
         '}\n',
     output: 'field[0]=alice\nfield[1]=30\nfield[2]=engineer\ntotal=3\n',
-    pitfalls: <String>[
-      '字段缓冲区要防止溢出，fi 不能超过容量。',
-      '最后一行末尾没有逗号，要靠 \\0 收尾。',
-    ],
+    pitfalls: <String>['字段缓冲区要防止溢出，fi 不能超过容量。', '最后一行末尾没有逗号，要靠 \\0 收尾。'],
     tasks: <ForgeTask>[
       ForgeTask(
         prompt: '把第二列转成整数年龄并打印。',

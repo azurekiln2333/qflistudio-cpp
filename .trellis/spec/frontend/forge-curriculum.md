@@ -13,10 +13,12 @@ tutorial/example tabs. This is cross-layer work (content source -> generator ->
 aggregate JSON -> core content repository -> app UI -> runner), so code-spec
 depth is mandatory.
 
-The app renders Tutorial and Examples from the shared core's aggregate assets
-`qfli_studio_core/assets/content/{tutorials,examples}.json`, filtered to
-`productKey: 'forge'` = types `{c, cpp}`. The C/C++ rows in those two files are
-the single source of truth for the app.
+The app's `forgeProfile.contentRepositoryFactory` constructs
+`ForgeContentRepository`, which loads its own bundled
+`tool/forge_content/staging/{forge_tutorials,forge_examples}.json` assets.
+Authored `ForgeTopic` values generate these rows; the production factory is
+tested against every generated row. Other language workspaces and shared-core
+aggregate assets are not written when updating this app's curriculum.
 
 ---
 
@@ -42,6 +44,7 @@ class ForgeTopic {
     List<String> pitfalls = const [],
     List<String> prerequisites = const [],
     String? input,              // optional stdin -> input.txt
+    String? portableOutput,     // explicit WASI stdout when it differs
     List<ForgeTask> tasks = const [],
   });
   String get tutorialId; // '$language-tutorial-0NN'
@@ -84,6 +87,10 @@ Emitted aggregate row schema (matches `content_repository.dart`):
 - Example row: `id, language, type, locale, level, title, summary, concepts,
   source, license, updatedAt, code, expectedOutput, inputFixtures, templateType,
   sourceLessonId`.
+- Optional lesson `portableOutput` and example `portableExpectedOutput` must
+  match the authored `portableOutput`. The app repository selects them only on
+  OHOS, whose runtime targets WASI; other platforms retain native expectations.
+  These fields change expected output, never sample source or test success.
 
 Hard constraints:
 
@@ -99,6 +106,14 @@ Hard constraints:
   named `main.c` would compile as C and fail — never emit one.
 - **No filler**: no templated titles, no repeated `explain`/`summary`, no
   `weighted=` placeholder signature, no one-line programs.
+- **Portable differences**: save `errno` before any output/library call; explain
+  that numeric errno and target macros depend on the target. Recognize
+  `__wasi__` explicitly. Avoid 32-bit `long` overflow in timing exercises.
+  SDK33 process-clock emulation uses elapsed wall time, not process CPU time.
+- **Runtime evidence**: the native curriculum check and the complete WASI
+  compiler/interpreter matrix must both pass. Threads, exceptions and
+  setjmp/longjmp lessons remain actual executable lessons. Host results do not
+  establish OHOS phone execution.
 - **Foreign-row preservation**: a shared-core merge replaces only rows whose
   `language` is `c` or `cpp` — **strictly language-based, never by `type`** — so a
   foreign row that happens to carry `type: 'c'` is preserved untouched. Owned rows
@@ -154,6 +169,12 @@ Hard constraints:
   (g) `type` drives the extension (`cpp` -> `main.cpp`), (h) representative C and
   C++ examples run on the desktop runner with exact output, (i) an input fixture
   round-trips through `input.txt`.
+- `flutter test test/forge_content_repository_test.dart`: verify the production
+  repository owns all 200 pairs and selects consistent lesson/example WASI
+  outputs while preserving native values and identical source.
+- `native/toolchain/tests/portable-curriculum-regression.py`: compile all 200
+  staged samples using `qfli_compiler_probe --threads`, execute with the current
+  threads-capable runtime probe, and compare status/stdout/stderr and input.
 - Generator run is idempotent and re-readable; `_check` rejects filler.
 
 ---

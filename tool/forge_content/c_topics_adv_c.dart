@@ -17,7 +17,8 @@ const List<ForgeTopic> cTopicsAdvC = <ForgeTopic>[
     summary: '把每一位存进数组，手工模拟进位。',
     explain:
         '当数字超过 64 位，就要自己实现大整数：把每一位数字存进数组，从低位到高位相加，处理进位。示例用十进制字符串倒序存进数组，逐位相加并输出。这是理解「数据表示决定能力上限」的好例子。',
-    code: '#include <stdio.h>\n'
+    code:
+        '#include <stdio.h>\n'
         '#include <string.h>\n'
         '\n'
         'int main(void) {\n'
@@ -41,10 +42,7 @@ const List<ForgeTopic> cTopicsAdvC = <ForgeTopic>[
         '    return 0;\n'
         '}\n',
     output: 'sum=111111111011111111100\n',
-    pitfalls: <String>[
-      '最低位在数组下标 0，输出时要倒着打印。',
-      '最高位可能因进位多出一位。',
-    ],
+    pitfalls: <String>['最低位在数组下标 0，输出时要倒着打印。', '最高位可能因进位多出一位。'],
     tasks: <ForgeTask>[
       ForgeTask(
         prompt: '在大整数实现里加一个「加 0」的校验，确保 a+0 == a。',
@@ -65,7 +63,8 @@ const List<ForgeTopic> cTopicsAdvC = <ForgeTopic>[
     summary: '处理键值对、注释、缺失键的默认值。',
     explain:
         '配置解析要把文本变成程序能用的设置。常见规则：跳过空行和以 # 开头的注释，按 = 拆键值，去掉两端空白，找不到键时用默认值。健壮性体现在：格式错误不崩溃，只是忽略或报错。',
-    code: '#include <stdio.h>\n'
+    code:
+        '#include <stdio.h>\n'
         '#include <string.h>\n'
         '#include <stdlib.h>\n'
         '\n'
@@ -96,15 +95,13 @@ const List<ForgeTopic> cTopicsAdvC = <ForgeTopic>[
         '    return 0;\n'
         '}\n',
     output: 'port=8080 debug=1\n',
-    pitfalls: <String>[
-      'strncpy 不保证结尾 \\0，要手动补。',
-      '键不存在时保留默认值，不要用垃圾值。',
-    ],
+    pitfalls: <String>['strncpy 不保证结尾 \\0，要手动补。', '键不存在时保留默认值，不要用垃圾值。'],
     tasks: <ForgeTask>[
       ForgeTask(
         prompt: '增加一个 name 键（字符串值），缺省为 "default"。',
         hint: '用 strcmp 匹配 "name" 再 strcpy 到缓冲区。',
-        answer: 'char name[32] = "default";\n// if (strcmp(key, "name") == 0) strncpy(name, val, sizeof(name)-1);',
+        answer:
+            'char name[32] = "default";\n// if (strcmp(key, "name") == 0) strncpy(name, val, sizeof(name)-1);',
       ),
     ],
   ),
@@ -120,7 +117,8 @@ const List<ForgeTopic> cTopicsAdvC = <ForgeTopic>[
     summary: '数组 + 链表解决冲突。',
     explain:
         '哈希表用一个桶数组，每个桶是一条链表（拉链法）。插入时算出桶下标，遍历链表看键是否已存在，否则头插。查找同理。装载因子过高时要扩容并重新散列。示例用固定大小桶，演示核心的插入和查找。',
-    code: '#include <stdio.h>\n'
+    code:
+        '#include <stdio.h>\n'
         '#include <stdlib.h>\n'
         '#include <string.h>\n'
         '\n'
@@ -169,15 +167,13 @@ const List<ForgeTopic> cTopicsAdvC = <ForgeTopic>[
         '    return 0;\n'
         '}\n',
     output: 'one=100\nmissing=1\n',
-    pitfalls: <String>[
-      '键是定长数组，过长键要处理截断。',
-      '重复键要更新而不是再插一个。',
-    ],
+    pitfalls: <String>['键是定长数组，过长键要处理截断。', '重复键要更新而不是再插一个。'],
     tasks: <ForgeTask>[
       ForgeTask(
         prompt: '统计哈希表里当前有多少个键。',
         hint: '遍历所有桶的链表累加计数。',
-        answer: 'int count = 0;\nfor (int i = 0; i < BUCKETS; i++) for (Entry *e = table[i]; e; e = e->next) count++;',
+        answer:
+            'int count = 0;\nfor (int i = 0; i < BUCKETS; i++) for (Entry *e = table[i]; e; e = e->next) count++;',
       ),
     ],
   ),
@@ -193,7 +189,8 @@ const List<ForgeTopic> cTopicsAdvC = <ForgeTopic>[
     summary: '用每个 bit 表示一个数在不在集合里。',
     explain:
         '位图用一个 bit 表示一个元素是否存在。存 0..63 只需一个 64 位整数：置位用 |= (1<<i)，判断用 >>i & 1。它极其省空间，常用于去重、筛法和集合运算。更大的范围就用 unsigned long 数组。',
-    code: '#include <stdio.h>\n'
+    code:
+        '#include <stdio.h>\n'
         '#include <stdint.h>\n'
         '\n'
         'int main(void) {\n'
@@ -214,7 +211,8 @@ const List<ForgeTopic> cTopicsAdvC = <ForgeTopic>[
       ForgeTask(
         prompt: '求两个位图集合的交集大小。',
         hint: '交集是 a & b，再 popcount。',
-        answer: 'uint64_t inter = a & b;\nprintf("%d\\n", __builtin_popcountll(inter));',
+        answer:
+            'uint64_t inter = a & b;\nprintf("%d\\n", __builtin_popcountll(inter));',
       ),
     ],
   ),
@@ -230,7 +228,8 @@ const List<ForgeTopic> cTopicsAdvC = <ForgeTopic>[
     summary: '把操作码和数据流分开执行。',
     explain:
         '虚拟机用一条字节码指令流描述操作，用一个栈保存中间值。示例定义 PUSH/ADD/MUL/PRINT 四种操作码，循环读取指令并执行。表达式 (10 + 20) * 2 编译成 PUSH 10, PUSH 20, ADD, PUSH 2, MUL, PRINT。',
-    code: '#include <stdio.h>\n'
+    code:
+        '#include <stdio.h>\n'
         '\n'
         'enum Op { OP_PUSH, OP_ADD, OP_MUL, OP_PRINT, OP_HALT };\n'
         '\n'
@@ -250,15 +249,13 @@ const List<ForgeTopic> cTopicsAdvC = <ForgeTopic>[
         '    return 0;\n'
         '}\n',
     output: 'result=60\n',
-    pitfalls: <String>[
-      'PUSH 后面紧跟数据，要记得跳过它占的那一格。',
-      '栈指针不能越界；二元运算前要确认栈里有两个操作数。',
-    ],
+    pitfalls: <String>['PUSH 后面紧跟数据，要记得跳过它占的那一格。', '栈指针不能越界；二元运算前要确认栈里有两个操作数。'],
     tasks: <ForgeTask>[
       ForgeTask(
         prompt: '增加一个 OP_SUB 操作码并测试 50-8。',
         hint: '仿照 OP_ADD，弹两个再压回 a-b。',
-        answer: 'case OP_SUB: { int b = stack[--sp], a = stack[--sp]; stack[sp++] = a - b; break; }',
+        answer:
+            'case OP_SUB: { int b = stack[--sp], a = stack[--sp]; stack[sp++] = a - b; break; }',
       ),
     ],
   ),
@@ -274,7 +271,8 @@ const List<ForgeTopic> cTopicsAdvC = <ForgeTopic>[
     summary: '一次性申请大块，用完整体重置。',
     explain:
         '竞技场分配器先申请一大块内存，之后每次分配只是把偏移往后推，释放时不用逐个 free，而是整体重置。它适合生命周期一致的对象（如一次请求里解析出的所有节点），能显著减少 malloc 次数和碎片。代价是不能单独释放某个对象。',
-    code: '#include <stdio.h>\n'
+    code:
+        '#include <stdio.h>\n'
         '#include <stddef.h>\n'
         '\n'
         'typedef struct {\n'
@@ -303,10 +301,7 @@ const List<ForgeTopic> cTopicsAdvC = <ForgeTopic>[
         '    return 0;\n'
         '}\n',
     output: 'a=42 d=3.5 used=16\nafter reset used=0\n',
-    pitfalls: <String>[
-      'arena 里的对象生命周期一致，不能单独释放。',
-      '分配要按对齐取整，否则未对齐访问可能出错。',
-    ],
+    pitfalls: <String>['arena 里的对象生命周期一致，不能单独释放。', '分配要按对齐取整，否则未对齐访问可能出错。'],
     tasks: <ForgeTask>[
       ForgeTask(
         prompt: '说明竞技场分配器适合和不适合的场景。',
@@ -327,7 +322,8 @@ const List<ForgeTopic> cTopicsAdvC = <ForgeTopic>[
     summary: '节点不需要单独分配，嵌在对象里。',
     explain:
         '普通链表为每个元素额外分配一个节点；侵入式链表把链表节点直接放进业务结构体里，元素自身就是节点，因此没有额外分配。代价是需要从节点的地址反推回宿主结构体的地址，常用 offsetof 技巧（container_of 宏）实现。',
-    code: '#include <stdio.h>\n'
+    code:
+        '#include <stdio.h>\n'
         '#include <stddef.h>\n'
         '\n'
         'typedef struct Node {\n'
@@ -378,34 +374,33 @@ const List<ForgeTopic> cTopicsAdvC = <ForgeTopic>[
     summary: '反复运行取平均，减少噪声。',
     explain:
         '可靠的基准要多次运行取平均，并用足够的迭代次数让时间可测。对比两种实现时，输入规模和时间测量方式必须一致。还要防止编译器把「没用到的计算」优化掉——把结果累加到一个外部可见的量里。',
-    code: '#include <stdio.h>\n'
+    code:
+        '#include <stdio.h>\n'
         '#include <time.h>\n'
         '\n'
-        'long sumLoop(int n) { long s = 0; for (int i = 1; i <= n; i++) s += i; return s; }\n'
-        'long sumFormula(int n) { return (long)n * (n + 1) / 2; }\n'
+        'long long sumLoop(int n) { long long s = 0; for (int i = 1; i <= n; i++) s += i; return s; }\n'
+        'long long sumFormula(int n) { return (long long)n * (n + 1) / 2; }\n'
         '\n'
         'int main(void) {\n'
-        '    volatile long sink = 0;\n'
+        '    volatile long long sink = 0;\n'
         '    clock_t s1 = clock();\n'
         '    for (int r = 0; r < 1000; r++) sink += sumLoop(10000);\n'
         '    clock_t e1 = clock();\n'
         '    clock_t s2 = clock();\n'
         '    for (int r = 0; r < 1000; r++) sink += sumFormula(10000);\n'
         '    clock_t e2 = clock();\n'
-        '    printf("sink=%ld\\n", sink);\n'
+        '    printf("sink=%lld\\n", sink);\n'
         '    printf("formula faster or equal=%d\\n", (e2 - s2) <= (e1 - s1));\n'
         '    return 0;\n'
         '}\n',
     output: 'sink=100010000000\nformula faster or equal=1\n',
-    pitfalls: <String>[
-      '结果被优化掉会让耗时接近 0，要用 volatile 接收。',
-      '只跑一两次噪声太大，要重复多次。',
-    ],
+    pitfalls: <String>['结果被优化掉会让耗时接近 0，要用 volatile 接收。', '只跑一两次噪声太大，要重复多次。'],
     tasks: <ForgeTask>[
       ForgeTask(
         prompt: '增加一个冒泡排序的基准并测量其耗时。',
         hint: '生成随机数组后计时调用 bubble。',
-        answer: 'clock_t s = clock();\nfor (int r = 0; r < 100; r++) { /* copy + bubble */ }\nclock_t e = clock();',
+        answer:
+            'clock_t s = clock();\nfor (int r = 0; r < 100; r++) { /* copy + bubble */ }\nclock_t e = clock();',
       ),
     ],
   ),
@@ -421,7 +416,8 @@ const List<ForgeTopic> cTopicsAdvC = <ForgeTopic>[
     summary: '根据当前状态和输入决定下一步。',
     explain:
         '状态机把行为建模成「状态 + 输入 -> 新状态 + 动作」。它广泛用于词法分析、协议解析和输入校验。示例用状态机校验一个字符串是否是合法整数（可选符号后跟至少一位数字），用枚举表示状态、用 switch 处理转移。',
-    code: '#include <stdio.h>\n'
+    code:
+        '#include <stdio.h>\n'
         '\n'
         'typedef enum { START, SIGN, DIGIT, ERROR, DONE } State;\n'
         '\n'
@@ -443,16 +439,15 @@ const List<ForgeTopic> cTopicsAdvC = <ForgeTopic>[
         '    }\n'
         '    return 0;\n'
         '}\n',
-    output: '123 -> valid\n-45 -> valid\n+0 -> valid\n- -> invalid\n12x -> invalid\n',
-    pitfalls: <String>[
-      '漏判某一类输入会让状态机接受非法串。',
-      '接受状态要明确：只有 DIGIT 结束才算合法。',
-    ],
+    output:
+        '123 -> valid\n-45 -> valid\n+0 -> valid\n- -> invalid\n12x -> invalid\n',
+    pitfalls: <String>['漏判某一类输入会让状态机接受非法串。', '接受状态要明确：只有 DIGIT 结束才算合法。'],
     tasks: <ForgeTask>[
       ForgeTask(
         prompt: '扩展状态机支持小数（允许一个小数点）。',
         hint: '增加 DOT 状态，小数点只能出现一次。',
-        answer: 'typedef enum { START, SIGN, DIGIT, DOT, ERROR, DONE } State;\n// DIGIT 遇到 \'.\' 转到 DOT，DOT 后必须是数字',
+        answer:
+            'typedef enum { START, SIGN, DIGIT, DOT, ERROR, DONE } State;\n// DIGIT 遇到 \'.\' 转到 DOT，DOT 后必须是数字',
       ),
     ],
   ),
@@ -468,7 +463,8 @@ const List<ForgeTopic> cTopicsAdvC = <ForgeTopic>[
     summary: '返回值报错误，结果从输出参数带出。',
     explain:
         '一个稳健的 C 接口约定：函数返回错误码（0 成功，非 0 表示具体错误），真正的结果通过指针输出参数写回。这样调用方能区分「算出来的 0」和「出错了」。错误码用枚举集中定义，避免魔法数字。',
-    code: '#include <stdio.h>\n'
+    code:
+        '#include <stdio.h>\n'
         '\n'
         'typedef enum { OK = 0, ERR_DIV_ZERO = 1, ERR_OVERFLOW = 2 } Err;\n'
         '\n'
@@ -487,15 +483,13 @@ const List<ForgeTopic> cTopicsAdvC = <ForgeTopic>[
         '    return 0;\n'
         '}\n',
     output: 'e=0 result=42\ne=1\n',
-    pitfalls: <String>[
-      '出错时不要写输出参数，调用方要先看错误码再看结果。',
-      '错误码用枚举命名，别用裸数字。',
-    ],
+    pitfalls: <String>['出错时不要写输出参数，调用方要先看错误码再看结果。', '错误码用枚举命名，别用裸数字。'],
     tasks: <ForgeTask>[
       ForgeTask(
         prompt: '给 safeDiv 增加溢出检查：a 为最小值且 b 为 -1 时返回 ERR_OVERFLOW。',
         hint: '用 INT_MIN 判断。',
-        answer: '#include <limits.h>\nif (a == INT_MIN && b == -1) return ERR_OVERFLOW;',
+        answer:
+            '#include <limits.h>\nif (a == INT_MIN && b == -1) return ERR_OVERFLOW;',
       ),
     ],
   ),
@@ -511,7 +505,8 @@ const List<ForgeTopic> cTopicsAdvC = <ForgeTopic>[
     summary: '不要用指针强转读未对齐数据。',
     explain:
         '从缓冲区里取出一个整数，直接 (int*)buf 强转可能在未对齐或严格别名下出错。稳妥做法是用 memcpy 把字节拷进一个对齐的整数变量。示例演示从字节数组按小端顺序拼出一个 32 位整数。',
-    code: '#include <stdio.h>\n'
+    code:
+        '#include <stdio.h>\n'
         '#include <stdint.h>\n'
         '#include <string.h>\n'
         '\n'
@@ -528,15 +523,13 @@ const List<ForgeTopic> cTopicsAdvC = <ForgeTopic>[
         '    return 0;\n'
         '}\n',
     output: 'value=0x12345678\n',
-    pitfalls: <String>[
-      '指针强转读未对齐地址在部分平台会崩溃。',
-      '字节序在不同机器上不同，跨平台要显式转换。',
-    ],
+    pitfalls: <String>['指针强转读未对齐地址在部分平台会崩溃。', '字节序在不同机器上不同，跨平台要显式转换。'],
     tasks: <ForgeTask>[
       ForgeTask(
         prompt: '写一个把 16 位整数按小端写进缓冲区的函数。',
         hint: '用 memcpy 把值写进 buf。',
-        answer: 'void writeLE16(unsigned char *p, uint16_t v) { memcpy(p, &v, sizeof(v)); }',
+        answer:
+            'void writeLE16(unsigned char *p, uint16_t v) { memcpy(p, &v, sizeof(v)); }',
       ),
     ],
   ),
@@ -552,7 +545,8 @@ const List<ForgeTopic> cTopicsAdvC = <ForgeTopic>[
     summary: '跨多个中级知识点完成一个小工具。',
     explain:
         '这个综合练习用一个句柄封装统计数据：add 往动态数组里追加数值，最后算平均、最大、最小。它把不透明指针、动态内存、错误码和遍历聚合串在一条链上，接近真实小工具的结构。',
-    code: '#include <stdio.h>\n'
+    code:
+        '#include <stdio.h>\n'
         '#include <stdlib.h>\n'
         '\n'
         'typedef struct Stats Stats;\n'
@@ -601,7 +595,8 @@ const List<ForgeTopic> cTopicsAdvC = <ForgeTopic>[
       ForgeTask(
         prompt: '给统计器加一个 statsMin 函数。',
         hint: '仿照 statsMax，比较改成 <。',
-        answer: 'double statsMin(Stats *s) { double m = s->data[0]; for (int i = 1; i < s->size; i++) if (s->data[i] < m) m = s->data[i]; return m; }',
+        answer:
+            'double statsMin(Stats *s) { double m = s->data[0]; for (int i = 1; i < s->size; i++) if (s->data[i] < m) m = s->data[i]; return m; }',
       ),
     ],
   ),
@@ -617,7 +612,8 @@ const List<ForgeTopic> cTopicsAdvC = <ForgeTopic>[
     summary: '把整门课的知识拼成一个可用的小工具。',
     explain:
         '结业项目把前面学的拼起来：按空白切分文本得到单词，用哈希表统计每个词出现次数，再按次数排序输出。示例硬编码一段文本以保证可重复运行，真实场景会从文件读入。这正是「学完能写出来的东西」。',
-    code: '#include <stdio.h>\n'
+    code:
+        '#include <stdio.h>\n'
         '#include <string.h>\n'
         '\n'
         'typedef struct { char word[16]; int count; } WordCount;\n'
@@ -653,15 +649,13 @@ const List<ForgeTopic> cTopicsAdvC = <ForgeTopic>[
         '    return 0;\n'
         '}\n',
     output: 'the=3\ncat=2\ndog=1\nbird=1\n',
-    pitfalls: <String>[
-      '单词缓冲区要防溢出，bi 不能超过容量。',
-      '排序按次数降序，相等次数的相对顺序取决于排序是否稳定。',
-    ],
+    pitfalls: <String>['单词缓冲区要防溢出，bi 不能超过容量。', '排序按次数降序，相等次数的相对顺序取决于排序是否稳定。'],
     tasks: <ForgeTask>[
       ForgeTask(
         prompt: '修改程序，只在次数 >= 2 时打印。',
         hint: '打印前加 if (counts[i].count >= 2)。',
-        answer: 'for (int i = 0; i < n; i++) if (counts[i].count >= 2) printf("%s=%d\\n", counts[i].word, counts[i].count);',
+        answer:
+            'for (int i = 0; i < n; i++) if (counts[i].count >= 2) printf("%s=%d\\n", counts[i].word, counts[i].count);',
       ),
     ],
   ),

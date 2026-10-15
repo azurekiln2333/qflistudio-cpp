@@ -17,7 +17,8 @@ const List<ForgeTopic> cTopicsAdvB = <ForgeTopic>[
     summary: '把字符串映射成一个整数下标。',
     explain:
         '哈希表靠散列函数把键映射到桶下标，从而平均 O(1) 查找。FNV-1a 是简单可靠的字符串散列：先取一个偏移基数，再对每个字节先异或后乘。不同键可能落到同一桶（冲突），需要拉链或开放寻址处理。装载因子过高会退化。',
-    code: '#include <stdio.h>\n'
+    code:
+        '#include <stdio.h>\n'
         '#include <stdint.h>\n'
         '\n'
         'uint32_t fnv1a(const char *s) {\n'
@@ -37,15 +38,13 @@ const List<ForgeTopic> cTopicsAdvB = <ForgeTopic>[
         '    return 0;\n'
         '}\n',
     output: 'apple bucket=15\nbanana bucket=0\ncherry bucket=8\n',
-    pitfalls: <String>[
-      '用乘法和异或，别用取模，否则分布差。',
-      '桶数取质数或 2 的幂会得到不同分布。',
-    ],
+    pitfalls: <String>['用乘法和异或，别用取模，否则分布差。', '桶数取质数或 2 的幂会得到不同分布。'],
     tasks: <ForgeTask>[
       ForgeTask(
         prompt: '写一个更简单的 djb2 散列并比较结果。',
         hint: 'h = h*33 + c，初值 5381。',
-        answer: 'uint32_t djb2(const char *s) { uint32_t h = 5381; while (*s) h = h * 33 + (unsigned char)*s++; return h; }',
+        answer:
+            'uint32_t djb2(const char *s) { uint32_t h = 5381; while (*s) h = h * 33 + (unsigned char)*s++; return h; }',
       ),
     ],
   ),
@@ -61,7 +60,8 @@ const List<ForgeTopic> cTopicsAdvB = <ForgeTopic>[
     summary: '接口放头文件，实现放源文件。',
     explain:
         '多文件工程里，模块的公共接口放在 .h 头文件（只放声明），实现放在 .c 源文件。头文件加 include guard 防重复包含。只在模块内部使用的函数应加 static，限制在文件内。示例用注释展示典型的文件划分，代码保持单文件自包含以便运行。',
-    code: '#include <stdio.h>\n'
+    code:
+        '#include <stdio.h>\n'
         '\n'
         '/* 典型三文件结构：\n'
         '     stack.h  : typedef + 函数声明（带 include guard）\n'
@@ -92,7 +92,8 @@ const List<ForgeTopic> cTopicsAdvB = <ForgeTopic>[
       ForgeTask(
         prompt: '写出 stack.h 的 include guard 与 push 声明。',
         hint: '#ifndef/#define/#endif 包裹再声明 push。',
-        answer: '#ifndef STACK_H\n#define STACK_H\ntypedef struct { int data[8]; int top; } Stack;\nvoid push(Stack *, int);\nint pop(Stack *);\n#endif',
+        answer:
+            '#ifndef STACK_H\n#define STACK_H\ntypedef struct { int data[8]; int top; } Stack;\nvoid push(Stack *, int);\nint pop(Stack *);\n#endif',
       ),
     ],
   ),
@@ -108,7 +109,8 @@ const List<ForgeTopic> cTopicsAdvB = <ForgeTopic>[
     summary: '为什么函数找不到是链接错误。',
     explain:
         '大项目把每个 .c 单独编译成 .o 目标文件（只检查本文件），再由链接器把所有 .o 和库合并成可执行文件。链接期才检查「函数是否真的存在」，所以拼错或漏实现报的是 undefined reference。用 nm 可以查看目标文件的符号。',
-    code: '#include <stdio.h>\n'
+    code:
+        '#include <stdio.h>\n'
         '\n'
         '/* 模拟两个翻译单元：unit_a 提供 add，main 调用它。\n'
         '   真实构建：cc -c unit_a.c 得到 unit_a.o\n'
@@ -148,7 +150,8 @@ const List<ForgeTopic> cTopicsAdvB = <ForgeTopic>[
     summary: '只重新编译改动过的文件。',
     explain:
         'Makefile 用「目标: 依赖」描述构建规则，命令在下一行（前面必须是一个制表符）。make 比较目标文件和依赖的时间戳，只重建过期的目标，这就是增量构建。变量 CC、CFLAGS 让编译选项集中管理。示例不依赖 make 运行，只讲解结构。',
-    code: '#include <stdio.h>\n'
+    code:
+        '#include <stdio.h>\n'
         '\n'
         '/* 典型 Makefile：\n'
         '     CC = gcc\n'
@@ -188,7 +191,8 @@ const List<ForgeTopic> cTopicsAdvB = <ForgeTopic>[
     summary: '断言帮你抓住「本不该发生」的 bug。',
     explain:
         'assert(条件) 在条件为假时打印文件名行号并终止程序。它用来检查程序内部不变量和前置条件，是调试利器。定义 NDEBUG 后 assert 会被移除，所以不要用它处理可预期的错误（那要用返回值/errno）。',
-    code: '#include <stdio.h>\n'
+    code:
+        '#include <stdio.h>\n'
         '#include <assert.h>\n'
         '\n'
         'int divide(int a, int b) {\n'
@@ -210,7 +214,8 @@ const List<ForgeTopic> cTopicsAdvB = <ForgeTopic>[
       ForgeTask(
         prompt: '在求数组平均值的函数里用 assert 检查长度大于 0。',
         hint: 'assert(n > 0);',
-        answer: 'double average(const int *v, int n) { assert(n > 0); int s = 0; for (int i = 0; i < n; i++) s += v[i]; return (double)s / n; }',
+        answer:
+            'double average(const int *v, int n) { assert(n > 0); int s = 0; for (int i = 0; i < n; i++) s += v[i]; return (double)s / n; }',
       ),
     ],
   ),
@@ -226,7 +231,8 @@ const List<ForgeTopic> cTopicsAdvB = <ForgeTopic>[
     summary: '对齐要求让结构体出现空洞。',
     explain:
         '为了访问效率，编译器要求每个字段按自身大小对齐，于是字段之间会有填充字节，sizeof(struct) 可能大于字段之和。调整字段顺序（大的在前）常能减少填充。offsetof 宏可以查某个字段的偏移。',
-    code: '#include <stdio.h>\n'
+    code:
+        '#include <stdio.h>\n'
         '#include <stddef.h>\n'
         '\n'
         'struct Padded { char a; int b; char c; };\n'
@@ -239,15 +245,13 @@ const List<ForgeTopic> cTopicsAdvB = <ForgeTopic>[
         '    return 0;\n'
         '}\n',
     output: 'padded=12\npacked=8\noffset b=4\n',
-    pitfalls: <String>[
-      '不要假设结构体大小等于字段之和。',
-      '把结构体直接写入文件/网络会带上填充字节。',
-    ],
+    pitfalls: <String>['不要假设结构体大小等于字段之和。', '把结构体直接写入文件/网络会带上填充字节。'],
     tasks: <ForgeTask>[
       ForgeTask(
         prompt: '把 struct Padded 的字段重排以减少填充，并打印大小。',
         hint: '把 int 放最前。',
-        answer: 'struct Padded { int b; char a; char c; };\nprintf("%zu\\n", sizeof(struct Padded)); // 8',
+        answer:
+            'struct Padded { int b; char a; char c; };\nprintf("%zu\\n", sizeof(struct Padded)); // 8',
       ),
     ],
   ),
@@ -263,7 +267,8 @@ const List<ForgeTopic> cTopicsAdvB = <ForgeTopic>[
     summary: '用取模下标实现先进先出队列。',
     explain:
         '环形缓冲区用固定数组加读、写两个下标，下标对容量取模实现循环。适用于日志缓冲、生产者消费者等场景，无需动态分配。关键是判断空和满：用 count 计数比用下标差更简单可靠。',
-    code: '#include <stdio.h>\n'
+    code:
+        '#include <stdio.h>\n'
         '\n'
         'typedef struct {\n'
         '    int data[4];\n'
@@ -293,10 +298,7 @@ const List<ForgeTopic> cTopicsAdvB = <ForgeTopic>[
         '    return 0;\n'
         '}\n',
     output: '1 2 3 \n',
-    pitfalls: <String>[
-      '满/空判断不清会覆盖未读数据或读到旧值。',
-      '取模的模数必须与数组容量一致。',
-    ],
+    pitfalls: <String>['满/空判断不清会覆盖未读数据或读到旧值。', '取模的模数必须与数组容量一致。'],
     tasks: <ForgeTask>[
       ForgeTask(
         prompt: '让 push 在满时覆盖最旧元素（丢弃最旧）。',
@@ -317,7 +319,8 @@ const List<ForgeTopic> cTopicsAdvB = <ForgeTopic>[
     summary: '不知道类型也能搬运数据。',
     explain:
         'void* 可以指向任何类型，配合元素大小就能写通用容器：分配 n*size 字节，用 memcpy 按字节拷贝元素，用 char* 做「按字节移动」的指针算术。代价是丢失类型信息，读取时要自己转回正确类型。',
-    code: '#include <stdio.h>\n'
+    code:
+        '#include <stdio.h>\n'
         '#include <stdlib.h>\n'
         '#include <string.h>\n'
         '\n'
@@ -358,7 +361,8 @@ const List<ForgeTopic> cTopicsAdvB = <ForgeTopic>[
       ForgeTask(
         prompt: '用同一个 Vector 存 double。',
         hint: 'elemSize 换成 sizeof(double)。',
-        answer: 'Vector v; vectorInit(&v, sizeof(double));\ndouble x = 2.5; vectorPush(&v, &x);',
+        answer:
+            'Vector v; vectorInit(&v, sizeof(double));\ndouble x = 2.5; vectorPush(&v, &x);',
       ),
     ],
   ),
@@ -374,7 +378,8 @@ const List<ForgeTopic> cTopicsAdvB = <ForgeTopic>[
     summary: '把「做什么」和「怎么遍历」分开。',
     explain:
         '映射把每个元素变成新值，过滤保留满足条件的元素，归约把整个数组折成一个值。它们的遍历框架固定，具体操作由函数指针提供。这种把逻辑与遍历分离的风格让代码更易复用和测试。',
-    code: '#include <stdio.h>\n'
+    code:
+        '#include <stdio.h>\n'
         '\n'
         'void map(int *dst, const int *src, int n, int (*f)(int)) {\n'
         '    for (int i = 0; i < n; i++) dst[i] = f(src[i]);\n'
@@ -405,15 +410,13 @@ const List<ForgeTopic> cTopicsAdvB = <ForgeTopic>[
         '    return 0;\n'
         '}\n',
     output: 'mapped=12\nevens=3 sum=12\n',
-    pitfalls: <String>[
-      'map 的目标数组必须与源数组一样大或更大。',
-      'filter 返回的是新长度，遍历要用它而不是原长度。',
-    ],
+    pitfalls: <String>['map 的目标数组必须与源数组一样大或更大。', 'filter 返回的是新长度，遍历要用它而不是原长度。'],
     tasks: <ForgeTask>[
       ForgeTask(
         prompt: '写一个过滤奇数的回调并统计个数。',
         hint: 'keep 回调返回 x % 2 != 0。',
-        answer: 'int isOdd(int x) { return x % 2 != 0; }\nint m = filter(dst, src, 6, isOdd);',
+        answer:
+            'int isOdd(int x) { return x % 2 != 0; }\nint m = filter(dst, src, 6, isOdd);',
       ),
     ],
   ),
@@ -428,31 +431,30 @@ const List<ForgeTopic> cTopicsAdvB = <ForgeTopic>[
     prerequisites: <String>['C 061'],
     summary: '先测量，再优化。',
     explain:
-        '优化前必须先测量。clock() 返回进程使用的 CPU 时间（CLOCKS_PER_SEC 为一秒的刻度），可以给一段代码计时。比较不同算法时看的是随规模增长的趋势，而不是绝对毫秒。牢记：过早优化是万恶之源。',
-    code: '#include <stdio.h>\n'
+        '优化前必须先测量。clock() 返回进程使用的 CPU 时间（CLOCKS_PER_SEC 为一秒的刻度），可以给一段代码计时；WASI 通过标准 SDK 以墙上时间模拟，不能把它当作纯 CPU 时间。比较不同算法时看的是随规模增长的趋势，而不是绝对毫秒。long 在部分目标上只有 32 位，本例使用至少 64 位的 long long 避免求和溢出。牢记：过早优化是万恶之源。',
+    code:
+        '#include <stdio.h>\n'
         '#include <time.h>\n'
         '\n'
-        'long sumFast(int n) { return (long)n * (n + 1) / 2; }\n'
+        'long long sumFast(int n) { return (long long)n * (n + 1) / 2; }\n'
         '\n'
         'int main(void) {\n'
         '    clock_t start = clock();\n'
-        '    long r = sumFast(100000000);\n'
+        '    long long r = sumFast(100000000);\n'
         '    clock_t end = clock();\n'
         '    double seconds = (double)(end - start) / CLOCKS_PER_SEC;\n'
-        '    printf("result=%ld\\n", r);\n'
+        '    printf("result=%lld\\n", r);\n'
         '    printf("fast=%d\\n", seconds < 1.0);\n'
         '    return 0;\n'
         '}\n',
     output: 'result=5000000050000000\nfast=1\n',
-    pitfalls: <String>[
-      '绝对耗时依赖机器，别把具体毫秒写进断言。',
-      '编译器优化可能把循环消掉，测量要防止被优化。',
-    ],
+    pitfalls: <String>['绝对耗时依赖机器，别把具体毫秒写进断言。', '编译器优化可能把循环消掉，测量要防止被优化。'],
     tasks: <ForgeTask>[
       ForgeTask(
         prompt: '写一个 O(n) 的循环版本求同样结果并比较。',
         hint: '循环累加 1..n。',
-        answer: 'long sumLoop(int n) { long s = 0; for (int i = 1; i <= n; i++) s += i; return s; }',
+        answer:
+            'long long sumLoop(int n) { long long s = 0; for (int i = 1; i <= n; i++) s += i; return s; }',
       ),
     ],
   ),
@@ -468,7 +470,8 @@ const List<ForgeTopic> cTopicsAdvB = <ForgeTopic>[
     summary: '在结构体里声明「占几位」。',
     explain:
         '结构体成员可以声明占多少位，如 unsigned flag : 1;。位字段把多个小值压进极小的空间，适合硬件寄存器映射和紧凑标志。但位字段的内存布局是实现定义的，跨平台/跨编译器不保证一致。',
-    code: '#include <stdio.h>\n'
+    code:
+        '#include <stdio.h>\n'
         '\n'
         'struct Flags {\n'
         '    unsigned ready : 1;\n'
@@ -486,15 +489,13 @@ const List<ForgeTopic> cTopicsAdvB = <ForgeTopic>[
         '    return 0;\n'
         '}\n',
     output: 'ready=1 mode=3 level=5\nsize=4\n',
-    pitfalls: <String>[
-      '位字段布局是实现定义的，不要据此假设二进制格式。',
-      '给位字段赋值超出位数会被截断。',
-    ],
+    pitfalls: <String>['位字段布局是实现定义的，不要据此假设二进制格式。', '给位字段赋值超出位数会被截断。'],
     tasks: <ForgeTask>[
       ForgeTask(
         prompt: '给 Flags 加一个占 4 位的 code 字段。',
         hint: 'unsigned code : 4;。',
-        answer: 'struct Flags { unsigned ready : 1; unsigned mode : 2; unsigned level : 3; unsigned code : 4; };',
+        answer:
+            'struct Flags { unsigned ready : 1; unsigned mode : 2; unsigned level : 3; unsigned code : 4; };',
       ),
     ],
   ),
@@ -510,7 +511,8 @@ const List<ForgeTopic> cTopicsAdvB = <ForgeTopic>[
     summary: '从深层调用直接跳回调用点。',
     explain:
         'setjmp 记录当前执行点，longjmp 跳回该点，常用于「深层嵌套里出错直接返回顶层」。它绕过正常的函数返回，所以必须自己保证资源清理（释放内存、关闭文件），否则会泄漏。现代 C 一般优先用返回错误码。',
-    code: '#include <stdio.h>\n'
+    code:
+        '#include <stdio.h>\n'
         '#include <setjmp.h>\n'
         '\n'
         'static jmp_buf jb;\n'
@@ -555,7 +557,8 @@ const List<ForgeTopic> cTopicsAdvB = <ForgeTopic>[
     summary: '解析参数、校验、给用法、设退出码。',
     explain:
         '命令行工具读取 argv，识别选项（如 -n），参数不合法时打印用法到 stderr 并返回非 0 退出码。退出码是脚本判断成功与否的接口：0 表示成功，非 0 表示各类失败。示例硬编码一组参数以便运行。',
-    code: '#include <stdio.h>\n'
+    code:
+        '#include <stdio.h>\n'
         '#include <string.h>\n'
         '\n'
         'int main(void) {\n'
@@ -587,7 +590,8 @@ const List<ForgeTopic> cTopicsAdvB = <ForgeTopic>[
       ForgeTask(
         prompt: '增加 -q（quiet）选项，安静模式下不打印。',
         hint: '解析到 -q 时设一个 quiet 标志。',
-        answer: 'int quiet = 0;\nif (strcmp(argv[i], "-q") == 0) { quiet = 1; continue; }\n// 打印前 if (!quiet) ...',
+        answer:
+            'int quiet = 0;\nif (strcmp(argv[i], "-q") == 0) { quiet = 1; continue; }\n// 打印前 if (!quiet) ...',
       ),
     ],
   ),

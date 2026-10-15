@@ -28,13 +28,6 @@ void main() {
   late ContentCatalog catalog;
   late List<TutorialContent> forgeTutorials;
   late List<ExampleContent> forgeExamples;
-  final liveCoreDir = p.normalize(p.join(repoRoot, '..', 'qfli_studio_core'));
-  final liveTutorials = File(
-    p.join(liveCoreDir, 'assets', 'content', 'tutorials.json'),
-  );
-  final liveExamples = File(
-    p.join(liveCoreDir, 'assets', 'content', 'examples.json'),
-  );
 
   setUpAll(() {
     expect(
@@ -68,7 +61,11 @@ void main() {
         expect(t.id, isNotEmpty, reason: t.id);
         expect(t.language, isNotEmpty, reason: t.id);
         expect(t.type, anyOf('c', 'cpp'), reason: t.id);
-        expect(t.level, anyOf('beginner', 'intermediate', 'advanced'), reason: t.id);
+        expect(
+          t.level,
+          anyOf('beginner', 'intermediate', 'advanced'),
+          reason: t.id,
+        );
         expect(t.title, isNotEmpty, reason: t.id);
         expect(t.summary, isNotEmpty, reason: t.id);
         expect(t.concepts, isNotEmpty, reason: t.id);
@@ -174,16 +171,9 @@ void main() {
     });
   });
 
-  group('live shared-core assets match the authored source', () {
-    test('when the core is present, live C/C++ rows equal the staged rows', () {
-      if (!liveTutorials.existsSync() || !liveExamples.existsSync()) {
-        markTestSkipped('shared core not present at $liveCoreDir');
-        return;
-      }
-      final liveCatalog = ContentCatalog.fromJson(
-        tutorialsSource: liveTutorials.readAsStringSync(),
-        examplesSource: liveExamples.readAsStringSync(),
-      );
+  group('application content assets match the authored source', () {
+    test('the production repository loads all authored C/C++ rows', () async {
+      final liveCatalog = await forgeProfile.contentRepositoryFactory!().load();
       const filter = ContentFilter(types: {'c', 'cpp'});
       final liveTut = liveCatalog.tutorials.where(filter.matches).toList();
       final liveEx = liveCatalog.examples.where(filter.matches).toList();
@@ -246,7 +236,9 @@ void main() {
       final java = merged['entries'].firstWhere((e) => e['id'] == 'java-1');
       expect(java['type'], 'c'); // untouched, not treated as owned
       expect(java.containsKey('v'), isFalse);
-      final cpp = merged['entries'].firstWhere((e) => e['id'] == 'cpp-example-001');
+      final cpp = merged['entries'].firstWhere(
+        (e) => e['id'] == 'cpp-example-001',
+      );
       expect(cpp['v'], 2);
     });
   });
@@ -264,7 +256,9 @@ void main() {
         File(p.join(project.path, entryName)).writeAsStringSync(example.code);
         final stdinFixture = example.inputFixtures['stdin'];
         if (stdinFixture != null) {
-          File(p.join(project.path, 'input.txt')).writeAsStringSync(stdinFixture);
+          File(
+            p.join(project.path, 'input.txt'),
+          ).writeAsStringSync(stdinFixture);
         }
         final result = await ClangProgramRunner().run(
           projectPath: project.path,
@@ -282,21 +276,31 @@ void main() {
       }
     }
 
-    test('a representative C example runs with exact expected output', () async {
-      final example = forgeExamples.firstWhere((e) => e.id == 'c-example-100');
-      final (code, out, err) = await runExample(example);
-      expect(code, 0, reason: err.join('\n'));
-      expect(err, isEmpty);
-      expect(out.join('\n').trimRight(), example.expectedOutput.trimRight());
-    });
+    test(
+      'a representative C example runs with exact expected output',
+      () async {
+        final example = forgeExamples.firstWhere(
+          (e) => e.id == 'c-example-100',
+        );
+        final (code, out, err) = await runExample(example);
+        expect(code, 0, reason: err.join('\n'));
+        expect(err, isEmpty);
+        expect(out.join('\n').trimRight(), example.expectedOutput.trimRight());
+      },
+    );
 
-    test('a representative C++ example runs with exact expected output', () async {
-      final example = forgeExamples.firstWhere((e) => e.id == 'cpp-example-100');
-      final (code, out, err) = await runExample(example);
-      expect(code, 0, reason: err.join('\n'));
-      expect(err, isEmpty);
-      expect(out.join('\n').trimRight(), example.expectedOutput.trimRight());
-    });
+    test(
+      'a representative C++ example runs with exact expected output',
+      () async {
+        final example = forgeExamples.firstWhere(
+          (e) => e.id == 'cpp-example-100',
+        );
+        final (code, out, err) = await runExample(example);
+        expect(code, 0, reason: err.join('\n'));
+        expect(err, isEmpty);
+        expect(out.join('\n').trimRight(), example.expectedOutput.trimRight());
+      },
+    );
 
     test('input fixture round-trips through input.txt', () async {
       ExampleContent? withInput;
@@ -317,19 +321,45 @@ void main() {
 /// A stable fingerprint of a tutorial row covering everything the app renders
 /// and runs: level, concepts, per-lesson code/output/exercises and pitfalls.
 String _tutorialFingerprint(TutorialContent t) => jsonEncode(<Object?>[
-  t.id, t.language, t.type, t.locale, t.level, t.title, t.summary, t.concepts,
+  t.id,
+  t.language,
+  t.type,
+  t.locale,
+  t.level,
+  t.title,
+  t.summary,
+  t.concepts,
   [
     for (final l in t.lessons)
       <Object?>[
-        l.id, l.title, l.summary, l.concepts, l.objective, l.explain, l.code,
-        l.output, l.pitfalls,
-        <Object?>[for (final e in l.exercises) <Object?>[e.prompt, e.hint, e.answer]],
+        l.id,
+        l.title,
+        l.summary,
+        l.concepts,
+        l.objective,
+        l.explain,
+        l.code,
+        l.output,
+        l.pitfalls,
+        <Object?>[
+          for (final e in l.exercises) <Object?>[e.prompt, e.hint, e.answer],
+        ],
       ],
   ],
 ]);
 
 /// A stable fingerprint of an example row (code + expected output + fixtures).
 String _exampleFingerprint(ExampleContent e) => jsonEncode(<Object?>[
-  e.id, e.language, e.type, e.level, e.title, e.summary, e.concepts, e.code,
-  e.expectedOutput, e.inputFixtures, e.templateType, e.sourceLessonId,
+  e.id,
+  e.language,
+  e.type,
+  e.level,
+  e.title,
+  e.summary,
+  e.concepts,
+  e.code,
+  e.expectedOutput,
+  e.inputFixtures,
+  e.templateType,
+  e.sourceLessonId,
 ]);
