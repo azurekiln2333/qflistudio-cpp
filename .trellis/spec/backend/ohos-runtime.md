@@ -41,6 +41,12 @@ destroy(handle): void;
 ```
 
 `RunnerHandle` is the returned opaque external itself. Never access `.native`.
+`create` throws an `Error` with code `QFLI_NATIVE_INIT` on invalid initialization
+arguments, filesystem validation or NAPI/resource creation failures. Its message
+identifies the operation and affected argument/path, plus errno or NAPI status
+when applicable; preserve an already pending JS exception. ArkTS forwards the
+message unchanged in MethodChannel error `QFLI_NATIVE_FAILED` and releases the
+active slot. Do not replace a thrown error with the generic null-handle message.
 The declarations live in `cpp/types/libqfli_ohos_runner/`, registered through
 `entry/oh-package.json5`; run `ohpm install` before checking ArkTS after changing
 that dependency.
@@ -59,10 +65,25 @@ that dependency.
   `nativeLib.debugSymbol.exclude` entries in `entry/build-profile.json5`.
   Verify their final HAP SHA256 values against the package manifest; AGP/hvigor
   stripping must not be worked around by disabling executable hash checks.
+- `context.applicationInfo.nativeLibraryPath` can be relative: the actual phone
+  returns `libs/arm64`. Resolve relative metadata against `context.bundleCodeDir`
+  before checking files or calling NAPI, e.g. `/data/storage/el1/bundle` plus
+  `libs/arm64` becomes `/data/storage/el1/bundle/libs/arm64`. Preserve an already
+  absolute path; normalize trailing separators and leading `./`. Relative
+  `accessSync` may succeed through the process cwd, while native canonical-path
+  validation still rejects the same string. Do not rely on cwd for resolution.
 - Production `create` receives compiler/linker/executor absolute paths under
-  `context.applicationInfo.nativeLibraryPath`, with `runtimeDirectory` equal
-  to that directory. Do not chmod or execute extracted compiler binaries in
-  `filesDir`. Optional native path defaults exist for standalone host checks.
+  that resolved native directory, with `runtimeDirectory` equal to it. Reject
+  missing/invalid directory metadata. Do not chmod or execute extracted compiler
+  binaries in `filesDir`. Optional native path defaults exist for host checks.
+- Native initialization validates absolute NUL-free canonical paths, expected
+  directory/file types and required access. Filesystem errors include the
+  affected field/path and errno; denied-access diagnostics also include file
+  mode, readability and process/file ownership. NAPI creation errors identify
+  the operation and status. Keep these diagnostics through the ArkTS/Dart
+  boundary so an actual release permission failure can be distinguished from
+  missing resources. A valid path and successful initialization do not prove
+  the platform permits subsequent execution or generated-code loading.
 - Raw asset `qfli_toolchain/ohos-<abi>.zip` contains `toolchain.json`,
   `bin/ohos.cfg`, `sysroot/`, `include/c++/v1/`, `lib/clang/15.0.7/` and link-time
   libraries under `lib/<full-target-triple>/`. It excludes `bin/clang` and
@@ -126,6 +147,10 @@ that dependency.
   OHOS Dart route disables C interpreter fallback; accepted compile/link/runtime
   errors always preserve their diagnostics/status. Keep implementation,
   HAP-build evidence and actual app execution evidence distinct.
+- ArkTS logs preparation failures as `QFLI_OHOS_TOOLCHAIN_PREPARE_FAILED`, invalid
+  installed-directory metadata as `QFLI_OHOS_NATIVE_DIRECTORY_FAILED`, and the
+  exact absent native file as `QFLI_OHOS_NATIVE_FILE_MISSING`. Keep those distinct
+  from a native `QFLI_NATIVE_INIT` exception after the files have been found.
 
 ## 4. Validation & Error Matrix
 
@@ -137,7 +162,9 @@ that dependency.
 | No EventChannel listener | `missing_listener` |
 | Another run preparing/active | `runner_busy`; preserve its ownership |
 | Outside-project source, unreadable source, duplicate or missing entry | Native run rejected; stderr and one exit 127, no program execution |
-| Native create fails | `QFLI_NATIVE_FAILED`; release active slot |
+| Relative native-library metadata | Resolve against `bundleCodeDir`; pass absolute paths to native |
+| Invalid native-directory metadata or missing installed file | Report unavailable and log the specific metadata/file failure |
+| Native create validation/resource operation fails | Throw native `QFLI_NATIVE_INIT`; ArkTS reports `QFLI_NATIVE_FAILED` with the original detailed message and releases active slot |
 | Compiler/linker fails | Forward diagnostics and actual nonzero status, no stale launch |
 | Executor spawn/load/input fails | Report diagnostics and exit 125 |
 | Program returns nonzero or crashes | Preserve return code or `128 + signal`; app remains alive |
@@ -172,6 +199,13 @@ that dependency.
   absent-list discovery, preparation cancellation, short raw-FD reads/writes and
   actual package readiness. Run `ohpm install` and hvigor to type-check ArkTS
   and compile native code against the target SDK.
+- `native/toolchain/tests/ohos-arkts-native-path-regression.cjs <typescript.js>`
+  transpiles the production ArkTS source with the supplied SDK TypeScript
+  compiler. Assert that relative `libs/arm64` resolves against `bundleCodeDir`,
+  absolute metadata is preserved, and every native option uses the resulting
+  directory. Model relative access succeeding through cwd while native requires
+  absolute paths. Assert unavailable diagnostics for missing files/invalid
+  metadata, and exact MethodChannel propagation of a thrown native init error.
 - Run focused Flutter native channel and OHOS routing tests and Dart analysis.
 - Device gate: execute `tool/ohos_native_audit.dart` through the actual app,
   require `QFLI_C_OHOS_AUDIT` with `ok:true`, and inspect every case. Include C,
@@ -193,6 +227,11 @@ compiler, linker and generated-program executor through the app channel.
 Wrong: turn every pipe read into a Dart output line or reuse one PID file for
 all translation units. Correct: preserve UTF-8 and line boundaries per stream,
 and give each executor invocation its own exclusive PID file.
+
+Wrong: pass `applicationInfo.nativeLibraryPath` straight to `create` because
+`accessSync` found the files, or replace an initialization exception with a
+generic unavailable message. Correct: resolve relative metadata against
+`bundleCodeDir` and preserve the native operation/path/errno diagnostics.
 
 Wrong: replace remaining app verification with successful host Clang tests.
 Correct: use host regressions to check orchestration and require the actual

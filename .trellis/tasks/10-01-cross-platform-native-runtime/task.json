@@ -21,6 +21,6 @@
   "children": [],
   "parent": null,
   "relatedFiles": [],
-  "notes": "2026-10-15: source/host/build gates pass; Android build-only acceptance passes. OHOS app audit remains pending because authorized phone launch returns lock-screen error 10106102. Keep in_progress; see ohos-status.md. Older iOS/Web gates remain separate and unfinished.",
+  "notes": "2026-10-16: phone unlocked; actual release app still fails first C case. Fixed relative nativeLibraryPath resolution and precise init/spawn diagnostics. Installed tools are mode 0644; explicit system loader execve also returns EACCES. Fifteen host groups pass but zero phone cases pass. Investigating supported native-child/portable routes. Android build-only acceptance remains passed. Keep in_progress; see ohos-status.md and research/ohos-device-acceptance-2026-10-16.md. Older iOS/Web gates remain separate and unfinished.",
   "meta": {}
 }

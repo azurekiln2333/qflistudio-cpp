@@ -30,6 +30,7 @@
 #include <set>
 #include <string>
 #include <thread>
+#include <utility>
 #include <vector>
 
 #include <dirent.h>
@@ -56,6 +57,7 @@ struct Toolchain {
     std::string resourceDir;   /* lib/clang/15.0.7 */
     std::string runtimeDir;    /* lib/aarch64-unknown-linux-ohos */
     std::string executor;      /* libqfli_executor.so 的绝对路径 */
+    std::string loader;        /* System musl loader for installed mode-0644 PIEs. */
 };
 
 std::string Join(const std::string &base, const std::string &part) {
@@ -97,6 +99,9 @@ int RunChild(const std::vector<std::string> &argv,
     std::vector<char *> rawEnvironment;
     for (std::string &variable : environment) rawEnvironment.push_back(&variable[0]);
     rawEnvironment.push_back(nullptr);
+    const std::string executionFailure = "Forge: cannot execute compiler or program '" + argv.front() + "': ";
+    const char *executionFailureData = executionFailure.data();
+    const size_t executionFailureLength = executionFailure.size();
     int outputPipe[2];
     int errorPipe[2];
     if (pipe2(outputPipe, O_CLOEXEC) != 0) return 125;
@@ -134,21 +139,34 @@ int RunChild(const std::vector<std::string> &argv,
         if (!workDirectory.empty() && chdir(workDirectory.c_str()) != 0) _exit(125);
         execve(raw[0], raw.data(), rawEnvironment.data());
         const int executionError = errno;
-        const char message[] = "Forge: cannot execute compiler or program: ";
-        (void)write(STDERR_FILENO, message, sizeof(message) - 1);
+        (void)write(STDERR_FILENO, executionFailureData, executionFailureLength);
         if (executionError == EACCES) {
-            const char detail[] = "permission denied\n";
+            const char detail[] = "permission denied";
             (void)write(STDERR_FILENO, detail, sizeof(detail) - 1);
         } else if (executionError == ENOENT) {
-            const char detail[] = "executable or dynamic loader missing\n";
+            const char detail[] = "executable or dynamic loader missing";
             (void)write(STDERR_FILENO, detail, sizeof(detail) - 1);
         } else if (executionError == ENOEXEC) {
-            const char detail[] = "unsupported executable format\n";
+            const char detail[] = "unsupported executable format";
             (void)write(STDERR_FILENO, detail, sizeof(detail) - 1);
         } else {
-            const char detail[] = "execve failed\n";
+            const char detail[] = "execve failed";
             (void)write(STDERR_FILENO, detail, sizeof(detail) - 1);
         }
+        const char errorPrefix[] = " (errno ";
+        (void)write(STDERR_FILENO, errorPrefix, sizeof(errorPrefix) - 1);
+        // Format the positive errno with arithmetic only: no allocation, locale
+        // formatting or locks are safe after a multithreaded application's fork.
+        char errorNumber[3 * sizeof(int)];
+        size_t errorStart = sizeof(errorNumber);
+        unsigned errorValue = static_cast<unsigned>(executionError);
+        do {
+            errorNumber[--errorStart] = static_cast<char>('0' + errorValue % 10);
+            errorValue /= 10;
+        } while (errorValue != 0);
+        (void)write(STDERR_FILENO, errorNumber + errorStart, sizeof(errorNumber) - errorStart);
+        const char errorSuffix[] = ")\n";
+        (void)write(STDERR_FILENO, errorSuffix, sizeof(errorSuffix) - 1);
         _exit(125);
     }
 
@@ -306,6 +324,85 @@ void RemoveTree(const std::string &path) { RemoveTreeAt(AT_FDCWD, path.c_str());
  * 用 --config 读 ohos.cfg（里面写好了 OHOS 宏、libc++、compiler-rt、LLD），
  * 这样参数一处维护，和命令行验证脚本保持一致。
  */
+std::vector<std::string> WithLoader(const Toolchain &toolchain, std::vector<std::string> command) {
+    if (!toolchain.loader.empty()) command.insert(command.begin(), toolchain.loader);
+    return command;
+}
+
+std::vector<std::string> ExecutorCommand(const Toolchain &toolchain,
+                                       const std::string &pidfile,
+                                       const std::vector<std::string> &command) {
+    std::vector<std::string> arguments = WithLoader(toolchain, {toolchain.executor, "--exec", pidfile});
+    const std::vector<std::string> executable = WithLoader(toolchain, command);
+    arguments.insert(arguments.end(), executable.begin(), executable.end());
+    return arguments;
+}
+
+// LLVM 15 Command::Print(..., Quote=true) quotes every argv element and escapes
+// only backslash, double quote and dollar. Decode that format without a shell.
+bool ParseDriverCommand(const std::string &line, std::vector<std::string> *arguments) {
+    size_t position = 0;
+    while (position < line.size()) {
+        while (position < line.size() && (line[position] == ' ' || line[position] == '\t' ||
+                                         line[position] == '\r')) ++position;
+        if (position == line.size()) return !arguments->empty();
+        if (line[position++] != '"') return false;
+        std::string argument;
+        bool closed = false;
+        while (position < line.size()) {
+            const char character = line[position++];
+            if (character == '"') { closed = true; break; }
+            if (character == '\\') {
+                if (position == line.size()) return false;
+                const char escaped = line[position++];
+                if (escaped != '\\' && escaped != '"' && escaped != '$') return false;
+                argument.push_back(escaped);
+            } else {
+                if (character == '\0' || character == '\n') return false;
+                argument.push_back(character);
+            }
+        }
+        if (!closed || (position < line.size() && line[position] != ' ' &&
+                        line[position] != '\t' && line[position] != '\r')) return false;
+        arguments->push_back(std::move(argument));
+    }
+    return !arguments->empty();
+}
+
+struct DriverPlan {
+    std::string text;
+    bool overflow = false;
+};
+
+void CollectDriverPlan(void *context, bool, const char *text, size_t length) {
+    auto *plan = static_cast<DriverPlan *>(context);
+    constexpr size_t maximum = 4 * 1024 * 1024;
+    if (length > maximum - plan->text.size()) { plan->overflow = true; return; }
+    plan->text.append(text, length);
+}
+
+bool ReadLinkerPlan(const DriverPlan &plan, const std::string &expected,
+                    std::vector<std::string> *arguments) {
+    if (plan.overflow) return false;
+    size_t start = 0;
+    bool found = false;
+    while (start < plan.text.size()) {
+        const size_t end = plan.text.find('\n', start);
+        const std::string line = plan.text.substr(start, end == std::string::npos ? end : end - start);
+        const size_t first = line.find_first_not_of(" \t\r");
+        if (first != std::string::npos && line[first] == '"') {
+            if (found || !ParseDriverCommand(line, arguments) || arguments->front() != expected) return false;
+            found = true;
+        } else if (line.find("error:") != std::string::npos) {
+            // Clang 15's -### branch can return zero after a driver diagnostic.
+            return false;
+        }
+        if (end == std::string::npos) break;
+        start = end + 1;
+    }
+    return found && arguments->size() > 1;
+}
+
 std::vector<std::string> CompilerArguments(const Toolchain &toolchain, bool cpp) {
     std::vector<std::string> arguments = {
         toolchain.compiler,
@@ -314,6 +411,13 @@ std::vector<std::string> CompilerArguments(const Toolchain &toolchain, bool cpp)
     };
     if (cpp) {
         arguments.push_back("--driver-mode=g++");
+    }
+    // The signed installed compiler is readable but may have no execution bits.
+    // Keep cc1 inside this compiler process rather than execing its own pathname.
+    if (!toolchain.loader.empty()) {
+        arguments.push_back("-fintegrated-cc1");
+        // /proc/self/exe identifies the loader when it is invoked explicitly.
+        arguments.push_back("-no-canonical-prefixes");
     }
     return arguments;
 }
@@ -356,10 +460,8 @@ int CompileAndRun(const Toolchain &toolchain,
         command.push_back(object);
 
         /* 每次编译都通过 executor 起独立进程，用户代码的崩溃不会带走 App。 */
-        std::vector<std::string> wrapped = {
-            toolchain.executor, "--exec", Join(temporaryDirectory, "compile-" + std::to_string(index) + ".pid"),
-        };
-        wrapped.insert(wrapped.end(), command.begin(), command.end());
+        const std::vector<std::string> wrapped = ExecutorCommand(toolchain,
+            Join(temporaryDirectory, "compile-" + std::to_string(index) + ".pid"), command);
         const int code = RunChild(wrapped, projectPath, std::string(), toolchain.runtimeDir,
                                   temporaryDirectory, cancelDescriptor, cancelled, onOutput, context);
         if (code != 0) return *cancelled ? 130 : code;
@@ -377,7 +479,11 @@ int CompileAndRun(const Toolchain &toolchain,
     std::vector<std::string> link = CompilerArguments(toolchain, linkCpp);
     // Installed LLD is signed alongside the app. Only linking needs the path;
     // passing it to -c would produce an unused-argument warning for every unit.
-    if (!toolchain.linker.empty()) link.push_back("--ld-path=" + toolchain.linker);
+    if (!toolchain.linker.empty()) {
+        // Clang checks X_OK for --ld-path, including -###. The executable loader
+        // is a planning placeholder; it is never run with the generated LLD flags.
+        link.push_back("--ld-path=" + (toolchain.loader.empty() ? toolchain.linker : toolchain.loader));
+    }
     /*
      * -shared 让产物可直接被 dlopen；-z,defs 保证未定义符号在链接期就报错，
      * 而不是拖到运行时才崩。16KB 页对齐是 OHOS 的强制要求。
@@ -392,10 +498,29 @@ int CompileAndRun(const Toolchain &toolchain,
     link.push_back("-o");
     link.push_back(program);
 
-    std::vector<std::string> linkWrapped = {
-        toolchain.executor, "--exec", Join(temporaryDirectory, "link.pid"),
-    };
-    linkWrapped.insert(linkWrapped.end(), link.begin(), link.end());
+    if (!toolchain.loader.empty()) {
+        link.push_back("-###");
+        DriverPlan plan;
+        const std::vector<std::string> planning = ExecutorCommand(toolchain,
+            Join(temporaryDirectory, "link-plan.pid"), link);
+        const int planned = RunChild(planning, projectPath, std::string(), toolchain.runtimeDir,
+            temporaryDirectory, cancelDescriptor, cancelled, CollectDriverPlan, &plan);
+        if (planned != 0 || *cancelled) {
+            if (!plan.text.empty()) onOutput(context, true, plan.text.data(), plan.text.size());
+            return *cancelled ? 130 : planned;
+        }
+        std::vector<std::string> linkerArguments;
+        if (!ReadLinkerPlan(plan, toolchain.loader, &linkerArguments)) {
+            const char message[] = "Forge: cannot decode unique Clang linker command\n";
+            onOutput(context, true, message, sizeof(message) - 1);
+            if (!plan.text.empty()) onOutput(context, true, plan.text.data(), plan.text.size());
+            return 125;
+        }
+        linkerArguments[0] = toolchain.linker;
+        link = std::move(linkerArguments);
+    }
+    const std::vector<std::string> linkWrapped = ExecutorCommand(toolchain,
+        Join(temporaryDirectory, "link.pid"), link);
     const int linkCode = RunChild(linkWrapped, projectPath, std::string(), toolchain.runtimeDir,
                                   temporaryDirectory, cancelDescriptor, cancelled, onOutput, context);
     if (linkCode != 0 || *cancelled) return *cancelled ? 130 : linkCode;
@@ -413,9 +538,9 @@ int CompileAndRun(const Toolchain &toolchain,
     const bool hasInput = stat(input.c_str(), &inputStat) == 0 && S_ISREG(inputStat.st_mode);
 
     const std::string entryName = entryFile.substr(entryFile.find_last_of('/') + 1);
-    std::vector<std::string> run = {
+    const std::vector<std::string> run = WithLoader(toolchain, {
         toolchain.executor, "--run", Join(temporaryDirectory, "run.pid"), program, entryName,
-    };
+    });
     return RunChild(run, projectPath, hasInput ? input : std::string(), toolchain.runtimeDir,
                     temporaryDirectory, cancelDescriptor, cancelled, onOutput, context);
 }
@@ -615,6 +740,104 @@ napi_value MakeBoolean(napi_env env, bool value) {
     return result;
 }
 
+bool InitFailure(napi_env env, const std::string &message) {
+    // Preserve an exception already raised by a JS property getter or NAPI.
+    bool pending = false;
+    if (napi_is_exception_pending(env, &pending) != napi_ok || !pending) {
+        napi_throw_error(env, "QFLI_NATIVE_INIT", message.c_str());
+    }
+    return false;
+}
+
+bool InitNapiFailure(napi_env env, const char *operation, napi_status status) {
+    return InitFailure(env, std::string("Forge native initialization: ") + operation +
+        " failed (NAPI status " + std::to_string(static_cast<int>(status)) + ").");
+}
+
+bool ValidateInitPath(napi_env env, const char *name, std::string *path,
+                      bool directory, int permissions) {
+    const std::string description = std::string(name) + " '" + *path + "'";
+    if (path->empty() || path->front() != '/' || path->find('\0') != std::string::npos) {
+        return InitFailure(env, "Forge native initialization: " + description +
+            " must be an absolute path without NUL bytes.");
+    }
+    if (!ResolvePath(*path, path)) {
+        const int error = errno;
+        return InitFailure(env, "Forge native initialization: cannot resolve " + description +
+            ": " + strerror(error) + " (errno " + std::to_string(error) + ").");
+    }
+    struct stat info;
+    if (stat(path->c_str(), &info) != 0) {
+        const int error = errno;
+        return InitFailure(env, "Forge native initialization: cannot stat " + description +
+            ": " + strerror(error) + " (errno " + std::to_string(error) + ").");
+    }
+    if (directory ? !S_ISDIR(info.st_mode) : !S_ISREG(info.st_mode)) {
+        return InitFailure(env, "Forge native initialization: " + description +
+            (directory ? " is not a directory." : " is not a regular file."));
+    }
+    if (access(path->c_str(), permissions) != 0) {
+        const int error = errno;
+        char mode[16];
+        snprintf(mode, sizeof(mode), "%07o", static_cast<unsigned>(info.st_mode));
+        const int readable = access(path->c_str(), R_OK);
+        const int readError = readable == 0 ? 0 : errno;
+        return InitFailure(env, "Forge native initialization: cannot access " + description +
+            ": " + strerror(error) + " (errno " + std::to_string(error) +
+            "; st_mode=" + mode + "; R_OK=" + (readable == 0 ? "yes" : "no") +
+            "; read_errno=" + std::to_string(readError) +
+            "; owner_uid=" + std::to_string(info.st_uid) +
+            "; owner_gid=" + std::to_string(info.st_gid) +
+            "; uid=" + std::to_string(getuid()) +
+            "; euid=" + std::to_string(geteuid()) + ").");
+    }
+    return true;
+}
+
+bool ConfigureExecutables(napi_env env, Toolchain *toolchain) {
+    const std::vector<std::pair<const char *, std::string *>> paths = {
+        {"executorPath", &toolchain->executor},
+        {"compilerPath", &toolchain->compiler},
+        {"linkerPath", &toolchain->linker},
+    };
+#if defined(__OHOS__) && (defined(__aarch64__) || defined(__x86_64__))
+    // HAP installation can leave signed native PIEs at mode 0644. musl's public
+    // loader interface opens those files read-only and retains normal executable
+    // mapping/signature policy. Limit it to this installed native file layout;
+    // an executable file denied by platform policy still fails the X_OK gate.
+    const bool installed = toolchain->executor == Join(toolchain->runtimeDir, "libqfli_executor.so") &&
+        toolchain->compiler == Join(toolchain->runtimeDir, "libqfli_clang.so") &&
+        toolchain->linker == Join(toolchain->runtimeDir, "libqfli-ld.lld-.so");
+    if (installed) {
+        bool needsLoader = false;
+        for (const auto &item : paths) {
+            if (access(item.second->c_str(), X_OK) == 0) continue;
+            struct stat info;
+            if (stat(item.second->c_str(), &info) != 0 || (info.st_mode & 0111) != 0 ||
+                access(item.second->c_str(), R_OK) != 0) {
+                return ValidateInitPath(env, item.first, item.second, false, X_OK);
+            }
+            needsLoader = true;
+        }
+        if (needsLoader) {
+            for (const auto &item : paths) {
+                if (!ValidateInitPath(env, item.first, item.second, false, R_OK)) return false;
+            }
+#if defined(__aarch64__)
+            toolchain->loader = "/lib/ld-musl-aarch64.so.1";
+#else
+            toolchain->loader = "/lib/ld-musl-x86_64.so.1";
+#endif
+            return ValidateInitPath(env, "system musl loader", &toolchain->loader, false, R_OK | X_OK);
+        }
+    }
+#endif
+    for (const auto &item : paths) {
+        if (!ValidateInitPath(env, item.first, item.second, false, X_OK)) return false;
+    }
+    return true;
+}
+
 /*
  * create(options) -> handle | null
  *
@@ -631,24 +854,41 @@ napi_value MakeBoolean(napi_env env, bool value) {
 napi_value Create(napi_env env, napi_callback_info info) {
     size_t argc = 1;
     napi_value args[1] = {nullptr};
-    if (napi_get_cb_info(env, info, &argc, args, nullptr, nullptr) != napi_ok || argc < 1) {
+    const napi_status argumentsStatus = napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
+    if (argumentsStatus != napi_ok) {
+        InitNapiFailure(env, "read create arguments", argumentsStatus);
+        return nullptr;
+    }
+    if (argc < 1) {
+        InitFailure(env, "Forge native initialization: create requires an options object.");
         return nullptr;
     }
 
-    napi_value rootValue = nullptr;
-    napi_value executorValue = nullptr;
     napi_value callback = nullptr;
-    if (napi_get_named_property(env, args[0], "toolchainRoot", &rootValue) != napi_ok ||
-        napi_get_named_property(env, args[0], "executorPath", &executorValue) != napi_ok ||
-        napi_get_named_property(env, args[0], "onEvent", &callback) != napi_ok) {
+    auto state = std::make_shared<RunState>();
+    auto readPath = [&](const char *name, std::string *path, bool optional = false) {
+        bool present = false;
+        const napi_status hasStatus = napi_has_named_property(env, args[0], name, &present);
+        if (hasStatus != napi_ok) return InitNapiFailure(env, name, hasStatus);
+        if (!present && optional) return true;
+        napi_value value = nullptr;
+        if (!present || napi_get_named_property(env, args[0], name, &value) != napi_ok ||
+            !ReadString(env, value, path)) {
+            return InitFailure(env, std::string("Forge native initialization: ") + name +
+                " must be a string without NUL bytes.");
+        }
+        return true;
+    };
+    if (!readPath("toolchainRoot", &state->toolchain.root) ||
+        !readPath("executorPath", &state->toolchain.executor) ||
+        !ValidateInitPath(env, "toolchainRoot", &state->toolchain.root, true, R_OK | X_OK) ||
+        !ValidateInitPath(env, "executorPath", &state->toolchain.executor, false, F_OK)) {
         return nullptr;
     }
-
-    auto state = std::make_shared<RunState>();
-    if (!ReadString(env, rootValue, &state->toolchain.root) ||
-        !ReadString(env, executorValue, &state->toolchain.executor) ||
-        !ResolvePath(state->toolchain.root, &state->toolchain.root) ||
-        !ResolvePath(state->toolchain.executor, &state->toolchain.executor)) {
+    napi_valuetype callbackType = napi_undefined;
+    if (napi_get_named_property(env, args[0], "onEvent", &callback) != napi_ok ||
+        napi_typeof(env, callback, &callbackType) != napi_ok || callbackType != napi_function) {
+        InitFailure(env, "Forge native initialization: onEvent must be a function.");
         return nullptr;
     }
 
@@ -662,37 +902,42 @@ napi_value Create(napi_env env, napi_callback_info info) {
     state->toolchain.runtimeDir = Join(root, "lib/aarch64-unknown-linux-ohos");
     // Production supplies signed native-library paths; overrides also keep the
     // standalone packaged-toolchain layout usable for local compiler checks.
-    auto readOverride = [&](const char *name, std::string *path) {
-        bool present = false;
-        napi_value value = nullptr;
-        return napi_has_named_property(env, args[0], name, &present) == napi_ok &&
-            (!present || (napi_get_named_property(env, args[0], name, &value) == napi_ok &&
-                          ReadString(env, value, path)));
-    };
-    if (!readOverride("compilerPath", &state->toolchain.compiler) ||
-        !readOverride("linkerPath", &state->toolchain.linker) ||
-        !readOverride("runtimeDirectory", &state->toolchain.runtimeDir) ||
-        !ResolvePath(state->toolchain.compiler, &state->toolchain.compiler) ||
-        !ResolvePath(state->toolchain.linker, &state->toolchain.linker) ||
-        !ResolvePath(state->toolchain.runtimeDir, &state->toolchain.runtimeDir) ||
-        access(state->toolchain.compiler.c_str(), X_OK) != 0 ||
-        access(state->toolchain.linker.c_str(), X_OK) != 0 ||
-        access(state->toolchain.executor.c_str(), X_OK) != 0) return nullptr;
+    if (!readPath("compilerPath", &state->toolchain.compiler, true) ||
+        !readPath("linkerPath", &state->toolchain.linker, true) ||
+        !readPath("runtimeDirectory", &state->toolchain.runtimeDir, true) ||
+        !ValidateInitPath(env, "compilerPath", &state->toolchain.compiler, false, F_OK) ||
+        !ValidateInitPath(env, "linkerPath", &state->toolchain.linker, false, F_OK) ||
+        !ValidateInitPath(env, "runtimeDirectory", &state->toolchain.runtimeDir, true, R_OK | X_OK) ||
+        !ValidateInitPath(env, "compiler configuration", &state->toolchain.config, false, R_OK) ||
+        !ConfigureExecutables(env, &state->toolchain)) return nullptr;
     state->env = env;
 
     napi_value name = nullptr;
-    napi_create_string_utf8(env, "qfli_ohos_events", NAPI_AUTO_LENGTH, &name);
-    if (napi_create_threadsafe_function(env, callback, nullptr, name, 0, 1, nullptr, nullptr,
-                                        nullptr, CallJsEvent, &state->events) != napi_ok) {
+    const napi_status nameStatus = napi_create_string_utf8(env, "qfli_ohos_events", NAPI_AUTO_LENGTH, &name);
+    if (nameStatus != napi_ok) {
+        InitNapiFailure(env, "create event name", nameStatus);
+        return nullptr;
+    }
+    const napi_status eventsStatus = napi_create_threadsafe_function(env, callback, nullptr,
+        name, 0, 1, nullptr, nullptr, nullptr, CallJsEvent, &state->events);
+    if (eventsStatus != napi_ok) {
+        InitNapiFailure(env, "create event callback", eventsStatus);
         return nullptr;
     }
 
-    if (pipe2(state->cancelPipe, O_NONBLOCK | O_CLOEXEC) != 0) return nullptr;
+    if (pipe2(state->cancelPipe, O_NONBLOCK | O_CLOEXEC) != 0) {
+        const int error = errno;
+        InitFailure(env, std::string("Forge native initialization: cannot create cancellation pipe: ") +
+            strerror(error) + " (errno " + std::to_string(error) + ").");
+        return nullptr;
+    }
 
     napi_value handle = nullptr;
     auto *external = new RunHandle{state};
-    if (napi_create_external(env, external, FinalizeHandle, nullptr, &handle) != napi_ok) {
+    const napi_status handleStatus = napi_create_external(env, external, FinalizeHandle, nullptr, &handle);
+    if (handleStatus != napi_ok) {
         delete external;
+        InitNapiFailure(env, "create external handle", handleStatus);
         return nullptr;
     }
     return handle;

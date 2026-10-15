@@ -21,7 +21,23 @@ void collect(void *p, bool error, const char *s, size_t n) {
     (error ? o->err : o->out).append(s, n);
 }
 int main(int argc, char **argv) {
-    assert(argc == 3);
+    assert(argc == 3 || argc == 5);
+    std::vector<std::string> parsed;
+    assert(ParseDriverCommand(" \"/loader\" \"space name\" \"quote\\\"slash\\\\dollar\\$`\" \"\"", &parsed));
+    assert((parsed == std::vector<std::string>{"/loader", "space name", "quote\"slash\\dollar$`", ""}));
+    parsed.clear(); assert(!ParseDriverCommand(" \"/loader\"; /bin/sh", &parsed));
+    DriverPlan validPlan{"clang version 15.0.7\n \"/loader\" \"--shared\"\n", false};
+    parsed.clear(); assert(ReadLinkerPlan(validPlan, "/loader", &parsed));
+    for (const char *invalidPlan : {
+        " \"/wrong\" \"--shared\"\n",
+        " \"/loader\" \"--shared\"\n \"/extra\" \"command\"\n",
+        "clang: error: invalid linker\n \"/loader\" \"--shared\"\n",
+        " \"/loader\" \"unterminated\n",
+        "clang version 15.0.7\n",
+    }) {
+        parsed.clear(); assert(!ReadLinkerPlan(DriverPlan{invalidPlan, false}, "/loader", &parsed));
+    }
+    parsed.clear(); validPlan.overflow = true; assert(!ReadLinkerPlan(validPlan, "/loader", &parsed));
     int cancel[2]; assert(pipe2(cancel, O_CLOEXEC | O_NONBLOCK) == 0);
     bool cancelled = false; Output output;
     auto child = [&](const std::vector<std::string> &command, const std::string &input = "") {
@@ -35,7 +51,11 @@ int main(int argc, char **argv) {
     code = child({"/usr/bin/python3", "-c", "import sys; print(repr(sys.stdin.read()))"});
     assert(code == 0 && output.out == "''\n");
     code = child({"/not/a/compiler"});
-    assert(code == 125 && output.err.find("cannot execute") != std::string::npos);
+    assert(code == 125 && output.err.find("cannot execute compiler or program '/not/a/compiler'") != std::string::npos &&
+           output.err.find("errno 2") != std::string::npos);
+    code = child({"/etc/passwd"});
+    assert(code == 125 && output.err.find("cannot execute compiler or program '/etc/passwd'") != std::string::npos &&
+           output.err.find("permission denied (errno 13)") != std::string::npos);
     code = child({"/bin/cat"}, "/not/an/input/file");
     assert(code == 125 && output.err.find("cannot open program input") != std::string::npos);
     puts("PASS: independent stdout/stderr, pipe-capacity output, stdin EOF and startup failures");
@@ -66,6 +86,13 @@ int main(int argc, char **argv) {
     Toolchain toolchain;
     toolchain.compiler = argv[2]; toolchain.executor = argv[1];
     toolchain.config = Join(project, "host.cfg");
+    if (argc == 5) {
+        toolchain.loader = argv[3]; toolchain.linker = argv[4];
+        for (const std::string &path : {toolchain.executor, toolchain.compiler, toolchain.linker}) {
+            struct stat info; assert(stat(path.c_str(), &info) == 0 && (info.st_mode & 0111) == 0);
+            assert(access(path.c_str(), R_OK) == 0 && access(path.c_str(), X_OK) != 0);
+        }
+    }
     auto compile = [&](const std::string &entry, std::vector<Source> sources, bool stale = false) {
         std::string resolvedProject(project), resolvedEntry(Join(project, entry));
         assert(ValidateSources(&resolvedProject, &resolvedEntry, &sources));
@@ -136,6 +163,7 @@ int main(int argc, char **argv) {
         assert(CompleteUtf8Length(utf8.substr(0, length)) == expected);
     }
     puts("PASS: entry inclusion, canonical symlink containment, safe symlink/cycle cleanup, UTF-8 boundaries");
+    if (!toolchain.loader.empty()) puts("PASS: actual loader dispatch for mode-0644 executor/compiler/linker, Clang-generated linker argv and strict parser");
     close(cancel[0]); close(cancel[1]); RemoveTree(project); RemoveTree(outside);
 }
 '''
@@ -149,6 +177,18 @@ with tempfile.TemporaryDirectory(prefix='ohos-bridge-') as temp:
     subprocess.run(['gcc', '-Wall', '-Wextra', '-Werror',
                     str(root / 'native/toolchain/ohos-executor.c'), '-ldl', '-o', str(executor)], check=True)
     subprocess.run([str(binary), str(executor), '/usr/bin/clang-15'], check=True, timeout=45)
+    noexec = pathlib.Path(temp) / 'installed mode 0644 $`quote"'
+    noexec.mkdir()
+    installed = []
+    for original, name in [(executor, 'libqfli_executor.so'),
+                           (pathlib.Path('/usr/bin/clang-15'), 'libqfli_clang.so'),
+                           (pathlib.Path('/usr/bin/ld'), 'libqfli-ld.lld-.so')]:
+        destination = noexec / name
+        shutil.copyfile(original, destination)
+        destination.chmod(0o644)
+        installed.append(str(destination))
+    subprocess.run([str(binary), installed[0], installed[1],
+                    '/lib64/ld-linux-x86-64.so.2', installed[2]], check=True, timeout=45)
 
     # Node implements the same standard NAPI surface as OHOS. Exercise the full
     # actual source, including external handles, TSFN callbacks and finalizers.
@@ -176,10 +216,13 @@ const path = require('node:path');
 const native = require(process.argv[2]);
 const base = process.argv[3];
 const project = path.join(base, 'project'), cache = path.join(base, 'cache');
-function create(callback) {
-  const handle = native.create({toolchainRoot: base, executorPath: path.join(base, 'executor'),
+function options(callback) {
+  return {toolchainRoot: base, executorPath: path.join(base, 'executor'),
     compilerPath: '/usr/bin/clang-15', linkerPath: '/usr/bin/ld', runtimeDirectory: base,
-    onEvent: callback});
+    onEvent: callback};
+}
+function create(callback) {
+  const handle = native.create(options(callback));
   assert.ok(handle); return handle;
 }
 async function run(name, source, mode) {
@@ -210,6 +253,33 @@ async function run(name, source, mode) {
   });
 }
 (async () => {
+  function initError(overrides, pattern) {
+    assert.throws(() => native.create({...options(() => {}), ...overrides}), error =>
+      error.code === 'QFLI_NATIVE_INIT' && pattern.test(error.message));
+  }
+  initError({executorPath: 'libs/arm64/libqfli_executor.so'}, /executorPath.*libs\/arm64.*absolute path/);
+  initError({executorPath: path.join(base, 'missing-executor')}, /cannot resolve executorPath.*missing-executor.*errno 2/);
+  initError({compilerPath: path.join(base, 'missing-compiler')}, /cannot resolve compilerPath.*missing-compiler.*errno 2/);
+  initError({linkerPath: path.join(base, 'missing-linker')}, /cannot resolve linkerPath.*missing-linker.*errno 2/);
+  initError({runtimeDirectory: path.join(base, 'executor')}, /runtimeDirectory.*not a directory/);
+  initError({toolchainRoot: 42}, /toolchainRoot must be a string/);
+  initError({onEvent: false}, /onEvent must be a function/);
+  const nonExecutable = path.join(base, 'non-executable');
+  fs.writeFileSync(nonExecutable, 'not executable', {mode: 0o600});
+  initError({compilerPath: nonExecutable}, /cannot access compilerPath.*non-executable.*errno 13; st_mode=0100600; R_OK=yes; read_errno=0; owner_uid=\d+; owner_gid=\d+; uid=\d+; euid=\d+/);
+  const config = path.join(base, 'bin/ohos.cfg');
+  fs.renameSync(config, `${config}.saved`);
+  try {
+    initError({}, /cannot resolve compiler configuration.*ohos\.cfg.*errno 2/);
+    fs.mkdirSync(config);
+    initError({}, /compiler configuration.*not a regular file/);
+    fs.rmdirSync(config);
+  } finally { fs.renameSync(`${config}.saved`, config); }
+  const getterFailure = Error('original getter failure');
+  const getterOptions = options(() => {});
+  Object.defineProperty(getterOptions, 'compilerPath', {get() { throw getterFailure; }});
+  assert.throws(() => native.create(getterOptions), error => error === getterFailure);
+  console.log('PASS: native initialization reports exact option/path/operation/errno and preserves JS exceptions');
   const unicode = await run('unicode.c', '#define _DEFAULT_SOURCE\n#include <unistd.h>\nint main(void){const char s[]="\\xe4\\xb8\\xad\\xf0\\x9f\\x98\\x80";for(unsigned i=0;i<sizeof(s)-1;i++){write(1,s+i,1);usleep(10000);}return 7;}\n');
   assert.deepEqual(unicode, {code: 7, out: '\u4e2d\ud83d\ude00', err: ''});
   const sleeper = '#include <unistd.h>\nint main(void){write(1,"started\\n",8);close(1);close(2);for(;;)sleep(10);}\n';

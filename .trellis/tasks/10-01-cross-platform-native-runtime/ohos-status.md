@@ -1,6 +1,6 @@
-# OHOS / Android 本次验收状态（2026-10-15）
+# OHOS / Android 本次验收状态（2026-10-16）
 
-当前结论：**OHOS 桥接和打包缺陷已修复，正式 release HAP、设备验收 HAP 与 Android release APK 均构建成功；OHOS 应用内验收尚未完成，手机锁屏阻止启动。不得将构建成功报告成完整移植验收通过。**
+当前结论：**手机已解锁，实际 release 应用仍无法编译运行第一例 C，C++ 也尚未可用。修复了相对 native library 路径与错误诊断；已确认安装文件为 0644，调用系统加载器的 execve 也返回 EACCES。正在验证官方原生子进程和现有 portable 运行时方案。Android 构建验收已通过。不得将构建或主机回归成功报告成完整移植验收通过。**
 
 ## 范围、授权和工作区
 
@@ -23,7 +23,7 @@
 | --- | --- |
 | Flutter 全仓静态分析 | No issues found；只排除生成目录，没有屏蔽真实源文件 |
 | Flutter 全量 VM 测试 | 176/176 通过 |
-| 原生桥/真实 NAPI + executor 主机回归 | 7 组全部通过，含混编、异常、stdin、非零退出、崩溃、取消、GC、错误后禁止旧产物 |
+| 原生桥/真实 NAPI + executor 主机回归 | 15 组全部通过，含混编、异常、stdin、非零退出、崩溃、取消、GC、错误后禁止旧产物、初始化错误和 loader 参数解析；不是手机通过证据 |
 | OHOS SDK ARM64 C++ 严格语法检查 | 通过 `-Wall -Wextra -Werror` |
 | 实际 OHOS 资源交叉链接 | C17 math/stdatomic、C++20 标准库/异常、混编/项目头文件/span/16 字节 atomic、未定义符号拒绝通过 |
 | ArkTS 实际源码逻辑检查 | 资源分段读写、准备取消、单次终止、完整行与缓存/参数检查通过 |
@@ -34,19 +34,19 @@
 
 ## OHOS 设备验收的真实阻塞
 
-设备是此前获授权的 nova 14 Ultra（`MRT-AL10`），HDC 目标 `192.168.68.207:46551`。验收 HAP 已安装成功，但 `aa start` 返回：
+设备是此前获授权的 nova 14 Ultra（`MRT-AL10`），HDC 目标 `192.168.68.207:46551`。2026-10-16 已正常启动实际 release 验收应用，取代 10-15 的锁屏阻塞。依次复现并定位：
 
 ```text
-Error Code:10106102
-The device screen is locked during the application launch, unlock screen failed.
-The current mode is developer mode, and the screen cannot be unlocked automatically.
+nativeLibraryPath=libs/arm64（相对路径，已改为按 bundleCodeDir 解析）
+executor st_mode=0100644, R_OK=yes, X_OK denied（安装的原生文件无执行位）
+execve('/system/lib/ld-musl-aarch64.so.1') = EACCES, errno 13（精确真机诊断）
 ```
 
-已请用户解锁并保持屏幕亮。未尝试绕过锁屏。当前没有 `QFLI_C_OHOS_AUDIT ok:true` 证据，全部应用内编译/运行/取消和 200 个教程代码的手机结果均保持待验。
+当前验收仍为 `real-C-source exit=125`、`passed:[]`，没有 `QFLI_C_OHOS_AUDIT ok:true` 证据。直接 fork/exec 链路尚不适用于这台 release 手机；正在做官方 native-child API 探针并交叉构建已有 LLVM/WASI/interpreter。全部应用内编译/运行/取消和 200 个教程代码的手机结果均保持待验。
 
-重启后已重新向 `w6:p4`、`w6:p5`、`w6:p7` 下发分工，三者均再次确认本仓库路径。Pi 真机复查仍是相同锁屏错误，具体证据见 `research/device-recheck-2026-10-15.md`。构建/分析修复已提交为 `7f92787`，本轮源代码与课程证据另有 `797d9b7`、`49a7579`、`cccc0b8`。
+三个代理均限定本仓库：原生桥、官方子进程探针、portable 交叉构建。当前详细日志和准确失败阶段见 `research/ohos-device-acceptance-2026-10-16.md`。10-15 的锁屏检查记录保留为历史，不代表当前阻塞。
 
-## 解锁后的连续步骤
+## 当前连续步骤
 
 1. 启动已安装的验收 App，观察 `QFLI_C_OHOS_CASE`，要求 C/C++/异常/混编/错误/崩溃/取消/UTF-8 等 10 个基础用例及 200 个课程示例全部通过。
 2. 如失败，直接修复实际错误、补相应回归、提交后重验；不得将 Linux 主机结果当成手机结果。
