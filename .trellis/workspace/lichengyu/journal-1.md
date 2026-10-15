@@ -89,3 +89,50 @@ Completed Android LLVM C/C++ integration, dual-ABI packaging and native startup 
 
 - Device execution, SELinux, actual page-size behavior and startup visuals remain unverified under the user's no-debugging instruction.
 - APK: build/app/outputs/flutter-apk/app-debug.apk (189218686 bytes), SHA256 883c7ee2c18690535dce71fa8c80e67cdfcf5941bc4ce3373c8b57d8ae1f76c3.
+
+
+## Session 3: OHOS LLVM repairs, Android build and curriculum acceptance
+<!-- trellis-session: v=2 fp=3410fb8a48b11c50 -->
+
+**Date**: 2026-10-15
+**Task**: OHOS LLVM repairs, Android build and curriculum acceptance
+**Branch**: `main`
+
+### Summary
+
+Scoped qfli_c delivery with three Herdr Pi reviewers; source, host and build checks pass. OHOS actual app acceptance remains pending on physical phone unlock (10106102).
+
+### Main Changes
+
+- Repaired installed OHOS LLVM layout, NAPI and resource/process lifecycle; preserved user signing changes.
+- Built production and diagnostic OHOS HAPs and ARM64/x86_64 Android APK; no Android device actions.
+- Audited 100 C and 100 C++ pairs: zero placeholders; 400 current live rows match staging; regeneration unnecessary.
+- Reissued tasks to verified Herdr workspace w6:p4/w6:p5/w6:p7 only; root serialized conventional commits.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `797d9b7` | fix(ohos): integrate installed LLVM runtime and harden native bridge |
+| `49a7579` | test(ohos): audit all C and C++ curriculum examples in the app |
+| `cccc0b8` | test(content): verify 200 substantive C and C++ curriculum pairs |
+| `7f92787` | fix(build): restore platform adapters and exclude generated analysis inputs |
+| `1f5da12` | docs(ohos): record runtime contracts and platform acceptance evidence |
+| `ca88979` | docs(content): finalize curriculum review and pending device gates |
+
+### Testing
+
+- [OK] Full Flutter analysis: zero issues; 176/176 VM tests; seven actual native bridge/executor/NAPI host groups passed.
+- [OK] OHOS SDK syntax/cross-link and final HAP exact hashes passed; Android ABI, ELF, resource and signature checks passed.
+- [OK] Curriculum native: 200/200; negative probes: 10/10; focused content tests: 33; staged Edge filesystem/editor probe: 2/2.
+- [OK] Both Trellis context manifests validate without truncation warnings; documentation whitespace and JSON gates pass.
+
+### Status
+
+**In progress — OHOS phone execution and ordinary UI acceptance pending.**
+
+### Next Steps
+
+- User unlocks nova 14 Ultra and keeps the screen on; run installed OHOS audit and require 210/210 actual app cases.
+- Restore production HAP without deleting app data; verify ordinary Run/Stop and Tutorial/Examples UI. Keep tasks in progress until these gates pass.
+- Older production Web integration/compiler and unavailable Apple acceptance remain separately unfinished.
