@@ -119,17 +119,20 @@ int execute(qfli_compiler_session &session, std::vector<std::string> arguments,
           *invocation, llvm::ArrayRef(job_arguments).drop_front(), *engine)) return 1;
   invocation->getFrontendOpts().DisableFree = false;
   invocation->getCodeGenOpts().DisableFree = false;
+  // CompilerInstance retains the BackendConsumer/module when cooperative
+  // cancellation unwinds ExecuteAction. Its context must outlive that cleanup.
+  llvm::LLVMContext context;
   clang::CompilerInstance compiler(invocation);
   compiler.setVirtualFileSystem(vfs);
+  compiler.setVerboseOutputStream(diagnostics);
   compiler.createDiagnostics(&printer, false);
   compiler.createFileManager();
   compiler.createSourceManager();
   // LLD resets LLVM's global command-line options after every invocation.
   llvm::cl::ResetAllOptionOccurrences();
-  const char *backend_args[] = {"forge-clang", "-wasm-enable-eh",
+  const char *backend_args[] = {"forge-clang", "-wasm-enable-eh", "-wasm-enable-sjlj",
                                 "-wasm-use-legacy-eh=false"};
-  llvm::cl::ParseCommandLineOptions(3, backend_args, "", &diagnostics);
-  llvm::LLVMContext context;
+  llvm::cl::ParseCommandLineOptions(4, backend_args, "", &diagnostics);
   context.setYieldCallback(
       [](llvm::LLVMContext *, void *opaque) {
         check_cancel(*static_cast<qfli_compiler_session *>(opaque));
@@ -149,6 +152,7 @@ std::vector<std::string> base_arguments(const fs::path &sdk, bool cpp,
       "--sysroot=" + (sdk / "share/wasi-sysroot").string(),
       "-resource-dir", (sdk / "lib/clang/22").string(),
       "-fwasm-exceptions", "-fno-color-diagnostics",
+      "-D_WASI_EMULATED_PROCESS_CLOCKS",
   };
   // SDK 33's EH resources use a layout newer than vanilla LLVM 22's driver.
   if (cpp && !linking) {
@@ -240,7 +244,8 @@ int qfli_compiler_compile(qfli_compiler_session *session, const char *sdk_root,
     }
     auto args = base_arguments(sdk, uses_cpp, true);
     args.insert(args.end(), objects.begin(), objects.end());
-    args.insert(args.end(), {"-lunwind", "-lm", "-o", module.pending.string()});
+    args.insert(args.end(), {"-lunwind", "-lsetjmp", "-lwasi-emulated-process-clocks",
+                             "-lm", "-o", module.pending.string()});
     const int code = execute(*session, std::move(args), diagnostics, true);
     if (code) return code;
     check_cancel(*session);
