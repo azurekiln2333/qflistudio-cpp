@@ -1,5 +1,22 @@
 # Design: C/C++ substantive curriculum
 
+## Current delivery, 2026-10-16
+
+The application owns and bundles
+`tool/forge_content/staging/{forge_tutorials,forge_examples}.json`.
+`forgeProfile.contentRepositoryFactory` creates `ForgeContentRepository`, which
+loads these exact assets. Native platforms keep authored expected output; OHOS
+selects explicit WASI expected output for the errno and target-macro examples.
+The tutorial/example programs remain identical, including real C++ thread,
+exception and setjmp/longjmp lessons. No sibling asset or source write is needed.
+
+Generated rows are re-derived in an isolated directory and compared ignoring
+only generation timestamps. The WASI regression rejects missing or duplicate
+IDs and mismatched tutorial/example payloads, then compiles all 200 originals
+with threads enabled and records tool/asset/source/expected-output/stdin hashes.
+Native-host, WASI-host, signed-phone and ordinary product-UI evidence are separate
+gates. The original shared-core design below is retained as historical context.
+
 ## 1. Architecture and boundaries
 
 Mirror the core's proven Java/Python pipeline, but keep the authored source,

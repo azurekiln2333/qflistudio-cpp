@@ -2,6 +2,18 @@
 
 ## Goal
 
+2026-10-16 delivery update: this app now bundles its authored staging JSON and
+loads it through `ForgeContentRepository`; no sibling repository write or shared
+asset merge is required. All 200 paired sources remain substantive. Acceptance
+requires both native-host execution and the complete WASI compiler/interpreter
+matrix, with phone execution and ordinary Tutorial/Examples UI checked separately.
+The signed phone audit passed 212/212 unique cases including all 200 courses;
+the coordinator also accepted ordinary production Run/Stop, fresh Run,
+Tutorial/lesson and the 200-entry Examples/detail UI. The independent curriculum
+task is complete; the broader runtime task remains open.
+Historical shared-core requirements
+below describe the original delivery and are superseded for current integration.
+
 2026-10-15 re-audit: the user requested checking for remaining placeholders and
 replacing the C/C++ dataset only if any remained. The latest instruction forbids
 writes to sibling workspaces and authorizes conventional commits after checks.

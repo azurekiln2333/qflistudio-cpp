@@ -60,6 +60,12 @@ dart run tool/forge_content/generate_forge_content.dart   # stage rows locally
 dart run tool/verify_forge_content.dart                  # native run: all 200
 dart run tool/forge_content/negative_probe.dart          # failure/isolation gates
 flutter test test/forge_content_integration_test.dart     # repository + run integration
+
+python3 native/toolchain/tests/portable-curriculum-regression.py \
+  --compiler native/build/compiler-linux/qfli_compiler_probe \
+  --runtime native/build/ohos-wasi-thread-probe/runtime-probe-reviewed \
+  --sdk native/build/portable-deps/wasi-sdk-33.0-x86_64-linux \
+  --report native/build/portable-curriculum-20261016.json
 ```
 
 ---
@@ -113,7 +119,12 @@ Hard constraints:
 - **Runtime evidence**: the native curriculum check and the complete WASI
   compiler/interpreter matrix must both pass. Threads, exceptions and
   setjmp/longjmp lessons remain actual executable lessons. Host results do not
-  establish OHOS phone execution.
+  establish OHOS phone execution. The matrix requires exactly the 200 unique
+  C/C++ IDs and matching tutorial/example source and outputs before compiling;
+  a truncated dataset cannot pass as a smaller matrix. Record the actual compiler
+  and runtime binary SHA256, bundled JSON SHA256, and each program's source,
+  selected expected-output and stdin SHA256. Use a probe built from the current
+  runtime/core, including shared-memory-growth and detached-trap fixes.
 - **Foreign-row preservation**: a shared-core merge replaces only rows whose
   `language` is `c` or `cpp` — **strictly language-based, never by `type`** — so a
   foreign row that happens to carry `type: 'c'` is preserved untouched. Owned rows
@@ -136,6 +147,7 @@ Hard constraints:
 | C++ row not `type: 'cpp'` | Integration test fails (extension selection) |
 | Sample stdout != `expectedOutput` | Native checker reports `FAIL`, exit 1 |
 | Native compiler/WSL distro unavailable | Native checker reports `compiler_unavailable`, exit 2 (never a pass) |
+| WASI matrix is missing/duplicating a course or tutorial/example payloads differ | Fail preflight before compiling; never report a smaller matrix as complete |
 | A feature no available toolchain can compile | Record `standard_unavailable` with the feature named; never reinterpret as interpreter-only |
 | Foreign row carries `type: 'c'` but a non-C/C++ language | Treated as foreign; preserved untouched (ownership is `language`-based only) |
 | Merge would change `updatedAt` or any top-level metadata | Rejected by the pipeline test; metadata is preserved verbatim |
@@ -152,8 +164,8 @@ Hard constraints:
   curricula are distinct; the app loads 100 + 100 through the forge filter.
 - Base: samples compile and run; the app UI is exercised by the integration test;
   Apple/device execution is explicitly out of scope and stated as such.
-- Bad: claiming coverage from JSON shape alone, downgrading advanced C++ to the
-  in-app interpreter, or emitting a C++ sample as `type: 'c'`.
+- Bad: claiming coverage from JSON shape alone, replacing actual C++ compilation
+  with a C-only fallback, or emitting a C++ sample as `type: 'c'`.
 
 ---
 
@@ -175,6 +187,9 @@ Hard constraints:
 - `native/toolchain/tests/portable-curriculum-regression.py`: compile all 200
   staged samples using `qfli_compiler_probe --threads`, execute with the current
   threads-capable runtime probe, and compare status/stdout/stderr and input.
+  Its report must include 200 unique successful IDs, matching paired tutorials,
+  and binary/asset/payload digests. Preserve prior reports as historical evidence
+  when a runtime rebuild changes the binary; do not relabel older executions.
 - Generator run is idempotent and re-readable; `_check` rejects filler.
 
 ---

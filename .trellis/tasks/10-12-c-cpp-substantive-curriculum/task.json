@@ -3,7 +3,7 @@
   "name": "c-cpp-substantive-curriculum",
   "title": "C and C++ substantive tutorial curriculum",
   "description": "Replace placeholder content with 200 substantive tutorial/example pairs (100 C and 100 C++), implemented and verified by herdr pi.",
-  "status": "in_progress",
+  "status": "completed",
   "dev_type": null,
   "scope": null,
   "package": null,
@@ -11,7 +11,7 @@
   "creator": "lichengyu",
   "assignee": "lichengyu",
   "createdAt": "2026-10-12",
-  "completedAt": null,
+  "completedAt": "2026-10-16",
   "branch": "main",
   "base_branch": "main",
   "worktree_path": null,
@@ -21,6 +21,6 @@
   "children": [],
   "parent": null,
   "relatedFiles": [],
-  "notes": "User explicitly approved implementation of the final 200-pair plan on 2026-10-12: 确认实施. Preserve pre-existing changes; shared-core asset writes use the coordinator escalation gate after local verification.",
+  "notes": "User approved implementation on 2026-10-12: 确认实施. Delivery owns/bundles JSON through ForgeContentRepository; no sibling write. The 2026-10-16 review confirms 200 substantive pairs, generated/bundled equality, native 200/200 and final patched WASI host 200/200 with hashes. Signed OHOS audit passed 212/212 including all 200 courses. The coordinator accepted the verified production main.dart HAP with user data retained: ordinary C++ Run, Stop 130 and fresh Run, Tutorial/lesson content and 200-entry Examples/detail. This independent task is complete; do not close the cross-platform runtime task. See research/curriculum-portability-review-2026-10-16.md and the runtime task's research/ohos-production-ui-2026-10-16.json. Final staging/commit ownership remains with root.",
   "meta": {}
 }

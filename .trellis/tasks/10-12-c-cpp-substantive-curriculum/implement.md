@@ -1,28 +1,60 @@
 # Implementation plan: C/C++ substantive curriculum
 
 Implementation approved by the user on 2026-10-12: `确认实施`, following the
-final 200-pair planning summary. Shared-core writes still use the coordinator
-external-write gate after local preparation and verification.
+final 200-pair planning summary. Current delivery bundles app-owned content;
+no further shared-core write is part of this task.
 
 ## Decisions already resolved (no open technical question)
 
 - Count: **100 C + 100 C++ = 200 pairs**, preserving the core release validator
   minimum of 100 entries per type for both tutorials and examples
   (`content_validator.dart:22`).
-- Integration: **approach A** — authored topics, generator, and verifier live in
-  `qfli_c`; the generator emits C/C++ replacement rows and performs a
-  **coordinated/serialized, freshness-checked scoped merge** into the shared
-  core's two aggregate content JSONs. Rollback restores only the owned C/C++
-  rows. No new core repository hook and no navigation change.
-- Verification: **native compiler execution is the primary and only criterion**;
+- Integration: authored topics, generator, verifier and bundled JSON live in
+  `qfli_c`; `ForgeContentRepository` loads the app's assets. Historical scoped
+  shared-core merges remain documented but are unnecessary for current delivery.
+- Verification: **native compiler execution is a required content gate**;
   `compiler_unavailable` is a hard environment failure, never an interpreter
-  fallback. The in-app interpreter is a separate smoke check.
+  fallback. The full WASI host matrix, signed-phone audit and ordinary product UI
+  are separate required gates for the OHOS delivery.
 - Standards: chosen **per sample** to match the runner actually used. A modern
   toolchain is confirmed in the `qfli-java-build` WSL distro (modern
   `clang++`/`gcc`); the Windows TDM-GCC 4.9.2 (C11 / C++14) is a working
   fallback. Record the exact `-std` per example.
 
 ## Status
+
+2026-10-16 update (supersedes the historical status and shared-core merge steps
+below): the app bundles its own staging JSON through `ForgeContentRepository`.
+No sibling workspace is written. Re-derived generator output matches all 400
+bundled rows after ignoring timestamps, with 100 distinct explanations, summaries,
+programs, titles and first exercises in each language. The native report contains
+exactly 200 unique passing examples and no shape/source mismatches. The final
+WASI runtime's complete matrix passed 200/200 with binary/asset/payload hashes; see
+`research/curriculum-portability-review-2026-10-16.md` for the current result.
+
+The signed-phone audit passed 212/212 unique cases, including all 200 courses.
+Earlier failures in two cancellation
+audit snippets were fixture diagnostics (missing C17 feature-test declaration
+and a deprecated C++ volatile increment), not accepted runtime passes. Do not
+infer the full phone result from the host report. The coordinator also accepted
+the production `lib/main.dart` HAP after strict verification and `install -r`,
+preserving `sss`/`tt` data: ordinary C++ Run, Stop 130 and fresh Run passed;
+Tutorial/lesson and the 200-entry Examples/detail views displayed real content.
+See the runtime task's `research/ohos-production-ui-2026-10-16.json` and this
+task's final curriculum review. This independent curriculum task is complete;
+the cross-platform runtime task is not closed by this result.
+
+Current completion checklist:
+
+1. [x] Preserve all 100 C + 100 C++ substantive tutorial/example pairs.
+2. [x] Verify authored generator output equals bundled JSON; no filler or gaps.
+3. [x] Verify production repository loads the app-owned bundled assets.
+4. [x] Review canonical 200/200 native compile/run evidence and standards.
+5. [x] Finish the 200/200 matrix on the final portable runtime and retain digests.
+6. [x] Complete the coordinator's signed-phone compiler/runtime/curriculum audit.
+7. [x] Complete ordinary editor, Tutorial and Examples UI acceptance.
+
+### Historical status, 2026-10-15
 
 Re-audited on 2026-10-15 under the user's renewed request. Both authored and
 live app assets contain 100 substantive C and 100 substantive C++ pairs, with
