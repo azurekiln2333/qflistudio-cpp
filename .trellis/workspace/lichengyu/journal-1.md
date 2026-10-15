@@ -136,3 +136,52 @@ Scoped qfli_c delivery with three Herdr Pi reviewers; source, host and build che
 - User unlocks nova 14 Ultra and keeps the screen on; run installed OHOS audit and require 210/210 actual app cases.
 - Restore production HAP without deleting app data; verify ordinary Run/Stop and Tutorial/Examples UI. Keep tasks in progress until these gates pass.
 - Older production Web integration/compiler and unavailable Apple acceptance remain separately unfinished.
+
+
+## Session 4: OHOS C++ device acceptance and Android build completion
+<!-- trellis-session: v=2 fp=4e2d85b02e78baa5 -->
+
+**Date**: 2026-10-16
+**Task**: OHOS C++ device acceptance and Android build completion
+**Branch**: `main`
+
+### Summary
+
+Replaced the blocked OHOS process toolchain with signed in-process LLVM22/WASI33/WasmEdge interpretation. Real OHOS audit 212/212 and production C++ Run/Stop130/recovery pass. Completed the 200-pair curriculum task, verified Android build only, preserved existing data and workspace boundaries.
+
+### Main Changes
+
+- OHOS uses WASI ABI and an interpreter; native OHOS ABI/system-library linking is outside this execution route.
+- All work stays in qfli_c; preserve pre-existing signing configuration and LICENSE. Shared-core acceptance uses committed snapshot 7768b91a3ea3591fc9d0b333cb177d08025277e7.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `53ea4bd` | fix(ohos): resolve native libraries inside the bundle sandbox |
+| `06b0634` | fix(ohos): diagnose installed tool startup and verify process support |
+| `514d722` | fix(runtime): recover portable compilation and add the OHOS NAPI adapter |
+| `eebd56d` | fix(content): ship owned curriculum and correct WASI portability |
+| `fe9e326` | test(android): verify release assets and both packaged ABIs |
+| `245a99f` | feat(runtime): support WASI threads and synchronize shared memory growth |
+| `d493efe` | feat(ohos): bundle in-process LLVM and the WASI interpreter |
+| `731bb6e` | test(ohos): validate threaded cancellation without fixture warnings |
+| `d4d1683` | docs(ohos): describe the in-process LLVM and WASI route |
+| `9bd186c` | test(content): verify all curriculum examples with the final WASI runtime |
+| `eb9d98d` | docs(trellis): record complete OHOS device and production UI acceptance |
+
+### Testing
+
+- [OK] Final repository analysis: zero issues; full Flutter VM suite: 178/178.
+- [OK] Real phone: 212/212, including all 100 C and 100 C++ examples, exceptions, mixing, diagnostics, traps, thread cancellation and concurrent memory growth.
+- [OK] Production main.dart signed HAP restored with install-r; ordinary C++ Hello, stop130, successful rerun, Tutorial/lesson and 200-entry Examples/detail verified.
+- [OK] Final patched portable host curriculum 200/200; native curriculum 200/200; real NAPI host 31/31.
+- [OK] Android ARM64+x86_64 release APK build, resource/ELF/16 KiB alignment and v2 signature checks pass; no Android device actions.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- Keep the cross-platform runtime task in progress for independent iOS and Web gates. Five matching cpp remotes are authorized for normal main push; synchronization evidence is native/build/remote-sync-20261016.json.
