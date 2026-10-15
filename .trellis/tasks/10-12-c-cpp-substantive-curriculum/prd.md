@@ -2,6 +2,13 @@
 
 ## Goal
 
+2026-10-15 re-audit: the user requested checking for remaining placeholders and
+replacing the C/C++ dataset only if any remained. The latest instruction forbids
+writes to sibling workspaces and authorizes conventional commits after checks.
+All 400 live C/C++ tutorial/example rows match the authored staging data and
+contain no placeholder padding; the conditional replacement is unnecessary.
+The original replacement requirements and historical merge evidence follow.
+
 Replace the placeholder C/C++ learning content with **200 substantive,
 non-repeating paired tutorials/examples** (100 C + 100 C++, balanced C and C++,
 beginner through advanced engineering). Each pair must have a Chinese

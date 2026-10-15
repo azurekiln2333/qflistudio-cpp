@@ -24,6 +24,18 @@ external-write gate after local preparation and verification.
 
 ## Status
 
+Re-audited on 2026-10-15 under the user's renewed request. Both authored and
+live app assets contain 100 substantive C and 100 substantive C++ pairs, with
+zero duplicate explanations, summaries or first exercises and zero placeholder
+signatures. All 200 examples passed native compile/run again; all 10 negative
+probes and 33 focused integration/pipeline tests passed. No tutorial data
+replacement was needed. No sibling workspace was written. See
+`research/c-review-2026-10-15.md`, `research/cpp-live-review-2026-10-15.md`
+and the refreshed `research/cpp-content-verification.json` for per-item evidence.
+
+The current instruction authorizes standardized Git commits. Any manual
+device/UI check is reported separately from these data/native-run gates.
+
 Implementation is complete and validated by repository/live data and desktop
 runner automation:
 

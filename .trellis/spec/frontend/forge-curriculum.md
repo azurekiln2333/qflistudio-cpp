@@ -54,8 +54,8 @@ Commands (run from `qfli_c`):
 
 ```sh
 dart run tool/forge_content/generate_forge_content.dart   # stage rows locally
-dart run tool/forge_content/check_c_topics.dart           # native run: C track
-dart run tool/forge_content/check_c_topics.dart --cpp     # native run: C++ track
+dart run tool/verify_forge_content.dart                  # native run: all 200
+dart run tool/forge_content/negative_probe.dart          # failure/isolation gates
 flutter test test/forge_content_integration_test.dart     # repository + run integration
 ```
 
@@ -144,7 +144,7 @@ Hard constraints:
 
 ## 6. Tests Required
 
-- `dart run tool/forge_content/check_c_topics.dart` and `--cpp`: compile and run
+- `dart run tool/verify_forge_content.dart`: compile and run
   every sample, assert exact stdout and exit 0; assertion point = per-topic diff.
 - `flutter test test/forge_content_integration_test.dart`: assert
   (a) `ContentCatalog.fromJson` parses the staged files, (b) the `forge` filter
