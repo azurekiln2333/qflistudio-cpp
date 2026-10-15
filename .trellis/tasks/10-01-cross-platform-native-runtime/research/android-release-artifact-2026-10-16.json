@@ -1,0 +1,16 @@
+{
+  "path": "native\\build\\android-release-20261016.apk",
+  "bytes": 134332505,
+  "sha256": "ec79aa536f49494acea16723ac20e5f52377415bce626352d276f3ca09301715",
+  "abis": [
+    "arm64-v8a",
+    "x86_64"
+  ],
+  "ownedCurriculumExact": true,
+  "deviceOperations": false,
+  "sharedCoreRevision": "7768b91a3ea3591fc9d0b333cb177d08025277e7",
+  "signatureSchemeV2": true,
+  "signerCertificateSha256": "3cf19ed8102760001b3d92f3e4f42a6e322a89ba987d93247b5f9d6afebc0b51",
+  "signatureConfig": "existing-android-debug",
+  "elfResourceAlignmentChecks": true
+}
