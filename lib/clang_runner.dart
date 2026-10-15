@@ -124,7 +124,7 @@ class ClangProgramRunner implements ProgramRunner {
     }
     //
     // OHOS 用与 Android/iOS 相同的通道协议，但走自己那套桥：
-    // ohos/entry 的 QfliCNative.ets 会 fork/exec HAP 内打包的完整 LLVM。
+    // QfliCNative.ets 调用签名包内的 LLVM 22，将源码编译为 WASI 后解释执行。
     // 因为确实支持 C++20 / 标准库 / 异常，所以不留 C 回退（allowCFallback 保持 false）。
     //
     if (Platform.operatingSystem == 'ohos' ||

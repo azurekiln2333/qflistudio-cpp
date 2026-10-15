@@ -13,7 +13,7 @@ import { window, router } from '@kit.ArkUI';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { GeneratedPluginRegistrant } from '../plugins/GeneratedPluginRegistrant';
 import { handlePickerCall, isPickerMethod } from './PickerBridge';
-// 原生 C/C++ 编译运行后端（完整 LLVM，非 picoc）。
+// 应用内 LLVM/WASI C/C++ 编译运行后端。
 import { registerQfliNativeChannel } from '../plugins/QfliCNative';
 
 const CHANNEL_PLATFORM = 'qflistudio/platform';
@@ -43,8 +43,8 @@ export default class EntryAbility extends FlutterAbility {
 
     // 原生编译运行后端：注册 qfli_forge/native 与 qfli_forge/native/events。
     //
-    // 这是 C/C++ 教学页面的执行路径。它链接的是 HAP 内打包的完整 LLVM 15.0.7
-    // 编译器；C++20、标准库、异常和混编的可用性以 App 实际验证为准。
+    // 教学页面通过包内 LLVM 22 编译，再用 WasmEdge 解释执行 WASI 字节码。
+    // C++20、标准库、异常和混编的可用性以 App 实际验证为准。
     //
     // 这里刻意用 try/catch 包住：如果工具链资源缺失或解压失败，
     // Dart 侧会收到 available:false 并报告不可用，而不是整个 App 起不来。
