@@ -71,6 +71,22 @@ function exists(path: string): boolean {
   }
 }
 
+/** Bundle metadata may return libs/arm64 rather than an absolute sandbox path. */
+function nativeLibraryDirectory(context: common.Context): string {
+  const libraryPath = context.applicationInfo.nativeLibraryPath;
+  if (typeof libraryPath !== 'string' || libraryPath.length === 0 || libraryPath.indexOf('\0') >= 0) {
+    throw new Error('应用原生库目录无效。');
+  }
+  if (libraryPath.startsWith('/')) {
+    return libraryPath.replace(/\/+$/, '');
+  }
+  const bundleDirectory = context.bundleCodeDir;
+  if (typeof bundleDirectory !== 'string' || !bundleDirectory.startsWith('/')) {
+    throw new Error('应用安装目录无效，无法定位原生编译器。');
+  }
+  return `${bundleDirectory.replace(/\/+$/, '')}/${libraryPath.replace(/^(\.\/)+/, '').replace(/\/+$/, '')}`;
+}
+
 /**
  * 把压缩包里的工具链解到 App 私有目录，返回根目录。
  *
@@ -358,6 +374,8 @@ async function startAfterPrepare(
       finishRun(run, 130);
       return;
     }
+    const failure = error as Error;
+    console.error(`QFLI_OHOS_TOOLCHAIN_PREPARE_FAILED ${failure.message}`);
     activeRun = null;
     result.success({ 'available': false });
     return;
@@ -370,7 +388,16 @@ async function startAfterPrepare(
     return;
   }
 
-  const nativeDirectory = context.applicationInfo.nativeLibraryPath;
+  let nativeDirectory: string;
+  try {
+    nativeDirectory = nativeLibraryDirectory(context);
+  } catch (error) {
+    const failure = error as Error;
+    console.error(`QFLI_OHOS_NATIVE_DIRECTORY_FAILED ${failure.message}`);
+    activeRun = null;
+    result.success({ 'available': false });
+    return;
+  }
   executorPath = `${nativeDirectory}/libqfli_executor.so`;
   const compilerPath = `${nativeDirectory}/libqfli_clang.so`;
   const linkerPath = `${nativeDirectory}/libqfli-ld.lld-.so`;
@@ -378,11 +405,14 @@ async function startAfterPrepare(
   // executor 必须与本设备的 ABI 匹配。如果 HAP 里没有当前 ABI 的副本
   // （例如只打了 arm64 却在 x86_64 模拟器上跑），就在这里报不可用，
   // 而不是等到 exec 失败才露出难懂的错。
-  if (!exists(executorPath) || !exists(compilerPath) || !exists(linkerPath) ||
-    !exists(`${nativeDirectory}/libc++_shared.so`)) {
-    activeRun = null;
-    result.success({ 'available': false });
-    return;
+  const installedFiles = [executorPath, compilerPath, linkerPath, `${nativeDirectory}/libc++_shared.so`];
+  for (const path of installedFiles) {
+    if (!exists(path)) {
+      console.error(`QFLI_OHOS_NATIVE_FILE_MISSING ${path}`);
+      activeRun = null;
+      result.success({ 'available': false });
+      return;
+    }
   }
 
   try {
