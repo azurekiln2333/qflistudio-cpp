@@ -68,6 +68,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const native = require(process.argv[2]);
 const base = process.argv[3], sdk = process.argv[4];
+const fixtures = process.argv[5];
 const project = path.join(base, 'project with spaces'), cache = path.join(base, 'cache');
 fs.mkdirSync(project); fs.mkdirSync(cache);
 const originalCwd = process.cwd();
@@ -166,6 +167,32 @@ return n==1&&destroyed==1?0:4;}`,{extension:'cpp'});
   assert.deepEqual(result,{code:0,out:'jump=1 exception destroyed=1\n',err:''});
   console.log('PASS: SDK process-clock emulation, C setjmp/longjmp and C++ standard EH coexistence');
 
+  result = await run(`#include <atomic>
+#include <condition_variable>
+#include <iostream>
+#include <mutex>
+#include <setjmp.h>
+#include <stdexcept>
+#include <thread>
+static int jump(){jmp_buf env;int n=setjmp(env);if(!n)longjmp(env,7);return n;}
+int main(){std::mutex m;std::condition_variable cv;bool go=false;std::atomic<int> sum{0};
+std::thread a([&]{std::unique_lock<std::mutex> lock(m);cv.wait(lock,[&]{return go;});lock.unlock();
+try{throw std::runtime_error("thread exception");}catch(...){sum.fetch_add(jump());}});
+std::thread b([&]{for(int i=0;i<1000;++i)sum.fetch_add(1);});
+{std::lock_guard<std::mutex> lock(m);go=true;}cv.notify_one();a.join();b.join();
+std::cout<<"threads="<<sum.load()<<"\\n";return sum.load()==1007?0:5;}`,{extension:'cpp'});
+  assert.deepEqual(result,{code:0,out:'threads=1007\n',err:''});
+  result = await run(fs.readFileSync(path.join(fixtures,'thread_memory_grow/main.cpp'),'utf8'),{extension:'cpp'});
+  assert.deepEqual(result,{code:0,out:'memory.grow pages=256 unique=256\n',err:''});
+  for (const body of ['for(;;){volatile int x=0;++x;}',
+                      'std::this_thread::sleep_for(std::chrono::seconds(30));']) {
+    result = await run(`#include <chrono>\n#include <cstdio>\n#include <thread>\nint main(){std::thread t([]{${body}});puts("started");fflush(stdout);t.join();}`,
+                       {extension:'cpp',mode:'output-cancel'});
+    assert.equal(result.code,130);assert.match(result.out,/started/);
+    assert.deepEqual(await run('int main(void){return 0;}'),{code:0,out:'',err:''});
+  }
+  console.log('PASS: real shared-memory threads, condition variables, atomics, standard EH/SjLj and all-thread CPU/sleep cancellation');
+
   for (const source of ['int main(void){this is invalid C;}','int missing(void);int main(void){return missing();}']) {
     result = await run(source); assert.notEqual(result.code,0); assert.equal(result.out,''); assert.match(result.err,/error:|undefined/);
     assert.deepEqual(await run('int main(void){return 0;}'),{code:0,out:'',err:''});
@@ -175,6 +202,15 @@ return n==1&&destroyed==1?0:4;}`,{extension:'cpp'});
   result = await run('#include <stdio.h>\nint main(void){puts("selected");}',{files:{'other.c':'int main(void){return 99;}'},selected:['main.c']});
   assert.deepEqual(result,{code:0,out:'selected\n',err:''});
   console.log('PASS: compiler/linker/trap diagnostics and same-process recovery, selected entry and no stale output');
+
+  result = await run(`#include <atomic>
+#include <chrono>
+#include <thread>
+int main(){std::atomic<bool> ready{false};
+std::thread([&]{ready.store(true,std::memory_order_release);__builtin_trap();}).detach();
+while(!ready.load(std::memory_order_acquire)){}
+std::this_thread::sleep_for(std::chrono::milliseconds(1));return 0;}`,{extension:'cpp'});
+  assert.equal(result.code,125);assert.ok(result.err);
 
   result = await run('#define _POSIX_C_SOURCE 200809L\n#include <stdio.h>\n#include <unistd.h>\n#include <time.h>\nint main(void){const char *s="鸿蒙😀";struct timespec delay={0,1000000};for(int i=0;i<10;i++){for(int j=0;j<10;j++){write(1,s+j,1);nanosleep(&delay,0);}}puts("");}');
   assert.deepEqual(result,{code:0,out:'鸿蒙😀'.repeat(10)+'\n',err:''});
@@ -200,7 +236,8 @@ return n==1&&destroyed==1?0:4;}`,{extension:'cpp'});
   verifyCleanup(); console.log(`PASS: ${serial} actual in-process compiler/interpreter runs; exit follows cleanup`);
 })().catch(error => { console.error(error); process.exit(1); });
 ''')
-    completed = subprocess.run([node, '--expose-gc', str(script), str(addon), str(work), str(resources)],
+    completed = subprocess.run([node, '--expose-gc', str(script), str(addon), str(work), str(resources),
+                                str(root / 'test/fixtures/portable_wasm')],
                                capture_output=True, text=True, timeout=180)
     print(completed.stdout, end='', flush=True)
     assert completed.returncode == 0, completed.stderr

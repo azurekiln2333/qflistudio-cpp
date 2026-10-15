@@ -1,0 +1,210 @@
+diff --git a/include/runtime/instance/memory.h b/include/runtime/instance/memory.h
+--- a/include/runtime/instance/memory.h
++++ b/include/runtime/instance/memory.h
+@@ -22,6 +22,7 @@
+ #include "system/allocator.h"
+ 
+ #include <algorithm>
++#include <atomic>
+ #include <condition_variable>
+ #include <cstdint>
+ #include <cstring>
+@@ -47,13 +48,14 @@
+   MemoryInstance() = delete;
+   MemoryInstance(MemoryInstance &&Inst) noexcept
+       : MemType(Inst.MemType), DataPtr(Inst.DataPtr), PageLimit(Inst.PageLimit),
+-        LivePageCount(Inst.LivePageCount) {
++        LivePageCount(Inst.LivePageCount), PageCount(Inst.getPageSize()) {
+     Inst.DataPtr = nullptr;
+   }
+   MemoryInstance(const AST::MemoryType &MType,
+                  uint64_t PageLim = kPageLimit64) noexcept
+       : MemType(MType), PageLimit(PageLim),
+-        LivePageCount(MType.getLimit().getMin()) {
++        LivePageCount(MType.getLimit().getMin()),
++        PageCount(MType.getLimit().getMin()) {
+     using namespace std::literals;
+     if (MemType.getLimit().is32() && PageLimit > kPageLimit32) {
+       if (PageLimit != kPageLimit64) {
+@@ -78,15 +80,15 @@
+     }
+   }
+   ~MemoryInstance() noexcept {
+-    Allocator::release(DataPtr, MemType.getLimit().getMin());
++    Allocator::release(DataPtr, getPageSize());
+   }
+ 
+   bool isShared() const noexcept { return MemType.getLimit().isShared(); }
+ 
+   /// Get page size of memory.data
+   uint64_t getPageSize() const noexcept {
+-    // The memory page size is bound to the limit in the memory type.
+-    return MemType.getLimit().getMin();
++    // Publish new pages only after the allocator has made them accessible.
++    return PageCount.load(std::memory_order_acquire);
+   }
+ 
+   /// Get a stable pointer to the live page-count field for compiled code.
+@@ -98,12 +100,17 @@
+ 
+   /// Get memory size of memory.data
+   uint64_t getSize() const noexcept {
+-    // The memory page size is bound to the limit in the memory type.
+-    return MemType.getLimit().getMin() * kPageSize;
++    return getPageSize() * kPageSize;
+   }
+ 
+   /// Getter for memory type.
+   const AST::MemoryType &getMemoryType() const noexcept { return MemType; }
++
++  /// Snapshot the live limit when a new guest VM imports shared memory.
++  AST::MemoryType getMemoryTypeSnapshot() const noexcept {
++    std::lock_guard<std::mutex> Lock(GrowthMutex);
++    return MemType;
++  }
+ 
+   /// Check access size is valid.
+   bool checkAccessBound(const uint64_t Offset,
+@@ -111,20 +118,31 @@
+     // Due to applying the Memory64 proposal, we should avoid the overflow issue
+     // of the following code:
+     //   return Offset + Length <= Limit;
+-    const uint64_t Limit = MemType.getLimit().getMin() * kPageSize;
++    const uint64_t Limit = getSize();
+     return std::numeric_limits<uint64_t>::max() - Offset >= Length &&
+            Offset + Length <= Limit;
+   }
+ 
+   /// Grow page
+-  bool growPage(const uint64_t Count) noexcept {
++  bool growPage(const uint64_t Count,
++                uint64_t *OldPageCount = nullptr) noexcept {
+     using namespace std::literals;
++    // memory.grow returns the previous page count. Reading it and committing
++    // the growth must be one operation across all guest VMs sharing memory.
++    std::lock_guard<std::mutex> Lock(GrowthMutex);
++    const uint64_t Min = getPageSize();
++    if (OldPageCount) {
++      *OldPageCount = Min;
++    }
+     if (Count == 0) {
+       return true;
+     }
++    // A moving allocation cannot back concurrent shared-memory access.
++    if (isShared() && !WASMEDGE_ALLOCATOR_IS_STABLE) {
++      return false;
++    }
+     uint64_t MaxPageCaped =
+         MemType.getLimit().is32() ? kPageLimit32 : kPageLimit64;
+-    const uint64_t Min = MemType.getLimit().getMin();
+     assuming(MaxPageCaped >= Min);
+     if (MemType.getLimit().hasMax()) {
+       const uint64_t Max = MemType.getLimit().getMax();
+@@ -143,7 +161,9 @@
+     if (auto NewPtr = Allocator::resize(DataPtr, Min, Min + Count);
+         NewPtr == nullptr) {
+       return false;
+-    } else {
++    } else if (NewPtr != DataPtr) {
++      // Stable allocators retain the pointer. Do not race readers by writing
++      // the same pointer while another VM accesses existing shared pages.
+       DataPtr = NewPtr;
+     }
+     setLivePageCount(Min + Count);
+@@ -415,6 +435,7 @@
+   void setLivePageCount(const uint64_t Count) noexcept {
+     MemType.getLimit().setMin(Count);
+     LivePageCount = Count;
++    PageCount.store(Count, std::memory_order_release);
+   }
+ 
+   /// \name Data of memory instance.
+@@ -422,7 +443,11 @@
+   AST::MemoryType MemType;
+   uint8_t *DataPtr = nullptr;
+   uint64_t PageLimit;
++  // The ordinary mirror remains the compiled-code ABI. Production shared
++  // memory uses the interpreter and reads the atomic count instead.
+   uint64_t LivePageCount;
++  std::atomic<uint64_t> PageCount;
++  mutable std::mutex GrowthMutex;
+   std::mutex WaiterMapMutex;
+   std::unordered_multimap<uint64_t, Waiter> WaiterMap;
+   /// @}
+diff --git a/lib/executor/engine/memoryInstr.cpp b/lib/executor/engine/memoryInstr.cpp
+--- a/lib/executor/engine/memoryInstr.cpp
++++ b/lib/executor/engine/memoryInstr.cpp
+@@ -23,8 +23,8 @@
+   uint64_t N = extractAddr(StackMgr.pop(), AddrType);
+ 
+   // Grow the page and push the result.
+-  const uint64_t CurrPageSize = MemInst.getPageSize();
+-  if (MemInst.growPage(N)) {
++  uint64_t CurrPageSize = 0;
++  if (MemInst.growPage(N, &CurrPageSize)) {
+     StackMgr.push(emplaceAddr(CurrPageSize, AddrType));
+   } else {
+     StackMgr.push(emplaceAddr(static_cast<uint64_t>(-1), AddrType));
+diff --git a/lib/executor/engine/proxy.cpp b/lib/executor/engine/proxy.cpp
+--- a/lib/executor/engine/proxy.cpp
++++ b/lib/executor/engine/proxy.cpp
+@@ -511,8 +511,8 @@
+   auto *MemInst = getMemInstByIdx(StackMgr, MemIdx);
+   assuming(MemInst);
+   const auto AddrType = MemInst->getMemoryType().getLimit().getAddrType();
+-  const uint64_t CurrPageSize = MemInst->getPageSize();
+-  if (MemInst->growPage(NewSize)) {
++  uint64_t CurrPageSize = 0;
++  if (MemInst->growPage(NewSize, &CurrPageSize)) {
+     return CurrPageSize;
+   } else {
+     switch (AddrType) {
+diff --git a/lib/executor/instantiate/import.cpp b/lib/executor/instantiate/import.cpp
+--- a/lib/executor/instantiate/import.cpp
++++ b/lib/executor/instantiate/import.cpp
+@@ -254,7 +254,8 @@
+       // Import matching. External memory type should match the one in import
+       // description.
+       auto *ImpInst = ImpModInst->findMemoryExports(ExtName);
+-      const auto &ImpLim = ImpInst->getMemoryType().getLimit();
++      const auto ImpMemType = ImpInst->getMemoryTypeSnapshot();
++      const auto &ImpLim = ImpMemType.getLimit();
+       if (!matchLimit(MemLim, ImpLim)) {
+         return logMatchError(ModName, ExtName, ExtType, MemLim.hasMax(),
+                              MemLim.getMin(), MemLim.getMax(), ImpLim.hasMax(),
+diff --git a/lib/executor/coredump.cpp b/lib/executor/coredump.cpp
+--- a/lib/executor/coredump.cpp
++++ b/lib/executor/coredump.cpp
+@@ -180,7 +180,7 @@
+   if (MemoryInstances.size() == 0) {
+     return Memory;
+   }
+-  Content.push_back(MemoryInstances[0]->getMemoryType());
++  Content.push_back(MemoryInstances[0]->getMemoryTypeSnapshot());
+   return Memory;
+ }
+ 
+diff --git a/include/system/allocator.h b/include/system/allocator.h
+--- a/include/system/allocator.h
++++ b/include/system/allocator.h
+@@ -13,6 +13,7 @@
+ //===----------------------------------------------------------------------===//
+ #pragma once
+ 
++#include "common/config.h"
+ #include "common/defines.h"
+ #include <cstdint>
+ 
+@@ -20,8 +21,10 @@
+ 
+ class Allocator {
+ public:
+-#if WASMEDGE_OS_WINDOWS || defined(HAVE_MMAP) && defined(__x86_64__) ||        \
+-    defined(__aarch64__) || (defined(__riscv) && __riscv_xlen == 64)
++#if WASMEDGE_OS_WINDOWS || \
++    defined(HAVE_MMAP) && (defined(__x86_64__) || defined(__aarch64__) || \
++                             (defined(__riscv) && __riscv_xlen == 64)) || \
++    defined(__s390x__)
+ #define WASMEDGE_ALLOCATOR_IS_STABLE 1
+ #else
+ #define WASMEDGE_ALLOCATOR_IS_STABLE 0

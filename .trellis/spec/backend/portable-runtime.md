@@ -15,6 +15,8 @@ load generated native machine code or enable JIT on ordinary iOS.
   error_fd, cost_limit): borrowed independent descriptors, project preopen.
 - Both opaque sessions expose create/cancel/destroy. Each session is used once;
   destroy only after run/compile and concurrent cancellation have returned.
+- qfli_compiler_set_threads(session, enabled) selects the standard WASI threads
+  target before compilation. It defaults to false; the OHOS backend enables it.
 - iOS uses Android's qfli_forge/native start/cancel and native/events protocol;
   start returns available, events include runId, kind and text/exitCode.
 
@@ -29,8 +31,8 @@ bash native/toolchain/build-ios-portable.sh --jobs 2
 - Dependencies are pinned in native/toolchain/portable-dependencies.json:
   LLVM 22.1.0, WASI SDK 33 and WasmEdge 845df599. Older WasmEdge 0.16/0.17.1
   failed the real standard-exception destructor fixture.
-- Runtime source includes the SHA-checked interruptible-poll and static-archive
-  patches under native/portable/patches/. Apply before CMake configuration and
+- Runtime source includes the SHA-checked interruptible-poll, static-archive and
+  shared-memory-growth patches under native/portable/patches/. Apply before CMake configuration and
   recording source digests, including explicit FetchContent source overrides.
   Reapplication is idempotent; mismatched source or patch bytes fail. Patchfiles
   require LF checkout bytes. Incremental archive merging first removes its output.
@@ -39,7 +41,8 @@ bash native/toolchain/build-ios-portable.sh --jobs 2
   -nostdinc++/-isystem. Link from lib/wasm32-wasip1/eh with -lunwind and -lm.
   Vanilla LLVM 22's driver does not discover this newer SDK layout itself.
 - Restore LLVM backend options before EVERY frontend execution:
-  ResetAllOptionOccurrences, then wasm-enable-eh and wasm-use-legacy-eh=false.
+  ResetAllOptionOccurrences, then wasm-enable-eh, wasm-enable-sjlj and
+  wasm-use-legacy-eh=false. Link SDK setjmp support and emulated process clocks.
   LLD resets these globals after linking. Initializing them once breaks the
   second C++ compile in an application process. Serialize compiler/LLD state.
 - Link to program.pending.wasm and publish program.wasm only after success
@@ -48,6 +51,20 @@ bash native/toolchain/build-ios-portable.sh --jobs 2
 - Native linear-memory pages and compiler module maximum share
   native/include/qfli_wasm_limits.h (256 MB). WasmEdge forces interpreter mode;
   optional cost_limit bounds bytecode instruction cost.
+- The opt-in wasm32-unknown-wasip1-threads target uses -pthread, the matching
+  threads EH headers/libraries, imported shared env.memory and exported
+  wasi_thread_start. The host implements wasi.thread-spawn with one VM per
+  worker and shared memory/WASI descriptors. At most 32 workers run concurrently;
+  completed slots are reusable. Child traps fail the group, process exit and
+  cancellation stop all workers, and teardown joins them before releasing imports.
+  Collect completed workers once more when the main VM exits so a detached
+  child trap cannot disappear between the last timed poll and cleanup.
+- Shared memory.grow serializes its old-page result, allocation and size update.
+  Interpreter size/bounds reads use an atomic page count. Newly imported guest
+  VMs take a locked snapshot of the live memory type; stable allocations do not
+  rewrite the unchanged data pointer. The borrowed upstream C API memory-type
+  reference still requires caller synchronization with concurrent growth; it
+  is not exposed through the application bridge. JIT/AOT are not product paths.
 - Preserve borrowed stdio and app cwd. Suppress engine process-global logging;
   return engine diagnostics through the session error API.
 - WASI poll/sleep checks the invoking executor stop token every 10 ms on
@@ -90,6 +107,12 @@ bash native/toolchain/build-ios-portable.sh --jobs 2
 - Compiler lifecycle gates: repeat, link/syntax error recovery, pre-start and
   active cancellation cleanup/recovery in ONE process, no pending/stale module.
 - A resources-only SDK without bin must compile mixed and exception fixtures.
+- OHOS threads: unchanged C++ thread/mutex/atomic/condition-variable lessons,
+  thread EH plus setjmp, 32 concurrent/100 sequential threads, detached cleanup,
+  child exit/traps including traps immediately before main exit, and cancellation
+  of worker CPU loops, sleep and atomic waits followed by a successful fresh run.
+- Concurrent memory growth must increase by exactly the successful requested
+  pages and return each previous page count once; compare a serialized control.
 - Channel tests preserve early events, blank lines, run filtering, failures,
   cancellation, and iOS cleanup waits longer than the Android timeout.
 - Bash/PowerShell syntax, patch clean/repeated application and drift rejection.

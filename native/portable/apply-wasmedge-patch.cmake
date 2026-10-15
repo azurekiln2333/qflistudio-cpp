@@ -43,3 +43,5 @@ qfli_apply_wasmedge_patch(wasmedge-interruptible-poll.patch
   751c8581be13c260c83b6a7bc212352ba953b480a2ab18659d302aea93e01c4e)
 qfli_apply_wasmedge_patch(wasmedge-static-archive.patch
   2df4a65505f1b1b58a66a3b361bedbeb375434045b59edadfdfa5a9f42a8c294)
+qfli_apply_wasmedge_patch(wasmedge-shared-memory-growth.patch
+  e593f66d367fd9efd54bb27446f81f0a70d1093df8bf899e3f2c5910b988c9b9)

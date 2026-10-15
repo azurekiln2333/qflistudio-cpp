@@ -10,6 +10,10 @@ extern "C" {
 typedef struct qfli_compiler_session qfli_compiler_session;
 qfli_compiler_session *qfli_compiler_create(void);
 
+// Optional WASI shared-memory threads; disabled by default. Configure only before
+// compile and never concurrently with it. Returns 1 when accepted, 0 otherwise.
+int qfli_compiler_set_threads(qfli_compiler_session *session, int enabled);
+
 // SDK resources are WASI SDK 33's share/wasi-sysroot and lib/clang/22.
 // All paths must be absolute. The diagnostic FD is borrowed.
 // Each session compiles one project; compilation is serialized within the app.

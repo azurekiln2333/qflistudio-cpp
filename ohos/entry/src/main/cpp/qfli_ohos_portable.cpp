@@ -259,6 +259,7 @@ int Execute(RunState *state, const std::string &directory) {
         {
             std::lock_guard<std::mutex> lock(state->sessionMutex);
             state->compiler = qfli_compiler_create();
+            qfli_compiler_set_threads(state->compiler, 1);
             if (state->cancelled.load()) qfli_compiler_cancel(state->compiler);
         }
         if (state->compiler != nullptr) {
@@ -414,8 +415,17 @@ napi_value Create(napi_env env, napi_callback_info info) {
         "share/wasi-sysroot/lib/wasm32-wasip1/eh/libc++.a",
         "share/wasi-sysroot/lib/wasm32-wasip1/eh/libc++abi.a",
         "share/wasi-sysroot/lib/wasm32-wasip1/eh/libunwind.a",
+        "share/wasi-sysroot/include/wasm32-wasip1-threads/pthread.h",
+        "share/wasi-sysroot/include/wasm32-wasip1-threads/eh/c++/v1/vector",
+        "share/wasi-sysroot/lib/wasm32-wasip1-threads/libc.a",
+        "share/wasi-sysroot/lib/wasm32-wasip1-threads/libsetjmp.a",
+        "share/wasi-sysroot/lib/wasm32-wasip1-threads/libwasi-emulated-process-clocks.a",
+        "share/wasi-sysroot/lib/wasm32-wasip1-threads/eh/libc++.a",
+        "share/wasi-sysroot/lib/wasm32-wasip1-threads/eh/libc++abi.a",
+        "share/wasi-sysroot/lib/wasm32-wasip1-threads/eh/libunwind.a",
         "lib/clang/22/include/stddef.h",
         "lib/clang/22/lib/wasm32-unknown-wasip1/libclang_rt.builtins.a",
+        "lib/clang/22/lib/wasm32-unknown-wasip1-threads/libclang_rt.builtins.a",
     }) {
         if (!IsRegular(Join(state->sdkRoot, relative))) {
             InitFailure(env, "Forge: missing readable WASI SDK resource '" + Join(state->sdkRoot, relative) + "'");

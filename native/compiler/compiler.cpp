@@ -34,6 +34,7 @@ LLD_HAS_DRIVER(wasm)
 struct qfli_compiler_session {
   std::atomic<bool> cancelled{false};
   std::atomic<bool> used{false};
+  bool threads = false;
 };
 
 namespace {
@@ -144,28 +145,34 @@ int execute(qfli_compiler_session &session, std::vector<std::string> arguments,
 }
 
 std::vector<std::string> base_arguments(const fs::path &sdk, bool cpp,
-                                      bool linking = false) {
+                                      bool threads, bool linking = false) {
+  const std::string target = threads ? "wasm32-wasip1-threads" : "wasm32-wasip1";
   auto arguments = std::vector<std::string>{
       (sdk / "bin" / (cpp ? "clang++" : "clang")).string(),
       cpp ? "--driver-mode=g++" : "--driver-mode=gcc",
-      "--no-default-config", "--target=wasm32-unknown-wasip1",
+      "--no-default-config", threads ? "--target=wasm32-unknown-wasip1-threads" :
+                                       "--target=wasm32-unknown-wasip1",
       "--sysroot=" + (sdk / "share/wasi-sysroot").string(),
       "-resource-dir", (sdk / "lib/clang/22").string(),
       "-fwasm-exceptions", "-fno-color-diagnostics",
       "-D_WASI_EMULATED_PROCESS_CLOCKS",
   };
+  if (threads) arguments.push_back("-pthread");
   // SDK 33's EH resources use a layout newer than vanilla LLVM 22's driver.
   if (cpp && !linking) {
     arguments.insert(arguments.end(), {
         "-nostdinc++", "-isystem",
-        (sdk / "share/wasi-sysroot/include/wasm32-wasip1/eh/c++/v1").string(),
+        (sdk / "share/wasi-sysroot/include" / target / "eh/c++/v1").string(),
     });
   }
   if (linking) {
     arguments.insert(arguments.end(), {
-        "-L", (sdk / "share/wasi-sysroot/lib/wasm32-wasip1/eh").string(),
+        "-L", (sdk / "share/wasi-sysroot/lib" / target / "eh").string(),
         "-Wl,--max-memory=" + std::to_string(QFLI_WASM_MAX_MEMORY_BYTES),
     });
+    if (threads) {
+      arguments.insert(arguments.end(), {"-Wl,--import-memory", "-Wl,--export=wasi_thread_start"});
+    }
   }
   return arguments;
 }
@@ -173,6 +180,12 @@ std::vector<std::string> base_arguments(const fs::path &sdk, bool cpp,
 
 qfli_compiler_session *qfli_compiler_create(void) {
   return new (std::nothrow) qfli_compiler_session;
+}
+
+int qfli_compiler_set_threads(qfli_compiler_session *session, int enabled) {
+  if (!session || session->used.load()) return 0;
+  session->threads = enabled != 0;
+  return 1;
 }
 
 int qfli_compiler_compile(qfli_compiler_session *session, const char *sdk_root,
@@ -207,7 +220,8 @@ int qfli_compiler_compile(qfli_compiler_session *session, const char *sdk_root,
     check_cancel(*session);
     if (!sdk.is_absolute() || !project.is_absolute() || !output.is_absolute() ||
         !fs::is_directory(project) ||
-        !fs::is_regular_file(sdk / "share/wasi-sysroot/lib/wasm32-wasip1/eh/libunwind.a") ||
+        !fs::is_regular_file(sdk / "share/wasi-sysroot/lib" /
+            (session->threads ? "wasm32-wasip1-threads" : "wasm32-wasip1") / "eh/libunwind.a") ||
         !fs::is_directory(sdk / "lib/clang/22/include")) {
       diagnostics << "Missing absolute project paths or WASI SDK 33 resources.\n";
       return 127;
@@ -234,7 +248,7 @@ int qfli_compiler_compile(qfli_compiler_session *session, const char *sdk_root,
       const bool cpp = extension != ".c";
       uses_cpp = uses_cpp || cpp;
       const auto object = (output / ("unit_" + std::to_string(index) + ".o")).string();
-      auto args = base_arguments(sdk, cpp);
+      auto args = base_arguments(sdk, cpp, session->threads);
       args.insert(args.end(), {"-x", cpp ? "c++" : "c", cpp ? "-std=c++20" : "-std=c17",
                                 "-I", project.string(), "-I", (project / "include").string(),
                                 "-c", source.string(), "-o", object});
@@ -242,7 +256,7 @@ int qfli_compiler_compile(qfli_compiler_session *session, const char *sdk_root,
       if (code) return code;
       objects.push_back(object);
     }
-    auto args = base_arguments(sdk, uses_cpp, true);
+    auto args = base_arguments(sdk, uses_cpp, session->threads, true);
     args.insert(args.end(), objects.begin(), objects.end());
     args.insert(args.end(), {"-lunwind", "-lsetjmp", "-lwasi-emulated-process-clocks",
                              "-lm", "-o", module.pending.string()});
