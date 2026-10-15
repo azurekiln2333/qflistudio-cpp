@@ -1,0 +1,49 @@
+{
+  "date": "2026-10-15",
+  "workspace": "D:\\MyNewProjects\\qfli_c",
+  "herdrWorkspace": "w6",
+  "piPanes": [
+    "w6:p4",
+    "w6:p5",
+    "w6:p7"
+  ],
+  "analysisIssues": 0,
+  "flutterVmTests": 176,
+  "sourceCommits": ["797d9b7", "49a7579", "cccc0b8", "7f92787"],
+  "curriculumNativePassed": 200,
+  "curriculumPlaceholderCount": 0,
+  "nativeBridgeHostGroups": 7,
+  "androidAbis": [
+    "arm64-v8a",
+    "x86_64"
+  ],
+  "androidDeviceActions": false,
+  "ohosDevice": "nova 14 Ultra / MRT-AL10",
+  "ohosAppExecutionVerified": false,
+  "ohosAuditExpectedCases": 210,
+  "ohosAuditObservedCases": 0,
+  "ohosBlocker": {
+    "code": 10106102,
+    "reason": "Screen locked; developer mode prevents automatic unlock"
+  },
+  "artifacts": [
+    {
+      "kind": "ohos-release",
+      "path": "build/ohos/hap/entry-default-signed.hap",
+      "bytes": 222635911,
+      "sha256": "6334ccf9bedc7a9a95f65414f2a0e6b8be606ea1228f98be7bb694708e69d539"
+    },
+    {
+      "kind": "ohos-app-audit",
+      "path": "native/build/ohos-audit-20261015.hap",
+      "bytes": 213031944,
+      "sha256": "1decdeb0b74b26f41bf84bf8f5676e24a4706ba7fddd389cd13410b774ef7424"
+    },
+    {
+      "kind": "android-release",
+      "path": "build/app/outputs/flutter-apk/app-release.apk",
+      "bytes": 134138844,
+      "sha256": "8570a65f29ec63c329e8ddf21babc263908d815a089e2b5906e883a2d17bfdb6"
+    }
+  ]
+}

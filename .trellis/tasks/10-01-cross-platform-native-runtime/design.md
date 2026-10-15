@@ -5,12 +5,32 @@
 Forge exposes C/C++ compilation and execution. Desktop platforms already have
 native compiler execution; their project collection and lifecycle gaps belong
 in the Dart compiler adapter. Android already has a packaged LLVM/native
-executor. iOS has no native compiler integration. Web has neither browser project
-storage nor a compiler worker.
+executor. At initial planning, iOS had no native compiler integration and Web
+had neither browser project storage nor a compiler worker. Their later source
+integration and remaining verification gaps are in `implement.md` and
+`research/platform-status.md`.
 
 This task retains all platform gaps until implemented or explicitly scoped by
 the user. Current implementation starts with confirmed desktop defects; success
 on Windows does not establish completion on iOS, Web, or Apple desktop builds.
+
+## OHOS and Android Acceptance, 2026-10-15
+
+OHOS follows `.trellis/spec/backend/ohos-runtime.md`: the signed installed
+native directory contains Clang, LLD, the isolated executor and libc++; a
+resource-only ZIP supplies headers, configuration and link-time inputs.
+ArkTS extracts resources through bounded raw-FD reads, validates readiness
+against the actual layout, and passes opaque NAPI handles and a writable cache
+directory directly to the native bridge. Each run compiles fresh PIC objects,
+links a fresh shared program, and executes it in the isolated process with
+independent streams and cancellation. Host/build checks cannot establish
+app-domain executable and generated-code loading policy; require the real
+phone audit plus ordinary editor Run/Stop before claiming OHOS acceptance.
+
+Android keeps its existing native runtime/signing configuration. This
+deliverable builds only ARM64 and x86_64, the two packaged toolchain ABIs, and
+inspects the final APK. Android installation, push and device debugging are
+excluded by the user's instruction.
 
 ## Desktop Compilation
 
@@ -82,8 +102,8 @@ local and routed to the existing terminal behavior.
 
 Desktop edits are confined to lib/clang_runner.dart and focused execution tests.
 No change to ProgramRunner or ProcessSupervisor's shared API is required.
-Android/OHOS behavior, mobile startup, user-owned OHOS edits, and existing
-compiler-discovery order are preserved.
+Mobile startup, user-owned OHOS signing edits and existing compiler-discovery
+order are preserved. OHOS bridge repairs follow the contract above.
 
 New platform backends will need isolated build directories and immutable
 dependency versions/hashes, as the existing Android package contract requires.

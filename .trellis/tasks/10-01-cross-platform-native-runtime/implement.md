@@ -1,5 +1,39 @@
 # Implementation and Validation
 
+## Current acceptance pass, 2026-10-15
+
+The user's renewed instruction authorizes OHOS app/device testing and
+conventional commits. Android remains build-only. All writes stay in
+`D:/MyNewProjects/qfli_c`; the live shared-core content audit is read-only.
+The older iOS/Web checklist below is retained as unfinished work and is not
+silently counted as current OHOS/Android acceptance.
+
+- [x] Repair OHOS installed LLVM layout, C++ header readiness, NAPI handles,
+  resource extraction, temporary files, mixed linking and process lifecycle.
+- [x] Pass all seven actual bridge/executor/NAPI host regression groups and
+  strict OHOS SDK ARM64 syntax checking.
+- [x] Cross-link C17, C++20 and mixed projects using the actual OHOS resources.
+- [x] Build/sign ordinary release and diagnostic HAPs; validate exact ELF,
+  dependency, loader and native-file hashes without weakening the verifier.
+- [x] Complete full Flutter analysis (zero issues) and VM tests (176/176).
+- [x] Build Android release for ARM64 + x86_64; inspect assets, ELF, alignment,
+  ABI coverage and signature without installing/pushing to Android.
+- [x] Audit 100 C + 100 C++ curriculum pairs; 200/200 native executions,
+  10/10 negative probes and 33 focused content tests pass with zero placeholders.
+- [x] Update OHOS runtime contracts, source-selection guidance and per-platform
+  build/device status; record exact artifacts in
+  `research/acceptance-artifacts-2026-10-15.json`.
+- [ ] On the unlocked authorized OHOS phone, require the actual app audit to
+  pass all 210 cases, including every curriculum example.
+- [ ] Restore the ordinary production HAP on that phone without deleting app
+  data; verify editor Run/Stop and Tutorial/Examples UI entry points.
+- [ ] Record final phone results and complete the acceptance commit. Keep the
+  task in progress while phone or older iOS/Web gates remain open.
+
+See `ohos-status.md` for the current device blocker and continuation steps.
+Source fixes and curriculum evidence are committed as `797d9b7`, `49a7579`,
+`cccc0b8` and `7f92787`; root serializes all Git staging and commits.
+
 ## Ordered Work
 
 - [x] Create task and persist the existing platform audit.
@@ -54,7 +88,9 @@ must prevent constant folding. A C main plus C++ helper must use C-only syntax
 in the C unit and a C++ standard-library operation in the helper, proving both
 separate compilation and C++ linking.
 
-Do not run OHOS device/debugging tests. macOS/iOS builds and execution are
+The 2026-10-15 user instruction now requires OHOS app/device tests and
+conventional commits. Android remains build-only, with no device push/install.
+The earlier no-OHOS-testing instruction is superseded. macOS/iOS builds and execution are
 unavailable on this Windows host. Linux has GCC/G++/Clang but no Linux Flutter
 SDK. Native compiler execution can be tested independently; any shared Dart
 runner or UI not actually executed under Linux remains unverified.

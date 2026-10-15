@@ -2,7 +2,7 @@
   "id": "cross-platform-native-runtime",
   "name": "cross-platform-native-runtime",
   "title": "Cross-platform native C/C++ runtime",
-  "description": "Audit non-OHOS runtimes, implement missing native support, and verify only locally runnable platforms",
+  "description": "Complete Forge C/C++ native runtimes; current acceptance covers OHOS app execution, Android build-only verification and scoped Trellis records",
   "status": "in_progress",
   "dev_type": null,
   "scope": null,
@@ -21,6 +21,6 @@
   "children": [],
   "parent": null,
   "relatedFiles": [],
-  "notes": "",
+  "notes": "2026-10-15: source/host/build gates pass; Android build-only acceptance passes. OHOS app audit remains pending because authorized phone launch returns lock-screen error 10106102. Keep in_progress; see ohos-status.md. Older iOS/Web gates remain separate and unfinished.",
   "meta": {}
 }

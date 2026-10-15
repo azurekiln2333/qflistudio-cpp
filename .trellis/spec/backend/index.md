@@ -21,6 +21,7 @@ This directory contains guidelines for backend development. Fill in each file wi
 | [Logging Guidelines](./logging-guidelines.md) | Structured logging, log levels | To fill |
 | [Native Toolchain](./native-toolchain.md) | LLVM host tools, OHOS cross build, runtime validation gates | Recorded |
 | [Android Runtime](./android-runtime.md) | Android LLVM packages, process isolation, streaming and cancellation | Recorded |
+| [OHOS Runtime](./ohos-runtime.md) | Installed LLVM executables, resource extraction, NAPI ownership, streaming and app verification | Recorded |
 | [Source Selection](./source-selection.md) | Selected-entry compilation, concise run labels, and native/browser source lists | Recorded |
 | [Desktop Runtime](./desktop-runtime.md) | Mixed translation units, language modes, libm, process cleanup and verification | Recorded |
 | [Portable Runtime](./portable-runtime.md) | LLVM/WASI resources, interpreter limits, exceptions, cancellation and iOS channels | Recorded |

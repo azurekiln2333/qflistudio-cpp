@@ -2,11 +2,10 @@
 
 ## Goal
 
-Make execution paths outside OHOS usable with native compiler or interpreter
-implementations, and report verification separately for each platform. The
-current work covers Forge (`qfli_c`) in this workspace. A question about sibling
-language applications is pending; Forge's confirmed gaps can be addressed
-independently because they are required under either answer.
+Complete Forge's C/C++ runtime paths and report verification separately for
+each platform. The current acceptance pass covers OHOS app execution and
+Android artifact builds in `qfli_c`; other language applications are outside
+this workspace's scope. Older iOS/Web work remains recorded separately.
 
 ## Background
 
@@ -23,7 +22,7 @@ independently because they are required under either answer.
 
 ## Requirements
 
-- R1: Audit Android, Windows, Linux, macOS, iOS and Web against the actual
+- R1: Audit OHOS, Android, Windows, Linux, macOS, iOS and Web against the actual
   execution paths. Distinguish existing implementation, missing integration,
   platform restrictions and unavailable test environments.
 - R2: Complete missing native runtime support within the reviewed platform
@@ -33,7 +32,9 @@ independently because they are required under either answer.
 - R4: Verify real compilation and execution where the current environment
   permits it. Record why other platform tests are skipped. Build success alone
   must not be reported as runtime verification.
-- R5: Preserve the user's instruction to stop OHOS device runs and debugging.
+- R5: Under the user's 2026-10-15 instruction, perform actual OHOS app
+  verification. Android verification is build-only: do not push, install or
+  run on an Android device.
 
 ## Acceptance Criteria
 
@@ -44,13 +45,30 @@ independently because they are required under either answer.
   interpreters; input, nonzero exits and cancellation remain observable.
 - [ ] AC4 (R4): Locally runnable native paths pass focused real execution tests.
   Unavailable platform testing is explicitly recorded as skipped.
-- [x] AC5 (R5): No OHOS/device debugging is performed by this task.
+- [ ] AC5 (R5): Actual OHOS app compilation/execution and ordinary editor
+  Run/Stop pass on the authorized phone.
+- [x] AC6 (R5): Android release artifacts are built and inspected without
+  Android device actions (ARM64 + x86_64, 2026-10-15).
+
+## Current acceptance scope and authorization (2026-10-15)
+
+The user explicitly requested finishing this runtime work, full OHOS testing,
+Android builds without device push, complete Trellis records and conventional
+Git commits after verified logical changes. This supersedes the earlier
+no-OHOS-device and no-commit constraints. The connected nova 14 Ultra is the
+previously authorized phone; keep all repository writes in
+`D:/MyNewProjects/qfli_c`. Do not modify sibling workspaces or their curricula.
+
+The user separately added C/C++ tutorial/example auditing, with conditional
+replacement only if placeholder data remains. That work continues under
+`10-12-c-cpp-substantive-curriculum`. Other language content is out of scope.
+Older iOS/Web acceptance evidence remains separate from the current OHOS and
+Android acceptance and must not be represented as newly verified.
 
 ## Scope and Assumptions
 
-- Continue the current Forge implementation while the optional sibling-language
-  clarification is pending. Do not edit other language repositories by
-  extrapolation, and incorporate an answer if the user expands the scope.
+- Keep all writes in `D:/MyNewProjects/qfli_c`. Shared-core live curriculum
+  assets may be inspected read-only for the separately authorized audit.
 - iOS and Web are included in the platform inventory and remain unfinished
   acceptance items. A native C-only interpreter does not satisfy C++ support.
 - Compiler/runtime dependency selection must preserve C++ language behavior;
