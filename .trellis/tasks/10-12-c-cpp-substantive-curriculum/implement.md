@@ -32,6 +32,11 @@ probes and 33 focused integration/pipeline tests passed. No tutorial data
 replacement was needed. No sibling workspace was written. See
 `research/c-review-2026-10-15.md`, `research/cpp-live-review-2026-10-15.md`
 and the refreshed `research/cpp-content-verification.json` for per-item evidence.
+The restarted Pi's final review is
+`research/final-curriculum-review-2026-10-15.md`: all 400 live C/C++ rows still
+match staging, and all 200 native result IDs remain unique and successful.
+The OHOS audit source includes every topic; phone execution is still blocked
+by lock-screen error 10106102. Keep the device/UI gate open.
 
 The current instruction authorizes standardized Git commits. Any manual
 device/UI check is reported separately from these data/native-run gates.
@@ -42,7 +47,8 @@ runner automation:
 - Canonical verifier `tool/verify_forge_content.dart`: **200/200** native
   compile+run (WSL clang++ 18 / g++ 13); `negative_probe.dart`: **10/10** failure
   and isolation probes.
-- `flutter test`: **174/174**, including `test/forge_content_integration_test.dart`
+- Initial delivery `flutter test`: **174/174** (current full suite: **176/176**),
+  including `test/forge_content_integration_test.dart`
   which loads the aggregate through `ContentCatalog` + the `forge` filter, asserts
   the live core equals the authored source, and runs representative C and C++
   examples through the real desktop `ClangProgramRunner`.

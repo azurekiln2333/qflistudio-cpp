@@ -1,11 +1,7 @@
 # Verification plan — C/C++ substantive curriculum (200 pairs: 100 C + 100 C++)
 
-Owner: independent verification (pi review role). Scope of this file: **research +
-verification strategy only**. No product edits, no content authored here, no task
-`start`. This plan is the reference the independent checks will execute later.
-
-Status: research baseline captured 2026-10-12 on this workstation. Everything below
-was measured, not assumed, unless explicitly labelled as an unverified risk.
+Historical verification strategy, captured 2026-10-12 before implementation.
+Current results are in `../implement.md` and the 2026-10-15 review reports.
 
 ---
 
@@ -28,9 +24,6 @@ was measured, not assumed, unless explicitly labelled as an unverified risk.
   pass. Advanced material is validated natively on WSL; a feature only becomes
   `standard_unavailable` when **no available toolchain** compiles it — never "device-only",
   never silently rewritten to interpreter-safe code.
-- Baseline before any content work: **141/141 tests pass** across 8 files; `flutter
-  analyze lib test` shows **21 pre-existing issues in the browser/web port** unrelated
-  to this task.
 
 ---
 
