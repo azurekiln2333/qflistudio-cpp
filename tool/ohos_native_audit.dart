@@ -9,6 +9,8 @@ import 'package:qfli_c/native_clang_runner.dart';
 
 import 'forge_content/forge_topics.dart';
 
+const _portable = bool.fromEnvironment('QFLI_OHOS_PORTABLE');
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(
@@ -163,23 +165,31 @@ int main(void) {
     );
     await check(
       'program-crash-isolation',
-      '#include <signal.h>\nint main(void) { raise(SIGSEGV); return 0; }',
-      exit: 139,
+      _portable
+          ? 'int main(void) { __builtin_trap(); }'
+          : '#include <signal.h>\nint main(void) { raise(SIGSEGV); return 0; }',
+      exit: _portable ? 125 : 139,
     );
 
-    current = 'cancel-parent-and-child';
+    current = _portable
+        ? 'cancel-interpreter-sleep'
+        : 'cancel-parent-and-child';
+    debugPrintSynchronously('QFLI_C_OHOS_START $current');
     final entry = File(p.join(root.path, 'main.c'));
     final heartbeat = File(p.join(root.path, 'heartbeat.txt'));
-    final heartbeatLiteral = jsonEncode(heartbeat.path);
+    final heartbeatLiteral = jsonEncode(
+      _portable ? 'heartbeat.txt' : heartbeat.path,
+    );
     await entry.writeAsString('''
+#define _POSIX_C_SOURCE 200809L
 #include <stdio.h>
 #include <unistd.h>
+#include <time.h>
 int main(void) {
-  if (fork() == 0) {
-    for (;;) { FILE *f = fopen($heartbeatLiteral, "a"); if (f) { fputs("x", f); fclose(f); } usleep(50000); }
-  }
+  ${_portable ? '' : 'if (fork() == 0) {'}
+  ${_portable ? '' : 'for (;;) { FILE *f = fopen($heartbeatLiteral, "a"); if (f) { fputs("x", f); fclose(f); } usleep(50000); } }'}
   puts("loop-started"); fflush(stdout);
-  for (;;) usleep(50000);
+  ${_portable ? 'for (;;) { FILE *f = fopen($heartbeatLiteral, "a"); if (f) { fputs("x", f); fclose(f); } struct timespec delay = {0, 50000000}; nanosleep(&delay, 0); }' : 'for (;;) usleep(50000);'}
 }
 ''');
     final run = await runner.run(
@@ -200,9 +210,16 @@ int main(void) {
     });
     final errors = run.stderr.toList();
     try {
-      await started.future.timeout(const Duration(seconds: 60));
+      await Future.any<void>([
+        started.future,
+        run.exitCode.then((code) async {
+          throw StateError(
+            'Cancel fixture exited before start: $code ${(await errors).join('\n')}',
+          );
+        }),
+      ]).timeout(const Duration(seconds: 60));
       await Future<void>.delayed(const Duration(milliseconds: 200));
-      await run.cancel!();
+      await run.cancel!().timeout(const Duration(seconds: 10));
       final code = await run.exitCode.timeout(const Duration(seconds: 10));
       await errors;
       await Future<void>.delayed(const Duration(milliseconds: 150));
@@ -216,8 +233,114 @@ int main(void) {
         'QFLI_C_OHOS_CASE ${jsonEncode({'name': current, 'exit': code, 'stdout': output})}',
       );
     } finally {
-      await run.cancel?.call();
+      await run.cancel?.call().timeout(const Duration(seconds: 10));
       await subscription.cancel();
+    }
+    if (_portable) {
+      await entry.delete();
+      current = 'cancel-C++-CPU-and-sleep-threads';
+      debugPrintSynchronously('QFLI_C_OHOS_START $current');
+      final threadedEntry = File(p.join(root.path, 'main.cpp'));
+      await threadedEntry.writeAsString('''
+#include <atomic>
+#include <chrono>
+#include <cstdio>
+#include <thread>
+int main() {
+  std::thread cpu([] {
+    std::atomic<unsigned> value{0};
+    for (;;) value.fetch_add(1, std::memory_order_relaxed);
+  });
+  std::thread sleeper([] { std::this_thread::sleep_for(std::chrono::seconds(30)); });
+  puts("threads-started"); fflush(stdout);
+  cpu.join(); sleeper.join();
+}
+''');
+      final threadedRun = await runner.run(
+        type: 'cpp',
+        projectPath: root.path,
+        entryFile: threadedEntry.path,
+      );
+      if (threadedRun == null) throw StateError('C++ threads unavailable');
+      final threadsStarted = Completer<void>();
+      final threadOutput = threadedRun.stdout.listen((line) {
+        if (line == 'threads-started' && !threadsStarted.isCompleted) {
+          threadsStarted.complete();
+        }
+      });
+      final threadErrors = threadedRun.stderr.toList();
+      try {
+        await Future.any<void>([
+          threadsStarted.future,
+          threadedRun.exitCode.then((code) async {
+            throw StateError(
+              'Thread fixture exited before start: $code ${(await threadErrors).join('\n')}',
+            );
+          }),
+        ]).timeout(const Duration(seconds: 60));
+        await threadedRun.cancel!().timeout(const Duration(seconds: 10));
+        final code = await threadedRun.exitCode.timeout(
+          const Duration(seconds: 10),
+        );
+        final errors = await threadErrors;
+        if (code != 130 || errors.isNotEmpty) {
+          throw StateError(
+            'C++ thread cancellation failed: exit=$code ${errors.join('\n')}',
+          );
+        }
+        results.add(current);
+        debugPrintSynchronously(
+          'QFLI_C_OHOS_CASE ${jsonEncode({'name': current, 'exit': code})}',
+        );
+      } finally {
+        await threadedRun.cancel?.call().timeout(const Duration(seconds: 10));
+        await threadOutput.cancel();
+        await threadedEntry.delete();
+      }
+    }
+    if (_portable) {
+      await check(
+        'C++-concurrent-memory-growth',
+        r'''#include <atomic>
+#include <cstdio>
+#include <thread>
+
+static std::atomic<unsigned> seen[4096]{};
+
+int main() {
+  constexpr int per_thread = 128;
+  constexpr int expected = 2 * per_thread;
+  std::atomic<int> ready{0}, unique{0}, failures{0};
+  std::atomic<bool> start{false};
+  auto grow = [&] {
+    ready.fetch_add(1, std::memory_order_release);
+    while (!start.load(std::memory_order_acquire)) std::this_thread::yield();
+    for (int index = 0; index < per_thread; ++index) {
+      const size_t old_pages = __builtin_wasm_memory_grow(0, 1);
+      if (old_pages == static_cast<size_t>(-1) || old_pages >= 4096) {
+        failures.fetch_add(1);
+      } else if (seen[old_pages].fetch_add(1) == 0) {
+        unique.fetch_add(1);
+      }
+    }
+  };
+  std::thread left(grow), right(grow);
+  while (ready.load(std::memory_order_acquire) != 2) std::this_thread::yield();
+  // Both guest stacks and their startup allocations exist before this sample.
+  const size_t before = __builtin_wasm_memory_size(0);
+  start.store(true, std::memory_order_release);
+  left.join();
+  right.join();
+  const size_t added = __builtin_wasm_memory_size(0) - before;
+  std::printf("memory.grow pages=%zu unique=%d\n", added, unique.load());
+  return added == expected && unique.load() == expected && failures.load() == 0 ? 0 : 8;
+}
+''',
+        type: 'cpp',
+        output: 'memory.grow pages=256 unique=256',
+        exactOutput: true,
+      );
+      await File(p.join(root.path, 'main.cpp')).delete();
     }
     await check(
       'fresh-run-after-errors-crash-stop',
@@ -255,16 +378,16 @@ int main(void) {
         topic.exampleId,
         topic.code,
         type: topic.language,
-        output: topic.output,
+        output: _portable ? topic.portableOutput ?? topic.output : topic.output,
         exactOutput: true,
       );
     }
     debugPrintSynchronously(
-      'QFLI_C_OHOS_AUDIT ${jsonEncode({'ok': true, 'passed': results.length, 'curriculum': forgeTopics.length})}',
+      'QFLI_C_OHOS_AUDIT ${jsonEncode({'ok': true, 'execution': _portable ? 'interpreter' : 'native', 'passed': results.length, 'curriculum': forgeTopics.length})}',
     );
   } catch (error, stack) {
     debugPrintSynchronously(
-      'QFLI_C_OHOS_AUDIT ${jsonEncode({'ok': false, 'case': current, 'error': error.toString(), 'stack': stack.toString(), 'passed': results})}',
+      'QFLI_C_OHOS_AUDIT ${jsonEncode({'ok': false, 'execution': _portable ? 'interpreter' : 'native', 'case': current, 'error': error.toString(), 'stack': stack.toString(), 'passed': results})}',
     );
   } finally {
     await root.delete(recursive: true);
