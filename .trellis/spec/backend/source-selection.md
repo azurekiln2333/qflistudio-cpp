@@ -33,7 +33,7 @@ NativeClangRunner.run accepts optional List<String>? sources. The native start p
 - Preserve per-unit language modes, mixed linking, diagnostics, stdout/stderr, exit codes and cancellation cleanup.
 - Run labels use run plus the project-relative entry with forward slashes and no backend branding. Never filter program output to remove phrases resembling old UI text.
 - The shared terminal renders the prompt and suppresses app-generated exit-0 footers.
-- OHOS registers the Clang channel through EntryAbility and QfliCNative. Explicit lists reach the native validator; only an absent key enables legacy discovery. Its ordinary Dart route disables C fallback. Follow [ohos-runtime.md](./ohos-runtime.md) for installed executable layout and app verification; channel registration alone does not establish runtime availability.
+- OHOS registers the Clang channel through EntryAbility and QfliCNative. Explicit lists reach the native validator; only an absent key enables legacy discovery. Its ordinary Dart route disables C fallback. Follow [ohos-runtime.md](./ohos-runtime.md) for the signed LLVM/WASI interpreter, resource layout and app verification; channel registration alone does not establish runtime availability.
 
 ## 4. Validation and Error Matrix
 

@@ -5,24 +5,19 @@
     "nativeLib": {
       "debugSymbol": {
         "strip": true,
-        // toolchain.json records these installed files' exact SHA256 values.
+        // Preserve the SDK runtime library used by the packaged static adapters.
         "exclude": [
-          "**/libqfli_clang.so",
-          "**/libqfli-ld.lld-.so",
-          "**/libqfli_executor.so",
           "**/libc++_shared.so"
         ]
       }
     },
     "externalNativeOptions": {
-      // OHOS 侧的原生编译运行桥（NAPI）。工具链本体是预构建的 clang，
-      // 运行时由 resources 解压到 App 私有目录，见 native/toolchain/README.md。
+      // Signed in-process LLVM/LLD and WASI interpreter; SDK data is a raw asset.
       "path": "./src/main/cpp/CMakeLists.txt",
       "arguments": "",
       "cppFlags": "",
       "abiFilters": [
-        "arm64-v8a",
-        "x86_64"
+        "arm64-v8a"
       ]
     }
   },

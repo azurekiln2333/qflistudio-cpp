@@ -1,0 +1,20 @@
+--- a/lib/host/wasi/inode-linux.cpp
++++ b/lib/host/wasi/inode-linux.cpp
+@@ -316,7 +316,7 @@
+ WasiExpect<void>
+ INode::fdFilestatSetTimes(__wasi_timestamp_t ATim, __wasi_timestamp_t MTim,
+                           __wasi_fstflags_t FstFlags) const noexcept {
+-#if __GLIBC_PREREQ(2, 6) || __BIONIC__
++#if __GLIBC_PREREQ(2, 6) || __BIONIC__ || defined(__OHOS__)
+   timespec SysTimespec[2];
+   if (FstFlags & __WASI_FSTFLAGS_ATIM) {
+     SysTimespec[0] = toTimespec(ATim);
+@@ -643,7 +643,7 @@
+ INode::pathFilestatSetTimes(std::string Path, __wasi_timestamp_t ATim,
+                             __wasi_timestamp_t MTim,
+                             __wasi_fstflags_t FstFlags) const noexcept {
+-#if __GLIBC_PREREQ(2, 6) || __BIONIC__
++#if __GLIBC_PREREQ(2, 6) || __BIONIC__ || defined(__OHOS__)
+   timespec SysTimespec[2];
+   if (FstFlags & __WASI_FSTFLAGS_ATIM) {
+     SysTimespec[0] = toTimespec(ATim);

@@ -9,7 +9,8 @@ export interface RunnerEvent {
 
 export interface RunnerOptions {
   toolchainRoot: string;
-  executorPath: string;
+  /** Legacy native-executable options are ignored by the WASI interpreter backend. */
+  executorPath?: string;
   compilerPath?: string;
   linkerPath?: string;
   runtimeDirectory?: string;

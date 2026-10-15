@@ -1,238 +1,175 @@
-# OHOS LLVM Runtime Contract
+# OHOS LLVM / WASI Runtime Contract
 
 ## 1. Scope / Trigger
 
-Applies to `native/toolchain/package-ohos.ps1`, `ohos-executor.c`,
-`ohos/entry/src/main/cpp/qfli_ohos_runner.cpp`, `QfliCNative.ets`, their NAPI
-declarations, `EntryAbility` registration and the OHOS Dart native route.
-The compiler build itself follows [native-toolchain.md](./native-toolchain.md).
+Applies to `package-ohos-portable.ps1`, `build-ohos-portable.sh`,
+`qfli_ohos_portable.cpp`, `QfliCNative.ets`, the native module declarations,
+`EntryAbility` registration and the OHOS Dart native route. Shared compiler
+and interpreter contracts live in [portable-runtime.md](./portable-runtime.md).
+
+The current app route compiles C/C++ with signed in-process LLVM 22 and LLD,
+then interprets WASI Wasm data with signed WasmEdge. It does not execute fresh
+OHOS machine code. OHOS SDK APIs and the native OHOS ABI are not WASI APIs.
 
 ## 2. Signatures
 
 ```powershell
-./native/toolchain/package-ohos.ps1 [-ToolchainDirectory <package-llvm-output>] `
-  [-ProjectRoot <repo>] [-NativeSdk <sdk-native>] [-ExecutorSource <c-file>] `
-  [-TargetArchitecture arm64-v8a|x86_64]
+./native/toolchain/package-ohos-portable.ps1 `
+  [-DependencyDirectory <verified-archive-directory>] [-ProjectRoot <repo>] `
+  [-OutputArchive <resource-zip>] [-Python <python-3.11-or-newer>]
 ```
 
-MethodChannel `qfli_forge/native` exposes:
-
-- `start({runId: String, type: 'c'|'cpp', projectPath: String, entryFile: String, sources?: String[]})`
-  returns `{available: bool}`. The ordinary Dart caller supplies selected sources.
-- `cancel({runId: String})` cancels the matching current run.
-
-EventChannel `qfli_forge/native/events` emits independent line events followed
-by one terminal event:
-
-```json
-{"runId":"ohos-1","kind":"stdout","text":"42"}
-{"runId":"ohos-1","kind":"stderr","text":"main.c:2: error: ..."}
-{"runId":"ohos-1","kind":"exit","exitCode":7}
-```
-
-The `libqfli_ohos_runner.so` NAPI module exposes:
+The module remains `libqfli_ohos_runner.so`:
 
 ```typescript
-create({toolchainRoot, executorPath, compilerPath?, linkerPath?,
-  runtimeDirectory?, onEvent}): RunnerHandle | null;
+create({toolchainRoot: string, onEvent: (event: RunnerEvent) => void}): RunnerHandle | null;
 run(handle, projectPath, entryFile, sources: string[], cacheDirectory): boolean;
 cancel(handle): void;
 destroy(handle): void;
 ```
 
-`RunnerHandle` is the returned opaque external itself. Never access `.native`.
-`create` throws an `Error` with code `QFLI_NATIVE_INIT` on invalid initialization
-arguments, filesystem validation or NAPI/resource creation failures. Its message
-identifies the operation and affected argument/path, plus errno or NAPI status
-when applicable; preserve an already pending JS exception. ArkTS forwards the
-message unchanged in MethodChannel error `QFLI_NATIVE_FAILED` and releases the
-active slot. Do not replace a thrown error with the generic null-handle message.
-The declarations live in `cpp/types/libqfli_ohos_runner/`, registered through
-`entry/oh-package.json5`; run `ohpm install` before checking ArkTS after changing
-that dependency.
+`RunnerHandle` is the returned opaque external itself; never access `.native`.
+Legacy executor/compiler/linker/runtime path options are optional declarations
+for source compatibility and are unused by this backend. The type package is
+`cpp/types/libqfli_ohos_runner/`, registered by `entry/oh-package.json5`.
+
+MethodChannel `qfli_forge/native` retains `start({runId,type,projectPath,entryFile,
+sources?}) -> {available:boolean}` and `cancel({runId})`. EventChannel
+`qfli_forge/native/events` retains independent stdout/stderr line events and
+one terminal `{runId,kind:'exit',exitCode}`. Dart subscribes before starting.
 
 ## 3. Contracts
 
-- Pin LLVM 15.0.7, commit `8dfdcc7b7bf66834a761bd8de445840ef68e4d1a`.
-  Packaging validates the input manifest, ELF64 little-endian ET_DYN machine,
-  musl interpreter and SHA256 values. Allowed dynamic dependencies are `libc.so`
-  and the packaged `libc++_shared.so`.
-- Package `libqfli_clang.so`, `libqfli-ld.lld-.so`, `libqfli_executor.so` and
-  `libc++_shared.so` under `entry/libs/<abi>/`. The first three are PIE
-  executables installed with the app. Keep the `ld.lld` basename component:
-  upstream LLD uses it to select its ELF driver.
-- Preserve those four files through HAP native stripping with precise
-  `nativeLib.debugSymbol.exclude` entries in `entry/build-profile.json5`.
-  Verify their final HAP SHA256 values against the package manifest; AGP/hvigor
-  stripping must not be worked around by disabling executable hash checks.
-- `context.applicationInfo.nativeLibraryPath` can be relative: the actual phone
-  returns `libs/arm64`. Resolve relative metadata against `context.bundleCodeDir`
-  before checking files or calling NAPI, e.g. `/data/storage/el1/bundle` plus
-  `libs/arm64` becomes `/data/storage/el1/bundle/libs/arm64`. Preserve an already
-  absolute path; normalize trailing separators and leading `./`. Relative
-  `accessSync` may succeed through the process cwd, while native canonical-path
-  validation still rejects the same string. Do not rely on cwd for resolution.
-- Production `create` receives compiler/linker/executor absolute paths under
-  that resolved native directory, with `runtimeDirectory` equal to it. Reject
-  missing/invalid directory metadata. Do not chmod or execute extracted compiler
-  binaries in `filesDir`. Optional native path defaults exist for host checks.
-- Native initialization validates absolute NUL-free canonical paths, expected
-  directory/file types and required access. Filesystem errors include the
-  affected field/path and errno; denied-access diagnostics also include file
-  mode, readability and process/file ownership. NAPI creation errors identify
-  the operation and status. Keep these diagnostics through the ArkTS/Dart
-  boundary so an actual release permission failure can be distinguished from
-  missing resources. A valid path and successful initialization do not prove
-  the platform permits subsequent execution or generated-code loading.
-- Raw asset `qfli_toolchain/ohos-<abi>.zip` contains `toolchain.json`,
-  `bin/ohos.cfg`, `sysroot/`, `include/c++/v1/`, `lib/clang/15.0.7/` and link-time
-  libraries under `lib/<full-target-triple>/`. It excludes `bin/clang` and
-  `bin/ld.lld`. The installed manifest sets `installedNativeExecutables:true`
-  and records native filenames and executor metadata. Packaging writes a ZIP
-  `.sha256` sidecar and checks every entry uses `/`, including on PowerShell 5.
-- Current ArkTS chooses `ohos-arm64-v8a.zip`, LLVM 15.0.7 and
-  `aarch64-unknown-linux-ohos`. Script support for x86_64 does not establish an
-  x86_64 app route; add ABI selection and independently verify it before use.
-- Copy the stored ZIP through `resourceManager.getRawFd`: respect its HAP
-  `offset` and `length`, use bounded buffers, handle short reads/writes and close
-  both descriptors. Keep the ZIP asset uncompressed in the outer HAP so raw-FD
-  access works. Decompress asynchronously and remove the cache archive.
-- Extraction roots include bundle `versionCode`, `updateTime` and layout
-  revision, so reinstalling a changed HAP with the same version invalidates
-  old resources. Write `.ready` only after checking the manifest and required
-  files. C++ headers are at `include/c++/v1/vector`, not under `sysroot/`.
-  Repair an incomplete cached root by extracting again.
-- Use Clang 15 `--config <path>` and explicit installed `--ld-path=<path>` at
-  link time. The config supplies OHOS/musl macros and full target-triple runtime
-  paths. SDK shared-library stubs are link-time inputs and must never enter
-  runtime `LD_LIBRARY_PATH`.
-- Compile each `.c` unit as C17 and `.cpp`/`.cc`/`.cxx` as C++20, case
-  insensitively, with explicit `-x c`/`-x c++` and PIC. Include the project root
-  and its `include/` directory. Any C++ unit selects the C++ link driver, even
-  with C main. Link `-lm`; OHOS atomic builtins come from compiler-rt and its
-  SDK has no standalone `libatomic`. Do not copy Android's `-latomic` option.
-- Follow [source-selection.md](./source-selection.md). ArkTS rejects malformed
-  explicit lists and discovers legacy project sources only when the key is
-  absent. Native validates canonical readable project-local regular sources,
-  including symlink destinations; reject duplicates and lists omitting entry.
-- `run` requires an app-writable cache directory as its fifth argument. Use
-  atomic `mkdtemp` beneath it for each accepted run and a unique PID file per
-  compile unit, link and execution. `O_EXCL` forbids reusing `compile.pid` for
-  multiple units. Remove temporary trees without following user symlinks.
-- Link fresh `program.so` with `-shared`, `-Wl,-z,defs` and 16 KiB maximum/common
-  page sizes. Mark it read-only before loading. A separate installed executor
-  uses `dlopen`/`dlsym` to call exported `main`; user code never runs inside the
-  Flutter process. Compile/link failure must not run a stale previous output.
-- Working directory is the project. Supply regular `input.txt` as stdin when
-  present, otherwise `/dev/null`; preserve stdout, stderr and child status.
-  User-generated code loading still requires actual app code-policy checks.
-- Perform only async-signal-safe operations between multithreaded app `fork`
-  and `execve`; prepare argument/environment storage beforehand. Poll stable
-  stdout/stderr/cancel slots together and keep checking child exit after either
-  or both streams close. Kill remaining group descendants after leader exit.
-- A handle accepts one successful run. The worker owns shared state separately
-  from its external wrapper. `destroy`/GC requests cancellation and drops that
-  ownership; repeated destroy/cancel must be safe. Cancellation uses a
-  nonblocking CLOEXEC pipe synchronized with worker descriptor closure, kills
-  the process group and ends with 130 after output drain/cleanup.
-- Buffer incomplete UTF-8 bytes separately for stdout/stderr before NAPI string
-  conversion. ArkTS joins partial lines independently, preserves blank lines,
-  removes CR from CRLF lines and flushes final tails before exactly one exit.
-  Dart subscribes before start and filters by `runId`.
-- Allow one active run, including asynchronous toolchain preparation. Cancel or
-  EventChannel disconnect during preparation marks it cancelled; preparation
-  failure must then resolve as accepted cancellation with exit 130. Native
-  events still release the handle after the output sink disconnects.
-- Missing resources/native executables return `available:false`. The current
-  OHOS Dart route disables C interpreter fallback; accepted compile/link/runtime
-  errors always preserve their diagnostics/status. Keep implementation,
-  HAP-build evidence and actual app execution evidence distinct.
-- ArkTS logs preparation failures as `QFLI_OHOS_TOOLCHAIN_PREPARE_FAILED`, invalid
-  installed-directory metadata as `QFLI_OHOS_NATIVE_DIRECTORY_FAILED`, and the
-  exact absent native file as `QFLI_OHOS_NATIVE_FILE_MISSING`. Keep those distinct
-  from a native `QFLI_NATIVE_INIT` exception after the files have been found.
+- Pin LLVM 22.1.0, WASI SDK 33.0 and WasmEdge commits from
+  `native/toolchain/portable-dependencies.json`. Apply and record all checked
+  runtime patches, including OHOS musl and interruptible polling fixes.
+- Package data directly from SHA256-checked source archives. Include dependency
+  license notices. Reject path traversal, duplicate entries and special files.
+  Exclude host `bin/`, alternate no-EH and LTO trees. ZIP names use `/`.
+- Resource asset is `qfli_toolchain/ohos-wasi.zip` plus an ASCII `.sha256`
+  sidecar. SDK paths remain `share/wasi-sysroot/` and `lib/clang/22/`.
+  Include common C headers/libraries, EH libc++/libc++abi/libunwind, startup
+  objects, SjLj/process-clock archives and compiler builtins for both
+  `wasm32-wasip1` and `wasm32-wasip1-threads` layouts.
+- Manifest format is `formatVersion:2`, `llvmVersion:'22.1.0'`,
+  `wasiSdkVersion:'33.0'`, exact compiler/runtime commits,
+  `targetTriple:'wasm32-unknown-wasip1'`,
+  `supportedTargets:['wasm32-unknown-wasip1','wasm32-unknown-wasip1-threads']`,
+  `runtime:'wasmedge-interpreter'`, `execution:'interpreter'`, `jit:false`,
+  `threading:'wasi-threads'`, `maxWorkerThreads:32`. It records runtime patch
+  hashes, the resource inventory digest and key-file path/size/SHA256 entries.
+- Stream raw ZIP bytes using the HAP descriptor's exact offset and length.
+  Bound buffers, handle short reads/writes and close both descriptors. Verify
+  the copied ZIP against the signed HAP sidecar before decompression. Remove
+  the temporary ZIP on success and failure.
+- Use `filesDir/forge-toolchain/ohos-wasi/<versionCode>-<updateTime>-wasi33-layout2`.
+  Validate manifest/version/targets/interpreter/thread settings and required
+  file sizes. Verify key-file hashes after extraction and on the first cached
+  use of each app session. Re-extract a corrupt cache. Write `.ready` last.
+- ArkTS emits `QFLI_OHOS_TOOLCHAIN_PREPARE_FAILED` on unavailable resources and
+  `QFLI_OHOS_TOOLCHAIN_CACHE_INVALID` when repairing failed cached hashes.
+  Native `create` throws `QFLI_NATIVE_INIT` on invalid resource paths or NAPI
+  failures; preserve its exact message in MethodChannel `QFLI_NATIVE_FAILED`.
+- Source lists follow [source-selection.md](./source-selection.md): explicit
+  lists are authoritative; only absence enables discovery. Native validates
+  absolute canonical readable project-local files, extensions, uniqueness and
+  selected-entry membership, including symlink destinations.
+- OHOS opts into `qfli_compiler_set_threads(session,true)` before compiling.
+  Other callers retain the default single-thread target. Compile C17/C++20
+  units separately, link with the EH/SjLj/process-clock libraries and publish
+  `program.wasm` only after successful completion and cancellation checks.
+- Each run uses `mkdtemp` under a validated writable cache. Open finite
+  `input.txt` or `/dev/null`; preserve borrowed stdout/stderr descriptors and
+  process cwd. Drain the two pipes concurrently while compilation/execution
+  runs. Never redirect the app's process-wide standard streams.
+- One external handle accepts one successful run. Its worker owns shared state
+  separately. Cancel/destroy/GC request cancellation; session mutexes exclude
+  cancellation from compiler/runtime destruction. Repeated cancel/destroy is
+  safe. Exit follows session destruction, stream drain and private-tree cleanup
+  without following symlinks. Buffer incomplete UTF-8 per stream before NAPI.
+- Shared-memory modules receive one shared `env.memory`, one WASI descriptor
+  table, and `wasi.thread-spawn(i32)->i32`. Each guest thread gets a separate
+  VM invoking `wasi_thread_start(tid,arg)`. Limit concurrent workers to 32,
+  reclaim completed slots and keep positive thread IDs unique within the run.
+- A thread-group mutex protects startup, slots and process-exit state. Override
+  WASI `proc_exit` before its module is finalized; a child's process exit stops
+  the group and preserves the first exit code. Child traps stop the group with
+  runtime failure. Repeatedly cancel every active VM through startup until all
+  async executions join. Keep the AST, shared memory and WASI imports alive
+  until then. Main exit also stops detached workers. Never join under the
+  callback mutex.
+- The shared-memory-growth patch serializes the returned old page count and
+  growth commit. Interpreter size/bounds read an atomic count; imported worker
+  VMs snapshot live memory limits under the growth lock. Preserve stable memory
+  addresses while other workers access existing pages. Collect ready workers
+  again before main-exit cleanup so completed detached traps retain status 125.
+- Keep the active ArkTS slot during asynchronous preparation. Cancel or listener
+  disconnect during preparation remains accepted cancellation, terminal 130
+  after preparation cleanup. Preserve diagnostics, nonzero statuses and empty
+  output lines. Missing resources report unavailable without a C-only fallback.
 
 ## 4. Validation & Error Matrix
 
 | Condition | Required behavior |
 | --- | --- |
-| Manifest version/ABI/hash, ELF machine or musl loader mismatch | Packaging fails before publishing final output |
-| Missing archive, incomplete extraction or missing installed native files | Report unavailable; do not launch a partial toolchain |
-| Missing/invalid run fields, malformed explicit sources | `invalid_run` |
-| No EventChannel listener | `missing_listener` |
-| Another run preparing/active | `runner_busy`; preserve its ownership |
-| Outside-project source, unreadable source, duplicate or missing entry | Native run rejected; stderr and one exit 127, no program execution |
-| Relative native-library metadata | Resolve against `bundleCodeDir`; pass absolute paths to native |
-| Invalid native-directory metadata or missing installed file | Report unavailable and log the specific metadata/file failure |
-| Native create validation/resource operation fails | Throw native `QFLI_NATIVE_INIT`; ArkTS reports `QFLI_NATIVE_FAILED` with the original detailed message and releases active slot |
-| Compiler/linker fails | Forward diagnostics and actual nonzero status, no stale launch |
-| Executor spawn/load/input fails | Report diagnostics and exit 125 |
-| Program returns nonzero or crashes | Preserve return code or `128 + signal`; app remains alive |
-| Cancel before native acceptance or during native work | One exit 130 and cleanup; no interpreter switch |
-| One/both output streams close while child runs | Keep cancellation and child-exit observation live |
+| Dependency archive SHA mismatch, unsafe/special SDK entry or missing required resource | Fail packaging without replacing the previous ZIP |
+| ZIP/key-file SHA mismatch | Reject or repair cache; never create a runner from unchecked resources |
+| LLVM/WASI/target/JIT/thread manifest mismatch | Rebuild extraction; report unavailable if the packaged data remains invalid |
+| Missing listener, malformed run fields, another active run | `missing_listener`, `invalid_run`, `runner_busy` respectively |
+| Outside-project/duplicate/unreadable source or missing selected entry | Reject run; stderr and exactly one exit 127 |
+| Native initialization throws | Forward exact message as `QFLI_NATIVE_FAILED`; release the active slot |
+| Compile/link failure | Actual nonzero status and diagnostics; no stale module execution |
+| Input resource or interpreter setup fails | Diagnostic and nonzero status |
+| Wasm trap / child-thread trap / cost limit | Runtime status 125; app and subsequent runs remain usable |
+| Program/child process exit | Preserve actual process status; stop remaining guest workers |
+| More than 32 concurrent guest workers | WASI thread-spawn returns negative error; no resource leak |
+| Accepted stop, including atomic wait or child sleep | Cancel every VM and join, then exactly one exit 130 |
 
 ## 5. Good / Base / Bad Cases
 
-- Good: installed native executables plus validated resource ZIP; actual app
-  compiles C/C++, mixed units and headers, preserves errors/status and cancels
-  descendant processes before a fresh run.
-- Base: host orchestration/NAPI regressions pass and signed HAP builds; app
-  compiler execution and generated-code loading still need independent tests.
-- Bad: assuming a successful build or `hdc shell` compiler launch proves app
-  runtime support, executing extracted clang, checking the wrong libc++ include
-  path, or calling `run(handle.native, ...)`.
+- Good: actual app compiles original C/C++ sources, standard-library exceptions,
+  thread/join, mutex/condition-variable and atomics examples, preserves statuses
+  and accepts a fresh run after errors and cancellation.
+- Base: actual host compiler/interpreter/NAPI tests pass and the signed HAP
+  builds; phone execution remains a separate acceptance gate.
+- Bad: describe WASI as the native OHOS ABI, enable JIT, silently replace the
+  threading lessons, or infer ordinary-app execution from `hdc shell` results.
 
 ## 6. Tests Required
 
-- PowerShell parser and package checks: pinned manifest/ELF metadata/hashes,
-  installed four native files, resource-only ZIP, forward-slash entries and
-  required C/C++ headers/compiler-rt/CRT/link-time runtime files.
-- `native/toolchain/tests/ohos-bridge-regression.py` runs the actual bridge core
-  and executor on Linux with Clang 15. Assert large independent streams,
-  cancellation after stream EOF, descendants, mixed language modes, headers,
-  math/input/status, syntax/link failure, symlink containment and cleanup.
-  Its optional actual Node NAPI addon checks UTF-8 byte splits, failed-validation
-  retry, one-use acceptance and repeated cancel/destroy/GC. A reported skip is
-  not a pass for that addon gate.
-- Check ArkTS actual-source protocol behavior: split lines/UTF-8, blank lines,
-  CRLF/tails, terminal once, rejected-run release, explicit-list validation,
-  absent-list discovery, preparation cancellation, short raw-FD reads/writes and
-  actual package readiness. Run `ohpm install` and hvigor to type-check ArkTS
-  and compile native code against the target SDK.
-- `native/toolchain/tests/ohos-arkts-native-path-regression.cjs <typescript.js>`
-  transpiles the production ArkTS source with the supplied SDK TypeScript
-  compiler. Assert that relative `libs/arm64` resolves against `bundleCodeDir`,
-  absolute metadata is preserved, and every native option uses the resulting
-  directory. Model relative access succeeding through cwd while native requires
-  absolute paths. Assert unavailable diagnostics for missing files/invalid
-  metadata, and exact MethodChannel propagation of a thrown native init error.
-- Run focused Flutter native channel and OHOS routing tests and Dart analysis.
-- Device gate: execute `tool/ohos_native_audit.dart` through the actual app,
-  require `QFLI_C_OHOS_AUDIT` with `ok:true`, and inspect every case. Include C,
-  C++ standard library/exceptions, mixed units/headers, math/stdin/both streams,
-  nonzero exit, compiler/link diagnostics, crash isolation, child cancellation,
-  recovery, selected entry and long UTF-8 lines. Also test ordinary editor
-  Run/Stop through the final owning application.
-- Record exact artifact, app/device/ABI and results before declaring device
-  verification. At creation of this spec on 2026-10-15, final app/device gates
-  are pending; host and build checks alone do not satisfy them.
+- Run the actual package script and negative dependency-hash, missing-resource,
+  traversal and special-file cases. Verify the resulting ZIP CRC, SHA256,
+  manifest, both target layouts, notices and absence of host executables.
+- `ohos-arkts-native-path-regression.cjs <typescript.js>` retains its historical
+  filename but now tests production WASI preparation/start: realistic raw-FD
+  slices/short I/O, archive and key-file hash failures, cache repair, incompatible
+  manifest/JIT/thread settings, prepare cancellation, init-error propagation,
+  blank/split lines and actual exit status. Native-library metadata is unused.
+- Run the common portable compiler/runtime gates and actual OHOS NAPI bridge
+  tests. Cover both default nonthread and opted-in thread targets, EH/SjLj,
+  process clocks, large independent streams, destruction/GC and fresh recovery.
+- Thread gates include original cpp090–093 unchanged, 32-worker rejection,
+  more than 32 sequential creations, detached cleanup, child exit/trap,
+  atomic-wait/CPU/sleep cancellation and subsequent successful runs.
+- Run `ohpm install` and hvigor for ArkTS/SDK checking. Host binaries must be
+  rebuilt after runtime changes; an older probe without the Threads proposal
+  rejects these modules as `malformed limits flags`.
+- Phone gate: require `QFLI_C_OHOS_AUDIT` with `ok:true` from the actual owning
+  app, inspect every case, and exercise ordinary editor Run/Stop. Record exact
+  HAP/device/ABI/results; host and build checks do not establish phone success.
 
 ## 7. Wrong vs Correct
 
-Wrong: validate readiness using `sysroot/usr/include/c++/v1/vector`, then treat
-`available:false` as evidence the compiler has not been ported. Correct: validate
-the package's actual `include/c++/v1/vector` and separately exercise the installed
-compiler, linker and generated-program executor through the app channel.
+Wrong: keep retrying `execve` against installed Clang after release-app EACCES.
+Correct: use the signed in-process compiler and interpreter for the ordinary
+phone route and report the real native-code restriction separately.
 
-Wrong: turn every pipe read into a Dart output line or reuse one PID file for
-all translation units. Correct: preserve UTF-8 and line boundaries per stream,
-and give each executor invocation its own exclusive PID file.
+Wrong: interpret native-child API error 16010004 as device error 801.
+Correct: 16010004 is `NCP_ERR_MULTI_PROCESS_DISABLED`; the 2026-10-16 phone
+probe found the API but multi-process mode was disabled. The SDK documents
+device restrictions separately. Do not change system security parameters to
+claim a normal-app pass.
 
-Wrong: pass `applicationInfo.nativeLibraryPath` straight to `create` because
-`accessSync` found the files, or replace an initialization exception with a
-generic unavailable message. Correct: resolve relative metadata against
-`bundleCodeDir` and preserve the native operation/path/errno diagnostics.
-
-Wrong: replace remaining app verification with successful host Clang tests.
-Correct: use host regressions to check orchestration and require the actual
-OHOS app gates before changing runtime capability claims.
+Wrong: cancel only the main VM or destroy its imports while guest workers run.
+Correct: repeatedly cancel every VM, join all workers and release shared
+memory/WASI/AST afterward, then emit the terminal event.

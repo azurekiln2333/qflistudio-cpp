@@ -4,7 +4,7 @@
  * 为什么需要这一层：Flutter 的 Dart 代码不能直接调 NAPI，链路必须是
  *
  *   Dart → MethodChannel(qfli_forge/native) → ArkTS（本文件）
- *        → libqfli_ohos_runner.so → 已安装的编译器和隔离执行器
+ *        → libqfli_ohos_runner.so → LLVM 22 / WASI 33 / Wasm 解释执行
  *
  * 通道协议与 Android 的 NativeCompilerBridge.kt 完全一致（方法名、参数、
  * 事件形状都相同），所以 Dart 侧 lib/native_clang_runner.dart 无需任何改动，
@@ -30,21 +30,65 @@ import { common } from '@kit.AbilityKit';
 import { fileIo as fs } from '@kit.CoreFileKit';
 import { bundleManager } from '@kit.AbilityKit';
 import zlib from '@ohos.zlib';
+import fileHash from '@ohos.file.hash';
 
 /** 与 Dart 侧 RunnerService 约定的通道名，和 Android 保持一致。 */
 const CHANNEL_METHODS = 'qfli_forge/native';
 const CHANNEL_EVENTS = 'qfli_forge/native/events';
 
 /** 工具链压缩包在 resources 里的位置。
- *  名字必须与 package-ohos.ps1 的产物一致（ohos-<abi>.zip）。
+ *  名字必须与 package-ohos-portable.ps1 的资源产物一致。
  */
-const TOOLCHAIN_ARCHIVE = 'qfli_toolchain/ohos-arm64-v8a.zip';
+const TOOLCHAIN_ARCHIVE = 'qfli_toolchain/ohos-wasi.zip';
+
+const REQUIRED_RESOURCES: string[] = [
+  'share/wasi-sysroot/include/wasm32-wasip1/stdio.h',
+  'share/wasi-sysroot/include/wasm32-wasip1/eh/c++/v1/vector',
+  'share/wasi-sysroot/include/wasm32-wasip1/eh/c++/v1/stdexcept',
+  'share/wasi-sysroot/lib/wasm32-wasip1/crt1-command.o',
+  'share/wasi-sysroot/lib/wasm32-wasip1/libc.a',
+  'share/wasi-sysroot/lib/wasm32-wasip1/eh/libc++.a',
+  'share/wasi-sysroot/lib/wasm32-wasip1/eh/libc++abi.a',
+  'share/wasi-sysroot/lib/wasm32-wasip1/eh/libunwind.a',
+  'share/wasi-sysroot/lib/wasm32-wasip1/libsetjmp.a',
+  'share/wasi-sysroot/lib/wasm32-wasip1/libwasi-emulated-process-clocks.a',
+  'lib/clang/22/include/stddef.h',
+  'lib/clang/22/lib/wasm32-unknown-wasip1/libclang_rt.builtins.a',
+  'share/wasi-sysroot/include/wasm32-wasip1-threads/stdio.h',
+  'share/wasi-sysroot/include/wasm32-wasip1-threads/pthread.h',
+  'share/wasi-sysroot/include/wasm32-wasip1-threads/eh/c++/v1/vector',
+  'share/wasi-sysroot/include/wasm32-wasip1-threads/eh/c++/v1/stdexcept',
+  'share/wasi-sysroot/lib/wasm32-wasip1-threads/crt1-command.o',
+  'share/wasi-sysroot/lib/wasm32-wasip1-threads/libc.a',
+  'share/wasi-sysroot/lib/wasm32-wasip1-threads/libpthread.a',
+  'share/wasi-sysroot/lib/wasm32-wasip1-threads/eh/libc++.a',
+  'share/wasi-sysroot/lib/wasm32-wasip1-threads/eh/libc++abi.a',
+  'share/wasi-sysroot/lib/wasm32-wasip1-threads/eh/libunwind.a',
+  'share/wasi-sysroot/lib/wasm32-wasip1-threads/libsetjmp.a',
+  'share/wasi-sysroot/lib/wasm32-wasip1-threads/libwasi-emulated-process-clocks.a',
+  'lib/clang/22/lib/wasm32-unknown-wasip1-threads/libclang_rt.builtins.a',
+];
+
+interface ResourceDigest {
+  path: string;
+  sha256: string;
+  size: number;
+}
 
 interface ToolchainManifest {
   formatVersion: number;
   llvmVersion: string;
-  architecture: string;
+  llvmCommit: string;
+  wasiSdkVersion: string;
+  runtimeCommit: string;
   targetTriple: string;
+  supportedTargets: string[];
+  threading: string;
+  maxWorkerThreads: number;
+  runtime: string;
+  execution: string;
+  jit: boolean;
+  resources: ResourceDigest[];
 }
 
 /** 一个正在进行的运行。 */
@@ -71,36 +115,26 @@ function exists(path: string): boolean {
   }
 }
 
-/** Bundle metadata may return libs/arm64 rather than an absolute sandbox path. */
-function nativeLibraryDirectory(context: common.Context): string {
-  const libraryPath = context.applicationInfo.nativeLibraryPath;
-  if (typeof libraryPath !== 'string' || libraryPath.length === 0 || libraryPath.indexOf('\0') >= 0) {
-    throw new Error('应用原生库目录无效。');
-  }
-  if (libraryPath.startsWith('/')) {
-    return libraryPath.replace(/\/+$/, '');
-  }
-  const bundleDirectory = context.bundleCodeDir;
-  if (typeof bundleDirectory !== 'string' || !bundleDirectory.startsWith('/')) {
-    throw new Error('应用安装目录无效，无法定位原生编译器。');
-  }
-  return `${bundleDirectory.replace(/\/+$/, '')}/${libraryPath.replace(/^(\.\/)+/, '').replace(/\/+$/, '')}`;
-}
-
 /**
  * 把压缩包里的工具链解到 App 私有目录，返回根目录。
  *
  * 注意事项：
  *   - zlib.decompressFile 是异步的（Promise），所以整个准备过程也是异步的。
- *   - App 每次升级后要重新解压（升级可能换了 clang），用版本号做目录名。
+ *   - App 每次升级后要重新解压，用版本号和安装时间做目录名。
  *   - 目录不完整就整个重来，避免半截解压留下坏文件。
  */
 async function prepareToolchain(context: common.Context): Promise<string> {
-  const root = `${context.filesDir}/forge-toolchain/ohos/${toolchainVersion()}`;
+  const root = `${context.filesDir}/forge-toolchain/ohos-wasi/${toolchainVersion()}`;
   const ready = `${root}/.ready`;
 
   if (isToolchainReady(root)) {
-    return root;
+    try {
+      await verifyToolchainResources(root);
+      return root;
+    } catch (error) {
+      const failure = error as Error;
+      console.error(`QFLI_OHOS_TOOLCHAIN_CACHE_INVALID ${failure.message}`);
+    }
   }
 
   // 上一轮可能只解了一半；整目录删掉重来，不要试图逐文件补救。
@@ -109,9 +143,10 @@ async function prepareToolchain(context: common.Context): Promise<string> {
       fs.rmdirSync(root);
     }
     fs.mkdirSync(root, true);
-    const archive = `${context.cacheDir}/qfli-ohos-toolchain.zip`;
+    const archive = `${context.cacheDir}/qfli-ohos-wasi.zip`;
     try {
       await copyToolchainArchive(context, archive);
+      await verifyToolchainArchive(context, archive);
       await zlib.decompressFile(archive, root);
     } finally {
       if (exists(archive)) {
@@ -121,6 +156,7 @@ async function prepareToolchain(context: common.Context): Promise<string> {
     if (!hasToolchainFiles(root)) {
       throw new Error('解压后的工具链文件或清单不完整。');
     }
+    await verifyToolchainResources(root);
     writeText(ready, 'ready\n');
   } catch (error) {
     // 解压失败就抛出，由调用方转成 available:false（保留回退路径）。
@@ -135,10 +171,24 @@ function toolchainVersion(): string {
   try {
     const info = bundleManager.getBundleInfoForSelfSync(0);
     // Reinstalling a changed HAP can preserve versionName/versionCode.
-    return `${info.versionCode}-${info.updateTime}-layout3`;
+    return `${info.versionCode}-${info.updateTime}-wasi33-layout2`;
   } catch (error) {
     // 拿不到版本号不影响使用，退化成固定目录。
-    return '0-layout3';
+    return '0-wasi33-layout2';
+  }
+}
+
+/** The expected digest is a small ASCII resource protected by the signed HAP. */
+async function verifyToolchainArchive(context: common.Context, archive: string): Promise<void> {
+  const data = await context.resourceManager.getRawFileContent(`${TOOLCHAIN_ARCHIVE}.sha256`);
+  let expected = '';
+  for (let index = 0; index < data.length; index++) {
+    expected += String.fromCharCode(data[index]);
+  }
+  expected = expected.trim().toLowerCase();
+  if (!/^[0-9a-f]{64}$/.test(expected) ||
+      (await fileHash.hash(archive, 'sha256')).toLowerCase() !== expected) {
+    throw new Error('WASI 工具链资源包 SHA256 校验失败。');
   }
 }
 
@@ -191,27 +241,46 @@ function isToolchainReady(root: string): boolean {
 }
 
 function hasToolchainFiles(root: string): boolean {
-  const required = [
-    'toolchain.json',
-    'bin/ohos.cfg',
-    'sysroot/usr/include/stdio.h',
-    'include/c++/v1/vector',
-    'lib/clang/15.0.7/include/stddef.h',
-    'lib/clang/15.0.7/lib/aarch64-unknown-linux-ohos/libclang_rt.builtins.a',
-    'lib/aarch64-unknown-linux-ohos/libc++abi.a',
-    'lib/aarch64-unknown-linux-ohos/libunwind.a',
-  ];
-  for (const item of required) {
-    if (!exists(`${root}/${item}`) || !fs.statSync(`${root}/${item}`).isFile()) {
-      return false;
-    }
-  }
   try {
     const manifest = JSON.parse(fs.readTextSync(`${root}/toolchain.json`)) as ToolchainManifest;
-    return manifest.formatVersion === 1 && manifest.llvmVersion === '15.0.7' &&
-      manifest.architecture === 'arm64-v8a' && manifest.targetTriple === 'aarch64-unknown-linux-ohos';
+    if (manifest.formatVersion !== 2 || manifest.llvmVersion !== '22.1.0' ||
+        manifest.llvmCommit !== '4434dabb69916856b824f68a64b029c67175e532' ||
+        manifest.wasiSdkVersion !== '33.0' ||
+        manifest.runtimeCommit !== '845df599e7b71c98b0c77990c3aa3a10022bbaae' ||
+        manifest.targetTriple !== 'wasm32-unknown-wasip1' ||
+        !Array.isArray(manifest.supportedTargets) || manifest.supportedTargets.length !== 2 ||
+        manifest.supportedTargets.indexOf('wasm32-unknown-wasip1') < 0 ||
+        manifest.supportedTargets.indexOf('wasm32-unknown-wasip1-threads') < 0 ||
+        manifest.threading !== 'wasi-threads' || manifest.maxWorkerThreads !== 32 ||
+        manifest.runtime !== 'wasmedge-interpreter' || manifest.execution !== 'interpreter' ||
+        manifest.jit !== false || !Array.isArray(manifest.resources) ||
+        manifest.resources.length !== REQUIRED_RESOURCES.length) {
+      return false;
+    }
+    for (const required of REQUIRED_RESOURCES) {
+      const resource = manifest.resources.find((item: ResourceDigest) => item.path === required);
+      if (resource === undefined || !/^[0-9a-f]{64}$/.test(resource.sha256) || resource.size <= 0 ||
+          !exists(`${root}/${required}`)) {
+        return false;
+      }
+      const information = fs.statSync(`${root}/${required}`);
+      if (!information.isFile() || information.size !== resource.size) {
+        return false;
+      }
+    }
+    return true;
   } catch (error) {
     return false;
+  }
+}
+
+/** Check cached key headers/libraries once per app session, before using .ready. */
+async function verifyToolchainResources(root: string): Promise<void> {
+  const manifest = JSON.parse(fs.readTextSync(`${root}/toolchain.json`)) as ToolchainManifest;
+  for (const resource of manifest.resources) {
+    if ((await fileHash.hash(`${root}/${resource.path}`, 'sha256')).toLowerCase() !== resource.sha256) {
+      throw new Error(`WASI 工具链文件 SHA256 校验失败：${resource.path}`);
+    }
   }
 }
 
@@ -221,7 +290,6 @@ function hasToolchainFiles(root: string): boolean {
 let activeRun: ActiveRun | null = null;
 let eventSink: EventSink | null = null;
 let toolchainRoot: string | null = null;
-let executorPath: string | null = null;
 
 /** 把原生事件派发到 Flutter 的 EventChannel 上，带上 runId 让 Dart 端过滤。 */
 function emit(runId: string, event: RunnerEvent): void {
@@ -388,40 +456,9 @@ async function startAfterPrepare(
     return;
   }
 
-  let nativeDirectory: string;
-  try {
-    nativeDirectory = nativeLibraryDirectory(context);
-  } catch (error) {
-    const failure = error as Error;
-    console.error(`QFLI_OHOS_NATIVE_DIRECTORY_FAILED ${failure.message}`);
-    activeRun = null;
-    result.success({ 'available': false });
-    return;
-  }
-  executorPath = `${nativeDirectory}/libqfli_executor.so`;
-  const compilerPath = `${nativeDirectory}/libqfli_clang.so`;
-  const linkerPath = `${nativeDirectory}/libqfli-ld.lld-.so`;
-
-  // executor 必须与本设备的 ABI 匹配。如果 HAP 里没有当前 ABI 的副本
-  // （例如只打了 arm64 却在 x86_64 模拟器上跑），就在这里报不可用，
-  // 而不是等到 exec 失败才露出难懂的错。
-  const installedFiles = [executorPath, compilerPath, linkerPath, `${nativeDirectory}/libc++_shared.so`];
-  for (const path of installedFiles) {
-    if (!exists(path)) {
-      console.error(`QFLI_OHOS_NATIVE_FILE_MISSING ${path}`);
-      activeRun = null;
-      result.success({ 'available': false });
-      return;
-    }
-  }
-
   try {
     const handle = qfliRunner.create({
       toolchainRoot,
-      executorPath,
-      compilerPath,
-      linkerPath,
-      runtimeDirectory: nativeDirectory,
       onEvent: (event: RunnerEvent) => {
         if (run.finished) {
           return;
