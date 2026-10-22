@@ -233,6 +233,7 @@ std::this_thread::sleep_for(std::chrono::milliseconds(1));return 0;}`,{extension
   }
   assert.deepEqual(await run('int main(void){return 0;}'),{code:0,out:'',err:''});
   console.log('PASS: real compiler/CPU/sleep/pre-start cancellation, destroy/GC during worker and successful fresh run');
+  await require(path.join(fixtures,'../../../native/toolchain/tests/code-analysis-regression.cjs'))(native,project,cache,sdk);
   verifyCleanup(); console.log(`PASS: ${serial} actual in-process compiler/interpreter runs; exit follows cleanup`);
 })().catch(error => { console.error(error); process.exit(1); });
 ''')

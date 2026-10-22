@@ -12,7 +12,7 @@ const ts = require(path.resolve(process.argv[2]));
 const repo = path.resolve(__dirname, '../../..');
 const file = path.join(repo, 'ohos/entry/src/main/ets/plugins/QfliCNative.ets');
 const source = fs.readFileSync(file, 'utf8');
-const compiled = ts.transpileModule(source + '\nexport { start, cancel };', {
+const compiled = ts.transpileModule(source + '\nexport { start, analyzeStart, cancel };', {
   compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 },
   reportDiagnostics: true,
 });
@@ -118,6 +118,7 @@ async function scenario(options = {}) {
       return {};
     },
     run(...args) { calls.push(['run', ...args]); return true; },
+    analyze(...args) { calls.push(['analyze', ...args]); return true; },
     cancel() { calls.push(['cancel']); }, destroy() { calls.push(['destroy']); },
   };
   class MethodChannel { setMethodCallHandler() {} }
@@ -140,7 +141,7 @@ async function scenario(options = {}) {
     },
   };
   const sandbox = {
-    exports: {}, console: { error: message => logs.push(message) },
+    exports: {}, Map, console: { error: message => logs.push(message) },
     require(name) {
       if (name === 'libqfli_ohos_runner.so') return { default: native };
       if (name === '@ohos/flutter_ohos') return { MethodChannel, EventChannel };
@@ -167,10 +168,19 @@ async function scenario(options = {}) {
   vm.runInNewContext(compiled.outputText, sandbox, { filename: file });
   sandbox.exports.registerQfliNativeChannel({ dartExecutor: { getBinaryMessenger: () => ({}) } }, context);
   const args = { runId: 'resource-check', type: 'cpp', projectPath: '/project',
-    entryFile: '/project/main.cpp', sources: ['/project/main.cpp'] };
-  sandbox.exports.start({ argument: key => args[key], hasArgument: key => Object.hasOwn(args, key) },
+    entryFile: '/project/main.cpp', sources: ['/project/main.cpp'],
+    activeFilePath: '/project/main.cpp', language:'cpp',
+    documents:[new Map([['path','/project/main.cpp'],['text','// 汉字😀\r\nint main(){return bad;}\r\n']])],
+    ...options.arguments };
+  const method = options.analysis ? sandbox.exports.analyzeStart : sandbox.exports.start;
+  method({ argument: key => args[key], hasArgument: key => Object.hasOwn(args, key) },
     { success: value => replies.push(value), error: (...value) => errors.push(value) }, context);
   await new Promise(resolve => setImmediate(resolve));
+  if (options.invalidAnalysis) {
+    assert.equal(errors[0][0],'invalid_analysis');
+    assert.equal(calls.length,0);assert.equal(replies.length,0);
+    return;
+  }
   if (options.nativeFailure) {
     assert.equal(errors[0][0], 'QFLI_NATIVE_FAILED');
     assert.equal(errors[0][1], options.nativeFailure);
@@ -187,8 +197,15 @@ async function scenario(options = {}) {
   } else {
     assert.deepEqual(errors, []);
     assert.equal(replies[0].available, true);
-    assert.equal(calls[1][0], 'run');
-    assert.equal(calls[1][5], '/cache');
+    assert.equal(calls[1][0], options.analysis ? 'analyze' : 'run');
+    assert.equal(calls[1][options.analysis ? 6 : 5], '/cache');
+    if (options.analysis) {
+      assert.equal(calls[1][4],true);
+      assert.equal(calls[1][5][0].text,args.documents[0].get('text'));
+      method({argument:key=>args[key]},
+        {success(){throw Error('busy analyzer accepted');},error:(...value)=>errors.push(value)},context);
+      assert.equal(errors.pop()[0],'runner_busy');
+    }
     calls[0][1].onEvent({ kind: 'stdout', text: 'one\n\npar' });
     calls[0][1].onEvent({ kind: 'stdout', text: 'tial' });
     calls[0][1].onEvent({ kind: 'exit', exitCode: 7 });
@@ -219,5 +236,14 @@ async function scenario(options = {}) {
   }
   await scenario({ cached: false, cancelDuringPrepare: true });
   await scenario({ nativeFailure: 'native WASI initialization /files/resource: permission denied' });
+  await scenario({analysis:true});
+  await scenario({analysis:true,cached:false,cancelDuringPrepare:true});
+  for (const arguments_ of [{language:'python'}, {documents:[]},
+    {documents:[{path:'/project/main.cpp',text:'not codec Maps'}]},
+    {documents:[new Map([['path','/project/main.cpp'],['text','x'.repeat(4*1024*1024+1)]])]},
+    {documents:[new Map([['path','/project/main.cpp'],['text','null\0byte']])]}]) {
+    await scenario({analysis:true,invalidAnalysis:true,arguments:arguments_});
+  }
+  console.log('PASS: actual ArkTS compile-only analyzer dispatch, exact codec Map snapshots, busy/preparation cancellation and pre-allocation bounds.');
   console.log('PASS: actual ArkTS WASI startup, signed archive/key-file SHA256, raw-FD slices, cache repair, cancellation, native errors and output/exit preservation.');
 })().catch(error => { console.error(error); process.exitCode = 1; });

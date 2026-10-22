@@ -1,0 +1,67 @@
+{
+  "resources": {
+    "sha256": "a29e74b526e4689289d590ab35d1dee6209d9b0ccb7538554284000ef4cc5d27",
+    "resourceFiles": 4114,
+    "llvmVersion": "22.1.0",
+    "execution": "interpreter"
+  },
+  "appExecutionVerified": false,
+  "runner": {
+    "sha256": "bd816ba7d480a9bfd1be92b869d61876be6d3ee74d34fdd6fe0e594d87887fc5",
+    "neededLibraries": [
+      "libace_napi.z.so",
+      "libhilog_ndk.z.so",
+      "libc++_shared.so",
+      "libc.so"
+    ],
+    "minimumLoadAlignment": 16384
+  },
+  "hapSha256": "1ab90015df9045bd8246ea58b24ccca53dfd6ae2b07320490897eaf9afeefb3c",
+  "signatureVerified": true,
+  "signatureVerificationLog": "native/build/code-analysis-signature.log",
+  "buildLog": "native/build/code-analysis-ohos-hap.log",
+  "nativeAnalysisSymbolVerified": true,
+  "nativeUnstrippedSha256": "20660ab41db97fbb0f1013ff8fc31183e8917dec854c7278c1a52efa4aefd27f",
+  "architecture": "arm64-v8a",
+  "deviceExecutionVerified": false,
+  "sourceScope": "current worktree, including preserved earlier terminal/startup changes",
+  "sourceHashes": {
+    "native/compiler/compiler.cpp": "89e5db1a62f5985fb3005ba39a07883c8c786d48ac272ee674f0bf60c3b10ae3",
+    "native/compiler/compiler_analysis.inc": "0fb860f67ef090791efb05f1f0a77811de0d1f293167f99f0417e9e9dd38b24b",
+    "native/compiler/include/qfli_code_analysis.h": "1287617583d765e9c66881cc70bb93336e8f9038c1e53d0f09ff8ddff7ec0e67",
+    "native/portable/wasm_runtime.cpp": "e820d6d984f9a8ed342e3d06c964968f2430c590dae7e290fb3a668c60b05bd9",
+    "ohos/entry/src/main/cpp/qfli_ohos_portable.cpp": "e88b0a9578d3ccae1d60f4454528215f9ae5cb6fe88f8c289117b63c2a61cf3e",
+    "ohos/entry/src/main/ets/plugins/QfliCNative.ets": "da0d32e4ba31b03e06e6bee89364d7bb69d51b2cce56bf08ed665e400742a9a6",
+    "lib/forge_code_analyzer.dart": "d182602bb60806bf6e61ee28279c2c1deb1d804902226d3251825ad17a6a7481",
+    "lib/main.dart": "3422a265d6b619ccef5ecd014479fca87b4c98b02d979f87a870b8c8a6ed84cb"
+  },
+  "staticLibraries": {
+    "libqfli_compiler.a": {
+      "sha256": "1f78641a07d46e01396c2e3a4028919271f4fc09d2f72adf57df8a1adb68a0ff",
+      "size": 317984958,
+      "aarch64Objects": 2242,
+      "exports": [
+        "qfli_compiler_analyze",
+        "qfli_compiler_cancel",
+        "qfli_compiler_command",
+        "qfli_compiler_compile",
+        "qfli_compiler_create",
+        "qfli_compiler_destroy",
+        "qfli_compiler_set_threads"
+      ]
+    },
+    "libqfli_wasm.a": {
+      "sha256": "f6d609082bc93087c8d4427bcb935638654486cf39ef5c9fbfc1fe5dc73ebb46",
+      "size": 16388532,
+      "aarch64Objects": 108,
+      "exports": [
+        "qfli_wasm_cancel",
+        "qfli_wasm_create",
+        "qfli_wasm_destroy",
+        "qfli_wasm_error",
+        "qfli_wasm_run",
+        "qfli_wasm_run_with_args"
+      ]
+    }
+  }
+}

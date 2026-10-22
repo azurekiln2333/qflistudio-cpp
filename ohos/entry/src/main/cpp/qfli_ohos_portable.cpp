@@ -2,6 +2,7 @@
 // No subprocesses, generated native code, JIT, or process-wide stdio changes.
 #include "napi/native_api.h"
 #include "../../../../../native/compiler/include/qfli_compiler.h"
+#include "../../../../../native/compiler/include/qfli_code_analysis.h"
 #include "../../../../../native/portable/include/qfli_wasm.h"
 
 #include <atomic>
@@ -115,6 +116,9 @@ struct RunState {
     std::string project;
     std::string entry;
     std::vector<std::string> sources;
+    bool analyzing = false;
+    bool analysisCpp = false;
+    std::vector<std::string> analysisText;
     std::string cache;
     bool accepted = false; // JS-thread owned; never reopened after acceptance.
     std::atomic<bool> cancelled{false};
@@ -262,7 +266,16 @@ int Execute(RunState *state, const std::string &directory) {
             qfli_compiler_set_threads(state->compiler, 1);
             if (state->cancelled.load()) qfli_compiler_cancel(state->compiler);
         }
-        if (state->compiler != nullptr) {
+        if (state->compiler != nullptr && state->analyzing) {
+            std::vector<qfli_source_snapshot> snapshots;
+            for (size_t index = 0; index < state->sources.size(); ++index) {
+                snapshots.push_back({state->sources[index].c_str(),
+                    state->analysisText[index].data(), state->analysisText[index].size()});
+            }
+            code = qfli_compiler_analyze(state->compiler, state->sdkRoot.c_str(),
+                state->project.c_str(), state->entry.c_str(), state->analysisCpp,
+                snapshots.data(), snapshots.size(), output.writer.value, errors.writer.value);
+        } else if (state->compiler != nullptr) {
             std::vector<const char *> sources;
             for (const std::string &source : state->sources) sources.push_back(source.c_str());
             code = qfli_compiler_compile(state->compiler, state->sdkRoot.c_str(), state->project.c_str(),
@@ -271,7 +284,7 @@ int Execute(RunState *state, const std::string &directory) {
             WriteDiagnostic(errors.writer.value, "Forge: cannot create compiler session\n");
         }
         DestroySessions(state);
-        if (code == 0 && !state->cancelled.load()) {
+        if (code == 0 && !state->analyzing && !state->cancelled.load()) {
             input.Reset(open(Join(state->project, "input.txt").c_str(), O_RDONLY | O_CLOEXEC | O_NOFOLLOW | O_NONBLOCK));
             const bool missingInput = input.value < 0 && errno == ENOENT;
             if (missingInput) input.Reset(open("/dev/null", O_RDONLY | O_CLOEXEC));
@@ -353,11 +366,11 @@ void RunOnWorker(std::shared_ptr<RunState> state) {
     state->events = nullptr;
 }
 
-bool ReadString(napi_env env, napi_value value, std::string *output) {
+bool ReadString(napi_env env, napi_value value, std::string *output, size_t maximum = 16 * 1024 * 1024) {
     napi_valuetype type = napi_undefined;
     if (napi_typeof(env, value, &type) != napi_ok || type != napi_string) return false;
     size_t length = 0;
-    if (napi_get_value_string_utf8(env, value, nullptr, 0, &length) != napi_ok) return false;
+    if (napi_get_value_string_utf8(env, value, nullptr, 0, &length) != napi_ok || length > maximum) return false;
     std::vector<char> buffer(length + 1);
     if (napi_get_value_string_utf8(env, value, buffer.data(), buffer.size(), &length) != napi_ok) return false;
     output->assign(buffer.data(), length);
@@ -487,6 +500,52 @@ napi_value Run(napi_env env, napi_callback_info info) {
     return Boolean(env, true);
 }
 
+napi_value Analyze(napi_env env, napi_callback_info info) {
+    size_t argc = 6;
+    napi_value args[6] = {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr};
+    if (napi_get_cb_info(env, info, &argc, args, nullptr, nullptr) != napi_ok || argc != 6) return Boolean(env, false);
+    auto state = ReadHandle(env, args[0]);
+    if (state == nullptr || state->accepted) return Boolean(env, false);
+    std::string project, active, cache;
+    bool cpp = false, array = false;
+    uint32_t length = 0;
+    if (!ReadString(env, args[1], &project, 16384) || !ResolvePath(project, &project) ||
+        !ReadString(env, args[2], &active, 16384) || active.empty() || active.front() != '/' ||
+        !ReadString(env, args[5], &cache, 16384) || !ResolvePath(cache, &cache) ||
+        napi_get_value_bool(env, args[3], &cpp) != napi_ok ||
+        napi_is_array(env, args[4], &array) != napi_ok || !array ||
+        napi_get_array_length(env, args[4], &length) != napi_ok || length == 0 || length > 64) return Boolean(env, false);
+    std::vector<std::string> paths, texts;
+    size_t bytes = 0;
+    for (uint32_t index = 0; index < length; ++index) {
+        napi_value document = nullptr, pathValue = nullptr, textValue = nullptr;
+        std::string path, text;
+        if (napi_get_element(env, args[4], index, &document) != napi_ok ||
+            napi_get_named_property(env, document, "path", &pathValue) != napi_ok ||
+            napi_get_named_property(env, document, "text", &textValue) != napi_ok ||
+            !ReadString(env, pathValue, &path, 16384) || path.empty() || path.front() != '/' ||
+            !ReadString(env, textValue, &text, 16 * 1024 * 1024 - bytes)) return Boolean(env, false);
+        bytes += text.size();
+        paths.push_back(std::move(path));
+        texts.push_back(std::move(text));
+    }
+    state->analyzing = true;
+    state->analysisCpp = cpp;
+    state->project = std::move(project);
+    state->entry = std::move(active);
+    state->sources = std::move(paths);
+    state->analysisText = std::move(texts);
+    state->cache = std::move(cache);
+    state->accepted = true;
+    try {
+        std::thread(RunOnWorker, state).detach();
+    } catch (const std::exception &) {
+        state->accepted = false;
+        return Boolean(env, false);
+    }
+    return Boolean(env, true);
+}
+
 napi_value Cancel(napi_env env, napi_callback_info info) {
     size_t argc = 1;
     napi_value args[1] = {nullptr};
@@ -514,6 +573,7 @@ static napi_value Init(napi_env env, napi_value exports) {
     napi_property_descriptor properties[] = {
         {"create", nullptr, Create, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"run", nullptr, Run, nullptr, nullptr, nullptr, napi_default, nullptr},
+        {"analyze", nullptr, Analyze, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"cancel", nullptr, Cancel, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"destroy", nullptr, Destroy, nullptr, nullptr, nullptr, napi_default, nullptr},
     };

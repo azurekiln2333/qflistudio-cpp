@@ -224,7 +224,7 @@ for name, paths in {
     subprocess.run(['llvm-ar-18', '-M'], input=script, text=True, check=True)
     subprocess.run(['llvm-ranlib-18', str(pending)], check=True)
     symbols = subprocess.check_output(['llvm-nm-18', '-g', '--defined-only', str(pending)], text=True)
-    for suffix in ('create', 'compile', 'set_threads', 'cancel', 'destroy') if name == 'compiler' else ('create', 'run', 'error', 'cancel', 'destroy'):
+    for suffix in ('create', 'compile', 'analyze', 'set_threads', 'cancel', 'destroy') if name == 'compiler' else ('create', 'run', 'error', 'cancel', 'destroy'):
         if ' T qfli_' + name + '_' + suffix + '\n' not in symbols:
             raise SystemExit('Missing exported C ABI symbol: ' + name + '_' + suffix)
     headers = subprocess.check_output(['llvm-readobj-18', '--file-headers', str(pending)], text=True)
@@ -233,13 +233,14 @@ for name, paths in {
         raise SystemExit('Package contains an unexpected object architecture: ' + str(architectures))
     pending.replace(output)
     print(str(output) + ': ' + str(output.stat().st_size) + ' bytes')
-for source in ('native/compiler/include/qfli_compiler.h', 'native/portable/include/qfli_wasm.h'):
+for source in ('native/compiler/include/qfli_compiler.h', 'native/compiler/include/qfli_code_analysis.h', 'native/portable/include/qfli_wasm.h'):
     shutil.copyfile(repo / source, package / 'include' / pathlib.Path(source).name)
 metadata = json.loads((build / 'verified-inputs.json').read_text())
 metadata.update({'architecture': 'arm64-v8a', 'target': 'wasm32-unknown-wasip1',
                  'execution': 'wasmedge-interpreter', 'jit': False,
                  'adapterSources': {source: hashlib.sha256((repo / source).read_bytes()).hexdigest()
-                                    for source in ('native/compiler/compiler.cpp', 'native/portable/wasm_runtime.cpp')},
+                                    for source in ('native/compiler/compiler.cpp', 'native/compiler/compiler_analysis.inc',
+                                                   'native/compiler/include/qfli_code_analysis.h', 'native/portable/wasm_runtime.cpp')},
                  'runtimePatches': {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
                                     for p in sorted((repo / 'native/portable/patches').glob('*.patch'))},
                  'hostTools': {p.name: hashlib.sha256(p.read_bytes()).hexdigest()

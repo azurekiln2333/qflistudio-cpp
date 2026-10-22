@@ -17,7 +17,7 @@
  *
  *   registerQfliNativeChannel(flutterEngine);
  */
-import qfliRunner, { RunnerHandle, RunnerOptions, RunnerEvent } from 'libqfli_ohos_runner.so';
+import qfliRunner, { RunnerHandle, RunnerOptions, RunnerEvent, AnalysisDocument } from 'libqfli_ohos_runner.so';
 import {
   FlutterEngine,
   MethodChannel,
@@ -414,16 +414,73 @@ function start(call: MethodCall, result: MethodResult, context: common.Context):
   // 避免阻塞 ArkTS 主线程；结果回来之前先把 run 占住，防止并发 start。
   const run = new ActiveRun(runId);
   activeRun = run;
-  startAfterPrepare(run, result, context, projectPath, entryFile, sources);
+  startAfterPrepare(run, result, context, (handle: RunnerHandle) =>
+    qfliRunner.run(handle, projectPath, entryFile, sources, context.cacheDir) as boolean);
 }
 
+/**
+ * 只分析传入的未保存文档，返回结构化诊断；与运行共享工具链占用和清理。
+ */
+function analyzeStart(call: MethodCall, result: MethodResult, context: common.Context): void {
+  const runId = call.argument('runId') as string | undefined;
+  const projectPath = call.argument('projectPath') as string | undefined;
+  const activeFile = call.argument('activeFilePath') as string | undefined;
+  const language = call.argument('language') as string | undefined;
+  const raw = call.argument('documents') as Map<string, Object>[] | null;
+  if (typeof runId !== 'string' || runId.length === 0 ||
+      typeof projectPath !== 'string' || !projectPath.startsWith('/') || projectPath.indexOf('\0') >= 0 ||
+      typeof activeFile !== 'string' || !activeFile.startsWith('/') || activeFile.indexOf('\0') >= 0 ||
+      (language !== 'c' && language !== 'cpp') ||
+      !Array.isArray(raw) || raw.length === 0 || raw.length > 64) {
+    result.error('invalid_analysis', '语法检查参数无效。', null);
+    return;
+  }
+  const documents: AnalysisDocument[] = [];
+  let units = 0;
+  for (const item of raw) {
+    if (!(item instanceof Map)) {
+      result.error('invalid_analysis', '语法检查文档无效。', null);
+      return;
+    }
+    const path = item.get('path') as string;
+    const text = item.get('text') as string;
+    if (typeof path !== 'string' || !path.startsWith('/') || path.indexOf('\0') >= 0 ||
+        typeof text !== 'string' || text.indexOf('\0') >= 0) {
+      result.error('invalid_analysis', '语法检查文档无效。', null);
+      return;
+    }
+    units += text.length;
+    if (units > 4 * 1024 * 1024) {
+      result.error('invalid_analysis', '语法检查文档超过大小限制。', null);
+      return;
+    }
+    documents.push({ path, text });
+  }
+  if (eventSink === null) {
+    result.error('missing_listener', '语法检查通道未连接。', null);
+    return;
+  }
+  if (activeRun !== null) {
+    result.error('runner_busy', '编译工具链正在使用中。', null);
+    return;
+  }
+  const run = new ActiveRun(runId);
+  activeRun = run;
+  startAfterPrepare(run, result, context, (handle: RunnerHandle) =>
+    qfliRunner.analyze(handle, projectPath, activeFile, language === 'cpp', documents, context.cacheDir) as boolean);
+}
+
+/**
+ * 抢占一次运行，等待工具链准备/创建句柄后再执行 [launch]。
+ *
+ * [launch] 拿到的句柄已经被记录在 [run] 上，因此取消路径无需区分 start 与
+ * analyzeStart：两者共享同一套事件、exit 和 destroy 收尾。
+ */
 async function startAfterPrepare(
   run: ActiveRun,
   result: MethodResult,
   context: common.Context,
-  projectPath: string,
-  entryFile: string,
-  sources: string[],
+  launch: (handle: RunnerHandle) => boolean,
 ): Promise<void> {
   // 工具链准备可能失败（资源缺失/解压失败）。这种情况按 available:false 处理，
   // 让 Dart 侧保留既有回退路径，而不是报一个无法恢复的错误。
@@ -484,9 +541,9 @@ async function startAfterPrepare(
   result.success({ 'available': true });
 
   try {
-    const accepted = qfliRunner.run(run.handle, projectPath, entryFile, sources, context.cacheDir) as boolean;
+    const accepted = launch(run.handle as RunnerHandle);
     if (!accepted) {
-      emit(run.runId, { kind: 'stderr', text: '原生桥拒绝了这次运行。' });
+      emit(run.runId, { kind: 'stderr', text: '原生桥拒绝了这次请求。' });
       finishRun(run, 127);
     }
   } catch (error) {
@@ -543,6 +600,10 @@ export function registerQfliNativeChannel(
     onMethodCall(call: MethodCall, result: MethodResult): void {
       if (call.method === 'start') {
         start(call, result, context);
+        return;
+      }
+      if (call.method === 'analyzeStart') {
+        analyzeStart(call, result, context);
         return;
       }
       if (call.method === 'cancel') {

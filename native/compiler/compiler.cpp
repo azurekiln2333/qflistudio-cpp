@@ -283,3 +283,5 @@ void qfli_compiler_cancel(qfli_compiler_session *session) {
 }
 
 void qfli_compiler_destroy(qfli_compiler_session *session) { delete session; }
+
+#include "compiler_analysis.inc"

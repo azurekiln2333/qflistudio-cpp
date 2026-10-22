@@ -15,12 +15,25 @@ class NativeClangRunner {
     this.allowCFallback = false,
     this.cancellationExitTimeout,
   }) : _channel = channel,
-       _events = events ?? _sharedEvents;
+       _events = events ?? sharedEvents;
 
-  static final Stream<Object?> _sharedEvents = const EventChannel(
+  /// The single broadcast stream every `qfli_forge/native` consumer listens to.
+  ///
+  /// Exposed so the terminal delegate and the editor Run path share **one**
+  /// EventChannel subscription. A second `receiveBroadcastStream()` call would
+  /// re-register the platform stream handler; the OHOS bridge keeps a single
+  /// `eventSink`, so onCancel from either listener would silence the other.
+  static final Stream<Object?> sharedEvents = const EventChannel(
     'qfli_forge/native/events',
   ).receiveBroadcastStream();
+
   static int _nextRunId = 0;
+
+  /// Allocates a process-wide unique run id for [prefix].
+  ///
+  /// Shared with the terminal delegate so an editor run and a terminal command
+  /// can never collide on the same id even though they use different methods.
+  static String allocateRunId(String prefix) => '$prefix-${++_nextRunId}';
 
   final MethodChannel _channel;
   final Stream<Object?> _events;
@@ -35,7 +48,7 @@ class NativeClangRunner {
     required String entryFile,
     List<String>? sources,
   }) async {
-    final runId = '$runIdPrefix-${++_nextRunId}';
+    final runId = allocateRunId(runIdPrefix);
     final stdout = StreamController<String>();
     final stderr = StreamController<String>();
     final exitCode = Completer<int>();
