@@ -7,7 +7,7 @@ import 'package:qfli_c/main.dart' show forgeProfile;
 
 void main() {
   test('Forge contributes a tools page to the existing navigation', () {
-    expect(forgeProfile.toolsPageBuilder, isNotNull);
+    expect(forgeProfile.toolsTabBuilder, isNotNull);
   });
 
   group('Integer tools', () {
@@ -102,8 +102,38 @@ void main() {
     expect(const AsciiCharacter(32).isControl, isFalse);
   });
 
-  for (final width in [320.0, 1024.0]) {
-    testWidgets('tools work without overflow at width $width', (tester) async {
+  testWidgets('embedded tools body uses host scaffold and terminal callback', (
+    tester,
+  ) async {
+    var terminalOpens = 0;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          appBar: AppBar(title: const Text('宿主工具页')),
+          body: ForgeToolsBody(onOpenTerminal: () => terminalOpens++),
+        ),
+      ),
+    );
+    expect(find.byType(Scaffold), findsOneWidget);
+    expect(find.byType(AppBar), findsOneWidget);
+    expect(find.byType(TabBar), findsNothing);
+    expect(find.text('进制转换'), findsOneWidget);
+    expect(find.text('UTF-8 / C 字符串'), findsOneWidget);
+    await tester.tap(find.widgetWithText(OutlinedButton, '打开终端'));
+    expect(terminalOpens, 1);
+    expect(find.byType(Scaffold), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  for (final (width, scale) in [
+    (320.0, 1.0),
+    (1024.0, 1.0),
+    (320.0, 2.0),
+    (1024.0, 2.0),
+  ]) {
+    testWidgets('direct tools work at width $width and text scale $scale', (
+      tester,
+    ) async {
       tester.view.physicalSize = Size(width, 800);
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.resetPhysicalSize);
@@ -125,46 +155,159 @@ void main() {
         ),
       );
 
-      await tester.pumpWidget(const MaterialApp(home: ForgeToolsPage()));
-      await tester.tap(find.text('64 位').first);
-      await tester.enterText(
-        find.byKey(const ValueKey('integer-a')).first,
-        '-1',
+      await tester.pumpWidget(
+        MaterialApp(
+          builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(
+              context,
+            ).copyWith(textScaler: TextScaler.linear(scale)),
+            child: child!,
+          ),
+          home: const ForgeToolsPage(),
+        ),
       );
-      await tester.pumpAndSettle();
+      Finder button(String tooltip) => find.byWidgetPredicate(
+        (widget) => widget is IconButton && widget.tooltip == tooltip,
+      );
+      Future<void> show(Finder target) async {
+        await Scrollable.ensureVisible(tester.element(target), alignment: 0.2);
+        await tester.pumpAndSettle();
+      }
+
+      Future<void> enter(Finder target, String value) async {
+        await show(target);
+        await tester.enterText(target, value);
+        await tester.pumpAndSettle();
+      }
+
+      Future<void> tap(Finder target) async {
+        await show(target);
+        await tester.tap(target);
+        await tester.pumpAndSettle();
+      }
+
+      expect(find.byType(TabBar), findsNothing);
+      expect(find.byType(TabBarView), findsNothing);
+      expect(find.text('UTF-8 / C 字符串'), findsOneWidget);
+      expect(find.text('类型与结构体布局'), findsOneWidget);
+      expect(
+        tester.widget<IconButton>(button('复制十六进制').first).onPressed,
+        isNull,
+      );
+      await show(find.text('64 位').first);
+      await tester.tap(find.text('64 位').first);
+      await enter(find.byKey(const ValueKey('integer-a')).first, '-1');
       expect(find.text('18446744073709551615'), findsOneWidget);
-      final copy = find.byTooltip('复制十六进制').first;
-      await tester.ensureVisible(copy);
-      await tester.tap(copy);
-      await tester.pumpAndSettle();
+      final copy = button('复制十六进制').first;
+      await tap(copy);
       expect(copied, '0xFFFFFFFFFFFFFFFF');
       expect(tester.takeException(), isNull);
 
-      await tester.tap(find.text('位运算'));
-      await tester.pumpAndSettle();
-      await tester.enterText(
-        find.byKey(const ValueKey('integer-a')).last,
-        '0xFF',
-      );
-      await tester.enterText(find.byKey(const ValueKey('integer-b')), '0x0F');
-      await tester.pumpAndSettle();
+      await enter(find.byKey(const ValueKey('integer-a')).last, '0xFF');
+      await enter(find.byKey(const ValueKey('integer-b')), '0x0F');
       expect(find.text('0x0000000F'), findsOneWidget);
+      await tap(button('交换操作数'));
+      expect(
+        tester
+            .widget<TextField>(find.byKey(const ValueKey('integer-a')).last)
+            .controller!
+            .text,
+        '0x0F',
+      );
+      await enter(find.byKey(const ValueKey('integer-b')), 'not an integer');
+      expect(find.text('整数格式无效'), findsOneWidget);
+      expect(
+        tester.widget<IconButton>(button('复制十六进制').last).onPressed,
+        isNull,
+      );
+      await enter(find.byKey(const ValueKey('integer-b')), '0xFF');
       expect(tester.takeException(), isNull);
 
-      await tester.tap(find.text('ASCII'));
+      await enter(find.byKey(const ValueKey('c-string-text')), 'éA');
+      await tap(find.text('全十六进制'));
+      expect(find.text(r'"\xC3\xA9\x41"'), findsOneWidget);
+      await tap(button('复制C 字符串'));
+      expect(copied, r'"\xC3\xA9\x41"');
+      await enter(
+        find.byKey(const ValueKey('c-string-literal')),
+        r'"\xC3\xA9" "A"',
+      );
+      await tap(button('复制UTF-8 文本'));
+      expect(copied, 'éA');
+      await enter(find.byKey(const ValueKey('c-string-literal')), r'"\xFF"');
+      expect(find.text('字节序列不是有效 UTF-8；仍可复制原始字节。'), findsOneWidget);
+      expect(tester.widget<IconButton>(button('复制UTF-8 文本')).onPressed, isNull);
+      await tap(button('复制字节列表'));
+      expect(copied, '0xFF');
+      await enter(find.byKey(const ValueKey('c-string-literal')), r'"\x41B"');
+      expect(find.textContaining('十六进制转义超出 8 位范围'), findsOneWidget);
+      expect(tester.widget<IconButton>(button('复制字节列表')).onPressed, isNull);
+
+      await show(find.byKey(const ValueKey('c-layout-summary')));
+      expect(find.text('总大小 12 字节 · 对齐 4 · 尾部填充 0'), findsOneWidget);
+      await tap(find.text('桌面 / LP64'));
+      expect(find.text('总大小 24 字节 · 对齐 8 · 尾部填充 0'), findsOneWidget);
+      await tap(button('复制布局报告'));
+      expect(
+        copied,
+        contains('long count: offset=8, size=8, align=8, padding=7'),
+      );
+      await enter(
+        find.byKey(const ValueKey('c-layout-members')),
+        'int zero[0];',
+      );
+      expect(find.textContaining('数组长度必须是正整数'), findsOneWidget);
+      expect(tester.widget<IconButton>(button('复制布局报告')).onPressed, isNull);
+
+      final asciiResults = find.byKey(const ValueKey('ascii-results'));
+      await show(asciiResults);
+      expect(tester.getSize(asciiResults).height, 280);
+      expect(find.text('128 个匹配字符 · DEC / HEX / C 常量'), findsOneWidget);
+      await tester.drag(
+        find.byKey(const ValueKey('ascii-list')),
+        const Offset(0, -300),
+      );
       await tester.pumpAndSettle();
-      await tester.enterText(find.widgetWithText(TextField, '搜索 ASCII'), 'LF');
-      await tester.pumpAndSettle();
-      expect(find.text('0A'), findsOneWidget);
+      await enter(find.byKey(const ValueKey('ascii-search')), 'LF');
+      expect(find.text('10 / 0A · LF'), findsOneWidget);
       expect(find.text(r"'\n'"), findsOneWidget);
-      await tester.tap(find.byTooltip('复制 LF 常量'));
-      await tester.pumpAndSettle();
+      await tap(button('复制 LF 常量'));
       expect(copied, r"'\n'");
+      await tap(find.text('可打印'));
+      expect(find.text('无匹配字符'), findsOneWidget);
+      await tap(find.text('控制字符'));
+      expect(find.text('10 / 0A · LF'), findsOneWidget);
       expect(tester.takeException(), isNull);
 
-      await tester.tap(find.text('进制转换'));
-      await tester.pumpAndSettle();
+      await show(find.byKey(const ValueKey('integer-a')).first);
       expect(find.text('18446744073709551615'), findsOneWidget);
+      // A responsive rearrangement keeps every controller, chip and filter.
+      tester.view.physicalSize = Size(width == 320 ? 1024 : 320, 800);
+      await tester.pumpAndSettle();
+      expect(
+        tester
+            .widget<TextField>(find.byKey(const ValueKey('integer-a')).first)
+            .controller!
+            .text,
+        '-1',
+      );
+      expect(
+        tester
+            .widget<TextField>(find.byKey(const ValueKey('c-string-text')))
+            .controller!
+            .text,
+        'éA',
+      );
+      expect(
+        tester
+            .widget<TextField>(find.byKey(const ValueKey('ascii-search')))
+            .controller!
+            .text,
+        'LF',
+      );
+      expect(find.text('无匹配字符'), findsNothing);
+      expect(find.text('18446744073709551615'), findsOneWidget);
+      expect(tester.takeException(), isNull);
     });
   }
 }

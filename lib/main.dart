@@ -29,6 +29,8 @@ final StudioProfile forgeProfile = StudioProfile(
   templates: [ProjectTemplate.empty, ProjectTemplate.c, ProjectTemplate.cpp],
   runner: ForgeProgramRunner(),
   toolsPageBuilder: (_) => const ForgeToolsPage(),
+  toolsTabBuilder: (_, onOpenTerminal) =>
+      ForgeToolsBody(onOpenTerminal: onOpenTerminal),
   contentRepositoryFactory: ForgeContentRepository.new,
   isOffline: true,
   productKey: StudioProductCatalog.forgeKey,
