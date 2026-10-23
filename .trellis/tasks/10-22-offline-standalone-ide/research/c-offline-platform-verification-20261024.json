@@ -1,0 +1,71 @@
+{
+  "cases": [
+    {
+      "name": "current-full",
+      "exit": 0,
+      "expectedPositive": true,
+      "accepted": true,
+      "logSha256": "fb82cf8439edd4a84cb9089091a6d8f32fb3f66925cd83fe0ca3463c3fa899d7",
+      "observed": "PASS: real C EntryAbility offline refusal"
+    },
+    {
+      "name": "policy-only",
+      "exit": 0,
+      "expectedPositive": true,
+      "accepted": true,
+      "logSha256": "63afd7a9c2171bf9b7ad43d3c667235ef3eacd206e3721d12360b26ef5a1fbcd",
+      "observed": "PASS: real C EntryAbility offline refusal"
+    },
+    {
+      "name": "old-source-negative",
+      "exit": 1,
+      "expectedPositive": false,
+      "accepted": true,
+      "logSha256": "bb1076620d282883d022c27acf6e061df47b7e74a2a872ac64570f3cdb2fb14f",
+      "observed": "Error: Unexpected browser"
+    },
+    {
+      "name": "disabled-policy-negative",
+      "exit": 1,
+      "expectedPositive": false,
+      "accepted": true,
+      "logSha256": "0a19afa4a450143c9acaa7bbe6a739e214df55bec6d1df09e0d366ace7150d16",
+      "observed": "Error: Unexpected browser"
+    }
+  ],
+  "deviceGatePassed": false,
+  "sourceSha256": "6c6b6cf5cff1f4bb286461b78c5e6a48203b42e77d574816c66028197c96fb98",
+  "validationDateLocal": "2026-10-24",
+  "grant": "qfli-core-release-sync C415",
+  "inputs": {
+    "current-full": {
+      "sha256": "6c6b6cf5cff1f4bb286461b78c5e6a48203b42e77d574816c66028197c96fb98",
+      "bytes": 8051
+    },
+    "policy-only": {
+      "sha256": "42725667c910b942d196c000a6068084af7d8894e0b5f5aee3e00c35a2bfb502",
+      "bytes": 7115
+    },
+    "old-source-negative": {
+      "sha256": "30d463db0397e90d7ffc48ab72fed8450a90b3a53472ba18d2a8814dddb57d8c",
+      "bytes": 6632
+    },
+    "disabled-policy-negative": {
+      "sha256": "2997c4ffd0b23abb5ad9248b1ee05b062d66e61406dbc6089c980d25247c1e2b",
+      "bytes": 7116
+    },
+    "manifest-policy-only": {
+      "sha256": "a4f96e241a0a86b190f5456af2996603c97f596d07c6084e131a8c8975deffda",
+      "bytes": 1274
+    },
+    "test": {
+      "sha256": "27e1e07e31701ea27699f8d51faa0eb3442ec164386d39c0775c098149016e8e",
+      "bytes": 8343
+    }
+  },
+  "limits": [
+    "Host registered-handler execution with installed SDK TypeScript and local doubles",
+    "No ArkTS/HAP/device acceptance",
+    "Policy-only publication excludes startup/signing/device-type WIP"
+  ]
+}

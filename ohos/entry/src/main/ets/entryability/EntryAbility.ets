@@ -18,6 +18,8 @@ import { registerQfliNativeChannel } from '../plugins/QfliCNative';
 
 const CHANNEL_PLATFORM = 'qflistudio/platform';
 const CHANNEL_HUAWEI = 'qflistudio/huawei_account';
+// Standalone C/C++ keeps platform integration local.
+const OFFLINE_ONLY = true;
 
 export default class EntryAbility extends FlutterAbility {
   onWindowStageCreate(windowStage: window.WindowStage): void {
@@ -55,13 +57,17 @@ export default class EntryAbility extends FlutterAbility {
       console.error(`QFLI native channel unavailable: ${err.code}: ${err.message}`);
     }
 
-    // 通用平台能力：打开系统浏览器（HTML 预览用）。
+    // 本地平台能力；独立版先拒绝远程协议和浏览器入口。
     const platformChannel = new MethodChannel(
       flutterEngine.dartExecutor.getBinaryMessenger(),
       CHANNEL_PLATFORM,
     );
     platformChannel.setMethodCallHandler({
       onMethodCall(call: MethodCall, result: MethodResult): void {
+        if (OFFLINE_ONLY && (call.method === 'openAgreement' || call.method === 'openUrl')) {
+          result.error('OFFLINE_ONLY', '独立离线版不提供远程协议或浏览器入口', null);
+          return;
+        }
         if (call.method === 'openAgreement') {
           const url = call.argument('url') as string;
           const title = call.argument('title') as string;
@@ -121,6 +127,10 @@ export default class EntryAbility extends FlutterAbility {
     );
     huaweiChannel.setMethodCallHandler({
       onMethodCall(call: MethodCall, result: MethodResult): void {
+        if (OFFLINE_ONLY && call.method === 'login') {
+          result.error('OFFLINE_ONLY', '独立离线版不提供账号登录', null);
+          return;
+        }
         if (call.method === 'login') {
           try {
             const provider = new authentication.HuaweiIDProvider();
