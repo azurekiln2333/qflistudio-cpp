@@ -1,0 +1,5 @@
+warning: in the working copy of 'tool/forge_content/generate_forge_content.dart', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tool/forge_content/verify_forge_content.dart', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tool/forge_content/staging/forge_tutorials.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'test/forge_tutorial_fixture_test.dart', LF will be replaced by CRLF the next time Git touches it
+{"tree": "f268e0fe1d2df4b926ecc2f2ecdecc10ee7b5439", "files": {"tool/forge_content/generate_forge_content.dart": "309cf3173b395b501481d901cf9138491033229a", "tool/forge_content/verify_forge_content.dart": "689b59005861ec96a82d05a7e5fbe4bd24b5fc86", "tool/forge_content/staging/forge_tutorials.json": "be862c0366e460f710e332c5ef3049f6d44234f1", "test/forge_tutorial_fixture_test.dart": "971bcdf59415b9ed6525f32e0e5084563aa15203"}, "inputs": 339, "candidate": "D:\\MyNewProjects\\qfli_c\\build\\c-content-fixture-20261024-c546-stdin-candidate.json"}

@@ -1,0 +1,617 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-24",
+  "recordedAtUtc": "2026-10-24T06:44:22.886515+00:00",
+  "product": "QFLIForge",
+  "requirement": "R1",
+  "requirementScheme": "legacy C R1-R10",
+  "umbrellaRequirement": "R2",
+  "status": "Committed exact isolated host tutorial-input consistency/import checkpoint; runtime and device acceptance remain open",
+  "runId": "20261024-c546-stdin",
+  "baseCommit": "6aaf5a5d64fc96e6e7748ce5a45671e0706be570",
+  "baseTree": "96311b348c58811ab4c952ba5c0a6896e188f104",
+  "commit": "5c7bae3c5922cf9813ed423c89a41f03dad034b8",
+  "testedAndCommittedTree": "f268e0fe1d2df4b926ecc2f2ecdecc10ee7b5439",
+  "verifiedAgainstCurrentHead": true,
+  "coreCommit": "2f9039a3ba95449679b17257b0313c1ee3644a2c",
+  "coreTree": "d21ffcdc7ac9c834e0b788b21178e9f80768a519",
+  "files": {
+    "tool/forge_content/generate_forge_content.dart": {
+      "blob": "309cf3173b395b501481d901cf9138491033229a",
+      "workingSha256AtFreeze": "78f77dabe696d5014987508ba0176ee9ba32f483d5511a47e32ba629ffaca2cd",
+      "isolatedSnapshotSha256": "7cfb912f91ffca807b3369664d603ad4627dbd04a1e809d1d9b858cc9e0379f2",
+      "committedBlobContentSha256": "78f77dabe696d5014987508ba0176ee9ba32f483d5511a47e32ba629ffaca2cd"
+    },
+    "tool/forge_content/verify_forge_content.dart": {
+      "blob": "689b59005861ec96a82d05a7e5fbe4bd24b5fc86",
+      "workingSha256AtFreeze": "87a686bfb3f5df6ab0f448d5f0faf82a2b7a5bb7797fa28f07477222ddc5e962",
+      "isolatedSnapshotSha256": "78d506e4c87680af61bf2044852f73f72dd4f6d1c47f6941fe43ab32774e182a",
+      "committedBlobContentSha256": "87a686bfb3f5df6ab0f448d5f0faf82a2b7a5bb7797fa28f07477222ddc5e962"
+    },
+    "tool/forge_content/staging/forge_tutorials.json": {
+      "blob": "be862c0366e460f710e332c5ef3049f6d44234f1",
+      "workingSha256AtFreeze": "3bc3dace0c585bb60c12c84336a7aaff24da62651f608a0db1ab9a69b4c5073b",
+      "isolatedSnapshotSha256": "80d906e71a47eb3c54bbebe716237ebcc69ebf56fba6a291b8bd1b5d69d3416e",
+      "committedBlobContentSha256": "3bc3dace0c585bb60c12c84336a7aaff24da62651f608a0db1ab9a69b4c5073b"
+    },
+    "test/forge_tutorial_fixture_test.dart": {
+      "blob": "971bcdf59415b9ed6525f32e0e5084563aa15203",
+      "workingSha256AtFreeze": "628b0a88d545f4db6a8917d990d412ba382e54fee5e26decb4e0d3db56792c81",
+      "isolatedSnapshotSha256": "cd9b47ed66a254baedba4c07cd329eaec32ca831951aa6527f519ca9cfebbc3c",
+      "committedBlobContentSha256": "628b0a88d545f4db6a8917d990d412ba382e54fee5e26decb4e0d3db56792c81"
+    }
+  },
+  "frozenInputs": {
+    "count": 339,
+    "manifestArtifact": ".artifacts/c-tutorial-inputs-20261024/c-content-fixture-20261024-c546-stdin-candidate.json",
+    "allFrozenInputHashesVerifiedAfterPublication": true,
+    "protectedRootLibAssetsCount": 31,
+    "allProtectedRootLibAssetsHashesVerifiedAfterPublication": true,
+    "isolatedPackageBindings": {
+      "qfli_c_runtime": "file:///D:/MyNewProjects/qfli_c/build/c-content-fixture-20261024-c546-stdin-snapshot/packages/qfli_c_runtime",
+      "qfli_studio_core": "file:///D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9",
+      "re_editor": "file:///D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/vendor/re_editor",
+      "qfli_c": "file:///D:/MyNewProjects/qfli_c/build/c-content-fixture-20261024-c546-stdin-snapshot"
+    },
+    "runtimePackageInputCount": 15,
+    "helperSha256": {
+      "build/freeze-content-fixture-candidate.py": "1a0e77b6dc8aef84bd4a13dad90cf4ec03fbc30f1c50e52b7a92bc4f8104b7db",
+      "build/prepare-content-fixture-window.py": "8ae39b7e11d9287ffb37ef85e3c88917034ad2e2ca9aaffae0ca0fc27418cdcf",
+      "build/publish-content-fixture-candidate.py": "26e7653423ca98282aa651d17658464508c979e594bf4fe7263348fd66d82e23"
+    },
+    "allHelperHashesVerifiedAfterPublication": true,
+    "candidateScope": "Four-file tutorial stdin fixture repair; staged semantics/materialization only, no native or device execution.",
+    "byteHashNote": "Working-file and Git archive bytes can differ through line ending normalization; the committed Git blob is the exact source identity."
+  },
+  "rawTutorialAssetDelta": {
+    "path": "tool/forge_content/staging/forge_tutorials.json",
+    "baseBlob": "61e580adecc680fc39ac154488a23d38a5f5e17a",
+    "newBlob": "be862c0366e460f710e332c5ef3049f6d44234f1",
+    "baseSha256": "2e0169ba45f9b438f327f46afca6a5e28a06a527478cb0ace26e55cee369aa31",
+    "newSha256": "3bc3dace0c585bb60c12c84336a7aaff24da62651f608a0db1ab9a69b4c5073b",
+    "rawGitDiffSha256": "cd93860359d758c55bcdc678783aca76ba70e58236093baf2ec16fa44aa46651",
+    "addedFieldCount": 4,
+    "addedLineCount": 12,
+    "removedLineCount": 0,
+    "fields": [
+      {
+        "jsonPointer": "/entries/25/lessons/0/inputFixtures",
+        "tutorialId": "c-tutorial-026",
+        "lessonId": "c-tutorial-026-lesson",
+        "operation": "add",
+        "beforeFieldPresent": false,
+        "after": {
+          "stdin": "17 5\n"
+        },
+        "stdinUtf8Bytes": 5,
+        "stdinSha256": "19e995e0a5edf722e5893da4dd27bc9ed732ead93e3c3fe3748de99f72f1267f",
+        "unchangedCodeSha256": "b0a23f6e041e9d8832453aee3f3d1735d156acf6a6aa170246db7835575776e3",
+        "unchangedOutputSha256": "b4e46bb9ccd63c36624461f45a1f8d9fa66f5da580b2ab0a36254e018b5380d0"
+      },
+      {
+        "jsonPointer": "/entries/26/lessons/0/inputFixtures",
+        "tutorialId": "c-tutorial-027",
+        "lessonId": "c-tutorial-027-lesson",
+        "operation": "add",
+        "beforeFieldPresent": false,
+        "after": {
+          "stdin": "hello world\n"
+        },
+        "stdinUtf8Bytes": 12,
+        "stdinSha256": "a948904f2f0f479b8f8197694b30184b0d2ed1c1cd2a1ec0fb85d299a192a447",
+        "unchangedCodeSha256": "15b76bd0feb20edc5f992c04e65eeb2e62b031a6b61ddbb808bfd9f779f55c47",
+        "unchangedOutputSha256": "6186193c68fc95c0a7436e45253e275e3855eb364c0ef244771fca372b424108"
+      },
+      {
+        "jsonPointer": "/entries/103/lessons/0/inputFixtures",
+        "tutorialId": "cpp-tutorial-004",
+        "lessonId": "cpp-tutorial-004-lesson",
+        "operation": "add",
+        "beforeFieldPresent": false,
+        "after": {
+          "stdin": "7 35\n"
+        },
+        "stdinUtf8Bytes": 5,
+        "stdinSha256": "a167c7e338ba3b96fecf4a408dd6d7141e35bd758b060e29479e4102fa07bc12",
+        "unchangedCodeSha256": "3dc5a439805344d57dc3640447d861ab410a2dcb58bba262d5babd32935985ac",
+        "unchangedOutputSha256": "94c46c1db5b21f9c6496df65a32c94aea6cb79516a163ff331922c51601e3df2"
+      },
+      {
+        "jsonPointer": "/entries/120/lessons/0/inputFixtures",
+        "tutorialId": "cpp-tutorial-021",
+        "lessonId": "cpp-tutorial-021-lesson",
+        "operation": "add",
+        "beforeFieldPresent": false,
+        "after": {
+          "stdin": "Alice 25\nHello World\n"
+        },
+        "stdinUtf8Bytes": 21,
+        "stdinSha256": "efac5f980ed23bf4ca9aec84dbe62c819de9af4b9dd7dceb194b8d7efcbea2bf",
+        "unchangedCodeSha256": "b6e5503bdabdd2af473eab1ea4f1635981c4806216ee9763536486815d8ff0e9",
+        "unchangedOutputSha256": "55ab8412eb1ddd75b4a8451f68a2d800d7cb06d9dc2bf1d7896759fdc571279c"
+      }
+    ],
+    "rawInsertedLineSegments": [
+      {
+        "oldLineBefore": 1237,
+        "newLineStart": 1238,
+        "lines": [
+          "          \"inputFixtures\": {",
+          "            \"stdin\": \"17 5\\n\"",
+          "          },"
+        ]
+      },
+      {
+        "oldLineBefore": 1286,
+        "newLineStart": 1290,
+        "lines": [
+          "          \"inputFixtures\": {",
+          "            \"stdin\": \"hello world\\n\"",
+          "          },"
+        ]
+      },
+      {
+        "oldLineBefore": 5013,
+        "newLineStart": 5020,
+        "lines": [
+          "          \"inputFixtures\": {",
+          "            \"stdin\": \"7 35\\n\"",
+          "          },"
+        ]
+      },
+      {
+        "oldLineBefore": 5865,
+        "newLineStart": 5875,
+        "lines": [
+          "          \"inputFixtures\": {",
+          "            \"stdin\": \"Alice 25\\nHello World\\n\"",
+          "          },"
+        ]
+      }
+    ],
+    "removingOnlyFourInputFixtureFieldsRestoresOriginalJson": true,
+    "allOtherTutorialValuesOrderIdsSourceOutputsAndMetadataUnchanged": true
+  },
+  "unchangedContent": {
+    "tutorialCount": 200,
+    "exampleCount": 200,
+    "originalCAndCppIds001Through100Retained": true,
+    "exampleAssetPath": "tool/forge_content/staging/forge_examples.json",
+    "exampleAssetBlob": "a57343cb6b6b10a43d5b327f06d97f7705bfc64f",
+    "exampleAssetSha256": "91c92ac7265b0dc777f154bb8a51ff35cb94cab4ec0b7548f4c8409ed3455cac",
+    "exampleAssetRawBytesUnchanged": true,
+    "allSampleSourceNativeAndPortableExpectedOutputsUnchanged": true,
+    "runtimeAndNativeSourcePathsUnchangedInCommit": true,
+    "sharedCoreHeadAndTreeUnchanged": true
+  },
+  "gates": {
+    "suites": [
+      {
+        "file": "test/forge_tutorial_fixture_test.dart",
+        "passed": 9,
+        "failed": 0
+      },
+      {
+        "file": "test/forge_content_repository_test.dart",
+        "passed": 2,
+        "failed": 0
+      },
+      {
+        "file": "test/forge_content_pipeline_test.dart",
+        "passed": 20,
+        "failed": 0
+      }
+    ],
+    "passed": 31,
+    "failed": 0,
+    "analysis": "No issues found!",
+    "analyzedFiles": [
+      "tool/forge_content/generate_forge_content.dart",
+      "tool/forge_content/verify_forge_content.dart",
+      "test/forge_tutorial_fixture_test.dart"
+    ],
+    "format": "Formatted 3 files (3 changed) in 0.02 seconds.",
+    "stagedConsistency": {
+      "nativeRequired": false,
+      "tutorialCount": 200,
+      "exampleCount": 200,
+      "cCount": 100,
+      "cppCount": 100,
+      "consistentPairs": 200,
+      "failed": 0,
+      "exactOriginalExampleIdsVerified": true,
+      "statusForEveryPair": "staged_ok_no_native",
+      "shapeErrors": [],
+      "stagedAssetErrors": [],
+      "meaning": "Authored and staged content consistency only; no C/C++ program compilation or execution."
+    },
+    "generator": {
+      "semanticsEqual": true,
+      "comparedAssets": [
+        "forge_tutorials.json",
+        "forge_examples.json"
+      ],
+      "ignoredKeys": [
+        "updatedAt"
+      ],
+      "candidateAssetsUnchanged": true,
+      "temporaryCwd": "D:\\MyNewProjects\\qfli_c\\build\\c-content-fixture-generation-i74c_6yd"
+    },
+    "coverage": [
+      "Four raw tutorial lesson stdin values verified before paired-example fallback in native and portable repository modes",
+      "Actual LocalContentAdapter and CodeImportService materialize exact source and input.txt bytes",
+      "Inventory completeness independently pins original C/C++ IDs 001 through100",
+      "Negative cases reject missing/changed/additional stdin, equal-count substitution, duplicate IDs and jointly truncated authored/staged sets",
+      "App repository ownership and foreign-row/metadata preservation pipeline regressions"
+    ]
+  },
+  "executionPlanArtifact": ".artifacts/c-tutorial-inputs-20261024/c-content-fixture-20261024-c546-stdin-window.json",
+  "window": {
+    "results": [
+      {
+        "name": "format only three authorized Dart content fixture files",
+        "process": {
+          "pid": 86936,
+          "threadId": 79976,
+          "createdSuspended": true,
+          "assignedBeforeResume": true,
+          "terminal": true,
+          "creationFiletime100ns": "134372971633128061",
+          "jobActiveProcesses": 0,
+          "exitCode": 0
+        },
+        "exit": 0,
+        "error": null,
+        "timeout": false,
+        "orphanCleanup": false,
+        "emptyJob": true,
+        "log": "D:\\MyNewProjects\\qfli_c\\build\\c-content-fixture-20261024-c546-stdin-format.log"
+      },
+      {
+        "name": "freeze exact four-file content candidate",
+        "process": {
+          "pid": 86744,
+          "threadId": 63440,
+          "createdSuspended": true,
+          "assignedBeforeResume": true,
+          "terminal": true,
+          "creationFiletime100ns": "134372971641361692",
+          "jobActiveProcesses": 0,
+          "exitCode": 0
+        },
+        "exit": 0,
+        "error": null,
+        "timeout": false,
+        "orphanCleanup": false,
+        "emptyJob": true,
+        "log": "D:\\MyNewProjects\\qfli_c\\build\\c-content-fixture-20261024-c546-stdin-freeze.log"
+      },
+      {
+        "name": "generate in temporary cwd and compare exact staged semantics",
+        "process": {
+          "pid": 60648,
+          "threadId": 26376,
+          "createdSuspended": true,
+          "assignedBeforeResume": true,
+          "terminal": true,
+          "creationFiletime100ns": "134372971665653379",
+          "jobActiveProcesses": 0,
+          "exitCode": 0
+        },
+        "exit": 0,
+        "error": null,
+        "timeout": false,
+        "orphanCleanup": false,
+        "emptyJob": true,
+        "log": "D:\\MyNewProjects\\qfli_c\\build\\c-content-fixture-20261024-c546-stdin-generator.log"
+      },
+      {
+        "name": "verify staged content without native execution",
+        "process": {
+          "pid": 87844,
+          "threadId": 69368,
+          "createdSuspended": true,
+          "assignedBeforeResume": true,
+          "terminal": true,
+          "creationFiletime100ns": "134372971671761131",
+          "jobActiveProcesses": 0,
+          "exitCode": 0
+        },
+        "exit": 0,
+        "error": null,
+        "timeout": false,
+        "orphanCleanup": false,
+        "emptyJob": true,
+        "log": "D:\\MyNewProjects\\qfli_c\\build\\c-content-fixture-20261024-c546-stdin-verify.log"
+      },
+      {
+        "name": "test fixture materialization repository and pipeline",
+        "process": {
+          "pid": 81152,
+          "threadId": 53188,
+          "createdSuspended": true,
+          "assignedBeforeResume": true,
+          "terminal": true,
+          "creationFiletime100ns": "134372971675967182",
+          "jobActiveProcesses": 0,
+          "exitCode": 0
+        },
+        "exit": 0,
+        "error": null,
+        "timeout": false,
+        "orphanCleanup": false,
+        "emptyJob": true,
+        "log": "D:\\MyNewProjects\\qfli_c\\build\\c-content-fixture-20261024-c546-stdin-tests.log"
+      },
+      {
+        "name": "analyze only three Dart content fixture files",
+        "process": {
+          "pid": 79088,
+          "threadId": 5524,
+          "createdSuspended": true,
+          "assignedBeforeResume": true,
+          "terminal": true,
+          "creationFiletime100ns": "134372971769638359",
+          "jobActiveProcesses": 0,
+          "exitCode": 0
+        },
+        "exit": 0,
+        "error": null,
+        "timeout": false,
+        "orphanCleanup": false,
+        "emptyJob": true,
+        "log": "D:\\MyNewProjects\\qfli_c\\build\\c-content-fixture-20261024-c546-stdin-analyze.log"
+      },
+      {
+        "name": "commit only exact fully verified four-file content tree",
+        "process": {
+          "pid": 26492,
+          "threadId": 46112,
+          "createdSuspended": true,
+          "assignedBeforeResume": true,
+          "terminal": true,
+          "creationFiletime100ns": "134372971790469131",
+          "jobActiveProcesses": 0,
+          "exitCode": 0
+        },
+        "exit": 0,
+        "error": null,
+        "timeout": false,
+        "orphanCleanup": false,
+        "emptyJob": true,
+        "log": "D:\\MyNewProjects\\qfli_c\\build\\c-content-fixture-20261024-c546-stdin-publish.log"
+      }
+    ],
+    "exit": 0,
+    "allOwnedJobsEmpty": true,
+    "elapsed": 16.646,
+    "publication": {
+      "process": {
+        "pid": 90916,
+        "threadId": 81316,
+        "createdSuspended": true,
+        "assignedBeforeResume": true,
+        "terminal": true,
+        "creationFiletime100ns": "134372971799607192",
+        "jobActiveProcesses": 0,
+        "exitCode": 0
+      },
+      "emptyJob": true,
+      "delivered": true
+    }
+  },
+  "boundedRuntime": {
+    "authorizedWindowSeconds": 55,
+    "maxSerialStepBudgetsSeconds": 44,
+    "measuredPreChannelSeconds": 16.646,
+    "includes": "Seven serial format/freeze/generator/staged-verifier/Flutter-test/analysis/conditional-commit steps",
+    "excludes": "Subsequent channel publisher runtime;16.646 is not an end-to-end publication measurement."
+  },
+  "terminalProof": {
+    "stepJobs": 7,
+    "allStepJobsTerminalAndEmpty": true,
+    "channelPublisherTerminalAndEmpty": true,
+    "publisherDelivered": true,
+    "createdSuspendedAndAssignedBeforeResume": true,
+    "detailArtifact": ".artifacts/c-tutorial-inputs-20261024/c-content-fixture-20261024-c546-stdin-window-report.json"
+  },
+  "channelRelease": {
+    "seq": 555,
+    "timestamp": "2026-10-24T06:33:00.862Z",
+    "artifact": ".artifacts/c-tutorial-inputs-20261024/c-content-fixture-20261024-c546-stdin-window-report.channel.log",
+    "note": "Original release retained as historical evidence; it does not authorize replay of a consumed peer grant."
+  },
+  "independentReview": {
+    "agent": "/root/workspace_metadata_review/tutorial_publication_audit",
+    "mode": "Read-only Python/Git; no SDK or mutations",
+    "result": "PASS; exact four-file commit, four-field asset delta,339 input hashes,31 tests,200 staged-only statuses and terminal Jobs verified independently."
+  },
+  "artifacts": {
+    ".artifacts/c-tutorial-inputs-20261024/.gitattributes": {
+      "source": "authored raw-byte archive policy",
+      "sha256": "992d003df73b2a78509462d5c537cded80d5c538fb92a8e6954523bc0a7fde00",
+      "bytes": 79,
+      "rawGitBlob": "c3ee00a2aadddef116bd4c21bb3cb45212374f8e"
+    },
+    ".artifacts/c-tutorial-inputs-20261024/c-content-fixture-20261024-c546-stdin-analyze.log": {
+      "source": "build/c-content-fixture-20261024-c546-stdin-analyze.log",
+      "sha256": "f65c4eb9dde20aa4dbc995976b251fdbab3237bda3d6ab119f2beacefb5f0e01",
+      "sourceSha256": "f65c4eb9dde20aa4dbc995976b251fdbab3237bda3d6ab119f2beacefb5f0e01",
+      "bytes": 119,
+      "rawGitBlob": "a1cedcbf75aa04b5fbf20d259d1a5135fe70d1d5",
+      "byteForByteCopyVerified": true,
+      "gitFilteredBlobEqualsRawBlob": true
+    },
+    ".artifacts/c-tutorial-inputs-20261024/c-content-fixture-20261024-c546-stdin-candidate.json": {
+      "source": "build/c-content-fixture-20261024-c546-stdin-candidate.json",
+      "sha256": "886977f809e3c55adbb55e4d954ed55f99e9f831928856ebac4c3281a88874e9",
+      "sourceSha256": "886977f809e3c55adbb55e4d954ed55f99e9f831928856ebac4c3281a88874e9",
+      "bytes": 71095,
+      "rawGitBlob": "55d9873e593739143339d8409c74cc14875dcfe5",
+      "byteForByteCopyVerified": true,
+      "gitFilteredBlobEqualsRawBlob": true
+    },
+    ".artifacts/c-tutorial-inputs-20261024/c-content-fixture-20261024-c546-stdin-format.log": {
+      "source": "build/c-content-fixture-20261024-c546-stdin-format.log",
+      "sha256": "d06a6324173d758d27a6e84c02f5183d4f6f5ef603e50e2d3fb08be76efb43fb",
+      "sourceSha256": "d06a6324173d758d27a6e84c02f5183d4f6f5ef603e50e2d3fb08be76efb43fb",
+      "bytes": 207,
+      "rawGitBlob": "f0755b7edc1b1db95dbc923e0e557da948c9f5be",
+      "byteForByteCopyVerified": true,
+      "gitFilteredBlobEqualsRawBlob": true
+    },
+    ".artifacts/c-tutorial-inputs-20261024/c-content-fixture-20261024-c546-stdin-freeze.log": {
+      "source": "build/c-content-fixture-20261024-c546-stdin-freeze.log",
+      "sha256": "0ea0ba960aa3732ce3852cda6c46dc6e821f336f17cb4a97cdaabc7fbfa62124",
+      "sourceSha256": "0ea0ba960aa3732ce3852cda6c46dc6e821f336f17cb4a97cdaabc7fbfa62124",
+      "bytes": 1095,
+      "rawGitBlob": "4a04139112d6561eb5fde48b0276f6d15fb9216f",
+      "byteForByteCopyVerified": true,
+      "gitFilteredBlobEqualsRawBlob": true
+    },
+    ".artifacts/c-tutorial-inputs-20261024/c-content-fixture-20261024-c546-stdin-generator-report.json": {
+      "source": "build/c-content-fixture-20261024-c546-stdin-generator-report.json",
+      "sha256": "383d623646b9a36602e1aeac3954a7ad53418203ceb99ab0cf1e2b8817821f95",
+      "sourceSha256": "383d623646b9a36602e1aeac3954a7ad53418203ceb99ab0cf1e2b8817821f95",
+      "bytes": 1240,
+      "rawGitBlob": "665fb39d4c6aa958cba54b0a948760ce9352f13b",
+      "byteForByteCopyVerified": true,
+      "gitFilteredBlobEqualsRawBlob": true
+    },
+    ".artifacts/c-tutorial-inputs-20261024/c-content-fixture-20261024-c546-stdin-generator.log": {
+      "source": "build/c-content-fixture-20261024-c546-stdin-generator.log",
+      "sha256": "44bd78eb82fe632a93b331662cb3815cb685c5bcc7bddcd1d29493aa16c51c8b",
+      "sourceSha256": "44bd78eb82fe632a93b331662cb3815cb685c5bcc7bddcd1d29493aa16c51c8b",
+      "bytes": 164,
+      "rawGitBlob": "f6e7a2caa9011c9c42a60b0abc4f257216f0d369",
+      "byteForByteCopyVerified": true,
+      "gitFilteredBlobEqualsRawBlob": true
+    },
+    ".artifacts/c-tutorial-inputs-20261024/c-content-fixture-20261024-c546-stdin-publish.log": {
+      "source": "build/c-content-fixture-20261024-c546-stdin-publish.log",
+      "sha256": "4dc822bac4f6835b7f9e285301bf05311c75838d7bf2784943102542fa0d17f7",
+      "sourceSha256": "4dc822bac4f6835b7f9e285301bf05311c75838d7bf2784943102542fa0d17f7",
+      "bytes": 322,
+      "rawGitBlob": "39413108cd5099f5a9ab2ed2eaa8fac675fa8f04",
+      "byteForByteCopyVerified": true,
+      "gitFilteredBlobEqualsRawBlob": true
+    },
+    ".artifacts/c-tutorial-inputs-20261024/c-content-fixture-20261024-c546-stdin-published.json": {
+      "source": "build/c-content-fixture-20261024-c546-stdin-published.json",
+      "sha256": "e897530f3680083909a2db9bff765689cc233cf6fa36d0cf8a2e0c79ddf388b9",
+      "sourceSha256": "e897530f3680083909a2db9bff765689cc233cf6fa36d0cf8a2e0c79ddf388b9",
+      "bytes": 823,
+      "rawGitBlob": "7519206bb20d3fce01c5fbfbe5cd147918fd69ac",
+      "byteForByteCopyVerified": true,
+      "gitFilteredBlobEqualsRawBlob": true
+    },
+    ".artifacts/c-tutorial-inputs-20261024/c-content-fixture-20261024-c546-stdin-staged-verifier.json": {
+      "source": "build/c-content-fixture-20261024-c546-stdin-staged-verifier.json",
+      "sha256": "245421aea089e582997d654e65b9d6fd6906391a463dc7a95620e59973f2398a",
+      "sourceSha256": "245421aea089e582997d654e65b9d6fd6906391a463dc7a95620e59973f2398a",
+      "bytes": 16524,
+      "rawGitBlob": "af4b7d2f06229979df7abb956b35a2b38ab35be8",
+      "byteForByteCopyVerified": true,
+      "gitFilteredBlobEqualsRawBlob": true
+    },
+    ".artifacts/c-tutorial-inputs-20261024/c-content-fixture-20261024-c546-stdin-tests.log": {
+      "source": "build/c-content-fixture-20261024-c546-stdin-tests.log",
+      "sha256": "151656ebe76e7a86fc1a649ad6da399e024ef48dc2f6d17fa9c48044eef3c906",
+      "sourceSha256": "151656ebe76e7a86fc1a649ad6da399e024ef48dc2f6d17fa9c48044eef3c906",
+      "bytes": 6950,
+      "rawGitBlob": "d317b6207cd8e7dac10d68354a1eb4e570f28e06",
+      "byteForByteCopyVerified": true,
+      "gitFilteredBlobEqualsRawBlob": true
+    },
+    ".artifacts/c-tutorial-inputs-20261024/c-content-fixture-20261024-c546-stdin-verify.log": {
+      "source": "build/c-content-fixture-20261024-c546-stdin-verify.log",
+      "sha256": "7ec54634687d0299886f2fc17e39c3da8e25e1fb16aac2a3586170cc4ebbdd58",
+      "sourceSha256": "7ec54634687d0299886f2fc17e39c3da8e25e1fb16aac2a3586170cc4ebbdd58",
+      "bytes": 244,
+      "rawGitBlob": "29b07e5c5121683d8317447247a86705265650e6",
+      "byteForByteCopyVerified": true,
+      "gitFilteredBlobEqualsRawBlob": true
+    },
+    ".artifacts/c-tutorial-inputs-20261024/c-content-fixture-20261024-c546-stdin-window-report.channel.log": {
+      "source": "build/c-content-fixture-20261024-c546-stdin-window-report.channel.log",
+      "sha256": "f62b9b110aca3d791e65182ad96653aae6490ef157631c264bd59037b3e127aa",
+      "sourceSha256": "f62b9b110aca3d791e65182ad96653aae6490ef157631c264bd59037b3e127aa",
+      "bytes": 3684,
+      "rawGitBlob": "a1a8015c9600c8b3f887b15a71f99df6aeed304f",
+      "byteForByteCopyVerified": true,
+      "gitFilteredBlobEqualsRawBlob": true
+    },
+    ".artifacts/c-tutorial-inputs-20261024/c-content-fixture-20261024-c546-stdin-window-report.json": {
+      "source": "build/c-content-fixture-20261024-c546-stdin-window-report.json",
+      "sha256": "29f6d2812099048448062c4806db3cc28b8f2dfb8b058949652e0c60eacb9856",
+      "sourceSha256": "29f6d2812099048448062c4806db3cc28b8f2dfb8b058949652e0c60eacb9856",
+      "bytes": 4638,
+      "rawGitBlob": "b67b6ba7047d3656a2de7ebbd268c7fd7a187b6f",
+      "byteForByteCopyVerified": true,
+      "gitFilteredBlobEqualsRawBlob": true
+    },
+    ".artifacts/c-tutorial-inputs-20261024/c-content-fixture-20261024-c546-stdin-window-report.release.txt": {
+      "source": "build/c-content-fixture-20261024-c546-stdin-window-report.release.txt",
+      "sha256": "b253d8c001f2460192a7fc35a53731bc37f307ca7c56236830464c9244cdf5b1",
+      "sourceSha256": "b253d8c001f2460192a7fc35a53731bc37f307ca7c56236830464c9244cdf5b1",
+      "bytes": 3247,
+      "rawGitBlob": "7ac4cf426d821c1c8f7f591ea7127c4fea910f1c",
+      "byteForByteCopyVerified": true,
+      "gitFilteredBlobEqualsRawBlob": true
+    },
+    ".artifacts/c-tutorial-inputs-20261024/c-content-fixture-20261024-c546-stdin-window.json": {
+      "source": "build/c-content-fixture-20261024-c546-stdin-window.json",
+      "sha256": "4a1de5dfb00413fa90a694ec196bcdb01a422b50da6fa1b4382c42b17474e4a8",
+      "sourceSha256": "4a1de5dfb00413fa90a694ec196bcdb01a422b50da6fa1b4382c42b17474e4a8",
+      "bytes": 4879,
+      "rawGitBlob": "8b0c6b79b8e9a2c75917d367710632fef1474415",
+      "byteForByteCopyVerified": true,
+      "gitFilteredBlobEqualsRawBlob": true
+    },
+    ".artifacts/c-tutorial-inputs-20261024/freeze-content-fixture-candidate.py": {
+      "source": "build/freeze-content-fixture-candidate.py",
+      "sha256": "1a0e77b6dc8aef84bd4a13dad90cf4ec03fbc30f1c50e52b7a92bc4f8104b7db",
+      "sourceSha256": "1a0e77b6dc8aef84bd4a13dad90cf4ec03fbc30f1c50e52b7a92bc4f8104b7db",
+      "bytes": 10369,
+      "rawGitBlob": "e346fb53106bedcb7c2ba6849b1c72490f340eca",
+      "byteForByteCopyVerified": true,
+      "gitFilteredBlobEqualsRawBlob": true
+    },
+    ".artifacts/c-tutorial-inputs-20261024/prepare-content-fixture-window.py": {
+      "source": "build/prepare-content-fixture-window.py",
+      "sha256": "8ae39b7e11d9287ffb37ef85e3c88917034ad2e2ca9aaffae0ca0fc27418cdcf",
+      "sourceSha256": "8ae39b7e11d9287ffb37ef85e3c88917034ad2e2ca9aaffae0ca0fc27418cdcf",
+      "bytes": 4675,
+      "rawGitBlob": "92555f7faced6197be25add6a18bc1ce0a492f6b",
+      "byteForByteCopyVerified": true,
+      "gitFilteredBlobEqualsRawBlob": true
+    },
+    ".artifacts/c-tutorial-inputs-20261024/publish-content-fixture-candidate.py": {
+      "source": "build/publish-content-fixture-candidate.py",
+      "sha256": "26e7653423ca98282aa651d17658464508c979e594bf4fe7263348fd66d82e23",
+      "sourceSha256": "26e7653423ca98282aa651d17658464508c979e594bf4fe7263348fd66d82e23",
+      "bytes": 6399,
+      "rawGitBlob": "534ce814ab01c9f70f627c7184d843e6adf7ec59",
+      "byteForByteCopyVerified": true,
+      "gitFilteredBlobEqualsRawBlob": true
+    }
+  },
+  "rawBytes": {
+    "attributesArtifact": ".artifacts/c-tutorial-inputs-20261024/.gitattributes",
+    "policy": "* -text whitespace=trailing-space,space-before-tab,cr-at-eol\n*.log -text -diff",
+    "runArtifacts": 15,
+    "helperSourceCopies": 3,
+    "policyFiles": 1,
+    "allCopiedArtifactsVerifiedByteForByte": true,
+    "gitFilteredArtifactBlobsEqualRawByteBlobs": true,
+    "excluded": "Snapshot directory,alternate index and tar archive"
+  },
+  "preservation": {
+    "commitContainsOnlyFourAuthorizedProductPaths": true,
+    "archiverWritesOnlyThisNewReportAndNewArtifactDirectory": true,
+    "archiverIndexSdkCoreDeviceOrRemoteMutations": false,
+    "existingStartupTerminalCompilerSigningIconAndOtherWipExcluded": true,
+    "rootLibAndAssetsUnchangedSinceFreeze": true
+  },
+  "scope": "Host content consistency, generation parity and exact fixture import evidence only. Native and portable C/C++ program execution, current OHOS toolchain/packaging/device acceptance, owning-app header execution and the160 additions remain separate open requirements. Historical runtime reports keep their original asset hashes and are not relabelled as executions of the new tutorial JSON."
+}

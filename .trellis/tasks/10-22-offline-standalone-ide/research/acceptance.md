@@ -233,3 +233,30 @@ This supersedes the last in-progress capability/metadata paragraph above.
   exact candidate/source identities and terminal records. Later spec/evidence
   commits do not change the tested runtime/test blobs. Unrelated startup,
   terminal, native, signing, content and main work remains excluded.
+
+## October 24 original tutorial stdin repair
+
+- C `5c7bae3c5922cf9813ed423c89a41f03dad034b8` publishes exact tested tree
+  `f268e0fe1d2df4b926ecc2f2ecdecc10ee7b5439`: generator, verifier, tutorial asset
+  and a new actual-import regression only. The asset's semantic difference is
+  exactly four lesson `inputFixtures` fields (C026/C027, C++004/C++021). Every
+  original ID, source, output, metadata and paired example byte remains intact.
+- Paired-example fallback already covered ordinary adapter paths; no ordinary
+  UI failure is claimed. Raw tutorial data is now self-contained. The verifier
+  rejects exact input mismatch, duplicate/empty IDs, equal-count substitutions
+  and author/asset truncation independently of all original 200 example IDs.
+- The isolated generator matched staged tutorial/example semantics, ignoring
+  only `updatedAt`. The selected suite passed 31/31 (9 new, 2 repository, 20
+  pipeline), and three-file analysis was clean. All 200 pairs passed **staged
+  consistency without execution**. This is not a native, WASI-runtime, package,
+  phone, full-app or all-product pass.
+- Native/portable repository modes both retained correct raw lessons and actual
+  adapter/import-service materialization of source and `input.txt`. The candidate
+  binds 339 source/configuration hashes including the archived C runtime package,
+  exact core2f9039a and its vendored editor. Seven step Jobs and the separate
+  publisher exited 0, terminal/empty. Elapsed 16.646 seconds precedes publication.
+- Note551 granted the new C546 window; C554 accepted and C555 released to SQL527,
+  which explicitly deferred to Rust533. No C host/device reservation remains.
+  `c-tutorial-inputs-publication-20261024.json` preserves the exact evidence.
+  Earlier compiler reports retain their old tutorial-asset hashes. C's +160
+  examples, current packaged owning-app user headers and device gates stay open.

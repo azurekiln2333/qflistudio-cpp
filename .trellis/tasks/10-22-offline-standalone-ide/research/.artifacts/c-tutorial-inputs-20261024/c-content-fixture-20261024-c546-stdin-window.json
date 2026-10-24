@@ -1,0 +1,110 @@
+{
+  "runId": "20261024-c546-stdin",
+  "cwd": "D:\\MyNewProjects\\qfli_c",
+  "seconds": 55,
+  "report": "D:\\MyNewProjects\\qfli_c\\build\\c-content-fixture-20261024-c546-stdin-window-report.json",
+  "baseCommit": "6aaf5a5d64fc96e6e7748ce5a45671e0706be570",
+  "coreCommit": "2f9039a3ba95449679b17257b0313c1ee3644a2c",
+  "release": "C content-fixture host gate TERMINAL; RELEASE NOW to sql-offline-1022 NEW request527 <=110s exact2 consumer gate; then reconcile ready Rust533 Java535 Lua544 Go and Python peers. No retained C heavy reservation or device grant.",
+  "steps": [
+    {
+      "name": "format only three authorized Dart content fixture files",
+      "command": [
+        "D:\\ProgramFiles\\flutter_ohos\\bin\\cache\\dart-sdk\\bin\\dart.exe",
+        "format",
+        "tool/forge_content/generate_forge_content.dart",
+        "tool/forge_content/verify_forge_content.dart",
+        "test/forge_tutorial_fixture_test.dart"
+      ],
+      "seconds": 3,
+      "log": "D:\\MyNewProjects\\qfli_c\\build\\c-content-fixture-20261024-c546-stdin-format.log"
+    },
+    {
+      "name": "freeze exact four-file content candidate",
+      "command": [
+        "D:\\ProgramFiles\\Python\\Python313\\python.exe",
+        "D:\\MyNewProjects\\qfli_c\\build\\freeze-content-fixture-candidate.py",
+        "--run-id",
+        "20261024-c546-stdin"
+      ],
+      "seconds": 6,
+      "log": "D:\\MyNewProjects\\qfli_c\\build\\c-content-fixture-20261024-c546-stdin-freeze.log"
+    },
+    {
+      "name": "generate in temporary cwd and compare exact staged semantics",
+      "command": [
+        "D:\\ProgramFiles\\Python\\Python313\\python.exe",
+        "D:\\MyNewProjects\\qfli_c\\build\\freeze-content-fixture-candidate.py",
+        "--run-id",
+        "20261024-c546-stdin",
+        "--generate-check"
+      ],
+      "seconds": 5,
+      "log": "D:\\MyNewProjects\\qfli_c\\build\\c-content-fixture-20261024-c546-stdin-generator.log"
+    },
+    {
+      "name": "verify staged content without native execution",
+      "command": [
+        "D:\\ProgramFiles\\flutter_ohos\\bin\\cache\\dart-sdk\\bin\\dart.exe",
+        "--packages=D:\\MyNewProjects\\qfli_c\\build\\c-content-fixture-20261024-c546-stdin-snapshot\\.dart_tool\\package_config.json",
+        "D:\\MyNewProjects\\qfli_c\\build\\c-content-fixture-20261024-c546-stdin-snapshot\\tool\\forge_content\\verify_forge_content.dart",
+        "--no-native",
+        "--report",
+        "D:\\MyNewProjects\\qfli_c\\build\\c-content-fixture-20261024-c546-stdin-staged-verifier.json"
+      ],
+      "cwd": "D:\\MyNewProjects\\qfli_c\\build\\c-content-fixture-20261024-c546-stdin-snapshot",
+      "seconds": 4,
+      "continue_on_failure": true,
+      "log": "D:\\MyNewProjects\\qfli_c\\build\\c-content-fixture-20261024-c546-stdin-verify.log"
+    },
+    {
+      "name": "test fixture materialization repository and pipeline",
+      "command": [
+        "D:\\ProgramFiles\\flutter_ohos\\bin\\cache\\dart-sdk\\bin\\dart.exe",
+        "--disable-dart-dev",
+        "D:\\ProgramFiles\\flutter_ohos\\bin\\cache\\flutter_tools.snapshot",
+        "test",
+        "--no-pub",
+        "--concurrency=1",
+        "--reporter=expanded",
+        "--timeout",
+        "10s",
+        "test/forge_tutorial_fixture_test.dart",
+        "test/forge_content_repository_test.dart",
+        "test/forge_content_pipeline_test.dart"
+      ],
+      "cwd": "D:\\MyNewProjects\\qfli_c\\build\\c-content-fixture-20261024-c546-stdin-snapshot",
+      "seconds": 15,
+      "continue_on_failure": true,
+      "log": "D:\\MyNewProjects\\qfli_c\\build\\c-content-fixture-20261024-c546-stdin-tests.log"
+    },
+    {
+      "name": "analyze only three Dart content fixture files",
+      "command": [
+        "D:\\ProgramFiles\\flutter_ohos\\bin\\cache\\dart-sdk\\bin\\dart.exe",
+        "analyze",
+        "tool/forge_content/generate_forge_content.dart",
+        "tool/forge_content/verify_forge_content.dart",
+        "test/forge_tutorial_fixture_test.dart"
+      ],
+      "cwd": "D:\\MyNewProjects\\qfli_c\\build\\c-content-fixture-20261024-c546-stdin-snapshot",
+      "seconds": 6,
+      "continue_on_failure": true,
+      "log": "D:\\MyNewProjects\\qfli_c\\build\\c-content-fixture-20261024-c546-stdin-analyze.log"
+    },
+    {
+      "name": "commit only exact fully verified four-file content tree",
+      "command": [
+        "D:\\ProgramFiles\\Python\\Python313\\python.exe",
+        "D:\\MyNewProjects\\qfli_c\\build\\publish-content-fixture-candidate.py",
+        "--run-id",
+        "20261024-c546-stdin"
+      ],
+      "seconds": 5,
+      "minimum_start_budget": 5,
+      "requires_all_previous_success": true,
+      "continue_on_failure": true,
+      "log": "D:\\MyNewProjects\\qfli_c\\build\\c-content-fixture-20261024-c546-stdin-publish.log"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+00:00 +0: loading D:/MyNewProjects/qfli_c/build/c-content-fixture-20261024-c546-stdin-snapshot/test/forge_tutorial_fixture_test.dart
+00:00 +0: D:/MyNewProjects/qfli_c/build/c-content-fixture-20261024-c546-stdin-snapshot/test/forge_tutorial_fixture_test.dart: c-example-026 tutorial materializes exact stdin from app assets
+00:00 +1: D:/MyNewProjects/qfli_c/build/c-content-fixture-20261024-c546-stdin-snapshot/test/forge_tutorial_fixture_test.dart: c-example-027 tutorial materializes exact stdin from app assets
+00:00 +2: D:/MyNewProjects/qfli_c/build/c-content-fixture-20261024-c546-stdin-snapshot/test/forge_tutorial_fixture_test.dart: cpp-example-004 tutorial materializes exact stdin from app assets
+00:00 +3: D:/MyNewProjects/qfli_c/build/c-content-fixture-20261024-c546-stdin-snapshot/test/forge_tutorial_fixture_test.dart: cpp-example-021 tutorial materializes exact stdin from app assets
+00:00 +4: D:/MyNewProjects/qfli_c/build/c-content-fixture-20261024-c546-stdin-snapshot/test/forge_tutorial_fixture_test.dart: verifier accepts exactly the authored staged inventory and inputs
+00:00 +5: D:/MyNewProjects/qfli_c/build/c-content-fixture-20261024-c546-stdin-snapshot/test/forge_tutorial_fixture_test.dart: verifier rejects missing, changed and additional stdin fixtures
+00:00 +6: D:/MyNewProjects/qfli_c/build/c-content-fixture-20261024-c546-stdin-snapshot/test/forge_tutorial_fixture_test.dart: verifier rejects equal-count substitutions and duplicate authored IDs
+00:00 +7: D:/MyNewProjects/qfli_c/build/c-content-fixture-20261024-c546-stdin-snapshot/test/forge_tutorial_fixture_test.dart: staged document reader rejects duplicate IDs instead of overwriting
+00:00 +8: D:/MyNewProjects/qfli_c/build/c-content-fixture-20261024-c546-stdin-snapshot/test/forge_tutorial_fixture_test.dart: verifier rejects jointly truncated authors and matching staged assets
+00:00 +9: loading D:/MyNewProjects/qfli_c/build/c-content-fixture-20261024-c546-stdin-snapshot/test/forge_content_repository_test.dart
+00:02 +9: D:/MyNewProjects/qfli_c/build/c-content-fixture-20261024-c546-stdin-snapshot/test/forge_content_repository_test.dart: the application owns all 200 tutorial and example pairs
+00:02 +10: D:/MyNewProjects/qfli_c/build/c-content-fixture-20261024-c546-stdin-snapshot/test/forge_content_repository_test.dart: portable outputs match their tutorial and preserve native values
+00:02 +11: loading D:/MyNewProjects/qfli_c/build/c-content-fixture-20261024-c546-stdin-snapshot/test/forge_content_pipeline_test.dart
+00:03 +11: D:/MyNewProjects/qfli_c/build/c-content-fixture-20261024-c546-stdin-snapshot/test/forge_content_pipeline_test.dart: staged assets exist and are well formed generator output is present
+00:03 +12: D:/MyNewProjects/qfli_c/build/c-content-fixture-20261024-c546-stdin-snapshot/test/forge_content_pipeline_test.dart: staged assets exist and are well formed 100 C + 100 C++ tutorials and examples
+00:03 +13: D:/MyNewProjects/qfli_c/build/c-content-fixture-20261024-c546-stdin-snapshot/test/forge_content_pipeline_test.dart: schema completeness every tutorial lesson carries the required fields
+00:03 +14: D:/MyNewProjects/qfli_c/build/c-content-fixture-20261024-c546-stdin-snapshot/test/forge_content_pipeline_test.dart: schema completeness every example carries code/expectedOutput/templateType
+00:03 +15: D:/MyNewProjects/qfli_c/build/c-content-fixture-20261024-c546-stdin-snapshot/test/forge_content_pipeline_test.dart: schema completeness every runnable sample stays within the app standard ceiling
+00:03 +16: D:/MyNewProjects/qfli_c/build/c-content-fixture-20261024-c546-stdin-snapshot/test/forge_content_pipeline_test.dart: no placeholder or duplicated content no placeholder padding signature
+00:03 +17: D:/MyNewProjects/qfli_c/build/c-content-fixture-20261024-c546-stdin-snapshot/test/forge_content_pipeline_test.dart: no placeholder or duplicated content unique ids and unique code bodies per language
+00:03 +18: D:/MyNewProjects/qfli_c/build/c-content-fixture-20261024-c546-stdin-snapshot/test/forge_content_pipeline_test.dart: no placeholder or duplicated content no duplicated explain/summary/exercise within a language
+00:03 +19: D:/MyNewProjects/qfli_c/build/c-content-fixture-20261024-c546-stdin-snapshot/test/forge_content_pipeline_test.dart: level balance and C/C++ distinctness each language covers all three levels
+00:03 +20: D:/MyNewProjects/qfli_c/build/c-content-fixture-20261024-c546-stdin-snapshot/test/forge_content_pipeline_test.dart: level balance and C/C++ distinctness C and C++ concept coverage is genuinely distinct
+00:03 +21: D:/MyNewProjects/qfli_c/build/c-content-fixture-20261024-c546-stdin-snapshot/test/forge_content_pipeline_test.dart: scoped merge negative checks (foreign rows never move) only owned rows change; foreign rows keep their order and content
+00:03 +22: D:/MyNewProjects/qfli_c/build/c-content-fixture-20261024-c546-stdin-snapshot/test/forge_content_pipeline_test.dart: scoped merge negative checks (foreign rows never move) foreign rows with a misleading type are not treated as owned
+00:03 +23: D:/MyNewProjects/qfli_c/build/c-content-fixture-20261024-c546-stdin-snapshot/test/forge_content_pipeline_test.dart: scoped merge negative checks (foreign rows never move) a foreign-row content change is detected as a fingerprint move
+00:03 +24: D:/MyNewProjects/qfli_c/build/c-content-fixture-20261024-c546-stdin-snapshot/test/forge_content_pipeline_test.dart: scoped merge negative checks (foreign rows never move) top-level metadata is preserved byte-for-byte (updatedAt included)
+00:03 +25: D:/MyNewProjects/qfli_c/build/c-content-fixture-20261024-c546-stdin-snapshot/test/forge_content_pipeline_test.dart: staged-row validation rejects input that would erase live rows an empty staging document is rejected
+00:03 +26: D:/MyNewProjects/qfli_c/build/c-content-fixture-20261024-c546-stdin-snapshot/test/forge_content_pipeline_test.dart: staged-row validation rejects input that would erase live rows fewer than 100 of a language is rejected
+00:03 +27: D:/MyNewProjects/qfli_c/build/c-content-fixture-20261024-c546-stdin-snapshot/test/forge_content_pipeline_test.dart: staged-row validation rejects input that would erase live rows a non-owned language row is rejected
+00:03 +28: D:/MyNewProjects/qfli_c/build/c-content-fixture-20261024-c546-stdin-snapshot/test/forge_content_pipeline_test.dart: staged-row validation rejects input that would erase live rows duplicate ids and empty code are rejected
+00:03 +29: D:/MyNewProjects/qfli_c/build/c-content-fixture-20261024-c546-stdin-snapshot/test/forge_content_pipeline_test.dart: staged-row validation rejects input that would erase live rows valid staged 100 C + 100 C++ passes validation
+00:03 +30: D:/MyNewProjects/qfli_c/build/c-content-fixture-20261024-c546-stdin-snapshot/test/forge_content_pipeline_test.dart: real staging passes the merge validators the generated staged rows validate for both kinds
+00:03 +31: All tests passed!

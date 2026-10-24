@@ -97,6 +97,11 @@ Emitted aggregate row schema (matches `content_repository.dart`):
   match the authored `portableOutput`. The app repository selects them only on
   OHOS, whose runtime targets WASI; other platforms retain native expectations.
   These fields change expected output, never sample source or test success.
+- An authored `input` must be emitted into **both** the tutorial lesson and its
+  paired example as `inputFixtures: {'stdin': input}` with exact bytes. Tutorials
+  must remain self-contained; adapter fallback from a paired example does not
+  excuse a missing field in generated lesson data. The actual import service
+  materializes that fixture as `input.txt` for native and portable repositories.
 
 Hard constraints:
 
@@ -153,6 +158,8 @@ Hard constraints:
 | Merge would change `updatedAt` or any top-level metadata | Rejected by the pipeline test; metadata is preserved verbatim |
 | Foreign row position or content changes | Snapshot freshness check aborts the merge |
 | Staged set is not exactly owned / ids not unique / empty code / wrong language | `validateStaging` reports errors and the merge aborts before any live read |
+| Authored/staged IDs differ, duplicate IDs would overwrite rows, or original C/C++ IDs 001..100 disappear from the authored set | The content verifier rejects the inventory; matching reduced author/asset sets do not establish completeness |
+| Lesson/example stdin is missing, changed or accompanied by unowned fixtures | `validateStagedContent` rejects the exact authored input mismatch |
 | Foreign-language fingerprint moved before merge | Abort the merge and re-run the read-check-merge cycle |
 
 ---
@@ -191,6 +198,12 @@ Hard constraints:
   and binary/asset/payload digests. Preserve prior reports as historical evidence
   when a runtime rebuild changes the binary; do not relabel older executions.
 - Generator run is idempotent and re-readable; `_check` rejects filler.
+- `test/forge_tutorial_fixture_test.dart` must inspect the production repository's
+  raw lesson inputs before the adapter can apply legacy fallback, then import
+  each stdin-driven tutorial through `LocalContentAdapter` and
+  `CodeImportService`. Assert exact source and `input.txt` bytes for native and
+  portable repositories. Inventory negatives include equal-count replacements,
+  duplicates and jointly truncated authored/staged sets with all levels retained.
 
 ---
 

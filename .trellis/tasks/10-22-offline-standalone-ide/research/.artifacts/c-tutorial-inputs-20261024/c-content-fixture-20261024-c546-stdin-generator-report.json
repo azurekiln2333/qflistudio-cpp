@@ -1,0 +1,27 @@
+{
+  "runId": "20261024-c546-stdin",
+  "tree": "f268e0fe1d2df4b926ecc2f2ecdecc10ee7b5439",
+  "passed": true,
+  "ignoredSemanticKeys": [
+    "updatedAt"
+  ],
+  "assets": {
+    "forge_tutorials.json": {
+      "candidateSha256": "80d906e71a47eb3c54bbebe716237ebcc69ebf56fba6a291b8bd1b5d69d3416e",
+      "generatedSha256": "ff690f22e9a40b40a0572edbf7c7150d775ec2ab78b7067a65f1e86df862fdd7",
+      "semanticsEqualIgnoringOnlyUpdatedAt": true
+    },
+    "forge_examples.json": {
+      "candidateSha256": "55793b498b5a8a6b605c554710a837c3f7ca011c27d7fcd25a63466971bdf57c",
+      "generatedSha256": "e0abe7c778762e611c69ebe3550a56d9c5e2052a39428081599c49ee59d318b2",
+      "semanticsEqualIgnoringOnlyUpdatedAt": true
+    }
+  },
+  "command": [
+    "D:\\ProgramFiles\\flutter_ohos\\bin\\cache\\dart-sdk\\bin\\dart.exe",
+    "--packages=D:\\MyNewProjects\\qfli_c\\build\\c-content-fixture-20261024-c546-stdin-snapshot\\.dart_tool\\package_config.json",
+    "D:\\MyNewProjects\\qfli_c\\build\\c-content-fixture-20261024-c546-stdin-snapshot\\tool\\forge_content\\generate_forge_content.dart"
+  ],
+  "temporaryCwd": "D:\\MyNewProjects\\qfli_c\\build\\c-content-fixture-generation-i74c_6yd",
+  "candidateAssetsUnchanged": true
+}

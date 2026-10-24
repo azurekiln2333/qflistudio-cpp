@@ -1,0 +1,817 @@
+{
+  "generatedAt": "2026-10-24T06:32:47.529968Z",
+  "nativeRequired": false,
+  "clangVersion": "",
+  "gccVersion": "",
+  "cCount": 100,
+  "cppCount": 100,
+  "standardsUsed": {},
+  "tutorialCount": 200,
+  "exampleCount": 200,
+  "stagedAssetErrors": [],
+  "shapeErrors": [],
+  "passed": 200,
+  "failed": 0,
+  "results": [
+    {
+      "id": "c-example-001",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-002",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-003",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-004",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-005",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-006",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-007",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-008",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-009",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-010",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-011",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-012",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-013",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-014",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-015",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-016",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-017",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-018",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-019",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-020",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-021",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-022",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-023",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-024",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-025",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-026",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-027",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-028",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-029",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-030",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-031",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-032",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-033",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-034",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-035",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-036",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-037",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-038",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-039",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-040",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-041",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-042",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-043",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-044",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-045",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-046",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-047",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-048",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-049",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-050",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-051",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-052",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-053",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-054",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-055",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-056",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-057",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-058",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-059",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-060",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-061",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-062",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-063",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-064",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-065",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-066",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-067",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-068",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-069",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-070",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-071",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-072",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-073",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-074",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-075",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-076",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-077",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-078",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-079",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-080",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-081",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-082",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-083",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-084",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-085",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-086",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-087",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-088",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-089",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-090",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-091",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-092",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-093",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-094",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-095",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-096",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-097",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-098",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-099",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "c-example-100",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-001",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-002",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-003",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-004",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-005",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-006",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-007",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-008",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-009",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-010",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-011",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-012",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-013",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-014",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-015",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-016",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-017",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-018",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-019",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-020",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-021",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-022",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-023",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-024",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-025",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-026",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-027",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-028",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-029",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-030",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-031",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-032",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-033",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-034",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-035",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-036",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-037",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-038",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-039",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-040",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-041",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-042",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-043",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-044",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-045",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-046",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-047",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-048",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-049",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-050",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-051",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-052",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-053",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-054",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-055",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-056",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-057",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-058",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-059",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-060",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-061",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-062",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-063",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-064",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-065",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-066",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-067",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-068",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-069",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-070",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-071",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-072",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-073",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-074",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-075",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-076",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-077",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-078",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-079",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-080",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-081",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-082",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-083",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-084",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-085",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-086",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-087",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-088",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-089",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-090",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-091",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-092",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-093",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-094",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-095",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-096",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-097",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-098",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-099",
+      "status": "staged_ok_no_native"
+    },
+    {
+      "id": "cpp-example-100",
+      "status": "staged_ok_no_native"
+    }
+  ]
+}
