@@ -1235,6 +1235,9 @@
           ],
           "explain": "本 App 的运行模型是「先把输入准备好、再一次性跑完」，所以标准输入写在项目根目录的 input.txt 里。scanf 的用法和 printf 反过来：它按格式把读到的值写进变量的地址，所以变量前要加 &。scanf 返回成功读取的项数，可用于判断输入是否足够。",
           "code": "#include <stdio.h>\n\nint main(void) {\n    int a, b;\n    if (scanf(\"%d %d\", &a, &b) != 2) {\n        printf(\"need two integers\\n\");\n        return 1;\n    }\n    printf(\"%d + %d = %d\\n\", a, b, a + b);\n    printf(\"%d * %d = %d\\n\", a, b, a * b);\n    return 0;\n}\n",
+          "inputFixtures": {
+            "stdin": "17 5\n"
+          },
           "output": "17 + 5 = 22\n17 * 5 = 85\n",
           "pitfalls": [
             "忘记变量前的 & 会写入错误地址，程序可能崩溃。",
@@ -1284,6 +1287,9 @@
           ],
           "explain": "getchar 每次读一个字符，读到输入末尾返回 EOF（通常是 -1）。putchar 输出一个字符。它们常用来做逐字符统计，比如数一数输入里有多少个字母。用 int 接收 getchar 的返回值才能正确判断 EOF。",
           "code": "#include <stdio.h>\n\nint main(void) {\n    int ch;\n    int letters = 0;\n    while ((ch = getchar()) != EOF) {\n        if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z')) {\n            letters++;\n        }\n    }\n    printf(\"letters=%d\\n\", letters);\n    return 0;\n}\n",
+          "inputFixtures": {
+            "stdin": "hello world\n"
+          },
           "output": "letters=10\n",
           "pitfalls": [
             "用 char 接收 getchar 返回值会无法区分 EOF 和有效字符。",
@@ -5011,6 +5017,9 @@
           ],
           "explain": "std::cin 是标准输入流，>> 是流提取运算符，按目标类型解析输入并自动跳过前导空白。cin >> a >> b; 可以连续读取。读取失败（格式不符或到末尾）会使流进入失败状态，可用 if (cin >> x) 判断。本课程用项目根目录的 input.txt 作为标准输入。",
           "code": "#include <iostream>\n\nint main() {\n    int a = 0, b = 0;\n    if (std::cin >> a >> b) {\n        std::cout << a << \" + \" << b << \" = \" << a + b << \"\\n\";\n    } else {\n        std::cout << \"读取失败\\n\";\n    }\n    return 0;\n}\n",
+          "inputFixtures": {
+            "stdin": "7 35\n"
+          },
           "output": "7 + 35 = 42\n",
           "pitfalls": [
             "忘记判断读取是否成功，失败时会用旧值继续算。",
@@ -5863,6 +5872,9 @@
           ],
           "explain": "cin >> 以空白为分隔符，读不到空格；getline(cin, line) 读到换行为止，保留空格。两者混用时要小心：>> 读完后输入流里可能残留换行，导致随后的 getline 立刻返回空串，常用 cin.ignore() 清掉。",
           "code": "#include <iostream>\n#include <string>\n\nint main() {\n    std::string name;\n    int age = 0;\n    std::cin >> name >> age;\n    std::cin.ignore();  // 清掉行尾换行\n    std::string line;\n    std::getline(std::cin, line);\n    std::cout << name << \" (\" << age << \")\\n\";\n    std::cout << \"line: \" << line << \"\\n\";\n    return 0;\n}\n",
+          "inputFixtures": {
+            "stdin": "Alice 25\nHello World\n"
+          },
           "output": "Alice (25)\nline: Hello World\n",
           "pitfalls": [
             ">> 后直接 getline 会读到空行，需要先 ignore()。",

@@ -115,43 +115,46 @@ void _check(List<ForgeTopic> topics) {
   }
 }
 
-Map<String, dynamic> _tutorialEntry(ForgeTopic t, String stamp) =>
+Map<String, dynamic> _tutorialEntry(
+  ForgeTopic t,
+  String stamp,
+) => <String, dynamic>{
+  'id': t.tutorialId,
+  'language': t.language,
+  'type': t.language,
+  'locale': 'zh-CN',
+  'level': t.level,
+  'title': t.title,
+  'summary': t.summary,
+  'concepts': t.concepts,
+  'source': t.isC ? 'QFLI C 教程（原创）' : 'QFLI C++ 教程（原创）',
+  'license': 'Original QFLI curriculum. CC BY 4.0',
+  'updatedAt': stamp,
+  'lessons': <Map<String, dynamic>>[
     <String, dynamic>{
-      'id': t.tutorialId,
-      'language': t.language,
-      'type': t.language,
-      'locale': 'zh-CN',
-      'level': t.level,
+      'id': '${t.tutorialId}-lesson',
       'title': t.title,
       'summary': t.summary,
       'concepts': t.concepts,
-      'source': t.isC ? 'QFLI C 教程（原创）' : 'QFLI C++ 教程（原创）',
-      'license': 'Original QFLI curriculum. CC BY 4.0',
-      'updatedAt': stamp,
-      'lessons': <Map<String, dynamic>>[
-        <String, dynamic>{
-          'id': '${t.tutorialId}-lesson',
-          'title': t.title,
-          'summary': t.summary,
-          'concepts': t.concepts,
-          'objective': t.objective,
-          'prerequisites': t.prerequisites,
-          'explain': t.explain,
-          'code': t.code,
-          'output': t.output,
-          if (t.portableOutput != null) 'portableOutput': t.portableOutput,
-          'pitfalls': t.pitfalls,
-          'exercises': <Map<String, String>>[
-            for (final task in t.tasks)
-              <String, String>{
-                'prompt': task.prompt,
-                'hint': task.hint,
-                'answer': task.answer,
-              },
-          ],
-        },
+      'objective': t.objective,
+      'prerequisites': t.prerequisites,
+      'explain': t.explain,
+      'code': t.code,
+      if (t.input != null) 'inputFixtures': <String, String>{'stdin': t.input!},
+      'output': t.output,
+      if (t.portableOutput != null) 'portableOutput': t.portableOutput,
+      'pitfalls': t.pitfalls,
+      'exercises': <Map<String, String>>[
+        for (final task in t.tasks)
+          <String, String>{
+            'prompt': task.prompt,
+            'hint': task.hint,
+            'answer': task.answer,
+          },
       ],
-    };
+    },
+  ],
+};
 
 Map<String, dynamic> _exampleEntry(ForgeTopic t, String stamp) =>
     <String, dynamic>{
