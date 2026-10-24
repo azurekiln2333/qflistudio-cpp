@@ -1,0 +1,30 @@
+{
+  "results": [
+    {
+      "name": "isolated capability and metadata regressions",
+      "pid": 84244,
+      "exit": 1,
+      "log": "D:\\MyNewProjects\\qfli_studio_core\\build\\c-workspace-followup-tests.log"
+    },
+    {
+      "name": "actual JSON profile against exact frozen core",
+      "pid": 81336,
+      "exit": 0,
+      "log": "D:\\MyNewProjects\\qfli_studio_core\\build\\c-workspace-followup-json.log"
+    },
+    {
+      "name": "isolated workspace scoped analysis",
+      "pid": 68932,
+      "exit": 0,
+      "log": "D:\\MyNewProjects\\qfli_studio_core\\build\\c-workspace-followup-analyze.log"
+    },
+    {
+      "name": "publish only exact candidate after all three green gates",
+      "pid": 84052,
+      "exit": 1,
+      "log": "D:\\MyNewProjects\\qfli_studio_core\\build\\c-workspace-followup-publish.log"
+    }
+  ],
+  "exit": 1,
+  "elapsed": 84.243
+}

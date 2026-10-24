@@ -1,0 +1,314 @@
+00:00 +0: loading D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/saved_workspace_capability_test.dart
+00:00 +0: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/saved_workspace_capability_test.dart: null and existing profiles enable named workspaces independently
+00:00 +1: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/saved_workspace_capability_test.dart: explicit opt-out does not change identity or network policy
+00:00 +2: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/saved_workspace_capability_test.dart: child explorer saves a named local workspace with offlineOnly=true
+00:01 +3: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/saved_workspace_capability_test.dart: child explorer saves a named local workspace with offlineOnly=false
+00:01 +4: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/saved_workspace_capability_test.dart: opted-out child retains its legacy membership picker
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following assertion was thrown running a test:
+Guarded function conflict.
+You must use "await" with all Future-returning test APIs.
+The guarded method "pump" from class WidgetTester was called from
+file:///D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/saved_workspace_capability_test.dart
+on line 374.
+Then, the "expect" function was called from
+file:///D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/saved_workspace_capability_test.dart
+on line 138.
+The first method (WidgetTester.pump) had not yet finished executing at the time that the second
+function (expect) was called. Since both are guarded, and the second was not a nested call inside
+the first, the first must complete its execution before the second can be called. Typically, this is
+achieved by putting an "await" statement in front of the call to the first.
+If you are confident that all test APIs are being called using "await", and this expect() call is
+not being called at the top level but is itself being called from some sort of callback registered
+before the pump method was called, then consider using expectSync() instead.
+
+When the first method (WidgetTester.pump) was called, this was the stack:
+#0      TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:72:42)
+#1      WidgetTester.pump (package:flutter_test/src/widget_tester.dart:656:27)
+#2      _until (file:///D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/saved_workspace_capability_test.dart:374:18)
+<asynchronous suspension>
+#3      main.<anonymous closure> (file:///D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/saved_workspace_capability_test.dart:141:5)
+<asynchronous suspension>
+#4      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#5      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1682:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+When the exception was thrown, this was the stack:
+#0      TestAsyncUtils.guardSync (package:flutter_test/src/test_async_utils.dart:312:5)
+#1      expect (package:flutter_test/src/widget_tester.dart:476:18)
+#2      main.<anonymous closure>.<anonymous closure> (file:///D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/saved_workspace_capability_test.dart:138:7)
+<asynchronous suspension>
+(elided 8 frames from dart:async and package:stack_trace)
+
+The test description was:
+  opted-out child retains its legacy membership picker
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:01 +4 -1: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/saved_workspace_capability_test.dart: opted-out child retains its legacy membership picker [E]
+  Test failed. See exception logs above.
+  The test description was: opted-out child retains its legacy membership picker
+  
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test (but after the test had completed):
+Expected: true
+  Actual: <false>
+Workspace capability UI did not settle
+
+When the exception was thrown, this was the stack:
+#0      fail (package:matcher/src/expect/expect.dart:187:31)
+#1      _expect (package:matcher/src/expect/expect.dart:182:3)
+#2      expect (package:matcher/src/expect/expect.dart:65:3)
+#3      expect (package:flutter_test/src/widget_tester.dart:477:18)
+#4      _until (file:///D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/saved_workspace_capability_test.dart:376:3)
+<asynchronous suspension>
+#5      main.<anonymous closure> (file:///D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/saved_workspace_capability_test.dart:141:5)
+<asynchronous suspension>
+#6      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#7      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1682:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+  Test failed. See exception logs above.
+  The test description was: opted-out child retains its legacy membership picker
+  
+00:02 +4 -1: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/saved_workspace_capability_test.dart: opted-out main disables unnamed workspace creation
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following _TypeError was thrown running a test:
+type 'RawTooltip' is not a subtype of type 'IconButton' in type cast
+
+When the exception was thrown, this was the stack:
+#0      WidgetController.widget (package:flutter_test/src/controller.dart:823:44)
+#1      main.<anonymous closure> (file:///D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/saved_workspace_capability_test.dart:157:27)
+<asynchronous suspension>
+#2      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#3      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1682:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+The test description was:
+  opted-out main disables unnamed workspace creation
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:02 +4 -2: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/saved_workspace_capability_test.dart: opted-out main disables unnamed workspace creation [E]
+  Test failed. See exception logs above.
+  The test description was: opted-out main disables unnamed workspace creation
+  
+00:02 +4 -2: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/saved_workspace_capability_test.dart: opted-out qflistudio still manages an explicit document
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following _TypeError was thrown running a test:
+type 'RawTooltip' is not a subtype of type 'IconButton' in type cast
+
+When the exception was thrown, this was the stack:
+#0      WidgetController.widget (package:flutter_test/src/controller.dart:823:44)
+#1      main.<anonymous closure> (file:///D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/saved_workspace_capability_test.dart:180:29)
+<asynchronous suspension>
+#2      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#3      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1682:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+The test description was:
+  opted-out qflistudio still manages an explicit document
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:02 +4 -3: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/saved_workspace_capability_test.dart: opted-out qflistudio still manages an explicit document [E]
+  Test failed. See exception logs above.
+  The test description was: opted-out qflistudio still manages an explicit document
+  
+00:02 +4 -3: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/saved_workspace_capability_test.dart: opted-out json still manages an explicit document
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following _TypeError was thrown running a test:
+type 'RawTooltip' is not a subtype of type 'IconButton' in type cast
+
+When the exception was thrown, this was the stack:
+#0      WidgetController.widget (package:flutter_test/src/controller.dart:823:44)
+#1      main.<anonymous closure> (file:///D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/saved_workspace_capability_test.dart:180:29)
+<asynchronous suspension>
+#2      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#3      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1682:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+The test description was:
+  opted-out json still manages an explicit document
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:03 +4 -4: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/saved_workspace_capability_test.dart: opted-out json still manages an explicit document [E]
+  Test failed. See exception logs above.
+  The test description was: opted-out json still manages an explicit document
+  
+00:03 +4 -4: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/saved_workspace_capability_test.dart: cloud primary refuses named saving before opening its dialog
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following _TypeError was thrown running a test:
+type 'RawTooltip' is not a subtype of type 'IconButton' in type cast
+
+When the exception was thrown, this was the stack:
+#0      WidgetController.widget (package:flutter_test/src/controller.dart:823:44)
+#1      main.<anonymous closure> (file:///D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/saved_workspace_capability_test.dart:217:14)
+<asynchronous suspension>
+#2      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#3      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1682:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+The test description was:
+  cloud primary refuses named saving before opening its dialog
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:03 +4 -5: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/saved_workspace_capability_test.dart: cloud primary refuses named saving before opening its dialog [E]
+  Test failed. See exception logs above.
+  The test description was: cloud primary refuses named saving before opening its dialog
+  
+00:03 +4 -5: loading D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/workspace_metadata_refresh_test.dart
+00:04 +4 -5: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/workspace_metadata_refresh_test.dart: same-id external rename refreshes the live settings and cannot revert on expansion
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following assertion was thrown running a test:
+Guarded function conflict.
+You must use "await" with all Future-returning test APIs.
+The guarded method "pump" from class WidgetTester was called from
+file:///D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/workspace_metadata_refresh_test.dart
+on line 299.
+Then, the "expect" function was called from
+file:///D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/workspace_metadata_refresh_test.dart
+on line 68.
+The first method (WidgetTester.pump) had not yet finished executing at the time that the second
+function (expect) was called. Since both are guarded, and the second was not a nested call inside
+the first, the first must complete its execution before the second can be called. Typically, this is
+achieved by putting an "await" statement in front of the call to the first.
+If you are confident that all test APIs are being called using "await", and this expect() call is
+not being called at the top level but is itself being called from some sort of callback registered
+before the pump method was called, then consider using expectSync() instead.
+
+When the first method (WidgetTester.pump) was called, this was the stack:
+#0      TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:72:42)
+#1      WidgetTester.pump (package:flutter_test/src/widget_tester.dart:656:27)
+#2      _pumpUntil (file:///D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/workspace_metadata_refresh_test.dart:299:18)
+<asynchronous suspension>
+#3      main.<anonymous closure> (file:///D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/workspace_metadata_refresh_test.dart:72:7)
+<asynchronous suspension>
+#4      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#5      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1682:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+When the exception was thrown, this was the stack:
+#0      TestAsyncUtils.guardSync (package:flutter_test/src/test_async_utils.dart:312:5)
+#1      expect (package:flutter_test/src/widget_tester.dart:476:18)
+#2      main.<anonymous closure>.<anonymous closure> (file:///D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/workspace_metadata_refresh_test.dart:68:15)
+<asynchronous suspension>
+(elided 8 frames from dart:async and package:stack_trace)
+
+The test description was:
+  same-id external rename refreshes the live settings and cannot revert on expansion
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:06 +4 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/workspace_metadata_refresh_test.dart: same-id external rename refreshes the live settings and cannot revert on expansion [E]
+  Test failed. See exception logs above.
+  The test description was: same-id external rename refreshes the live settings and cannot revert on expansion
+  
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test (but after the test had completed):
+Expected: true
+  Actual: <false>
+external metadata save did not finish
+
+When the exception was thrown, this was the stack:
+#0      fail (package:matcher/src/expect/expect.dart:187:31)
+#1      _expect (package:matcher/src/expect/expect.dart:182:3)
+#2      expect (package:matcher/src/expect/expect.dart:65:3)
+#3      expect (package:flutter_test/src/widget_tester.dart:477:18)
+#4      _pumpUntil (file:///D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/workspace_metadata_refresh_test.dart:301:3)
+<asynchronous suspension>
+#5      main.<anonymous closure> (file:///D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/workspace_metadata_refresh_test.dart:72:7)
+<asynchronous suspension>
+#6      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#7      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1682:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+  Test failed. See exception logs above.
+  The test description was: same-id external rename refreshes the live settings and cannot revert on expansion
+  
+00:07 +4 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/workspace_metadata_refresh_test.dart: same-id settings save updates host members and keeps a removed dirty buffer
+00:10 +5 -6: loading D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/home_project_scope_test.dart
+00:11 +5 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/home_project_scope_test.dart: (setUpAll)
+00:11 +5 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/home_project_scope_test.dart: offline products keep local project and workspace scopes with language chips hidden
+00:12 +6 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/home_project_scope_test.dart: networked products keep workspace and cloud scopes with showHomeTabs=true
+00:12 +7 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/home_project_scope_test.dart: networked products keep workspace and cloud scopes with showHomeTabs=false
+00:12 +8 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/home_project_scope_test.dart: workspace opt-out keeps child cloud policy with offlineOnly=true
+00:12 +9 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/home_project_scope_test.dart: workspace opt-out keeps child cloud policy with offlineOnly=false
+00:12 +10 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/home_project_scope_test.dart: (tearDownAll)
+00:12 +10 -6: loading D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/file_explorer_state_test.dart
+00:13 +10 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/file_explorer_state_test.dart: reconstructed explorer restores nested expansion
+00:14 +11 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/file_explorer_state_test.dart: closing and reopening the drawer keeps expanded folders
+00:14 +12 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/file_explorer_state_test.dart: rapid switches keep each project expansion and file ownership
+00:15 +13 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/file_explorer_state_test.dart: workspace displays local roots and opens both in shared tabs
+00:15 +14 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/file_explorer_state_test.dart: workspace create and backed-up delete operate on the selected owner root
+00:16 +15 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/file_explorer_state_test.dart: workspace membership and independent root expansion restore
+00:17 +16 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/file_explorer_state_test.dart: creating inside a collapsed folder persists its expansion
+00:17 +17 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/file_explorer_state_test.dart: backed-up deletion finishes safely after editor disposal
+00:17 +18 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/file_explorer_state_test.dart: workspace removal preserves source files, open tabs and expansion
+00:18 +19 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/file_explorer_state_test.dart: workspace search covers both roots and preserves result ownership
+00:18 +20 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/file_explorer_state_test.dart: workspace toolbar fits a 280px sidebar at text scale 1.0
+00:18 +21 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/file_explorer_state_test.dart: workspace toolbar fits a 280px sidebar at text scale 2.0
+00:19 +22 -6: loading D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/workspace_dialog_layout_test.dart
+00:19 +22 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/workspace_dialog_layout_test.dart: ohos 390.0 retained workspace settings paints and applies
+00:21 +23 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/workspace_dialog_layout_test.dart: ohos 1100.0 retained workspace settings paints and applies
+00:23 +24 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/workspace_dialog_layout_test.dart: android 390.0 retained workspace settings paints and applies
+00:24 +25 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/workspace_dialog_layout_test.dart: OHOS standalone single project saves from actual editor
+00:25 +26 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/workspace_dialog_layout_test.dart: OHOS language editor project dialog scrolls and applies
+00:25 +27 -6: loading D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/workspace_project_switch_test.dart
+00:25 +27 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/workspace_project_switch_test.dart: member selection preserves the tree; external selection uses a retained standalone
+00:29 +28 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/workspace_project_switch_test.dart: without a retained host external selection opens a standalone route
+00:30 +29 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/workspace_project_switch_test.dart: standalone selector replaces the tree with the external project
+00:31 +30 -6: loading D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/main_workspace_sessions_test.dart
+00:31 +30 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/main_workspace_sessions_test.dart: promoted standalone session is distinct and standalone reopens reuse one buffer session
+00:31 +31 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/main_workspace_sessions_test.dart: workspace identity is the workspace id and follows a surviving primary
+00:31 +32 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/main_workspace_sessions_test.dart: main standalone open ignores legacy cross-root history
+00:32 +33 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/main_workspace_sessions_test.dart: workspace session restores owners and saves only to the workspace document
+00:33 +34 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/main_workspace_sessions_test.dart: workspace shrink closes clean tabs, keeps dirty orphans and never writes them back
+00:34 +35 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/main_workspace_sessions_test.dart: workspace reopen with a missing primary keeps the surviving member
+00:34 +36 -6: loading D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/workspace_editor_session_test.dart
+00:34 +36 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/workspace_editor_session_test.dart: actual EditorPage restores cross-root order, owner, active tab and cursors after reconstruction
+00:37 +37 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/workspace_editor_session_test.dart: folded cross-root selections restore their source lines and both endpoints
+00:38 +38 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/workspace_editor_session_test.dart: legacy main-root sessions retain cursor and active-file restoration
+00:38 +39 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/workspace_editor_session_test.dart: restore skips foreign owners, traversal, absolute paths, missing files and duplicate tabs
+00:38 +40 -6: loading D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/retained_editor_test.dart
+00:39 +40 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/retained_editor_test.dart: (setUpAll)
+00:39 +40 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/retained_editor_test.dart: phone restore avoids create project at 390dp with 1.0x text and safe areas
+00:41 +41 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/retained_editor_test.dart: phone restore avoids create project at 320dp with 2.0x text and multiple sessions
+00:43 +42 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/retained_editor_test.dart: live editor survives Home, tools, content and restore
+00:45 +43 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/retained_editor_test.dart: same-project imports finish and open new files without replacing dirty tabs
+00:47 +44 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/retained_editor_test.dart: multiple projects switch via selector; explicit close confirms and disposes only one
+00:50 +45 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/retained_editor_test.dart: cancelling Explorer new file keeps the live editor and dirty buffer
+00:50 +46 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/retained_editor_test.dart: editor dialogs and child routes consume Back before the editor hides
+00:51 +47 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/retained_editor_test.dart: terminal sessions retain drafts, controllers and output and cannot focus while hidden
+00:52 +48 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/retained_editor_test.dart: opening without a host retains standalone EditorPage navigation
+00:53 +49 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/retained_editor_test.dart: (tearDownAll)
+00:53 +49 -6: loading D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/editor_debug_page_test.dart
+00:53 +49 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/editor_debug_page_test.dart: actual page keeps missing debugger unavailable and launches no Run
+00:54 +50 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/editor_debug_page_test.dart: actual gutter, secondary snapshots, pause navigation, steps and cleanup stay connected
+00:55 +51 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/editor_debug_page_test.dart: paused source shrink rejects stale gutter geometry and execution position
+00:56 +52 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/editor_debug_page_test.dart: workspace removal keeps dirty source recoverable and rejects Run and Debug
+00:57 +53 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/editor_debug_page_test.dart: queued manual save preserves recovery text when its owner is removed
+00:57 +54 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/editor_debug_page_test.dart: queued autosave save preserves recovery text when its owner is removed
+00:58 +55 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/editor_debug_page_test.dart: queued close save preserves recovery text when its owner is removed
+00:59 +56 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/editor_debug_page_test.dart: queued document save preserves recovery text when its owner is removed
+00:59 +57 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/editor_debug_page_test.dart: removed clean project cannot be reopened through paused stack navigation
+01:00 +58 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/editor_debug_page_test.dart: reopening a busy terminal cancels deferred panel removal
+01:01 +59 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/editor_debug_page_test.dart: Output uses actual run streams and replaces rolling debug snapshots
+01:02 +60 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/editor_debug_page_test.dart: focused editor disposal does not inspect a defunct focus context
+01:02 +61 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/editor_debug_page_test.dart: failed debug cleanup retains the lane and offers a real Stop retry
+01:02 +62 -6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/17d0dd02e01f/test/editor_debug_page_test.dart: narrow large-text panels keep close controls and honest empty ports
+01:03 +63 -6: Some tests failed.

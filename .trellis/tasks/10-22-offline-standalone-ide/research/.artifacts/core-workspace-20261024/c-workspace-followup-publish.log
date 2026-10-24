@@ -1,0 +1,6 @@
+[main 2f9039a] feat(workspace): enable standalone named sessions and refresh retained metadata
+ 14 files changed, 1404 insertions(+), 30 deletions(-)
+ create mode 100644 lib/workspace/saved_workspaces_tab.dart
+ create mode 100644 test/saved_workspace_capability_test.dart
+ create mode 100644 test/workspace_metadata_refresh_test.dart
+COMPILE-STABLE SOURCE CHECKPOINT 2f9039a3ba95449679b17257b0313c1ee3644a2c TREE d21ffcdc7ac9c834e0b788b21178e9f80768a519

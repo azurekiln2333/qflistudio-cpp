@@ -1,0 +1,23 @@
+{
+  "beforeCleanup": {
+    "pid": 57488,
+    "threadId": 4108,
+    "createdSuspended": true,
+    "assignedBeforeResume": true,
+    "terminal": true,
+    "creationFiletime100ns": "134372823412131292",
+    "jobActiveProcesses": 2,
+    "exitCode": 0
+  },
+  "afterCleanup": {
+    "pid": 57488,
+    "threadId": 4108,
+    "createdSuspended": true,
+    "assignedBeforeResume": true,
+    "terminal": true,
+    "creationFiletime100ns": "134372823412131292",
+    "jobActiveProcesses": 0,
+    "exitCode": 0
+  },
+  "passed": true
+}

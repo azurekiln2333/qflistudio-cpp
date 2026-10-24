@@ -1,0 +1,215 @@
+{
+  "date": "2026-10-24",
+  "coreCommit": "2f9039a3ba95449679b17257b0313c1ee3644a2c",
+  "testedAndCommittedTree": "d21ffcdc7ac9c834e0b788b21178e9f80768a519",
+  "baseCommit": "36697b04836a9dc6178f96071eca010f1685218c",
+  "files": {
+    "lib/editor/editor_page.dart": {
+      "sha256": "8549c7e4d00692c27876636d436811100a231d04cb842f263d50eaaab7c07ca4",
+      "blob": "92ec1e9a514877bd6304b12bf165d545e6db0f3e"
+    },
+    "lib/editor/file_explorer.dart": {
+      "sha256": "6b99ad68a789e2a20d4f49f54ccbf9fa193e9eca852e34a8976bf0b13353a661",
+      "blob": "210017592bd1ba4fdc32ff5609d93077263570d6"
+    },
+    "lib/editor/retained_editor_host.dart": {
+      "sha256": "58d91921b177173842222f1d2aecb1261f73633abe3a8fefeb4ae33f27e8ba78",
+      "blob": "112d514776475d50fb14cbb1eaa4f46080cb4959"
+    },
+    "lib/services/studio_profile.dart": {
+      "sha256": "0368fe6860309229369814dedd656ec370f47d2db7f6f3d9e0141cd5cda9c81c",
+      "blob": "d347db8ecd84c9a7c8db2f7c2ad9f6903ea54d47"
+    },
+    "lib/workspace/saved_workspace.dart": {
+      "sha256": "f658b3ddca9dcf8152282304428523836b4b3b93ab95a1d034b43316f3bc5720",
+      "blob": "4e76272a23de4e369034596c25ef1b4db63add40"
+    },
+    ".trellis/spec/frontend/saved-workspaces.md": {
+      "sha256": "4595cba6f1d7190003185bb1960c27fb362e0ee9b6fed8f6f838d50b166b700c",
+      "blob": "78980bd950dec3807ec0914eeadeb3855c983362"
+    },
+    ".trellis/spec/frontend/offline-workspace.md": {
+      "sha256": "47a27c88229e62472ad4e6b272b3d110d94d87aa0a4039f1d23e895730fd373a",
+      "blob": "b35b998334c4b54ba095161ef261893b6bb3d790"
+    },
+    "test/workspace_metadata_refresh_test.dart": {
+      "sha256": "82166f0c6555c4915dc1f2cecf1660ea332be0de2f8388023b3aad13c529ad3a",
+      "blob": "0ef85d12c2c023c7b23d15db979de89532eadca6"
+    },
+    "test/saved_workspace_capability_test.dart": {
+      "sha256": "7e32a97d2ed3824d7590046a4c0174171b5c50ced86328cafb0b404f4aa78767",
+      "blob": "8da9e94f80ecc4cc896f0c8ecd2863762c738680"
+    },
+    "test/file_explorer_state_test.dart": {
+      "sha256": "d9711114cea080ca422f79477a5ac3801ef012788309595a779c768a6006ffdb",
+      "blob": "d574a284edfa0077dc4e855747a375ad1b2f5083"
+    },
+    "test/workspace_dialog_layout_test.dart": {
+      "sha256": "022877d292b87b1bfd469334018d517d21591501e6a05d0b99bbf08f3ee9e594",
+      "blob": "c32eed21a0fc0a444aec5039197d713a92b0be41"
+    },
+    "test/home_project_scope_test.dart": {
+      "sha256": "1f730c2d59cac8060460b43198cff2f21f1476d611aefa1bf70dd2dfdac6e4c2",
+      "blob": "b0bd13b169e426ada4d79c7f15e1b95463d135ac"
+    },
+    "lib/pages/home_page.dart": {
+      "sha256": "A1C78304A21C06248607651431D81395A243B17579EF238E8D71C12CD62B53B5",
+      "blob": "e46f263dfa7ce8ad41b619c3cde71e236e3b261b",
+      "authorization": "main exact Home dependency"
+    },
+    "lib/workspace/saved_workspaces_tab.dart": {
+      "sha256": "D63E6E55D4CFADF4982FF841A2C3835D6D7EE727D966682A5A1914494B4536A5",
+      "blob": "bc87afdf211d2af490c367538efb63a274607d82",
+      "authorization": "main exact Home dependency"
+    }
+  },
+  "mainHomeManifestSha256": "94317EBCDBDFD6419F151DCEF33B74CFFE5E3EE346BA37A03BC23D8B5C1C0745",
+  "gates": {
+    "coreSuites": 10,
+    "corePassed": 69,
+    "coreFailed": 0,
+    "actualJSONProfilePassed": 1,
+    "actualJSONProfileFailed": 0,
+    "analyzedDartFiles": 12,
+    "analysis": "No issues found!"
+  },
+  "window": {
+    "results": [
+      {
+        "name": "isolated capability and metadata regressions",
+        "process": {
+          "pid": 39224,
+          "threadId": 71220,
+          "createdSuspended": true,
+          "assignedBeforeResume": true,
+          "terminal": true,
+          "creationFiletime100ns": "134372834594884408",
+          "jobActiveProcesses": 0,
+          "exitCode": 0
+        },
+        "exit": 0,
+        "error": null,
+        "timeout": false,
+        "orphanCleanup": false,
+        "emptyJob": true,
+        "log": "D:\\MyNewProjects\\qfli_studio_core\\build\\c-workspace-followup-tests.log"
+      },
+      {
+        "name": "actual JSON profile against exact frozen core",
+        "process": {
+          "pid": 84184,
+          "threadId": 76168,
+          "createdSuspended": true,
+          "assignedBeforeResume": true,
+          "terminal": true,
+          "creationFiletime100ns": "134372835286113515",
+          "jobActiveProcesses": 0,
+          "exitCode": 0
+        },
+        "exit": 0,
+        "error": null,
+        "timeout": false,
+        "orphanCleanup": false,
+        "emptyJob": true,
+        "log": "D:\\MyNewProjects\\qfli_studio_core\\build\\c-workspace-followup-json.log"
+      },
+      {
+        "name": "isolated workspace scoped analysis",
+        "process": {
+          "pid": 69764,
+          "threadId": 78276,
+          "createdSuspended": true,
+          "assignedBeforeResume": true,
+          "terminal": true,
+          "creationFiletime100ns": "134372835407742318",
+          "jobActiveProcesses": 0,
+          "exitCode": 0
+        },
+        "exit": 0,
+        "error": null,
+        "timeout": false,
+        "orphanCleanup": false,
+        "emptyJob": true,
+        "log": "D:\\MyNewProjects\\qfli_studio_core\\build\\c-workspace-followup-analyze.log"
+      },
+      {
+        "name": "publish only exact candidate after all three green gates",
+        "process": {
+          "pid": 82700,
+          "threadId": 73068,
+          "createdSuspended": true,
+          "assignedBeforeResume": true,
+          "terminal": true,
+          "creationFiletime100ns": "134372835435171177",
+          "jobActiveProcesses": 0,
+          "exitCode": 0
+        },
+        "exit": 0,
+        "error": null,
+        "timeout": false,
+        "orphanCleanup": false,
+        "emptyJob": true,
+        "log": "D:\\MyNewProjects\\qfli_studio_core\\build\\c-workspace-followup-publish.log"
+      }
+    ],
+    "exit": 0,
+    "allOwnedJobsEmpty": true,
+    "elapsed": 85.046,
+    "publication": {
+      "process": {
+        "pid": 23048,
+        "threadId": 83072,
+        "createdSuspended": true,
+        "assignedBeforeResume": true,
+        "terminal": true,
+        "creationFiletime100ns": "134372835445381792",
+        "jobActiveProcesses": 0,
+        "exitCode": 0
+      },
+      "emptyJob": true,
+      "delivered": true
+    }
+  },
+  "verifiedRemotes": {
+    "github": {
+      "ref": "refs/heads/main",
+      "oid": "2f9039a3ba95449679b17257b0313c1ee3644a2c"
+    },
+    "gitee": {
+      "ref": "refs/heads/main",
+      "oid": "2f9039a3ba95449679b17257b0313c1ee3644a2c"
+    },
+    "gitcode": {
+      "ref": "refs/heads/main",
+      "oid": "2f9039a3ba95449679b17257b0313c1ee3644a2c"
+    },
+    "cnb": {
+      "ref": "refs/heads/main",
+      "oid": "2f9039a3ba95449679b17257b0313c1ee3644a2c"
+    }
+  },
+  "artifacts": {
+    ".artifacts/core-workspace-20261024/c-workspace-followup-tests.log": "79cf4f58ade43ad172e0ac82dda70d4ae224ba3d9517828e24db52db01d6d19c",
+    ".artifacts/core-workspace-20261024/c-workspace-followup-json.log": "de21b4422212c4a7ba03d25e9025a2cb96aa16669339f48e6ef47c1a7475fe23",
+    ".artifacts/core-workspace-20261024/c-workspace-followup-analyze.log": "8120251d3c3bcc4d70f488b8415f86c3075651ef941e9c268b0ffa29b0046cc4",
+    ".artifacts/core-workspace-20261024/c-workspace-followup-publish.log": "a5da0dc679d6839edf62134d35a73c6f806176ff3426006ef9687082784d698f",
+    ".artifacts/core-workspace-20261024/c-workspace-followup-window-report.json": "1d653fa4ad5307deda1452542b43d8f09c9bee1d3b7af822128f4f336b252419",
+    ".artifacts/core-workspace-20261024/c-workspace-followup-candidate.json": "61087240127742ab58be13ee3824371604b2e251eac028b5e6a867550d6d3c4d",
+    ".artifacts/core-workspace-20261024/c-workspace-followup-window.json": "8890cd2a8230867c34243e8d46b8564689694a6afa40e8e8ddf943e374bb364b",
+    ".artifacts/core-workspace-20261024/c-owned-job-orphan-control.json": "9687bb0bad8a5eab9c2187304a8fc9d5bf16325b7a90dd33cf1f780a4a03539d",
+    ".artifacts/core-workspace-20261024/prior-failed-c-workspace-followup-tests.log": "508b52e0026e6854cb776d86eb1ad6841603b3916ecffb9fb5dcb8f2225a1b69",
+    ".artifacts/core-workspace-20261024/prior-failed-c-workspace-followup-window-report.json": "9ae88b83ff6e0582b9d35caaf13f55ae4b6113b5d4a1cfa9362045171b8cb163"
+  },
+  "preservation": {
+    "workingLibAndAssetsRawHashesUnchanged": true,
+    "realIndexEmptyAfterCommit": true,
+    "homeCandidateOnly": true,
+    "unrelatedHomeContentPointsToolsAndProductStartupSigningWipExcluded": true
+  },
+  "scope": "Exact isolated shared-source host checkpoint; not a full core or all-product suite and not an OHOS package/device acceptance.",
+  "priorFailure": {
+    "corePassed": 63,
+    "coreFailed": 6,
+    "cause": "Four RawTooltip/IconButton casts and two guarded callback matcher assertions; only test fixtures changed before the passing retry."
+  }
+}

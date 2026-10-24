@@ -1,0 +1,97 @@
+{
+  "results": [
+    {
+      "name": "isolated capability and metadata regressions",
+      "process": {
+        "pid": 39224,
+        "threadId": 71220,
+        "createdSuspended": true,
+        "assignedBeforeResume": true,
+        "terminal": true,
+        "creationFiletime100ns": "134372834594884408",
+        "jobActiveProcesses": 0,
+        "exitCode": 0
+      },
+      "exit": 0,
+      "error": null,
+      "timeout": false,
+      "orphanCleanup": false,
+      "emptyJob": true,
+      "log": "D:\\MyNewProjects\\qfli_studio_core\\build\\c-workspace-followup-tests.log"
+    },
+    {
+      "name": "actual JSON profile against exact frozen core",
+      "process": {
+        "pid": 84184,
+        "threadId": 76168,
+        "createdSuspended": true,
+        "assignedBeforeResume": true,
+        "terminal": true,
+        "creationFiletime100ns": "134372835286113515",
+        "jobActiveProcesses": 0,
+        "exitCode": 0
+      },
+      "exit": 0,
+      "error": null,
+      "timeout": false,
+      "orphanCleanup": false,
+      "emptyJob": true,
+      "log": "D:\\MyNewProjects\\qfli_studio_core\\build\\c-workspace-followup-json.log"
+    },
+    {
+      "name": "isolated workspace scoped analysis",
+      "process": {
+        "pid": 69764,
+        "threadId": 78276,
+        "createdSuspended": true,
+        "assignedBeforeResume": true,
+        "terminal": true,
+        "creationFiletime100ns": "134372835407742318",
+        "jobActiveProcesses": 0,
+        "exitCode": 0
+      },
+      "exit": 0,
+      "error": null,
+      "timeout": false,
+      "orphanCleanup": false,
+      "emptyJob": true,
+      "log": "D:\\MyNewProjects\\qfli_studio_core\\build\\c-workspace-followup-analyze.log"
+    },
+    {
+      "name": "publish only exact candidate after all three green gates",
+      "process": {
+        "pid": 82700,
+        "threadId": 73068,
+        "createdSuspended": true,
+        "assignedBeforeResume": true,
+        "terminal": true,
+        "creationFiletime100ns": "134372835435171177",
+        "jobActiveProcesses": 0,
+        "exitCode": 0
+      },
+      "exit": 0,
+      "error": null,
+      "timeout": false,
+      "orphanCleanup": false,
+      "emptyJob": true,
+      "log": "D:\\MyNewProjects\\qfli_studio_core\\build\\c-workspace-followup-publish.log"
+    }
+  ],
+  "exit": 0,
+  "allOwnedJobsEmpty": true,
+  "elapsed": 85.046,
+  "publication": {
+    "process": {
+      "pid": 23048,
+      "threadId": 83072,
+      "createdSuspended": true,
+      "assignedBeforeResume": true,
+      "terminal": true,
+      "creationFiletime100ns": "134372835445381792",
+      "jobActiveProcesses": 0,
+      "exitCode": 0
+    },
+    "emptyJob": true,
+    "delivered": true
+  }
+}

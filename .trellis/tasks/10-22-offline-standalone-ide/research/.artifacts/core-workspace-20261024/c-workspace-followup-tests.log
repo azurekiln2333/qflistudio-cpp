@@ -1,0 +1,84 @@
+00:00 +0: loading D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/saved_workspace_capability_test.dart
+00:00 +0: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/saved_workspace_capability_test.dart: null and existing profiles enable named workspaces independently
+00:00 +1: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/saved_workspace_capability_test.dart: explicit opt-out does not change identity or network policy
+00:00 +2: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/saved_workspace_capability_test.dart: child explorer saves a named local workspace with offlineOnly=true
+00:01 +3: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/saved_workspace_capability_test.dart: child explorer saves a named local workspace with offlineOnly=false
+00:01 +4: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/saved_workspace_capability_test.dart: opted-out child retains its legacy membership picker
+00:01 +5: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/saved_workspace_capability_test.dart: opted-out main disables unnamed workspace creation
+00:01 +6: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/saved_workspace_capability_test.dart: opted-out qflistudio still manages an explicit document
+00:02 +7: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/saved_workspace_capability_test.dart: opted-out json still manages an explicit document
+00:02 +8: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/saved_workspace_capability_test.dart: cloud primary refuses named saving before opening its dialog
+00:02 +9: loading D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/workspace_metadata_refresh_test.dart
+00:03 +9: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/workspace_metadata_refresh_test.dart: same-id external rename refreshes the live settings and cannot revert on expansion
+00:06 +10: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/workspace_metadata_refresh_test.dart: same-id settings save updates host members and keeps a removed dirty buffer
+00:08 +11: loading D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/home_project_scope_test.dart
+00:09 +11: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/home_project_scope_test.dart: (setUpAll)
+00:09 +11: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/home_project_scope_test.dart: offline products keep local project and workspace scopes with language chips hidden
+00:10 +12: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/home_project_scope_test.dart: networked products keep workspace and cloud scopes with showHomeTabs=true
+00:10 +13: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/home_project_scope_test.dart: networked products keep workspace and cloud scopes with showHomeTabs=false
+00:10 +14: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/home_project_scope_test.dart: workspace opt-out keeps child cloud policy with offlineOnly=true
+00:11 +15: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/home_project_scope_test.dart: workspace opt-out keeps child cloud policy with offlineOnly=false
+00:11 +16: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/home_project_scope_test.dart: (tearDownAll)
+00:11 +16: loading D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/file_explorer_state_test.dart
+00:11 +16: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/file_explorer_state_test.dart: reconstructed explorer restores nested expansion
+00:12 +17: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/file_explorer_state_test.dart: closing and reopening the drawer keeps expanded folders
+00:13 +18: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/file_explorer_state_test.dart: rapid switches keep each project expansion and file ownership
+00:13 +19: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/file_explorer_state_test.dart: workspace displays local roots and opens both in shared tabs
+00:14 +20: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/file_explorer_state_test.dart: workspace create and backed-up delete operate on the selected owner root
+00:15 +21: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/file_explorer_state_test.dart: workspace membership and independent root expansion restore
+00:15 +22: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/file_explorer_state_test.dart: creating inside a collapsed folder persists its expansion
+00:16 +23: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/file_explorer_state_test.dart: backed-up deletion finishes safely after editor disposal
+00:16 +24: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/file_explorer_state_test.dart: workspace removal preserves source files, open tabs and expansion
+00:17 +25: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/file_explorer_state_test.dart: workspace search covers both roots and preserves result ownership
+00:17 +26: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/file_explorer_state_test.dart: workspace toolbar fits a 280px sidebar at text scale 1.0
+00:17 +27: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/file_explorer_state_test.dart: workspace toolbar fits a 280px sidebar at text scale 2.0
+00:17 +28: loading D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/workspace_dialog_layout_test.dart
+00:18 +28: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/workspace_dialog_layout_test.dart: ohos 390.0 retained workspace settings paints and applies
+00:20 +29: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/workspace_dialog_layout_test.dart: ohos 1100.0 retained workspace settings paints and applies
+00:21 +30: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/workspace_dialog_layout_test.dart: android 390.0 retained workspace settings paints and applies
+00:22 +31: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/workspace_dialog_layout_test.dart: OHOS standalone single project saves from actual editor
+00:23 +32: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/workspace_dialog_layout_test.dart: OHOS language editor project dialog scrolls and applies
+00:24 +33: loading D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/workspace_project_switch_test.dart
+00:24 +33: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/workspace_project_switch_test.dart: member selection preserves the tree; external selection uses a retained standalone
+00:28 +34: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/workspace_project_switch_test.dart: without a retained host external selection opens a standalone route
+00:29 +35: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/workspace_project_switch_test.dart: standalone selector replaces the tree with the external project
+00:29 +36: loading D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/main_workspace_sessions_test.dart
+00:30 +36: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/main_workspace_sessions_test.dart: promoted standalone session is distinct and standalone reopens reuse one buffer session
+00:30 +37: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/main_workspace_sessions_test.dart: workspace identity is the workspace id and follows a surviving primary
+00:30 +38: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/main_workspace_sessions_test.dart: main standalone open ignores legacy cross-root history
+00:31 +39: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/main_workspace_sessions_test.dart: workspace session restores owners and saves only to the workspace document
+00:31 +40: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/main_workspace_sessions_test.dart: workspace shrink closes clean tabs, keeps dirty orphans and never writes them back
+00:32 +41: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/main_workspace_sessions_test.dart: workspace reopen with a missing primary keeps the surviving member
+00:33 +42: loading D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/workspace_editor_session_test.dart
+00:33 +42: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/workspace_editor_session_test.dart: actual EditorPage restores cross-root order, owner, active tab and cursors after reconstruction
+00:35 +43: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/workspace_editor_session_test.dart: folded cross-root selections restore their source lines and both endpoints
+00:36 +44: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/workspace_editor_session_test.dart: legacy main-root sessions retain cursor and active-file restoration
+00:37 +45: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/workspace_editor_session_test.dart: restore skips foreign owners, traversal, absolute paths, missing files and duplicate tabs
+00:37 +46: loading D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/retained_editor_test.dart
+00:37 +46: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/retained_editor_test.dart: (setUpAll)
+00:37 +46: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/retained_editor_test.dart: phone restore avoids create project at 390dp with 1.0x text and safe areas
+00:40 +47: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/retained_editor_test.dart: phone restore avoids create project at 320dp with 2.0x text and multiple sessions
+00:41 +48: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/retained_editor_test.dart: live editor survives Home, tools, content and restore
+00:44 +49: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/retained_editor_test.dart: same-project imports finish and open new files without replacing dirty tabs
+00:46 +50: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/retained_editor_test.dart: multiple projects switch via selector; explicit close confirms and disposes only one
+00:48 +51: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/retained_editor_test.dart: cancelling Explorer new file keeps the live editor and dirty buffer
+00:49 +52: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/retained_editor_test.dart: editor dialogs and child routes consume Back before the editor hides
+00:50 +53: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/retained_editor_test.dart: terminal sessions retain drafts, controllers and output and cannot focus while hidden
+00:51 +54: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/retained_editor_test.dart: opening without a host retains standalone EditorPage navigation
+00:51 +55: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/retained_editor_test.dart: (tearDownAll)
+00:51 +55: loading D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/editor_debug_page_test.dart
+00:52 +55: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/editor_debug_page_test.dart: actual page keeps missing debugger unavailable and launches no Run
+00:53 +56: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/editor_debug_page_test.dart: actual gutter, secondary snapshots, pause navigation, steps and cleanup stay connected
+00:54 +57: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/editor_debug_page_test.dart: paused source shrink rejects stale gutter geometry and execution position
+00:54 +58: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/editor_debug_page_test.dart: workspace removal keeps dirty source recoverable and rejects Run and Debug
+00:55 +59: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/editor_debug_page_test.dart: queued manual save preserves recovery text when its owner is removed
+00:56 +60: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/editor_debug_page_test.dart: queued autosave save preserves recovery text when its owner is removed
+00:57 +61: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/editor_debug_page_test.dart: queued close save preserves recovery text when its owner is removed
+00:57 +62: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/editor_debug_page_test.dart: queued document save preserves recovery text when its owner is removed
+00:58 +63: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/editor_debug_page_test.dart: removed clean project cannot be reopened through paused stack navigation
+00:59 +64: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/editor_debug_page_test.dart: reopening a busy terminal cancels deferred panel removal
+00:59 +65: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/editor_debug_page_test.dart: Output uses actual run streams and replaces rolling debug snapshots
+01:00 +66: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/editor_debug_page_test.dart: focused editor disposal does not inspect a defunct focus context
+01:00 +67: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/editor_debug_page_test.dart: failed debug cleanup retains the lane and offers a real Stop retry
+01:01 +68: D:/MyNewProjects/qfli_studio_core/build/checkpoints/d21ffcdc7ac9/test/editor_debug_page_test.dart: narrow large-text panels keep close controls and honest empty ports
+01:01 +69: All tests passed!
