@@ -10,7 +10,7 @@ User explicitly authorizes writing Trellis then starting independently; do not r
 6. [ ] Actual diagnostics/Problems/Output/highlighting and feasible offline debug/log facilities; track backend gaps without fake controls.
 7. [ ] After baseline passes, add 160 C/C++ pairs and inventory-bound validators. Verify every sample and actual phone runtime.
 8. [ ] Other language apps: isolated content/toolchain/module batches including Python offline modules.
-9. [ ] Independent full-scope check, spec update, coherent Conventional Commits and verified normal pushes. Audit all R1-R10 before completion.
+9. [ ] Independent full-scope check, spec update, coherent Conventional Commits and verified normal pushes. Audit legacy C R1-R10 plus the PRD full-umbrella R1-R13 crosswalk before completion.
 
 Validation: actual configured Flutter/OHOS SDK analysis/tests, all-example native/portable checks, native/ArkTS bridges, signed HAP artifact checks and separate phone audits. Reports in native/build; persistent summaries in task research. Prior dirty terminal/startup paths are a separate audited batch. No broad staging.
 

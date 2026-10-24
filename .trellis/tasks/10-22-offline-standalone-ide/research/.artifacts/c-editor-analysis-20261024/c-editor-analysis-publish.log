@@ -1,0 +1,4 @@
+[main 10832c1] test(editor): cover unsaved C diagnostics in the actual page
+ 1 file changed, 612 insertions(+)
+ create mode 100644 test/forge_editor_analysis_test.dart
+EXACT TESTED C CHECKPOINT 10832c1c1086693572afef7abb23109f073d4958 TREE 7a362364a2bc29139b1a82ab940b44b1b0648e8d

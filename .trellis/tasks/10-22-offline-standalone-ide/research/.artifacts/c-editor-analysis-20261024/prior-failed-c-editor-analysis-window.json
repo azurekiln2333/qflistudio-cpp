@@ -1,0 +1,72 @@
+{
+  "cwd": "D:\\MyNewProjects\\qfli_c",
+  "seconds": 60,
+  "report": "D:\\MyNewProjects\\qfli_c\\build\\c-editor-analysis-window-report.json",
+  "release": "C owned editor-analysis host gate TERMINAL; RELEASE NOW to lua-offline-1022 NEW ready506 for bounded330s source/suite/full1282 gate; then Go509 or coordinated ready peer. C holds core lib/assets/HEAD stable through accepted Lua interval; no heavy reservation or device grant.",
+  "steps": [
+    {
+      "name": "format only new C editor fixture",
+      "command": [
+        "D:\\ProgramFiles\\flutter_ohos\\bin\\cache\\dart-sdk\\bin\\dart.exe",
+        "format",
+        "test/forge_editor_analysis_test.dart"
+      ],
+      "seconds": 3,
+      "log": "D:\\MyNewProjects\\qfli_c\\build\\c-editor-analysis-format.log"
+    },
+    {
+      "name": "freeze exact HEAD plus new test",
+      "command": [
+        "python",
+        "D:\\MyNewProjects\\qfli_c\\build\\freeze-editor-analysis-candidate.py"
+      ],
+      "seconds": 5,
+      "log": "D:\\MyNewProjects\\qfli_c\\build\\c-editor-analysis-freeze.log"
+    },
+    {
+      "name": "actual editor plus real adapter regression",
+      "command": [
+        "D:\\ProgramFiles\\flutter_ohos\\bin\\cache\\dart-sdk\\bin\\dart.exe",
+        "--disable-dart-dev",
+        "D:\\ProgramFiles\\flutter_ohos\\bin\\cache\\flutter_tools.snapshot",
+        "test",
+        "--no-pub",
+        "--concurrency=1",
+        "--reporter=expanded",
+        "--timeout",
+        "15s",
+        "test/forge_editor_analysis_test.dart",
+        "test/forge_code_analyzer_test.dart",
+        "test/native_clang_runner_test.dart"
+      ],
+      "cwd": "D:\\MyNewProjects\\qfli_c\\build\\c-editor-analysis-snapshot",
+      "seconds": 33,
+      "continue_on_failure": true,
+      "log": "D:\\MyNewProjects\\qfli_c\\build\\c-editor-analysis-tests.log"
+    },
+    {
+      "name": "analyze new C editor integration fixture",
+      "command": [
+        "D:\\ProgramFiles\\flutter_ohos\\bin\\cache\\dart-sdk\\bin\\dart.exe",
+        "analyze",
+        "test/forge_editor_analysis_test.dart"
+      ],
+      "cwd": "D:\\MyNewProjects\\qfli_c\\build\\c-editor-analysis-snapshot",
+      "seconds": 8,
+      "continue_on_failure": true,
+      "log": "D:\\MyNewProjects\\qfli_c\\build\\c-editor-analysis-analyze.log"
+    },
+    {
+      "name": "commit only exact tested new C fixture",
+      "command": [
+        "python",
+        "D:\\MyNewProjects\\qfli_c\\build\\publish-editor-analysis-candidate.py"
+      ],
+      "seconds": 5,
+      "minimum_start_budget": 5,
+      "requires_all_previous_success": true,
+      "continue_on_failure": true,
+      "log": "D:\\MyNewProjects\\qfli_c\\build\\c-editor-analysis-publish.log"
+    }
+  ]
+}

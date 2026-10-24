@@ -55,6 +55,16 @@ active headers, symlink aliases, include escapes, closed-file errors, unchanged
 source/output bytes, cancellation and successful recovery. Exercise real ArkTS
 dispatch with codec Map snapshots and preparation cancellation.
 
+`forge_editor_analysis_test.dart` must also mount the actual shared `EditorPage`
+with `ForgeCodeAnalyzer`. A mocked native method/event transport may establish
+product-to-editor wiring, but must be labelled separately from actual Clang/NAPI
+or device execution. Cover dirty C/C++ source and nested headers together,
+UTF-8-to-UTF-16 Problems/wave/gutter/navigation after CRLF and astral text, active
+`.h` owner mode, correction while the rendered source shrinks, root isolation,
+and unchanged source/output bytes. Unmount and join queued history writes before
+removing fixtures. Async completion callbacks collect results; matcher assertions
+run after the awaited pump loop has finished.
+
 When staging around unrelated terminal work, compile HEAD plus the selected
 analyzer hunks: the analysis include must provide its own frontend dependencies.
 Rebuild actual ARM64 adapter archives, verify all reused upstream hashes and

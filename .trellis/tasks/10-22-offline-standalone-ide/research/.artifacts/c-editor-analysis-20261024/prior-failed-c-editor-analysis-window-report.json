@@ -1,0 +1,103 @@
+{
+  "results": [
+    {
+      "name": "format only new C editor fixture",
+      "process": {
+        "pid": 72268,
+        "threadId": 80100,
+        "createdSuspended": true,
+        "assignedBeforeResume": true,
+        "terminal": true,
+        "creationFiletime100ns": "134372874969393745",
+        "jobActiveProcesses": 0,
+        "exitCode": 0
+      },
+      "exit": 0,
+      "error": null,
+      "timeout": false,
+      "orphanCleanup": false,
+      "emptyJob": true,
+      "log": "D:\\MyNewProjects\\qfli_c\\build\\c-editor-analysis-format.log"
+    },
+    {
+      "name": "freeze exact HEAD plus new test",
+      "process": {
+        "pid": 30488,
+        "threadId": 82016,
+        "createdSuspended": true,
+        "assignedBeforeResume": true,
+        "terminal": true,
+        "creationFiletime100ns": "134372874977145458",
+        "jobActiveProcesses": 0,
+        "exitCode": 0
+      },
+      "exit": 0,
+      "error": null,
+      "timeout": false,
+      "orphanCleanup": false,
+      "emptyJob": true,
+      "log": "D:\\MyNewProjects\\qfli_c\\build\\c-editor-analysis-freeze.log"
+    },
+    {
+      "name": "actual editor plus real adapter regression",
+      "process": {
+        "pid": 13516,
+        "threadId": 82888,
+        "createdSuspended": true,
+        "assignedBeforeResume": true,
+        "terminal": true,
+        "creationFiletime100ns": "134372874992855847",
+        "jobActiveProcesses": 0,
+        "exitCode": 1
+      },
+      "exit": 1,
+      "error": null,
+      "timeout": false,
+      "orphanCleanup": false,
+      "emptyJob": true,
+      "log": "D:\\MyNewProjects\\qfli_c\\build\\c-editor-analysis-tests.log"
+    },
+    {
+      "name": "analyze new C editor integration fixture",
+      "process": {
+        "pid": 80432,
+        "threadId": 75120,
+        "createdSuspended": true,
+        "assignedBeforeResume": true,
+        "terminal": true,
+        "creationFiletime100ns": "134372875122680974",
+        "jobActiveProcesses": 0,
+        "exitCode": 0
+      },
+      "exit": 0,
+      "error": null,
+      "timeout": false,
+      "orphanCleanup": false,
+      "emptyJob": true,
+      "log": "D:\\MyNewProjects\\qfli_c\\build\\c-editor-analysis-analyze.log"
+    },
+    {
+      "name": "commit only exact tested new C fixture",
+      "exit": 1,
+      "skipped": true,
+      "log": "D:\\MyNewProjects\\qfli_c\\build\\c-editor-analysis-publish.log"
+    }
+  ],
+  "exit": 1,
+  "allOwnedJobsEmpty": true,
+  "elapsed": 18.172,
+  "publication": {
+    "process": {
+      "pid": 82140,
+      "threadId": 74764,
+      "createdSuspended": true,
+      "assignedBeforeResume": true,
+      "terminal": true,
+      "creationFiletime100ns": "134372875151132599",
+      "jobActiveProcesses": 0,
+      "exitCode": 0
+    },
+    "emptyJob": true,
+    "delivered": true
+  }
+}

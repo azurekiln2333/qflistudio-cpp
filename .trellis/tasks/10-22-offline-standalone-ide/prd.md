@@ -25,7 +25,35 @@ This is qfli_c, depending on sibling qfli_studio_core. There are 200 app-owned p
 
 ## Acceptance
 
-Maintain research/acceptance.md with R1-R10 mapped to current authoritative files, command reports and gaps. Full completion requires all applicable standalone languages, not a subset or an old report. Missing device evidence remains open while independent work proceeds.
+Maintain research/acceptance.md with the legacy C R1-R10 and the full umbrella
+mapping below tied to current authoritative files, command reports and gaps.
+Full completion requires all applicable standalone languages, not a subset or
+an old report. Missing device evidence remains open while independent work
+proceeds.
+
+## Full umbrella requirement mapping
+
+The original request is
+`C:/Users/lichengyu/.codex/attachments/26cb1e0f-b4c0-4f1b-8e10-014e4350e6f2/pasted-text-1.txt`.
+Java's task PRD records the following complete R1-R13 cross-product mapping.
+These IDs describe the same authorized request, not new scope. Retain the earlier
+C IDs in historical reports; never silently reinterpret their evidence.
+
+| Umbrella ID | Required outcome | Legacy C mapping |
+| --- | --- | --- |
+| R1 | Trellis and exclusive shared-core coordination | Goal, authorization and constraints |
+| R2 | Every original example/tutorial runs on current OHOS | C R1 |
+| R3 | Substantially more than 100 substantive verified additions | C R2 |
+| R4 | Tutorial/example language filters and title circles | C R3 |
+| R5 | Useful language-specific tools directly in Tools | C R4 |
+| R6 | Exact real diagnostics, squiggles and Problems navigation | C R5 |
+| R7 | Persistent explorer expansion and multi-root workspaces | C R6 |
+| R8 | Feasible offline debugger and functional log/panels | C R7 |
+| R9 | Usable highlighting for every language | C R5 highlighting |
+| R10 | C/C++ own headers and cross-source execution on OHOS | C R8 |
+| R11 | Python sandbox modules and offline local packages | C R9 |
+| R12 | Every standalone app remains completely offline | C R10 offline policy |
+| R13 | Thorough current checks, scoped standard commits and pushes | C R10 publication |
 
 ## Exclusions
 

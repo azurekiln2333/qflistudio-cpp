@@ -5,6 +5,13 @@ are recorded separately. C is the sole shared-core integrator; language coordina
 own their runtime/content/provider implementation. Existing startup/signing changes
 remain preserved outside the new integration commits.
 
+Requirement IDs in the original C ledger below retain their legacy meanings.
+The PRD's full-umbrella crosswalk also tracks R1-R13: Trellis/coordination (R1),
+baseline (R2), expansion (R3), chips (R4), tools (R5), diagnostics (R6), workspace
+(R7), debugger/panels (R8), highlighting (R9), C user headers (R10), Python
+modules (R11), offline policy (R12), checks/publication (R13). No requirement is
+closed by renumbering or by evidence for another product or execution layer.
+
 | Requirement | Evidence | Status / next gate |
 | --- | --- | --- |
 | R1 current OHOS all examples | `native/build/native-curriculum-20261022.json`: 200/200 native; `portable-curriculum-20261022-relative.json`: 200/200 current rebuilt LLVM/WASI interpreter, exact hashes/source/output, hostOnly=true; `ohos-portable-bridge-20261022.log`: 31 actual bridge checks; `ohos-arkts-20261022.log` passed | Open: current packaged C phone acceptance and complete sibling inventory. October 16 phone reports remain historical. |
@@ -194,5 +201,35 @@ This supersedes the last in-progress capability/metadata paragraph above.
 - Durable log copies, exact input hashes, file blobs and process records are in
   `core-workspace-publication-20261024.json` and its `.artifacts` paths. Package/
   device evidence remains separate. The next C-only editor test uses the actual
-  provider and page with mocked platform analysis transport; source is ready but
-  unrun, and cannot establish Clang execution or device acceptance.
+  provider and page with mocked platform analysis transport. Its subsequent
+  verification is recorded below; it cannot establish Clang or device acceptance.
+
+## October 24 C actual-page diagnostics publication
+
+- C `10832c1c1086693572afef7abb23109f073d4958` publishes exactly one new test
+  file with tested tree `7a362364a2bc29139b1a82ab940b44b1b0648e8d`. Its normalized
+  test blob is `7d2aeea358bab91c9d9b6c030611d3b8745cc0a4`. All five C remote
+  `main` refs were queried and equal this commit before the later evidence commit.
+- The actual shared `EditorPage` and actual `ForgeCodeAnalyzer` passed at desktop
+  C and phone-size C++ dimensions, alongside the existing adapter/runner suites:
+  21/21 selected tests passed, and analysis of the new test was clean. The frozen
+  package config binds exact published core `2f9039a` and its vendored editor;
+  279 source/configuration hashes were checked before exact-tree publication.
+- The tests cover dirty nested headers, CRLF/astral byte-to-UTF-16 locations,
+  actual waves/gutter/Problems navigation, active `.h` C++ ownership, mounted
+  text shrink/correction, cross-project isolation and unchanged payload/output
+  bytes. Only native method/event transport is mocked. They establish product UI
+  wiring, not Clang, HAP or installed-device execution, or a full app-suite pass.
+- The first attempt retained 20 passes and one mobile fixture failure. It tapped
+  before layout updated after `ensureVisible`. The only retry source change adds
+  a layout pump and a real hit-test assertion before tapping; all navigation and
+  payload assertions remain. No core repair was needed for this fixture failure.
+- Go explicitly deferred its newly released window to C525. C accepted at global
+  536 and released back to Go509 at 537. All five step Jobs and the separate
+  channel publisher exited 0, terminal with zero active processes. Validation and
+  commit took 14.737 seconds before bounded channel publication. No device action
+  was performed; SQL527 reports no reachable assigned OHOS target.
+- `c-editor-analysis-publication-20261024.json` binds both attempts' raw logs,
+  exact candidate/source identities and terminal records. Later spec/evidence
+  commits do not change the tested runtime/test blobs. Unrelated startup,
+  terminal, native, signing, content and main work remains excluded.

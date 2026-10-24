@@ -1,0 +1,572 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-24",
+  "recordedAtUtc": "2026-10-24T05:42:25.653302+00:00",
+  "product": "QFLIForge",
+  "requirement": "R5",
+  "requirementScheme": "legacy C R1-R10",
+  "umbrellaRequirement": "R6",
+  "status": "Committed exact isolated host editor/provider wiring checkpoint",
+  "baseCommit": "5f1f9d3cea02e55f136f09f3a13d5ab9ca0bd328",
+  "baseTree": "d734f7eb5a4cbdb8c06fd93fd726b6d6b58301f2",
+  "commit": "10832c1c1086693572afef7abb23109f073d4958",
+  "testedAndCommittedTree": "7a362364a2bc29139b1a82ab940b44b1b0648e8d",
+  "coreCommit": "2f9039a3ba95449679b17257b0313c1ee3644a2c",
+  "coreTree": "d21ffcdc7ac9c834e0b788b21178e9f80768a519",
+  "files": {
+    "test/forge_editor_analysis_test.dart": {
+      "blob": "7d2aeea358bab91c9d9b6c030611d3b8745cc0a4",
+      "workingSha256AtFreeze": "450e104c8320d9f81a8ece0d715bc718b3db12db55387771950b1733936ad27d",
+      "isolatedSnapshotSha256": "b4dbb787be57c46d19e7f16d3db0aca5561c3148c3d998394b909812d68366ae",
+      "note": "Working-file and archive-snapshot byte hashes are distinct; the normalized committed blob is the source identity."
+    }
+  },
+  "frozenInputs": {
+    "count": 279,
+    "manifestArtifact": ".artifacts/c-editor-analysis-20261024/c-editor-analysis-candidate.json",
+    "sameInputPathsAcrossAttempts": true,
+    "changedInputCount": 1,
+    "changedInputs": [
+      {
+        "path": "D:\\MyNewProjects\\qfli_c\\build\\c-editor-analysis-snapshot\\test\\forge_editor_analysis_test.dart",
+        "failedSnapshotSha256": "3d5c818f7c801f55fa4394472ee9c6838a36a22662bb6015bbcb2e28689c07fc",
+        "passingSnapshotSha256": "b4dbb787be57c46d19e7f16d3db0aca5561c3148c3d998394b909812d68366ae"
+      }
+    ],
+    "candidateScope": "Exact HEAD plus one new C UI/provider test; mocked native transport; no native/Clang/device proof. Existing product startup/terminal/native WIP excluded."
+  },
+  "gates": {
+    "suites": [
+      {
+        "file": "test/forge_editor_analysis_test.dart",
+        "passed": 2,
+        "failed": 0,
+        "transport": "mocked native method/events; actual EditorPage and ForgeCodeAnalyzer"
+      },
+      {
+        "file": "test/forge_code_analyzer_test.dart",
+        "passed": 13,
+        "failed": 0
+      },
+      {
+        "file": "test/native_clang_runner_test.dart",
+        "passed": 6,
+        "failed": 0
+      }
+    ],
+    "passed": 21,
+    "failed": 0,
+    "analysis": "No issues found!",
+    "analyzedFile": "test/forge_editor_analysis_test.dart",
+    "format": "Formatted 1 file (0 changed) in 0.02 seconds.",
+    "coverage": [
+      "C actual editor at 1280x900 and C++ actual editor at 390x844",
+      "Exact unsaved source and nested header snapshots",
+      "CRLF/Chinese/astral UTF-8 to UTF-16 ranges, waves, gutter and Problems selections",
+      "C++ owner mode while a .h document is active",
+      "Correction, shorter mounted source, dirty-buffer retention and root isolation",
+      "Unchanged source/header/output bytes and payload inventory"
+    ]
+  },
+  "priorFailure": {
+    "candidateTree": "f63119ccd6ec8eb76bf5b6c468ccbe6a83437021",
+    "newTestBlob": "c4ac240168095362ed9c5353d8a0f88fd8f5b5e9",
+    "workingSha256AtFreeze": "0064519fba45614b9466dfc6bbc556e6adff4f004421d3ccc6bce185e8fdc349",
+    "isolatedSnapshotSha256": "3d5c818f7c801f55fa4394472ee9c6838a36a22662bb6015bbcb2e28689c07fc",
+    "passed": 20,
+    "failed": 1,
+    "analysis": "No issues found!",
+    "publicationSkipped": true,
+    "cause": "Phone-width second Problems row was tapped at stale y=890 outside the 390x844 view after ensureVisible changed the scroll position without a layout frame.",
+    "repair": "Pump one layout frame after ensureVisible, require the actual row.hitTestable() to find one widget, then tap that hit-tested row. Original navigation and selection assertions remain.",
+    "productionSourceChangedForRetry": false,
+    "coreCommitUnchangedForRetry": true,
+    "artifactPrefix": ".artifacts/c-editor-analysis-20261024/prior-failed-",
+    "window": {
+      "results": [
+        {
+          "name": "format only new C editor fixture",
+          "process": {
+            "pid": 72268,
+            "threadId": 80100,
+            "createdSuspended": true,
+            "assignedBeforeResume": true,
+            "terminal": true,
+            "creationFiletime100ns": "134372874969393745",
+            "jobActiveProcesses": 0,
+            "exitCode": 0
+          },
+          "exit": 0,
+          "error": null,
+          "timeout": false,
+          "orphanCleanup": false,
+          "emptyJob": true,
+          "log": "D:\\MyNewProjects\\qfli_c\\build\\c-editor-analysis-format.log"
+        },
+        {
+          "name": "freeze exact HEAD plus new test",
+          "process": {
+            "pid": 30488,
+            "threadId": 82016,
+            "createdSuspended": true,
+            "assignedBeforeResume": true,
+            "terminal": true,
+            "creationFiletime100ns": "134372874977145458",
+            "jobActiveProcesses": 0,
+            "exitCode": 0
+          },
+          "exit": 0,
+          "error": null,
+          "timeout": false,
+          "orphanCleanup": false,
+          "emptyJob": true,
+          "log": "D:\\MyNewProjects\\qfli_c\\build\\c-editor-analysis-freeze.log"
+        },
+        {
+          "name": "actual editor plus real adapter regression",
+          "process": {
+            "pid": 13516,
+            "threadId": 82888,
+            "createdSuspended": true,
+            "assignedBeforeResume": true,
+            "terminal": true,
+            "creationFiletime100ns": "134372874992855847",
+            "jobActiveProcesses": 0,
+            "exitCode": 1
+          },
+          "exit": 1,
+          "error": null,
+          "timeout": false,
+          "orphanCleanup": false,
+          "emptyJob": true,
+          "log": "D:\\MyNewProjects\\qfli_c\\build\\c-editor-analysis-tests.log"
+        },
+        {
+          "name": "analyze new C editor integration fixture",
+          "process": {
+            "pid": 80432,
+            "threadId": 75120,
+            "createdSuspended": true,
+            "assignedBeforeResume": true,
+            "terminal": true,
+            "creationFiletime100ns": "134372875122680974",
+            "jobActiveProcesses": 0,
+            "exitCode": 0
+          },
+          "exit": 0,
+          "error": null,
+          "timeout": false,
+          "orphanCleanup": false,
+          "emptyJob": true,
+          "log": "D:\\MyNewProjects\\qfli_c\\build\\c-editor-analysis-analyze.log"
+        },
+        {
+          "name": "commit only exact tested new C fixture",
+          "exit": 1,
+          "skipped": true,
+          "log": "D:\\MyNewProjects\\qfli_c\\build\\c-editor-analysis-publish.log"
+        }
+      ],
+      "exit": 1,
+      "allOwnedJobsEmpty": true,
+      "elapsed": 18.172,
+      "publication": {
+        "process": {
+          "pid": 82140,
+          "threadId": 74764,
+          "createdSuspended": true,
+          "assignedBeforeResume": true,
+          "terminal": true,
+          "creationFiletime100ns": "134372875151132599",
+          "jobActiveProcesses": 0,
+          "exitCode": 0
+        },
+        "emptyJob": true,
+        "delivered": true
+      }
+    }
+  },
+  "executionPlan": {
+    "sourceAtExecution": "build/c-editor-analysis-window.json",
+    "sourceSha256": "50f0916874503f1de8a5024519727c22cefe8ef1a2330f42c3030623a699c337",
+    "normalizedPlan": {
+      "cwd": "D:\\MyNewProjects\\qfli_c",
+      "seconds": 35,
+      "report": "D:\\MyNewProjects\\qfli_c\\build\\c-editor-analysis-window-report.json",
+      "release": "C525 repaired editor-analysis retry TERMINAL; RELEASE NOW back to go-offline-1022 NEW request509 <=165s per explicit Go deferral534; then ready Web510 by coordination. Lua506 is consumed, never replayed. Core2f9039a lib/assets/HEAD remains stable; no C heavy reservation or device grant.",
+      "steps": [
+        {
+          "name": "format only new C editor fixture",
+          "command": [
+            "D:\\ProgramFiles\\flutter_ohos\\bin\\cache\\dart-sdk\\bin\\dart.exe",
+            "format",
+            "test/forge_editor_analysis_test.dart"
+          ],
+          "seconds": 3,
+          "log": "D:\\MyNewProjects\\qfli_c\\build\\c-editor-analysis-format.log"
+        },
+        {
+          "name": "freeze exact HEAD plus new test",
+          "command": [
+            "python",
+            "D:\\MyNewProjects\\qfli_c\\build\\freeze-editor-analysis-candidate.py"
+          ],
+          "seconds": 5,
+          "log": "D:\\MyNewProjects\\qfli_c\\build\\c-editor-analysis-freeze.log"
+        },
+        {
+          "name": "actual editor plus real adapter regression",
+          "command": [
+            "D:\\ProgramFiles\\flutter_ohos\\bin\\cache\\dart-sdk\\bin\\dart.exe",
+            "--disable-dart-dev",
+            "D:\\ProgramFiles\\flutter_ohos\\bin\\cache\\flutter_tools.snapshot",
+            "test",
+            "--no-pub",
+            "--concurrency=1",
+            "--reporter=expanded",
+            "--timeout",
+            "15s",
+            "test/forge_editor_analysis_test.dart",
+            "test/forge_code_analyzer_test.dart",
+            "test/native_clang_runner_test.dart"
+          ],
+          "cwd": "D:\\MyNewProjects\\qfli_c\\build\\c-editor-analysis-snapshot",
+          "seconds": 18,
+          "continue_on_failure": true,
+          "log": "D:\\MyNewProjects\\qfli_c\\build\\c-editor-analysis-tests.log"
+        },
+        {
+          "name": "analyze new C editor integration fixture",
+          "command": [
+            "D:\\ProgramFiles\\flutter_ohos\\bin\\cache\\dart-sdk\\bin\\dart.exe",
+            "analyze",
+            "test/forge_editor_analysis_test.dart"
+          ],
+          "cwd": "D:\\MyNewProjects\\qfli_c\\build\\c-editor-analysis-snapshot",
+          "seconds": 8,
+          "continue_on_failure": true,
+          "log": "D:\\MyNewProjects\\qfli_c\\build\\c-editor-analysis-analyze.log"
+        },
+        {
+          "name": "commit only exact tested new C fixture",
+          "command": [
+            "python",
+            "D:\\MyNewProjects\\qfli_c\\build\\publish-editor-analysis-candidate.py"
+          ],
+          "seconds": 5,
+          "minimum_start_budget": 5,
+          "requires_all_previous_success": true,
+          "continue_on_failure": true,
+          "log": "D:\\MyNewProjects\\qfli_c\\build\\c-editor-analysis-publish.log"
+        }
+      ]
+    }
+  },
+  "window": {
+    "results": [
+      {
+        "name": "format only new C editor fixture",
+        "process": {
+          "pid": 75532,
+          "threadId": 80900,
+          "createdSuspended": true,
+          "assignedBeforeResume": true,
+          "terminal": true,
+          "creationFiletime100ns": "134372894498856780",
+          "jobActiveProcesses": 0,
+          "exitCode": 0
+        },
+        "exit": 0,
+        "error": null,
+        "timeout": false,
+        "orphanCleanup": false,
+        "emptyJob": true,
+        "log": "D:\\MyNewProjects\\qfli_c\\build\\c-editor-analysis-format.log"
+      },
+      {
+        "name": "freeze exact HEAD plus new test",
+        "process": {
+          "pid": 79732,
+          "threadId": 88976,
+          "createdSuspended": true,
+          "assignedBeforeResume": true,
+          "terminal": true,
+          "creationFiletime100ns": "134372894505586725",
+          "jobActiveProcesses": 0,
+          "exitCode": 0
+        },
+        "exit": 0,
+        "error": null,
+        "timeout": false,
+        "orphanCleanup": false,
+        "emptyJob": true,
+        "log": "D:\\MyNewProjects\\qfli_c\\build\\c-editor-analysis-freeze.log"
+      },
+      {
+        "name": "actual editor plus real adapter regression",
+        "process": {
+          "pid": 88412,
+          "threadId": 34488,
+          "createdSuspended": true,
+          "assignedBeforeResume": true,
+          "terminal": true,
+          "creationFiletime100ns": "134372894521799306",
+          "jobActiveProcesses": 0,
+          "exitCode": 0
+        },
+        "exit": 0,
+        "error": null,
+        "timeout": false,
+        "orphanCleanup": false,
+        "emptyJob": true,
+        "log": "D:\\MyNewProjects\\qfli_c\\build\\c-editor-analysis-tests.log"
+      },
+      {
+        "name": "analyze new C editor integration fixture",
+        "process": {
+          "pid": 85304,
+          "threadId": 80860,
+          "createdSuspended": true,
+          "assignedBeforeResume": true,
+          "terminal": true,
+          "creationFiletime100ns": "134372894613669919",
+          "jobActiveProcesses": 0,
+          "exitCode": 0
+        },
+        "exit": 0,
+        "error": null,
+        "timeout": false,
+        "orphanCleanup": false,
+        "emptyJob": true,
+        "log": "D:\\MyNewProjects\\qfli_c\\build\\c-editor-analysis-analyze.log"
+      },
+      {
+        "name": "commit only exact tested new C fixture",
+        "process": {
+          "pid": 85712,
+          "threadId": 85812,
+          "createdSuspended": true,
+          "assignedBeforeResume": true,
+          "terminal": true,
+          "creationFiletime100ns": "134372894640603451",
+          "jobActiveProcesses": 0,
+          "exitCode": 0
+        },
+        "exit": 0,
+        "error": null,
+        "timeout": false,
+        "orphanCleanup": false,
+        "emptyJob": true,
+        "log": "D:\\MyNewProjects\\qfli_c\\build\\c-editor-analysis-publish.log"
+      }
+    ],
+    "exit": 0,
+    "allOwnedJobsEmpty": true,
+    "elapsed": 14.737,
+    "publication": {
+      "process": {
+        "pid": 64100,
+        "threadId": 76948,
+        "createdSuspended": true,
+        "assignedBeforeResume": true,
+        "terminal": true,
+        "creationFiletime100ns": "134372894646247887",
+        "jobActiveProcesses": 0,
+        "exitCode": 0
+      },
+      "emptyJob": true,
+      "delivered": true
+    }
+  },
+  "elapsedBoundary": {
+    "reportedSeconds": 14.737,
+    "includes": "Serial format, freeze, scoped tests, scoped analysis and exact-test commit steps",
+    "excludes": "Subsequent channel publisher runtime; 14.737 is the pre-channel measurement, not an end-to-end publication duration"
+  },
+  "terminalProof": {
+    "stepJobs": 5,
+    "allStepJobsTerminalAndEmpty": true,
+    "channelPublisherTerminalAndEmpty": true,
+    "publisherDelivered": true,
+    "createdSuspendedAndAssignedBeforeResume": true,
+    "detailArtifact": ".artifacts/c-editor-analysis-20261024/c-editor-analysis-window-report.json"
+  },
+  "channelRelease": {
+    "seq": 537,
+    "timestamp": "2026-10-24T04:24:25.471Z",
+    "artifact": ".artifacts/c-editor-analysis-20261024/c-editor-analysis-window-report.channel.log",
+    "note": "Channel payload records pre-publication terminal Jobs; the final window report additionally records the publisher termination/empty Job."
+  },
+  "artifacts": {
+    ".artifacts/c-editor-analysis-20261024/c-editor-analysis-candidate.json": {
+      "source": "build/c-editor-analysis-candidate.json",
+      "attempt": "passing-retry",
+      "sha256": "393205e827d7fff46ec1ae34b97a0b50b862e2d02326177ed6213c60b469b7f1",
+      "bytes": 51644,
+      "rawGitBlob": "b374a03c23bea0a0c4397e9eb4a866dcd9ef59d0",
+      "sourceSha256": "393205e827d7fff46ec1ae34b97a0b50b862e2d02326177ed6213c60b469b7f1",
+      "byteForByteCopyVerified": true
+    },
+    ".artifacts/c-editor-analysis-20261024/c-editor-analysis-window-report.json": {
+      "source": "build/c-editor-analysis-window-report.json",
+      "attempt": "passing-retry",
+      "sha256": "3ea48006074cf0b3825c21cdb2355c5291e34f815b3035691e2ca0b90fd269e0",
+      "bytes": 3268,
+      "rawGitBlob": "07e50e5b9deb3d0a43a0b85597621af988e427e3",
+      "sourceSha256": "3ea48006074cf0b3825c21cdb2355c5291e34f815b3035691e2ca0b90fd269e0",
+      "byteForByteCopyVerified": true
+    },
+    ".artifacts/c-editor-analysis-20261024/c-editor-analysis-window-report.channel.log": {
+      "source": "build/c-editor-analysis-window-report.channel.log",
+      "attempt": "passing-retry",
+      "sha256": "ede91535be0e835a454a1b8873373fc5d7b8e3226016cbaaa4323cfc86e26067",
+      "bytes": 2642,
+      "rawGitBlob": "48fe60c79f42aacc8dc18d8a42c9f93aa85f0db6",
+      "sourceSha256": "ede91535be0e835a454a1b8873373fc5d7b8e3226016cbaaa4323cfc86e26067",
+      "byteForByteCopyVerified": true
+    },
+    ".artifacts/c-editor-analysis-20261024/c-editor-analysis-tests.log": {
+      "source": "build/c-editor-analysis-tests.log",
+      "attempt": "passing-retry",
+      "sha256": "e15be42eddc892cd7e8077fcadb7086cc59db22ef5be5dd4b700f02c5db42412",
+      "bytes": 3916,
+      "rawGitBlob": "d65b32188f46d149bd46f561e8013f88fe21d83f",
+      "sourceSha256": "e15be42eddc892cd7e8077fcadb7086cc59db22ef5be5dd4b700f02c5db42412",
+      "byteForByteCopyVerified": true
+    },
+    ".artifacts/c-editor-analysis-20261024/c-editor-analysis-analyze.log": {
+      "source": "build/c-editor-analysis-analyze.log",
+      "attempt": "passing-retry",
+      "sha256": "97927e1f271b771fa9e173915a0a74f1f9a2972c955c4d817a8aa535c74f621f",
+      "bytes": 62,
+      "rawGitBlob": "ca1747189215b7e39113a6d843d93ea076ddb768",
+      "sourceSha256": "97927e1f271b771fa9e173915a0a74f1f9a2972c955c4d817a8aa535c74f621f",
+      "byteForByteCopyVerified": true
+    },
+    ".artifacts/c-editor-analysis-20261024/c-editor-analysis-format.log": {
+      "source": "build/c-editor-analysis-format.log",
+      "attempt": "passing-retry",
+      "sha256": "ebf8691cd9669b02dd9d748aaf543551b337b2beb44f2d128dc7ffbfa0318f03",
+      "bytes": 46,
+      "rawGitBlob": "d0d87ff86984d487979dcb863c8a6c7133388aa9",
+      "sourceSha256": "ebf8691cd9669b02dd9d748aaf543551b337b2beb44f2d128dc7ffbfa0318f03",
+      "byteForByteCopyVerified": true
+    },
+    ".artifacts/c-editor-analysis-20261024/c-editor-analysis-freeze.log": {
+      "source": "build/c-editor-analysis-freeze.log",
+      "attempt": "passing-retry",
+      "sha256": "29f11e3773dcab16a83e9ad9d691d50fd1cb0cc4ea198cb4a769a19665e95bf1",
+      "bytes": 306,
+      "rawGitBlob": "cbc236f3387a090daa867c8de816ec8fea91991c",
+      "sourceSha256": "29f11e3773dcab16a83e9ad9d691d50fd1cb0cc4ea198cb4a769a19665e95bf1",
+      "byteForByteCopyVerified": true
+    },
+    ".artifacts/c-editor-analysis-20261024/c-editor-analysis-publish.log": {
+      "source": "build/c-editor-analysis-publish.log",
+      "attempt": "passing-retry",
+      "sha256": "1effcef40a108ff845d2a4c90b083e8d11c1e0f5c130887de691e835212117a6",
+      "bytes": 282,
+      "rawGitBlob": "2732e75c72fe6d7030a7baf6c10a0fc6c6778085",
+      "sourceSha256": "1effcef40a108ff845d2a4c90b083e8d11c1e0f5c130887de691e835212117a6",
+      "byteForByteCopyVerified": true
+    },
+    ".artifacts/c-editor-analysis-20261024/c-editor-analysis-published.json": {
+      "source": "build/c-editor-analysis-published.json",
+      "attempt": "passing-retry",
+      "sha256": "e3a956e0ace029834d1df81d08c24a7b6c91c72b1ae9d705bffedff332c1d896",
+      "bytes": 178,
+      "rawGitBlob": "4cb94e4eb7b1923c5345f6defe97433b485fd490",
+      "sourceSha256": "e3a956e0ace029834d1df81d08c24a7b6c91c72b1ae9d705bffedff332c1d896",
+      "byteForByteCopyVerified": true
+    },
+    ".artifacts/c-editor-analysis-20261024/prior-failed-c-editor-analysis-analyze.log": {
+      "source": "build/c-editor-analysis-first-failed-f63119ccd6ec/c-editor-analysis-analyze.log",
+      "attempt": "first-failed",
+      "sha256": "97927e1f271b771fa9e173915a0a74f1f9a2972c955c4d817a8aa535c74f621f",
+      "bytes": 62,
+      "rawGitBlob": "ca1747189215b7e39113a6d843d93ea076ddb768",
+      "sourceSha256": "97927e1f271b771fa9e173915a0a74f1f9a2972c955c4d817a8aa535c74f621f",
+      "byteForByteCopyVerified": true
+    },
+    ".artifacts/c-editor-analysis-20261024/prior-failed-c-editor-analysis-candidate.json": {
+      "source": "build/c-editor-analysis-first-failed-f63119ccd6ec/c-editor-analysis-candidate.json",
+      "attempt": "first-failed",
+      "sha256": "00c1912ac78986a02e62132a6bb4161a6b39fd38ac12c0ad3ecec3f05a8dc515",
+      "bytes": 51644,
+      "rawGitBlob": "272cae2ddee22012d441f5ce46e757c1c5a428df",
+      "sourceSha256": "00c1912ac78986a02e62132a6bb4161a6b39fd38ac12c0ad3ecec3f05a8dc515",
+      "byteForByteCopyVerified": true
+    },
+    ".artifacts/c-editor-analysis-20261024/prior-failed-c-editor-analysis-format.log": {
+      "source": "build/c-editor-analysis-first-failed-f63119ccd6ec/c-editor-analysis-format.log",
+      "attempt": "first-failed",
+      "sha256": "7e439ae282bcd7daf8f0ba71836e9aa10ae83ba11f616f8f12e48d451fa588f3",
+      "bytes": 93,
+      "rawGitBlob": "bda3c68ff67b6f86a9c98a75f3683fb515259259",
+      "sourceSha256": "7e439ae282bcd7daf8f0ba71836e9aa10ae83ba11f616f8f12e48d451fa588f3",
+      "byteForByteCopyVerified": true
+    },
+    ".artifacts/c-editor-analysis-20261024/prior-failed-c-editor-analysis-publish.log": {
+      "source": "build/c-editor-analysis-first-failed-f63119ccd6ec/c-editor-analysis-publish.log",
+      "attempt": "first-failed",
+      "sha256": "c077bd81940ad91647bb24ac921a52896edfa675485e8b52167b2490c454084d",
+      "bytes": 97,
+      "rawGitBlob": "4617f6fbd2f094e3a78b5bc7aa2d0b69b500cec9",
+      "sourceSha256": "c077bd81940ad91647bb24ac921a52896edfa675485e8b52167b2490c454084d",
+      "byteForByteCopyVerified": true
+    },
+    ".artifacts/c-editor-analysis-20261024/prior-failed-c-editor-analysis-tests.log": {
+      "source": "build/c-editor-analysis-first-failed-f63119ccd6ec/c-editor-analysis-tests.log",
+      "attempt": "first-failed",
+      "sha256": "9a29ec94d9b8815936ab0ed2741863262851bc01c2e23ced1b4ad729184cee47",
+      "bytes": 7925,
+      "rawGitBlob": "c67527921e17b430407b9c904b61b3d824b010c1",
+      "sourceSha256": "9a29ec94d9b8815936ab0ed2741863262851bc01c2e23ced1b4ad729184cee47",
+      "byteForByteCopyVerified": true
+    },
+    ".artifacts/c-editor-analysis-20261024/prior-failed-c-editor-analysis-window-report.json": {
+      "source": "build/c-editor-analysis-first-failed-f63119ccd6ec/c-editor-analysis-window-report.json",
+      "attempt": "first-failed",
+      "sha256": "3f9f0a03a7ad78ddb783258ec8be564ec235088c95ff722e84a2d8faddccbe78",
+      "bytes": 2894,
+      "rawGitBlob": "2d8353cd2999ad1e271ea80a359371960517db0b",
+      "sourceSha256": "3f9f0a03a7ad78ddb783258ec8be564ec235088c95ff722e84a2d8faddccbe78",
+      "byteForByteCopyVerified": true
+    },
+    ".artifacts/c-editor-analysis-20261024/prior-failed-c-editor-analysis-window.json": {
+      "source": "build/c-editor-analysis-first-failed-f63119ccd6ec/c-editor-analysis-window.json",
+      "attempt": "first-failed",
+      "sha256": "53736354bd3892e03836648f1833cbef6d64410f557223e2211370aa97ab0245",
+      "bytes": 2774,
+      "rawGitBlob": "af31c3a4ec05a7de17254b373e5defff2f35dc47",
+      "sourceSha256": "53736354bd3892e03836648f1833cbef6d64410f557223e2211370aa97ab0245",
+      "byteForByteCopyVerified": true
+    },
+    ".artifacts/c-editor-analysis-20261024/.gitattributes": {
+      "source": ".trellis/tasks/10-22-offline-standalone-ide/research/.artifacts/core-workspace-20261024/.gitattributes",
+      "attempt": "raw-byte-policy",
+      "sha256": "992d003df73b2a78509462d5c537cded80d5c538fb92a8e6954523bc0a7fde00",
+      "bytes": 79,
+      "rawGitBlob": "c3ee00a2aadddef116bd4c21bb3cb45212374f8e",
+      "sourceSha256": "992d003df73b2a78509462d5c537cded80d5c538fb92a8e6954523bc0a7fde00",
+      "byteForByteCopyVerified": true
+    }
+  },
+  "rawBytes": {
+    "attributesArtifact": ".artifacts/c-editor-analysis-20261024/.gitattributes",
+    "policy": "* -text whitespace=trailing-space,space-before-tab,cr-at-eol; *.log -text -diff",
+    "allCopiedArtifactsVerifiedByteForByte": true,
+    "successArtifacts": 9,
+    "failedArtifacts": 7,
+    "policyFiles": 1,
+    "gitFilteredArtifactBlobsEqualRawByteBlobs": true,
+    "attributesTextUnsetVerifiedForJsonAndLogs": true
+  },
+  "preservation": {
+    "commitChangesOnlyNewEditorIntegrationTest": true,
+    "archiverWritesOnlyThisNewReportAndNewArtifactDirectory": true,
+    "archiverIndexOrSdkOrDeviceOperations": false,
+    "existingProductStartupTerminalNativeSigningWipExcludedFromTestCommit": true
+  },
+  "scope": "Scoped isolated host wiring checkpoint with mocked native transport. It is not actual Clang execution, a full C/core/all-product suite, OHOS packaging, or device acceptance. Legacy C R8 (umbrella R10 user headers) remains separately open."
+}

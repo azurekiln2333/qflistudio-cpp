@@ -1,0 +1,25 @@
+00:00 +0: loading D:/MyNewProjects/qfli_c/build/c-editor-analysis-snapshot/test/forge_editor_analysis_test.dart
+00:00 +0: D:/MyNewProjects/qfli_c/build/c-editor-analysis-snapshot/test/forge_editor_analysis_test.dart: mock transport wires real c editor analysis at Size(1280.0, 900.0)
+00:03 +1: D:/MyNewProjects/qfli_c/build/c-editor-analysis-snapshot/test/forge_editor_analysis_test.dart: mock transport wires real cpp editor analysis at Size(390.0, 844.0)
+00:05 +2: loading D:/MyNewProjects/qfli_c/build/c-editor-analysis-snapshot/test/forge_code_analyzer_test.dart
+00:05 +2: D:/MyNewProjects/qfli_c/build/c-editor-analysis-snapshot/test/forge_code_analyzer_test.dart: sends exact unsaved snapshots and maps CRLF Unicode UTF8 byte ranges
+00:05 +3: D:/MyNewProjects/qfli_c/build/c-editor-analysis-snapshot/test/forge_code_analyzer_test.dart: astral token and CRLF EOF insertion retain exact UTF16 endpoints
+00:05 +4: D:/MyNewProjects/qfli_c/build/c-editor-analysis-snapshot/test/forge_code_analyzer_test.dart: unrelated open project documents do not disable C and C++ analysis
+00:05 +5: D:/MyNewProjects/qfli_c/build/c-editor-analysis-snapshot/test/forge_code_analyzer_test.dart: empty diagnostics are clean only after an actual successful check
+00:05 +6: D:/MyNewProjects/qfli_c/build/c-editor-analysis-snapshot/test/forge_code_analyzer_test.dart: unmapped closed-file errors remain unavailable with mapped diagnostics
+00:05 +7: D:/MyNewProjects/qfli_c/build/c-editor-analysis-snapshot/test/forge_code_analyzer_test.dart: invalid native diagnostics cannot claim a clean result: middle-byte
+00:05 +8: D:/MyNewProjects/qfli_c/build/c-editor-analysis-snapshot/test/forge_code_analyzer_test.dart: invalid native diagnostics cannot claim a clean result: foreign
+00:05 +9: D:/MyNewProjects/qfli_c/build/c-editor-analysis-snapshot/test/forge_code_analyzer_test.dart: invalid native diagnostics cannot claim a clean result: reversed
+00:05 +10: D:/MyNewProjects/qfli_c/build/c-editor-analysis-snapshot/test/forge_code_analyzer_test.dart: invalid native diagnostics cannot claim a clean result: past-end
+00:05 +11: D:/MyNewProjects/qfli_c/build/c-editor-analysis-snapshot/test/forge_code_analyzer_test.dart: invalid native diagnostics cannot claim a clean result: failed-without-error
+00:05 +12: D:/MyNewProjects/qfli_c/build/c-editor-analysis-snapshot/test/forge_code_analyzer_test.dart: invalid UTF16, language and outside-root documents never reach native
+00:05 +13: D:/MyNewProjects/qfli_c/build/c-editor-analysis-snapshot/test/forge_code_analyzer_test.dart: missing native method, unavailable backend and busy slot are distinct from clean
+00:05 +14: D:/MyNewProjects/qfli_c/build/c-editor-analysis-snapshot/test/forge_code_analyzer_test.dart: timeout requests cancellation and waits for real cleanup exit
+00:05 +15: loading D:/MyNewProjects/qfli_c/build/c-editor-analysis-snapshot/test/native_clang_runner_test.dart
+00:06 +15: D:/MyNewProjects/qfli_c/build/c-editor-analysis-snapshot/test/native_clang_runner_test.dart: missing iOS toolchain reports failure for both source families
+00:06 +16: D:/MyNewProjects/qfli_c/build/c-editor-analysis-snapshot/test/native_clang_runner_test.dart: iOS captures early diagnostics and retains accepted failure
+00:06 +17: D:/MyNewProjects/qfli_c/build/c-editor-analysis-snapshot/test/native_clang_runner_test.dart: iOS cancel retains prior output and addresses its own run
+00:06 +18: D:/MyNewProjects/qfli_c/build/c-editor-analysis-snapshot/test/native_clang_runner_test.dart: iOS cancellation waits for the native cleanup event
+00:06 +19: D:/MyNewProjects/qfli_c/build/c-editor-analysis-snapshot/test/native_clang_runner_test.dart: forwards an explicit selected-source list in the start payload
+00:06 +20: D:/MyNewProjects/qfli_c/build/c-editor-analysis-snapshot/test/native_clang_runner_test.dart: omits the source key for legacy callers without a list
+00:06 +21: All tests passed!
