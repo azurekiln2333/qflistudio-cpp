@@ -1,0 +1,44 @@
+{
+  "stepId": "0001",
+  "command": [
+    "/usr/bin/clang++",
+    "--version"
+  ],
+  "cwdRelative": ".",
+  "stem": "tool-1",
+  "timeoutSeconds": 10,
+  "cleanupVerified": true,
+  "stdinSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "leader": {
+    "pid": 14,
+    "state": "R",
+    "pgrp": 14,
+    "session": 14,
+    "startTicks": 243
+  },
+  "beforeCleanup": [
+    {
+      "pid": 14,
+      "state": "Z",
+      "pgrp": 14,
+      "session": 14,
+      "startTicks": 243
+    }
+  ],
+  "remainingBeforeReap": [
+    {
+      "pid": 14,
+      "state": "Z",
+      "pgrp": 14,
+      "session": 14,
+      "startTicks": 243
+    }
+  ],
+  "exitCode": 0,
+  "remainingAfterReap": [],
+  "elapsedSeconds": 0.267,
+  "stdoutSha256": "3635b8631d4ebcd8ed7586f4e01e7a6b44407de9d38db6e01daca9c242ed7a53",
+  "stdoutB64": "VWJ1bnR1IGNsYW5nIHZlcnNpb24gMTguMS4zICgxdWJ1bnR1MSkKVGFyZ2V0OiB4ODZfNjQtcGMtbGludXgtZ251ClRocmVhZCBtb2RlbDogcG9zaXgKSW5zdGFsbGVkRGlyOiAvdXNyL2Jpbgo=",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderrB64": ""
+}

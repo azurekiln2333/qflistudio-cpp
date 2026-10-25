@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "runId": "20261025T185222Z-5e96b6d5",
+  "nonce": "cfefe6c7a4644390934c87f425019d2e",
+  "reason": "control: stalled lease must cancel a live same-group child",
+  "requestedAt": 1792955217.0238144
+}

@@ -1,0 +1,20 @@
+{
+  "schema": 2,
+  "runId": "20261025T172552Z-f5f939bf",
+  "grant": "C-wasi200-20261026-01",
+  "slotReleased": true,
+  "elapsedSeconds": 751.145,
+  "cleanupErrors": [],
+  "windowsJob": {
+    "pid": 58204,
+    "threadId": 13928,
+    "createdSuspended": true,
+    "assignedBeforeResume": true,
+    "terminal": true,
+    "creationFiletime100ns": "134374310758372397",
+    "jobActiveProcesses": 0,
+    "exitCode": 0
+  },
+  "evidenceVerified": true,
+  "handlesClosed": true
+}

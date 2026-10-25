@@ -1,0 +1,54 @@
+{
+  "stepId": "0004",
+  "command": [
+    "/usr/bin/python3",
+    "/mnt/d/MyNewProjects/qfli_c/build/baseline-200-live-20261025T185222Z-5e96b6d5/control/heartbeat-loss/root.py",
+    "wait",
+    "ignore-term"
+  ],
+  "cwdRelative": "control/heartbeat-loss",
+  "stem": "heartbeat-loss",
+  "timeoutSeconds": 12,
+  "cleanupVerified": true,
+  "stdinSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "leader": {
+    "pid": 21,
+    "state": "R",
+    "pgrp": 21,
+    "session": 21,
+    "startTicks": 634
+  },
+  "beforeCleanup": [
+    {
+      "pid": 21,
+      "state": "S",
+      "pgrp": 21,
+      "session": 21,
+      "startTicks": 634
+    },
+    {
+      "pid": 22,
+      "state": "S",
+      "pgrp": 21,
+      "session": 21,
+      "startTicks": 637
+    }
+  ],
+  "remainingBeforeReap": [
+    {
+      "pid": 21,
+      "state": "Z",
+      "pgrp": 21,
+      "session": 21,
+      "startTicks": 634
+    }
+  ],
+  "exitCode": -9,
+  "remainingAfterReap": [],
+  "elapsedSeconds": 5.359,
+  "stdoutSha256": "3618084ff6ac321e157c4a0ebb8ce2b62851ecf2369df8e784bcb2c7c6a6f97c",
+  "stdoutB64": "c3Bhd25lZCAyMgo=",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderrB64": "",
+  "failure": "Owner heartbeat stopped changing"
+}

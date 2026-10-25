@@ -1,0 +1,261 @@
+[
+  {
+    "stepId": "0000",
+    "command": [
+      "/usr/bin/python3",
+      "/mnt/d/MyNewProjects/qfli_c/build/baseline-200-live-20261025T185222Z-5e96b6d5/control/normal/normal.py"
+    ],
+    "cwdRelative": "control/normal",
+    "stem": "normal",
+    "timeoutSeconds": 10,
+    "cleanupVerified": true,
+    "stdinSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "leader": {
+      "pid": 13,
+      "state": "R",
+      "pgrp": 13,
+      "session": 13,
+      "startTicks": 161
+    },
+    "beforeCleanup": [
+      {
+        "pid": 13,
+        "state": "Z",
+        "pgrp": 13,
+        "session": 13,
+        "startTicks": 161
+      }
+    ],
+    "remainingBeforeReap": [
+      {
+        "pid": 13,
+        "state": "Z",
+        "pgrp": 13,
+        "session": 13,
+        "startTicks": 161
+      }
+    ],
+    "exitCode": 0,
+    "remainingAfterReap": [],
+    "elapsedSeconds": 0.064,
+    "stdoutSha256": "1c4fc1b7058dab7d18ec8b96a876e648dcb4f421aa3bfbcf754b54344757525d",
+    "stdoutB64": "Y29udHJvbC1ub3JtYWwK",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderrB64": ""
+  },
+  {
+    "stepId": "0001",
+    "command": [
+      "/usr/bin/python3",
+      "/mnt/d/MyNewProjects/qfli_c/build/baseline-200-live-20261025T185222Z-5e96b6d5/control/descendant/root.py",
+      "exit",
+      "once"
+    ],
+    "cwdRelative": "control/descendant",
+    "stem": "descendant",
+    "timeoutSeconds": 10,
+    "cleanupVerified": true,
+    "stdinSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "leader": {
+      "pid": 14,
+      "state": "R",
+      "pgrp": 14,
+      "session": 14,
+      "startTicks": 172
+    },
+    "beforeCleanup": [
+      {
+        "pid": 14,
+        "state": "Z",
+        "pgrp": 14,
+        "session": 14,
+        "startTicks": 172
+      },
+      {
+        "pid": 15,
+        "state": "S",
+        "pgrp": 14,
+        "session": 14,
+        "startTicks": 175
+      }
+    ],
+    "remainingBeforeReap": [
+      {
+        "pid": 14,
+        "state": "Z",
+        "pgrp": 14,
+        "session": 14,
+        "startTicks": 172
+      }
+    ],
+    "exitCode": 0,
+    "remainingAfterReap": [],
+    "elapsedSeconds": 0.424,
+    "stdoutSha256": "e993d8b1a1f9f6105c8c28f14fa9ff8e76ed9b85f8b52cdadc1a770464223cbb",
+    "stdoutB64": "c3Bhd25lZCAxNQo=",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderrB64": ""
+  },
+  {
+    "stepId": "0002",
+    "command": [
+      "/usr/bin/python3",
+      "/mnt/d/MyNewProjects/qfli_c/build/baseline-200-live-20261025T185222Z-5e96b6d5/control/ignore-term/root.py",
+      "wait",
+      "ignore-term"
+    ],
+    "cwdRelative": "control/ignore-term",
+    "stem": "ignore-term",
+    "timeoutSeconds": 2,
+    "cleanupVerified": true,
+    "stdinSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "leader": {
+      "pid": 16,
+      "state": "R",
+      "pgrp": 16,
+      "session": 16,
+      "startTicks": 219
+    },
+    "beforeCleanup": [
+      {
+        "pid": 16,
+        "state": "S",
+        "pgrp": 16,
+        "session": 16,
+        "startTicks": 219
+      },
+      {
+        "pid": 17,
+        "state": "S",
+        "pgrp": 16,
+        "session": 16,
+        "startTicks": 222
+      }
+    ],
+    "remainingBeforeReap": [
+      {
+        "pid": 16,
+        "state": "Z",
+        "pgrp": 16,
+        "session": 16,
+        "startTicks": 219
+      }
+    ],
+    "exitCode": -9,
+    "remainingAfterReap": [],
+    "elapsedSeconds": 2.374,
+    "stdoutSha256": "23ebfa20be97a4e809e0e7d29715dcd452be7e0636e47ca97a92bf8ccd3a9deb",
+    "stdoutB64": "c3Bhd25lZCAxNwo=",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderrB64": "",
+    "failure": "Per-step deadline exceeded"
+  },
+  {
+    "stepId": "0003",
+    "command": [
+      "/usr/bin/python3",
+      "/mnt/d/MyNewProjects/qfli_c/build/baseline-200-live-20261025T185222Z-5e96b6d5/control/signal-latch/root.py",
+      "exit",
+      "ignore-term"
+    ],
+    "cwdRelative": "control/signal-latch",
+    "stem": "signal-latch",
+    "timeoutSeconds": 10,
+    "cleanupVerified": true,
+    "stdinSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "leader": {
+      "pid": 19,
+      "state": "R",
+      "pgrp": 19,
+      "session": 19,
+      "startTicks": 460
+    },
+    "beforeCleanup": [
+      {
+        "pid": 19,
+        "state": "S",
+        "pgrp": 19,
+        "session": 19,
+        "startTicks": 460
+      },
+      {
+        "pid": 20,
+        "state": "S",
+        "pgrp": 19,
+        "session": 19,
+        "startTicks": 463
+      }
+    ],
+    "remainingBeforeReap": [
+      {
+        "pid": 19,
+        "state": "Z",
+        "pgrp": 19,
+        "session": 19,
+        "startTicks": 460
+      }
+    ],
+    "exitCode": -15,
+    "remainingAfterReap": [],
+    "elapsedSeconds": 0.573,
+    "stdoutSha256": "be3ae53d5b859cad4188f3ae5407052f2a8053d70f99cdd7b6659ffe8cbbc842",
+    "stdoutB64": "c3Bhd25lZCAyMAo=",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderrB64": "",
+    "failure": "Supervisor cancellation requested"
+  },
+  {
+    "stepId": "0004",
+    "command": [
+      "/usr/bin/python3",
+      "/mnt/d/MyNewProjects/qfli_c/build/baseline-200-live-20261025T185222Z-5e96b6d5/control/heartbeat-loss/root.py",
+      "wait",
+      "ignore-term"
+    ],
+    "cwdRelative": "control/heartbeat-loss",
+    "stem": "heartbeat-loss",
+    "timeoutSeconds": 12,
+    "cleanupVerified": true,
+    "stdinSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "leader": {
+      "pid": 21,
+      "state": "R",
+      "pgrp": 21,
+      "session": 21,
+      "startTicks": 634
+    },
+    "beforeCleanup": [
+      {
+        "pid": 21,
+        "state": "S",
+        "pgrp": 21,
+        "session": 21,
+        "startTicks": 634
+      },
+      {
+        "pid": 22,
+        "state": "S",
+        "pgrp": 21,
+        "session": 21,
+        "startTicks": 637
+      }
+    ],
+    "remainingBeforeReap": [
+      {
+        "pid": 21,
+        "state": "Z",
+        "pgrp": 21,
+        "session": 21,
+        "startTicks": 634
+      }
+    ],
+    "exitCode": -9,
+    "remainingAfterReap": [],
+    "elapsedSeconds": 5.359,
+    "stdoutSha256": "3618084ff6ac321e157c4a0ebb8ce2b62851ecf2369df8e784bcb2c7c6a6f97c",
+    "stdoutB64": "c3Bhd25lZCAyMgo=",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderrB64": "",
+    "failure": "Owner heartbeat stopped changing"
+  }
+]

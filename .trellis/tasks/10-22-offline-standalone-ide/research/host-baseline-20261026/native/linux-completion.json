@@ -1,0 +1,21 @@
+{
+  "schema": 2,
+  "runId": "20261025T172552Z-7d34ef1a",
+  "nonce": "cfdf47f1fc081038bf7608e758184f38918e0905f6d4dd3ae15753a0d9d48138",
+  "supervisor": {
+    "pid": 12,
+    "state": "R",
+    "pgrp": 12,
+    "session": 12,
+    "startTicks": 201
+  },
+  "phase": "native",
+  "hostOnly": true,
+  "installedDeviceEvidence": false,
+  "packagedOhosEvidence": false,
+  "cleanupVerified": true,
+  "stepsObserved": 402,
+  "stepsSha256": "63df066df23f01cefb2c7c31100085fee89ba09650997fea40cd5613859d10b0",
+  "reportSha256": "9b3fbfc8b099ce352cae79b98a9798d65aae75420d5aba1a99fcd98349d6cdcd",
+  "complete": true
+}

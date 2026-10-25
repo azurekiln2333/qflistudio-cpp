@@ -1,0 +1,54 @@
+{
+  "stepId": "0003",
+  "command": [
+    "/usr/bin/python3",
+    "/mnt/d/MyNewProjects/qfli_c/build/baseline-200-live-20261025T185222Z-5e96b6d5/control/signal-latch/root.py",
+    "exit",
+    "ignore-term"
+  ],
+  "cwdRelative": "control/signal-latch",
+  "stem": "signal-latch",
+  "timeoutSeconds": 10,
+  "cleanupVerified": true,
+  "stdinSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "leader": {
+    "pid": 19,
+    "state": "R",
+    "pgrp": 19,
+    "session": 19,
+    "startTicks": 460
+  },
+  "beforeCleanup": [
+    {
+      "pid": 19,
+      "state": "S",
+      "pgrp": 19,
+      "session": 19,
+      "startTicks": 460
+    },
+    {
+      "pid": 20,
+      "state": "S",
+      "pgrp": 19,
+      "session": 19,
+      "startTicks": 463
+    }
+  ],
+  "remainingBeforeReap": [
+    {
+      "pid": 19,
+      "state": "Z",
+      "pgrp": 19,
+      "session": 19,
+      "startTicks": 460
+    }
+  ],
+  "exitCode": -15,
+  "remainingAfterReap": [],
+  "elapsedSeconds": 0.573,
+  "stdoutSha256": "be3ae53d5b859cad4188f3ae5407052f2a8053d70f99cdd7b6659ffe8cbbc842",
+  "stdoutB64": "c3Bhd25lZCAyMAo=",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderrB64": "",
+  "failure": "Supervisor cancellation requested"
+}

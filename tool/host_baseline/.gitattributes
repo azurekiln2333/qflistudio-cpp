@@ -1,0 +1,2 @@
+# Preserve frozen bytes; recognize CRLF as an existing line ending.
+* -text whitespace=cr-at-eol

@@ -1,0 +1,44 @@
+{
+  "stepId": "0000",
+  "command": [
+    "/usr/bin/gcc",
+    "--version"
+  ],
+  "cwdRelative": ".",
+  "stem": "tool-0",
+  "timeoutSeconds": 10,
+  "cleanupVerified": true,
+  "stdinSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "leader": {
+    "pid": 13,
+    "state": "R",
+    "pgrp": 13,
+    "session": 13,
+    "startTicks": 233
+  },
+  "beforeCleanup": [
+    {
+      "pid": 13,
+      "state": "Z",
+      "pgrp": 13,
+      "session": 13,
+      "startTicks": 233
+    }
+  ],
+  "remainingBeforeReap": [
+    {
+      "pid": 13,
+      "state": "Z",
+      "pgrp": 13,
+      "session": 13,
+      "startTicks": 233
+    }
+  ],
+  "exitCode": 0,
+  "remainingAfterReap": [],
+  "elapsedSeconds": 0.061,
+  "stdoutSha256": "8497f84b2b8334c413d9c6166bd39d009ba55d2ff60a8f23e66dfa5819c2b048",
+  "stdoutB64": "Z2NjIChVYnVudHUgMTMuMy4wLTZ1YnVudHUyfjI0LjA0LjEpIDEzLjMuMApDb3B5cmlnaHQgKEMpIDIwMjMgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uLCBJbmMuClRoaXMgaXMgZnJlZSBzb2Z0d2FyZTsgc2VlIHRoZSBzb3VyY2UgZm9yIGNvcHlpbmcgY29uZGl0aW9ucy4gIFRoZXJlIGlzIE5PCndhcnJhbnR5OyBub3QgZXZlbiBmb3IgTUVSQ0hBTlRBQklMSVRZIG9yIEZJVE5FU1MgRk9SIEEgUEFSVElDVUxBUiBQVVJQT1NFLgoK",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderrB64": ""
+}

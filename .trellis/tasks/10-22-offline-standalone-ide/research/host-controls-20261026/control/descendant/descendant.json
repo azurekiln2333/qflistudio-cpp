@@ -1,0 +1,53 @@
+{
+  "stepId": "0001",
+  "command": [
+    "/usr/bin/python3",
+    "/mnt/d/MyNewProjects/qfli_c/build/baseline-200-live-20261025T185222Z-5e96b6d5/control/descendant/root.py",
+    "exit",
+    "once"
+  ],
+  "cwdRelative": "control/descendant",
+  "stem": "descendant",
+  "timeoutSeconds": 10,
+  "cleanupVerified": true,
+  "stdinSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "leader": {
+    "pid": 14,
+    "state": "R",
+    "pgrp": 14,
+    "session": 14,
+    "startTicks": 172
+  },
+  "beforeCleanup": [
+    {
+      "pid": 14,
+      "state": "Z",
+      "pgrp": 14,
+      "session": 14,
+      "startTicks": 172
+    },
+    {
+      "pid": 15,
+      "state": "S",
+      "pgrp": 14,
+      "session": 14,
+      "startTicks": 175
+    }
+  ],
+  "remainingBeforeReap": [
+    {
+      "pid": 14,
+      "state": "Z",
+      "pgrp": 14,
+      "session": 14,
+      "startTicks": 172
+    }
+  ],
+  "exitCode": 0,
+  "remainingAfterReap": [],
+  "elapsedSeconds": 0.424,
+  "stdoutSha256": "e993d8b1a1f9f6105c8c28f14fa9ff8e76ed9b85f8b52cdadc1a770464223cbb",
+  "stdoutB64": "c3Bhd25lZCAxNQo=",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderrB64": ""
+}

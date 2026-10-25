@@ -260,3 +260,12 @@ This supersedes the last in-progress capability/metadata paragraph above.
   `c-tutorial-inputs-publication-20261024.json` preserves the exact evidence.
   Earlier compiler reports retain their old tutorial-asset hashes. C's +160
   examples, current packaged owning-app user headers and device gates stay open.
+
+
+## October 26 original 200-program host baseline
+
+- Native host verification passed all original 100 C and 100 C++ programs with GCC C17 and Clang C++20. All200 outputs also matched expected stdout byte for byte. All402 recorded Linux groups ended empty. Grant C-native200-20261026-01 was accepted644 and released645 after root observed outer session94737 exit0 and the exact Windows Job terminal/active0. Runner104.184s; full publication252.408s within1265s.
+- Existing WASI probes passed the actual two-input stdin transport gate and all200 original programs with threads enabled. All403 groups ended empty. All18,739 SDK path/hash entries and bound input bytes remained stable. Grant C-wasi200-20261026-01 was accepted646 and released653 after root observed session19358 exit0 and exact Job terminal/active0. Runner751.145s; full publication962.050s within1265s.
+- Raw phase reports, complete ledgers, manifests, exact process identities and hashes live in host-baseline-20261026/. Eight earlier real process controls live in host-controls-20261026/. Their14.789s runner passed, but ACCEPT628-to-RELEASE629430.965s exceeded60s; the archive retains this coordination failure.
+- tool/host_baseline preserves the exact six experimental verifier scripts. Their historical34 fake/stub controls are separate from actual operating-system controls. Snapshot publication does not ship a new app feature.
+- Host results do not prove packaged binary/current-source correspondence, current OHOS package success, owning-app user headers/mixed-source execution or an installed device. The +160 example expansion and the cross-product umbrella remain open. No product/core source, signing, startup or unrelated native work was included.

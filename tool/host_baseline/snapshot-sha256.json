@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "kind": "experimental-host-tooling-snapshot",
+  "capturedDate": "2026-10-26",
+  "algorithm": "sha256",
+  "copyPolicy": "Byte-identical copies of the six build candidates. Restore all six under repository build/ before use.",
+  "files": [
+    {
+      "file": "baseline_200_window.py",
+      "sha256": "64019e6b9d79bb98c4ec072daf3b21902e68592c754279291a3dd94841d1739a",
+      "bytes": 17385,
+      "source": "build/baseline_200_window.py"
+    },
+    {
+      "file": "baseline_200_linux.py",
+      "sha256": "ff821f1021d77983de1ab43cde7efbb4d6f7be06ad03a842b000955282d04edf",
+      "bytes": 19374,
+      "source": "build/baseline_200_linux.py"
+    },
+    {
+      "file": "baseline_200_owned_job.py",
+      "sha256": "5c3dc4d0bdaaa26233212560968b58d02e215eb27c29e9e88be4c99d212ce116",
+      "bytes": 6273,
+      "source": "build/baseline_200_owned_job.py"
+    },
+    {
+      "file": "baseline_200_control_test.py",
+      "sha256": "a20ed42977c0e12b8e8aa3dfeb10ad18acf97a9dfc86e7213a63de1484247883",
+      "bytes": 17258,
+      "source": "build/baseline_200_control_test.py"
+    },
+    {
+      "file": "baseline_200_live_control.py",
+      "sha256": "766f8d3d4851f0232aacd88b08f6d8b8de3955b7f012652284795aad90c5287c",
+      "bytes": 37087,
+      "source": "build/baseline_200_live_control.py"
+    },
+    {
+      "file": "baseline_200_linux_control.py",
+      "sha256": "13de30dfc49b1a10e58662a34315337a34ac85bf37fbeb6a8550e2207100b460",
+      "bytes": 16636,
+      "source": "build/baseline_200_linux_control.py"
+    }
+  ]
+}

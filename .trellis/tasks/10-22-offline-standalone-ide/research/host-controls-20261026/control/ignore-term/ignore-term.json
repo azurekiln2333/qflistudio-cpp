@@ -1,0 +1,54 @@
+{
+  "stepId": "0002",
+  "command": [
+    "/usr/bin/python3",
+    "/mnt/d/MyNewProjects/qfli_c/build/baseline-200-live-20261025T185222Z-5e96b6d5/control/ignore-term/root.py",
+    "wait",
+    "ignore-term"
+  ],
+  "cwdRelative": "control/ignore-term",
+  "stem": "ignore-term",
+  "timeoutSeconds": 2,
+  "cleanupVerified": true,
+  "stdinSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "leader": {
+    "pid": 16,
+    "state": "R",
+    "pgrp": 16,
+    "session": 16,
+    "startTicks": 219
+  },
+  "beforeCleanup": [
+    {
+      "pid": 16,
+      "state": "S",
+      "pgrp": 16,
+      "session": 16,
+      "startTicks": 219
+    },
+    {
+      "pid": 17,
+      "state": "S",
+      "pgrp": 16,
+      "session": 16,
+      "startTicks": 222
+    }
+  ],
+  "remainingBeforeReap": [
+    {
+      "pid": 16,
+      "state": "Z",
+      "pgrp": 16,
+      "session": 16,
+      "startTicks": 219
+    }
+  ],
+  "exitCode": -9,
+  "remainingAfterReap": [],
+  "elapsedSeconds": 2.374,
+  "stdoutSha256": "23ebfa20be97a4e809e0e7d29715dcd452be7e0636e47ca97a92bf8ccd3a9deb",
+  "stdoutB64": "c3Bhd25lZCAxNwo=",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderrB64": "",
+  "failure": "Per-step deadline exceeded"
+}

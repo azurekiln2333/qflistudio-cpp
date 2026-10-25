@@ -1,0 +1,44 @@
+{
+  "stepId": "0000",
+  "command": [
+    "/usr/bin/python3",
+    "/mnt/d/MyNewProjects/qfli_c/build/baseline-200-live-20261025T185222Z-5e96b6d5/control/normal/normal.py"
+  ],
+  "cwdRelative": "control/normal",
+  "stem": "normal",
+  "timeoutSeconds": 10,
+  "cleanupVerified": true,
+  "stdinSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "leader": {
+    "pid": 13,
+    "state": "R",
+    "pgrp": 13,
+    "session": 13,
+    "startTicks": 161
+  },
+  "beforeCleanup": [
+    {
+      "pid": 13,
+      "state": "Z",
+      "pgrp": 13,
+      "session": 13,
+      "startTicks": 161
+    }
+  ],
+  "remainingBeforeReap": [
+    {
+      "pid": 13,
+      "state": "Z",
+      "pgrp": 13,
+      "session": 13,
+      "startTicks": 161
+    }
+  ],
+  "exitCode": 0,
+  "remainingAfterReap": [],
+  "elapsedSeconds": 0.064,
+  "stdoutSha256": "1c4fc1b7058dab7d18ec8b96a876e648dcb4f421aa3bfbcf754b54344757525d",
+  "stdoutB64": "Y29udHJvbC1ub3JtYWwK",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderrB64": ""
+}

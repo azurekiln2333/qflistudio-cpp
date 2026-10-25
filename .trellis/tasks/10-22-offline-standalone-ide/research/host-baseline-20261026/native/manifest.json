@@ -1,0 +1,97 @@
+{
+  "schema": 2,
+  "sourceOnlyCandidate": true,
+  "runId": "20261025T172552Z-7d34ef1a",
+  "phase": "native",
+  "distro": "qfli-java-build",
+  "phaseBudgetSeconds": 1200,
+  "outerBudgetSeconds": 1220,
+  "compiler": "/mnt/d/MyNewProjects/qfli_c/native/build/compiler-linux/qfli_compiler_probe",
+  "runtime": "/mnt/d/MyNewProjects/qfli_c/native/build/ohos-wasi-thread-probe/runtime-probe-reviewed",
+  "sdk": "/mnt/d/MyNewProjects/qfli_c/native/build/portable-deps/wasi-sdk-33.0-x86_64-linux",
+  "preparedAt": "2026-10-25T17:25:52.020887+00:00",
+  "executed": true,
+  "inputs": [
+    {
+      "windowsPath": "D:\\MyNewProjects\\qfli_c\\tool\\forge_content\\staging\\forge_examples.json",
+      "linuxPath": "/mnt/d/MyNewProjects/qfli_c/tool/forge_content/staging/forge_examples.json",
+      "sha256": "91c92ac7265b0dc777f154bb8a51ff35cb94cab4ec0b7548f4c8409ed3455cac"
+    },
+    {
+      "windowsPath": "D:\\MyNewProjects\\qfli_c\\tool\\forge_content\\staging\\forge_tutorials.json",
+      "linuxPath": "/mnt/d/MyNewProjects/qfli_c/tool/forge_content/staging/forge_tutorials.json",
+      "sha256": "3bc3dace0c585bb60c12c84336a7aaff24da62651f608a0db1ab9a69b4c5073b"
+    },
+    {
+      "windowsPath": "D:\\MyNewProjects\\qfli_c\\native\\compiler\\compiler.cpp",
+      "linuxPath": "/mnt/d/MyNewProjects/qfli_c/native/compiler/compiler.cpp",
+      "sha256": "89e5db1a62f5985fb3005ba39a07883c8c786d48ac272ee674f0bf60c3b10ae3"
+    },
+    {
+      "windowsPath": "D:\\MyNewProjects\\qfli_c\\native\\compiler\\include\\qfli_compiler.h",
+      "linuxPath": "/mnt/d/MyNewProjects/qfli_c/native/compiler/include/qfli_compiler.h",
+      "sha256": "e6f1f05af731a4f0253be829572f4523eb8ad75517c4e68aed7a8172488e1d79"
+    },
+    {
+      "windowsPath": "D:\\MyNewProjects\\qfli_c\\native\\portable\\wasm_runtime.cpp",
+      "linuxPath": "/mnt/d/MyNewProjects/qfli_c/native/portable/wasm_runtime.cpp",
+      "sha256": "e820d6d984f9a8ed342e3d06c964968f2430c590dae7e290fb3a668c60b05bd9"
+    },
+    {
+      "windowsPath": "D:\\MyNewProjects\\qfli_c\\native\\portable\\include\\qfli_wasm.h",
+      "linuxPath": "/mnt/d/MyNewProjects/qfli_c/native/portable/include/qfli_wasm.h",
+      "sha256": "4ebb356cafee0702819842cc76ab354423196ff2c1f75f52428f1e677d545857"
+    },
+    {
+      "windowsPath": "D:\\MyNewProjects\\qfli_c\\native\\portable\\tests\\runtime_probe.cpp",
+      "linuxPath": "/mnt/d/MyNewProjects/qfli_c/native/portable/tests/runtime_probe.cpp",
+      "sha256": "711712f1c686640e4dad8f39632dddfe81fb16663435795d52166d52c1d00496"
+    },
+    {
+      "windowsPath": "D:\\MyNewProjects\\qfli_c\\native\\toolchain\\portable-dependencies.json",
+      "linuxPath": "/mnt/d/MyNewProjects/qfli_c/native/toolchain/portable-dependencies.json",
+      "sha256": "0155d89b0993c9dcc905d716afe28e0f2ded997681d1332a7f4295fd27c43ec6"
+    },
+    {
+      "windowsPath": "D:\\MyNewProjects\\qfli_c\\native\\toolchain\\tests\\portable-curriculum-regression.py",
+      "linuxPath": "/mnt/d/MyNewProjects/qfli_c/native/toolchain/tests/portable-curriculum-regression.py",
+      "sha256": "7077c03447dca9cc002bd4a673f8520ca5b76646512bb9eb3f78bc0803524432"
+    },
+    {
+      "windowsPath": "D:\\MyNewProjects\\qfli_c\\build\\baseline_200_linux.py",
+      "linuxPath": "/mnt/d/MyNewProjects/qfli_c/build/baseline_200_linux.py",
+      "sha256": "ff821f1021d77983de1ab43cde7efbb4d6f7be06ad03a842b000955282d04edf"
+    },
+    {
+      "windowsPath": "D:\\MyNewProjects\\qfli_c\\build\\baseline_200_window.py",
+      "linuxPath": "/mnt/d/MyNewProjects/qfli_c/build/baseline_200_window.py",
+      "sha256": "64019e6b9d79bb98c4ec072daf3b21902e68592c754279291a3dd94841d1739a"
+    },
+    {
+      "windowsPath": "D:\\MyNewProjects\\qfli_c\\build\\baseline_200_owned_job.py",
+      "linuxPath": "/mnt/d/MyNewProjects/qfli_c/build/baseline_200_owned_job.py",
+      "sha256": "5c3dc4d0bdaaa26233212560968b58d02e215eb27c29e9e88be4c99d212ce116"
+    },
+    {
+      "windowsPath": "D:\\MyNewProjects\\qfli_c\\build\\baseline-200-v2-native-20261025T172552Z-7d34ef1a\\examples.json",
+      "linuxPath": "/mnt/d/MyNewProjects/qfli_c/build/baseline-200-v2-native-20261025T172552Z-7d34ef1a/examples.json",
+      "sha256": "91c92ac7265b0dc777f154bb8a51ff35cb94cab4ec0b7548f4c8409ed3455cac"
+    },
+    {
+      "windowsPath": "D:\\MyNewProjects\\qfli_c\\build\\baseline-200-v2-native-20261025T172552Z-7d34ef1a\\linux_runner.py",
+      "linuxPath": "/mnt/d/MyNewProjects/qfli_c/build/baseline-200-v2-native-20261025T172552Z-7d34ef1a/linux_runner.py",
+      "sha256": "ff821f1021d77983de1ab43cde7efbb4d6f7be06ad03a842b000955282d04edf"
+    },
+    {
+      "windowsPath": "D:\\MyNewProjects\\qfli_c\\build\\baseline-200-v2-native-20261025T172552Z-7d34ef1a\\owned_job.py",
+      "linuxPath": "/mnt/d/MyNewProjects/qfli_c/build/baseline-200-v2-native-20261025T172552Z-7d34ef1a/owned_job.py",
+      "sha256": "5c3dc4d0bdaaa26233212560968b58d02e215eb27c29e9e88be4c99d212ce116"
+    },
+    {
+      "windowsPath": "D:\\MyNewProjects\\qfli_c\\build\\baseline-200-v2-native-20261025T172552Z-7d34ef1a\\tutorials.json",
+      "linuxPath": "/mnt/d/MyNewProjects/qfli_c/build/baseline-200-v2-native-20261025T172552Z-7d34ef1a/tutorials.json",
+      "sha256": "3bc3dace0c585bb60c12c84336a7aaff24da62651f608a0db1ab9a69b4c5073b"
+    }
+  ],
+  "grant": "C-native200-20261026-01"
+}

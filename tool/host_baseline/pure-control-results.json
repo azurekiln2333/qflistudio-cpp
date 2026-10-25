@@ -1,0 +1,9 @@
+{
+  "kind": "pure-python-fake-stub-controls",
+  "testsRun": 34,
+  "failures": 0,
+  "errors": 0,
+  "subprocessesStarted": 0,
+  "realCrossProcessCleanup": "UNRUN",
+  "wslNativeSdkCompilerTests": "UNRUN"
+}

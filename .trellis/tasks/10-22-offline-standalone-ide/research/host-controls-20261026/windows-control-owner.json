@@ -1,0 +1,168 @@
+{
+  "schema": 1,
+  "runId": "20261025T185222Z-5e96b6d5",
+  "nonce": "cfefe6c7a4644390934c87f425019d2e",
+  "grant": "C-live-controls-20261026-01",
+  "budgetSeconds": 60,
+  "slotReleased": true,
+  "hold": false,
+  "windowsCases": [
+    {
+      "name": "windows-normal-exit",
+      "command": [
+        "D:\\ProgramFiles\\Python\\Python313\\python.exe",
+        "-c",
+        "import sys;sys.exit(0)"
+      ],
+      "ok": true,
+      "job": {
+        "pid": 61588,
+        "threadId": 60324,
+        "createdSuspended": true,
+        "assignedBeforeResume": true,
+        "terminal": true,
+        "creationFiletime100ns": "134374288076829009",
+        "jobActiveProcesses": 0,
+        "exitCode": 0
+      },
+      "createdSuspended": true,
+      "assignedBeforeResume": true,
+      "creationFiletime100ns": "134374288076829009",
+      "rootTerminal": true,
+      "jobActiveProcesses": 0,
+      "exitCode": 0,
+      "emptyAfterExit": true,
+      "cleanupErrors": [],
+      "jobAfterCleanup": {
+        "pid": 61588,
+        "threadId": 60324,
+        "createdSuspended": true,
+        "assignedBeforeResume": true,
+        "terminal": true,
+        "creationFiletime100ns": "134374288076829009",
+        "jobActiveProcesses": 0,
+        "exitCode": 0
+      },
+      "handlesClosed": true
+    },
+    {
+      "name": "windows-child-outlives-root",
+      "ok": true,
+      "command": [
+        "D:\\ProgramFiles\\Python\\Python313\\python.exe",
+        "-c",
+        "import subprocess,sys,time;subprocess.Popen([sys.executable,'-c','import sys,time;time.sleep(float(sys.argv[1]))',sys.argv[1]],creationflags=getattr(subprocess,'CREATE_NO_WINDOW',0));time.sleep(float(sys.argv[2]));sys.exit(0)",
+        "30",
+        "0"
+      ],
+      "job": {
+        "pid": 22656,
+        "threadId": 25588,
+        "createdSuspended": true,
+        "assignedBeforeResume": true,
+        "terminal": true,
+        "creationFiletime100ns": "134374288077382107",
+        "jobActiveProcesses": 2,
+        "exitCode": 0
+      },
+      "creationFiletime100ns": "134374288077382107",
+      "rootTerminalBeforeStop": true,
+      "emptyWhileChildAlive": false,
+      "jobActiveProcesses": 2,
+      "cleanupErrors": [],
+      "jobAfterCleanup": {
+        "pid": 22656,
+        "threadId": 25588,
+        "createdSuspended": true,
+        "assignedBeforeResume": true,
+        "terminal": true,
+        "creationFiletime100ns": "134374288077382107",
+        "jobActiveProcesses": 0,
+        "exitCode": 0
+      },
+      "handlesClosed": true,
+      "emptyAfterStop": true
+    },
+    {
+      "name": "windows-timeout-cleanup",
+      "ok": true,
+      "command": [
+        "D:\\ProgramFiles\\Python\\Python313\\python.exe",
+        "-c",
+        "import subprocess,sys,time;subprocess.Popen([sys.executable,'-c','import sys,time;time.sleep(float(sys.argv[1]))',sys.argv[1]],creationflags=getattr(subprocess,'CREATE_NO_WINDOW',0));time.sleep(float(sys.argv[2]));sys.exit(0)",
+        "60",
+        "60"
+      ],
+      "creationFiletime100ns": "134374288078463919",
+      "stillRunningAtTimeout": true,
+      "timeoutSeconds": 2,
+      "jobBeforeStop": {
+        "pid": 70724,
+        "threadId": 49468,
+        "createdSuspended": true,
+        "assignedBeforeResume": true,
+        "terminal": false,
+        "creationFiletime100ns": "134374288078463919",
+        "jobActiveProcesses": 4
+      },
+      "jobActiveProcesses": 4,
+      "cleanupErrors": [],
+      "jobAfterCleanup": {
+        "pid": 70724,
+        "threadId": 49468,
+        "createdSuspended": true,
+        "assignedBeforeResume": true,
+        "terminal": true,
+        "creationFiletime100ns": "134374288078463919",
+        "jobActiveProcesses": 0,
+        "exitCode": 124
+      },
+      "handlesClosed": true,
+      "emptyAfterStop": true
+    }
+  ],
+  "windowsProven": true,
+  "linuxJobProven": true,
+  "evidenceVerified": true,
+  "heartbeatLossObserved": true,
+  "errors": [],
+  "cleanupErrors": [],
+  "windowsProblems": [],
+  "linuxCommand": [
+    "wsl.exe",
+    "-d",
+    "qfli-java-build",
+    "--",
+    "python3",
+    "/mnt/d/MyNewProjects/qfli_c/build/baseline-200-live-20261025T185222Z-5e96b6d5/linux_control.py",
+    "--work",
+    "/mnt/d/MyNewProjects/qfli_c/build/baseline-200-live-20261025T185222Z-5e96b6d5",
+    "--budget",
+    "25"
+  ],
+  "linuxJobStart": {
+    "pid": 36036,
+    "threadId": 62824,
+    "createdSuspended": true,
+    "assignedBeforeResume": true,
+    "terminal": false,
+    "creationFiletime100ns": "134374288099619249"
+  },
+  "heartbeatStoppedAtSeconds": 9.554,
+  "jobAfterCleanup": {
+    "pid": 36036,
+    "threadId": 62824,
+    "createdSuspended": true,
+    "assignedBeforeResume": true,
+    "terminal": true,
+    "creationFiletime100ns": "134374288099619249",
+    "jobActiveProcesses": 0,
+    "exitCode": 0
+  },
+  "handlesClosed": true,
+  "linuxJobEmptyAfterClose": true,
+  "linuxProblems": [],
+  "linuxCases": 5,
+  "linuxSteps": 5,
+  "elapsedSeconds": 14.789
+}

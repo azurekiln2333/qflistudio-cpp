@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "runId": "20261025T185222Z-5e96b6d5",
+  "nonce": "cfefe6c7a4644390934c87f425019d2e",
+  "linuxBudgetSeconds": 25,
+  "leaseFile": "lease",
+  "cancelFile": "cancel",
+  "heartbeatStopRequestFile": "heartbeat-stop-request.json",
+  "resultFile": "linux-control-result.json",
+  "heartbeatSeconds": 0.2,
+  "leaseStaleSeconds": 5,
+  "createdAt": "2026-10-25T19:06:49.928160+00:00"
+}

@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "historicalRun": "build\\baseline-200-v2-wasi-20261025T172552Z-f5f939bf",
+  "files": [
+    {
+      "path": "manifest.json",
+      "sha256": "afaa872ee30da2cebc1f0b4d03de9b0c99b7b41f66aede6dc56a53a8fad053ad",
+      "bytes": 6319
+    },
+    {
+      "path": "launch.json",
+      "sha256": "b08a9c0100c808f4b77b6d743555d365364edfc364acf6fe84dea3c4aa1715e6",
+      "bytes": 231
+    },
+    {
+      "path": "linux-start.json",
+      "sha256": "42057ef1ea2fbfadfa8fa17ebfa00099d683614cdf1769bacde7535700cc8614",
+      "bytes": 250
+    },
+    {
+      "path": "linux-completion.json",
+      "sha256": "89052237781fcd7e8b1d2c482ccaac5c4618c0c8e9ed11da9f049f267fd670ef",
+      "bytes": 600
+    },
+    {
+      "path": "report.json",
+      "sha256": "6db6a293cb3f1c8939ea7b928e15e329e6c584fc2f64a155ad1d2811b0244373",
+      "bytes": 740714
+    },
+    {
+      "path": "steps.json",
+      "sha256": "f6faa357535938b3ae85644d794d00a5dba0dd9de53518d537858e87e1768f0f",
+      "bytes": 563879
+    },
+    {
+      "path": "windows-owner.json",
+      "sha256": "ff26d09bd40234d6b51afec9301bd8f1d99cc982c2920fe4559526956c7599de",
+      "bytes": 491
+    },
+    {
+      "path": "sdk-inventory.json",
+      "sha256": "1168956804a38fef4caeaacde271f41c21e43816abce3e6aa9d6a97f01a24e9e",
+      "bytes": 3442622
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "schema": 2,
+  "runId": "20261025T172552Z-7d34ef1a",
+  "grant": "C-native200-20261026-01",
+  "slotReleased": true,
+  "elapsedSeconds": 104.184,
+  "cleanupErrors": [],
+  "windowsJob": {
+    "pid": 73608,
+    "threadId": 72000,
+    "createdSuspended": true,
+    "assignedBeforeResume": true,
+    "terminal": true,
+    "creationFiletime100ns": "134374307109045573",
+    "jobActiveProcesses": 0,
+    "exitCode": 0
+  },
+  "evidenceVerified": true,
+  "handlesClosed": true
+}

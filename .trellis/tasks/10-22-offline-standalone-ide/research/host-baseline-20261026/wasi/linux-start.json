@@ -1,0 +1,12 @@
+{
+  "schema": 2,
+  "runId": "20261025T172552Z-f5f939bf",
+  "nonce": "6fcccf89ecb304a1824f41d13f31449a346369472e7c09cee3e382b21ba88c6a",
+  "supervisor": {
+    "pid": 12,
+    "state": "R",
+    "pgrp": 12,
+    "session": 12,
+    "startTicks": 129
+  }
+}
