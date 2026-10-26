@@ -1,0 +1,134 @@
+[
+  {
+    "grant": "C-terminal-errors-20261026-01",
+    "evidence": "core-terminal-window-20261025T223956Z",
+    "passed": false,
+    "allJobsEmpty": true,
+    "elapsedSeconds": 170.151,
+    "sourceHashes": {
+      "lib/editor/terminal_pane.dart": "7bf7d36524eb4db8b4d57d10aace5227446769f95622879af80ac7216d6beffd",
+      "test/terminal_pane_test.dart": "25880ae6ffddabb508a52ea9173757ed2b08720beb5b278db8c65cf92d6f9b10"
+    }
+  },
+  {
+    "grant": "C-terminal-errors-20261026-02",
+    "evidence": "core-terminal-window-20261025T233353Z",
+    "passed": false,
+    "allJobsEmpty": true,
+    "elapsedSeconds": 170.157,
+    "sourceHashes": {
+      "lib/editor/terminal_pane.dart": "7bf7d36524eb4db8b4d57d10aace5227446769f95622879af80ac7216d6beffd",
+      "test/terminal_pane_test.dart": "5d5b8aacbbedae2633c6fc9a5513a441b7a53d4188983f058869a4e8d3a908b5"
+    }
+  },
+  {
+    "grant": "C-terminal-errors-20261026-03",
+    "evidence": "core-terminal-window-20261025T234626Z",
+    "passed": false,
+    "allJobsEmpty": true,
+    "elapsedSeconds": 6.389,
+    "sourceHashes": {
+      "lib/editor/terminal_pane.dart": "7bf7d36524eb4db8b4d57d10aace5227446769f95622879af80ac7216d6beffd",
+      "test/terminal_pane_test.dart": "5d5b8aacbbedae2633c6fc9a5513a441b7a53d4188983f058869a4e8d3a908b5"
+    }
+  },
+  {
+    "grant": "C-terminal-errors-20261026-04",
+    "evidence": "core-terminal-window-20261025T235007Z",
+    "passed": false,
+    "allJobsEmpty": true,
+    "elapsedSeconds": 170.1,
+    "sourceHashes": {
+      "lib/editor/terminal_pane.dart": "7bf7d36524eb4db8b4d57d10aace5227446769f95622879af80ac7216d6beffd",
+      "test/terminal_pane_test.dart": "80108642508b99db3bbd8cd5f14cf81c93b5696792fe8ce28ebdbbb12bb7590c"
+    }
+  },
+  {
+    "grant": "C-terminal-errors-20261026-05",
+    "evidence": "core-terminal-window-20261026T013750Z",
+    "passed": false,
+    "allJobsEmpty": true,
+    "elapsedSeconds": 170.136,
+    "sourceHashes": {
+      "lib/editor/terminal_pane.dart": "7bf7d36524eb4db8b4d57d10aace5227446769f95622879af80ac7216d6beffd",
+      "test/terminal_pane_test.dart": "80108642508b99db3bbd8cd5f14cf81c93b5696792fe8ce28ebdbbb12bb7590c"
+    }
+  },
+  {
+    "grant": "C-terminal-errors-20261026-06",
+    "evidence": "core-terminal-window-20261026T014441Z",
+    "passed": false,
+    "allJobsEmpty": true,
+    "elapsedSeconds": 170.154,
+    "sourceHashes": {
+      "lib/editor/terminal_pane.dart": "7bf7d36524eb4db8b4d57d10aace5227446769f95622879af80ac7216d6beffd",
+      "test/terminal_pane_test.dart": "80108642508b99db3bbd8cd5f14cf81c93b5696792fe8ce28ebdbbb12bb7590c"
+    }
+  },
+  {
+    "grant": "C-terminal-errors-20261026-07",
+    "evidence": "core-terminal-window-20261026T015033Z",
+    "passed": false,
+    "allJobsEmpty": true,
+    "elapsedSeconds": 170.173,
+    "sourceHashes": {
+      "lib/editor/terminal_pane.dart": "7bf7d36524eb4db8b4d57d10aace5227446769f95622879af80ac7216d6beffd",
+      "test/terminal_pane_test.dart": "d4b6589b6932c25038c6f403937405f9010186bcb580937075a66d572e54a77d"
+    }
+  },
+  {
+    "grant": "C-terminal-diagnose-20261026-01",
+    "evidence": "core-terminal-window-20261026T015700Z",
+    "passed": false,
+    "allJobsEmpty": true,
+    "elapsedSeconds": 50.178,
+    "sourceHashes": {
+      "lib/editor/terminal_pane.dart": "7bf7d36524eb4db8b4d57d10aace5227446769f95622879af80ac7216d6beffd",
+      "test/terminal_pane_test.dart": "4ea41552df99967610e7b56187b0852d8e1fab0cf0e6f34a23584cf7c2f45ce9"
+    }
+  },
+  {
+    "grant": "C-terminal-errors-20261026-08",
+    "evidence": "core-terminal-window-20261026T020107Z",
+    "passed": false,
+    "allJobsEmpty": true,
+    "elapsedSeconds": 90.162,
+    "sourceHashes": {
+      "lib/editor/terminal_pane.dart": "7bf7d36524eb4db8b4d57d10aace5227446769f95622879af80ac7216d6beffd",
+      "test/terminal_pane_test.dart": "3f35a263f3b191bb3daa2224c8f20fbc0dfa73a052a2c7b568fdd986ded25175"
+    }
+  },
+  {
+    "grant": "C-terminal-errors-20261026-09",
+    "evidence": "core-terminal-window-20261026T020642Z",
+    "passed": false,
+    "allJobsEmpty": true,
+    "elapsedSeconds": 90.194,
+    "sourceHashes": {
+      "lib/editor/terminal_pane.dart": "7bf7d36524eb4db8b4d57d10aace5227446769f95622879af80ac7216d6beffd",
+      "test/terminal_pane_test.dart": "4db66befbd4b7468eac183030f1f0130af589336e878d3c772c82e8b7fbf491a"
+    }
+  },
+  {
+    "grant": "C-terminal-diagnose-20261026-02",
+    "evidence": "core-terminal-window-20261026T021340Z",
+    "passed": false,
+    "allJobsEmpty": true,
+    "elapsedSeconds": 35.147,
+    "sourceHashes": {
+      "lib/editor/terminal_pane.dart": "7bf7d36524eb4db8b4d57d10aace5227446769f95622879af80ac7216d6beffd",
+      "test/terminal_pane_test.dart": "9783c89de955218b8abbb72f797419b6d57b6c229fe99a82670a7601c9bca163"
+    }
+  },
+  {
+    "grant": "C-terminal-errors-20261026-10",
+    "evidence": "core-terminal-window-20261026T030909Z",
+    "passed": true,
+    "allJobsEmpty": true,
+    "elapsedSeconds": 15.57,
+    "sourceHashes": {
+      "lib/editor/terminal_pane.dart": "7bf7d36524eb4db8b4d57d10aace5227446769f95622879af80ac7216d6beffd",
+      "test/terminal_pane_test.dart": "295e39012868cc7e3a593e7c3288f6849cded9e264d54332727a9724867ce100"
+    }
+  }
+]

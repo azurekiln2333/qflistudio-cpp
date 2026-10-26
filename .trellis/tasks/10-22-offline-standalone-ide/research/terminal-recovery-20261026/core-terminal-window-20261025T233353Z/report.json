@@ -1,0 +1,64 @@
+{
+  "grant": "C-terminal-errors-20261026-02",
+  "startedAt": "2026-10-25T23:33:53.318636+00:00",
+  "steps": [
+    {
+      "name": "format",
+      "command": [
+        "D:/ProgramFiles/flutter_ohos/bin/cache/dart-sdk/bin/dart.exe",
+        "format",
+        "lib/editor/terminal_pane.dart",
+        "test/terminal_pane_test.dart"
+      ],
+      "cleanupErrors": [],
+      "empty": true,
+      "job": {
+        "pid": 48744,
+        "threadId": 72064,
+        "createdSuspended": true,
+        "assignedBeforeResume": true,
+        "terminal": true,
+        "creationFiletime100ns": "134374448333234453",
+        "jobActiveProcesses": 0,
+        "exitCode": 0
+      },
+      "handlesClosed": true,
+      "stdoutSha256": "40f77278b207e7b34e8996c0fe9c582929dad3049f45062297f6b58782fab9b8",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "tests",
+      "command": [
+        "cmd.exe",
+        "/d",
+        "/c",
+        "D:\\ProgramFiles\\flutter_ohos\\bin\\flutter.bat test --no-pub --concurrency=1 test/terminal_pane_test.dart"
+      ],
+      "cleanupErrors": [],
+      "timedOut": true,
+      "empty": true,
+      "job": {
+        "pid": 60876,
+        "threadId": 26440,
+        "createdSuspended": true,
+        "assignedBeforeResume": true,
+        "terminal": true,
+        "creationFiletime100ns": "134374448339487768",
+        "jobActiveProcesses": 0,
+        "exitCode": 124
+      },
+      "handlesClosed": true,
+      "stdoutSha256": "46b87abc1898adfb9bf96897b8acf830813541f1a6aa15f3d3466c96836f6438",
+      "stderrSha256": "a7c956e5a4808cdeacce9316bca58c3b355337d04a2a7cc2e8b049e9f41f2949"
+    }
+  ],
+  "allJobsEmpty": true,
+  "sdkOnly": true,
+  "deviceExecuted": false,
+  "elapsedSeconds": 170.157,
+  "passed": false,
+  "sourceHashes": {
+    "lib/editor/terminal_pane.dart": "7bf7d36524eb4db8b4d57d10aace5227446769f95622879af80ac7216d6beffd",
+    "test/terminal_pane_test.dart": "5d5b8aacbbedae2633c6fc9a5513a441b7a53d4188983f058869a4e8d3a908b5"
+  }
+}

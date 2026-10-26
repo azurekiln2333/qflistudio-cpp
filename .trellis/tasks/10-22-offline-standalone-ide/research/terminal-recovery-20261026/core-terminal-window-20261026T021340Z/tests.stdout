@@ -1,0 +1,14 @@
+00:00 +0: loading D:/MyNewProjects/qfli_studio_core/test/terminal_pane_test.dart
+00:00 +0: success preserves stdout and returns the next prompt silently
+00:00 +1: stdout failure keeps ownership until exit and cleanup
+case checkpoint 1 before
+case checkpoint 1 after
+case checkpoint 3 before
+case checkpoint 2 before
+case checkpoint 3 after
+case checkpoint 4 before
+case checkpoint 4 after
+case checkpoint 5 before
+case checkpoint 5 after
+case checkpoint 6 before
+case checkpoint 2 after

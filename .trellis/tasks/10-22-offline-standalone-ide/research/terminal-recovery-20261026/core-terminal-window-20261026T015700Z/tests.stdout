@@ -1,0 +1,6 @@
+00:00 +0: loading D:/MyNewProjects/qfli_studio_core/test/terminal_pane_test.dart
+00:00 +0: success preserves stdout and returns the next prompt silently
+00:00 +1: stdout failure keeps ownership until exit and cleanup
+transport checkpoint: before streamsClosed
+transport checkpoint: after streamsClosed
+transport checkpoint: before result settled=true

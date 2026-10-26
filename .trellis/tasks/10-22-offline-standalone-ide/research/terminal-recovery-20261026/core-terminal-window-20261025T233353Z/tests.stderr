@@ -1,0 +1,4 @@
+Exhausted heap space, trying to allocate 39595168 bytes.
+Exhausted heap space, trying to allocate 39500256 bytes.
+Unhandled exception:
+Out of Memory
