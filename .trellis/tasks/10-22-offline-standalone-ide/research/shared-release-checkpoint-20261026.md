@@ -21,3 +21,7 @@ No device owner has been accepted. Native source-to-artifact correspondence, OHO
 C V3 execution budgets must start at Windows execute entry. Uncertain custody requires HOLD even after the deadline. Cooperative deadline checks do not prove hard real-time completion or cross-OS clock agreement. Pure-control evidence is retained in `c-v3-pure-controls-20261026.json`.
 
 Java resource proof is retained in `java905-independent-resource-reconciliation.json`. Grant 905 is consumed. Its safe release does not imply validation success or authorize a rerun.
+
+The separate live-control harness is source-approved at SHA256 `0f6bd130253568468bb500e85185af7e7617b8188726b4283e6d0e9a0a1b879e`. Its final 18 pure controls passed with process and DLL launch denied. The proposed live scope is normal exit, orphan cleanup and FIFO-blocked owner cancellation. Expired admission remains pure-only coverage. Live execution is UNRUN.
+
+Global 918 explicitly deferred new C and Java windows. At 10:38:48.0810189Z, native memory counters recorded 67,510,308,864 committed bytes against a 68,444,442,624-byte limit, leaving 934,133,760 bytes. At 10:41:30.8613444Z, headroom was 1,113,583,616 bytes. These points provide no capacity guarantee. Previous actual OOMs remain relevant. No unrelated process was terminated. Java READY917 remains queued after the narrow C control gate, subject to a fresh grant and adequate current capacity. No current host owner or reservation is inferred from this queue.

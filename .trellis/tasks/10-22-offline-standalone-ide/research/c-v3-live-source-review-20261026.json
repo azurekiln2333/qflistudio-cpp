@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "kind": "independent-live-harness-source-review",
+  "reviewer": "sql_explorer_review",
+  "reviewDate": "2026-10-26",
+  "conclusion": "Accepted for the stated controls-only source scope; no remaining source blocker found.",
+  "sources": [
+    {
+      "path": "build/current_toolchain_v3_live_controls.py",
+      "sha256": "0f6bd130253568468bb500e85185af7e7617b8188726b4283e6d0e9a0a1b879e",
+      "role": "reviewed harness"
+    },
+    {
+      "path": "build/current_toolchain_v3_live_controls_pure.py",
+      "sha256": "d956341a9c624046951264ac9bc577da590339d96f3499bb92696e0cf3d7d904",
+      "role": "reviewed harness"
+    },
+    {
+      "path": "build/current_toolchain_v3_window.py",
+      "sha256": "81a27c110360f6fe0e0f10127078574851411dd7c32a4092208c5c28cd94d96e",
+      "role": "unchanged accepted V3 dependency"
+    },
+    {
+      "path": "build/current_toolchain_v3_linux.py",
+      "sha256": "017f38e1bc1d1d8f57bc62e2df45aca277beaea4130752f0f680b98a980d5041",
+      "role": "unchanged accepted V3 dependency"
+    }
+  ],
+  "scope": {
+    "liveCasesPlanned": [
+      "normal exit",
+      "orphan descendant cleanup",
+      "FIFO-blocked input cancelled by the owner"
+    ],
+    "pureCasesOnly": [
+      "deterministic UTC expiry admission",
+      "deterministic monotonic expiry admission",
+      "cancelled admission"
+    ],
+    "nativeBuildRecipesInvoked": false
+  },
+  "budget": {
+    "origin": "windows-execute-entry",
+    "payloadSeconds": 60,
+    "grantSeconds": 80,
+    "deadlineBehavior": "Admission closes and cancellation is requested at expiry; uncertain cleanup retains custody beyond deadlines."
+  },
+  "acceptance": [
+    "FIFO closure, sidecar reads, control assertions, ledger writes and completion publication remain inside the retained Linux custodian retry loop.",
+    "Finalization failures latch HOLD and prevent a success claim.",
+    "Windows retains exact process/Job handles until matching Linux cleanup evidence plus exact root-terminal/Job0 proof.",
+    "Failed individual handle closes preserve the handle for retry.",
+    "The no-start path proves any created Job empty and does not fabricate Linux completion.",
+    "The harness uses pinned reviewed helpers and binds source bytes, run ID, nonce, manifest, ledger and stream evidence.",
+    "Reviewed V3 production scripts remain unchanged."
+  ],
+  "executionStatus": {
+    "live": "UNRUN",
+    "hostGrantIssued": false,
+    "slotReleased": false,
+    "rootReportedDeferral": {
+      "reference": "DEFER918",
+      "realCommitHeadroomMiB": 891,
+      "independentlyMeasuredByReviewer": false
+    }
+  },
+  "limits": [
+    "This record accepts source only. It does not establish live Win32/WSL/POSIX custody, SDK/native build, package or device results.",
+    "Live normal/orphan/blocked-input cases remain unrun. Deterministic expiry admission is pure-only.",
+    "Admission checks are cooperative, not atomic process-creation or hard realtime guarantees. Blocking OS calls and initial cross-OS clock skew remain unproven.",
+    "Unknown cleanup can require indefinite custody and explicit root intervention.",
+    "The reviewer did not independently rerun the author pure controls."
+  ],
+  "reviewActions": {
+    "sourceReads": true,
+    "sourceEdits": false,
+    "repositoryImports": false,
+    "prepare": false,
+    "wsl": false,
+    "liveJob": false,
+    "sdk": false,
+    "tests": false
+  }
+}

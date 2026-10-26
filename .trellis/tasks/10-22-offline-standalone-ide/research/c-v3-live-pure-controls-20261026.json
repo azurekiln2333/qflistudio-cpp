@@ -1,0 +1,34 @@
+{
+  "startedAt": "2026-10-26T10:37:28.489412+00:00",
+  "authority": "Frozen18 pure controls only; no self live grant",
+  "command": "python -B -; runpy.run_path('build/current_toolchain_v3_live_controls_pure.py', run_name='__main__') under deny guards",
+  "sourceHashesBefore": {
+    "current_toolchain_v3_live_controls.py": "0f6bd130253568468bb500e85185af7e7617b8188726b4283e6d0e9a0a1b879e",
+    "current_toolchain_v3_live_controls_pure.py": "d956341a9c624046951264ac9bc577da590339d96f3499bb92696e0cf3d7d904",
+    "current_toolchain_v3_window.py": "81a27c110360f6fe0e0f10127078574851411dd7c32a4092208c5c28cd94d96e",
+    "current_toolchain_v3_linux.py": "017f38e1bc1d1d8f57bc62e2df45aca277beaea4130752f0f680b98a980d5041"
+  },
+  "sdkExecuted": false,
+  "wslExecuted": false,
+  "prepareExecuted": false,
+  "liveJobExecuted": false,
+  "liveWin32Executed": false,
+  "realChildExecuted": false,
+  "auditDeniedAttempts": [],
+  "suiteCompleted": true,
+  "elapsedSeconds": 0.035907,
+  "expectedControls": 18,
+  "observedPassLines": 18,
+  "stdoutSha256": "8b87834f2c75af746ed3ddde64bf0bcb98be437b9ca53d12171e67f1a998500b",
+  "stdoutBytes": 775,
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderrBytes": 0,
+  "sourceHashesAfter": {
+    "current_toolchain_v3_live_controls.py": "0f6bd130253568468bb500e85185af7e7617b8188726b4283e6d0e9a0a1b879e",
+    "current_toolchain_v3_live_controls_pure.py": "d956341a9c624046951264ac9bc577da590339d96f3499bb92696e0cf3d7d904",
+    "current_toolchain_v3_window.py": "81a27c110360f6fe0e0f10127078574851411dd7c32a4092208c5c28cd94d96e",
+    "current_toolchain_v3_linux.py": "017f38e1bc1d1d8f57bc62e2df45aca277beaea4130752f0f680b98a980d5041"
+  },
+  "sourceHashesStable": true,
+  "passed": true
+}
