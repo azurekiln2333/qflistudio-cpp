@@ -1,0 +1,173 @@
+{
+  "grant": 905,
+  "releaseAccepted": 910,
+  "run": "D:\\MyNewProjects\\qfli_java\\.trellis\\tasks\\10-22-offline-ide-completeness\\research\\javaee-host-gate\\runs\\20261026T100919743197Z",
+  "original": {
+    "toolTerminal": true,
+    "exitCode": 1,
+    "toolResultId": "exec:40783b;session:83491;terminal:7e43b2",
+    "outerPid": 79256,
+    "outerCreationFiletime100ns": "134374829562315473",
+    "elapsedFromAckSeconds": 15.706956300004094
+  },
+  "relay": {
+    "toolTerminal": true,
+    "exitCode": 0,
+    "toolResultId": "exec:620fe3;session:null;terminal:620fe3",
+    "outerPid": 79500,
+    "outerCreationFiletime100ns": "134374829753461265",
+    "elapsedFromAckSeconds": 16.853640400004224
+  },
+  "publication": {
+    "observation": {
+      "toolTerminal": true,
+      "exitCode": 0,
+      "toolResultId": "exec:620fe3;session:null;terminal:620fe3",
+      "outerPid": 79500,
+      "outerCreationFiletime100ns": "134374829753461265",
+      "elapsedFromAckSeconds": 16.853640400004224
+    },
+    "publicationEligibility": {
+      "delivered": true,
+      "passed": false,
+      "reasons": [],
+      "successorGranted": false
+    },
+    "outerReport": "D:\\MyNewProjects\\qfli_java\\.trellis\\tasks\\10-22-offline-ide-completeness\\research\\javaee-host-gate\\runs\\20261026T100919743197Z\\outer.json",
+    "relayReport": "D:\\MyNewProjects\\qfli_java\\.trellis\\tasks\\10-22-offline-ide-completeness\\research\\javaee-host-gate\\runs\\20261026T100919743197Z\\relay-01.json",
+    "grant": "JavaEE-current-source-20261026-02",
+    "finalChannelSeq": 908
+  },
+  "outerJobs": [
+    {
+      "rootCreated": true,
+      "assignedBeforeResume": true,
+      "pid": 63528,
+      "threadId": 78304,
+      "processHandle": "544",
+      "createdSuspended": true,
+      "creationFiletime100ns": "134374829598024542",
+      "resumed": true,
+      "jobActiveProcesses": 0,
+      "jobTotalProcesses": 2,
+      "jobTerminatedProcesses": 0,
+      "rootTerminal": true,
+      "rootIdentityVerified": true,
+      "terminalConfirmed": true,
+      "exitCode": 0,
+      "role": "ack",
+      "handlesClosed": true
+    },
+    {
+      "rootCreated": true,
+      "assignedBeforeResume": true,
+      "pid": 77916,
+      "threadId": 60260,
+      "processHandle": "480",
+      "createdSuspended": true,
+      "creationFiletime100ns": "134374829603853683",
+      "resumed": true,
+      "jobActiveProcesses": 0,
+      "jobTotalProcesses": 12,
+      "jobTerminatedProcesses": 0,
+      "rootTerminal": true,
+      "rootIdentityVerified": true,
+      "terminalConfirmed": true,
+      "exitCode": 1,
+      "role": "worker",
+      "handlesClosed": true
+    }
+  ],
+  "relayJobs": [
+    {
+      "rootCreated": true,
+      "assignedBeforeResume": true,
+      "pid": 89432,
+      "threadId": 81624,
+      "processHandle": "440",
+      "createdSuspended": true,
+      "creationFiletime100ns": "134374829755663175",
+      "resumed": true,
+      "jobActiveProcesses": 0,
+      "jobTotalProcesses": 2,
+      "jobTerminatedProcesses": 0,
+      "rootTerminal": true,
+      "rootIdentityVerified": true,
+      "terminalConfirmed": true,
+      "exitCode": 0,
+      "role": "final-publisher",
+      "handlesClosed": true
+    }
+  ],
+  "payloadProcesses": [
+    {
+      "rootCreated": true,
+      "assignedBeforeResume": true,
+      "pid": 36404,
+      "threadId": 86628,
+      "processHandle": "460",
+      "createdSuspended": true,
+      "creationFiletime100ns": "134374829638119548",
+      "resumed": true,
+      "jobActiveProcesses": 0,
+      "jobTotalProcesses": 2,
+      "jobTerminatedProcesses": 0,
+      "rootTerminal": true,
+      "rootIdentityVerified": true,
+      "terminalConfirmed": true,
+      "exitCode": 0,
+      "role": "format",
+      "handlesClosed": true
+    },
+    {
+      "rootCreated": true,
+      "assignedBeforeResume": true,
+      "pid": 62880,
+      "threadId": 84208,
+      "processHandle": "588",
+      "createdSuspended": true,
+      "creationFiletime100ns": "134374829678826331",
+      "resumed": true,
+      "jobActiveProcesses": 0,
+      "jobTotalProcesses": 8,
+      "jobTerminatedProcesses": 0,
+      "rootTerminal": true,
+      "rootIdentityVerified": true,
+      "terminalConfirmed": true,
+      "exitCode": 1,
+      "role": "analysis",
+      "handlesClosed": true
+    }
+  ],
+  "gatePassed": false,
+  "formatPassed": true,
+  "analysisIssues": 31,
+  "testsRun": false,
+  "realHttpRun": false,
+  "jvmRun": false,
+  "localProofSeconds": 16.8536404,
+  "conservativeTranscriptProofSeconds": 92.852,
+  "within180": true,
+  "files": [
+    {
+      "path": "D:\\MyNewProjects\\qfli_java\\.trellis\\tasks\\10-22-offline-ide-completeness\\research\\javaee-host-gate\\runs\\20261026T100919743197Z\\outer.json",
+      "sha256": "986f6e5132ca62a9a1b9e6c07a1d120f6b6ea46a6b943c0db5b4339fd43db660"
+    },
+    {
+      "path": "D:\\MyNewProjects\\qfli_java\\.trellis\\tasks\\10-22-offline-ide-completeness\\research\\javaee-host-gate\\runs\\20261026T100919743197Z\\relay-01.json",
+      "sha256": "8cd73839e870d6cba017304f0ac847dc61ea8c1f1f143a428c7cf874507ae0ca"
+    },
+    {
+      "path": "D:\\MyNewProjects\\qfli_java\\.trellis\\tasks\\10-22-offline-ide-completeness\\research\\javaee-host-gate\\runs\\20261026T100919743197Z\\actual-outer-tool-terminal.json",
+      "sha256": "9b80603eaabb1cc0201a2025671dbd5b303139c4ca48e7859a3dcc721ff21bb5"
+    },
+    {
+      "path": "D:\\MyNewProjects\\qfli_java\\.trellis\\tasks\\10-22-offline-ide-completeness\\research\\javaee-host-gate\\runs\\20261026T100919743197Z\\actual-relay-tool-terminal.json",
+      "sha256": "54a6a9a97c15c13c1909a270a8706e4a786bd40f56ccbb166c61e54d26cd1e8e"
+    },
+    {
+      "path": "D:\\MyNewProjects\\qfli_java\\.trellis\\tasks\\10-22-offline-ide-completeness\\research\\javaee-host-gate\\runs\\20261026T100919743197Z\\root-publication-proof.json",
+      "sha256": "daedf036558624ae73af503465463a4a172d98c92f4c0c3b184ce52e8363b85e"
+    }
+  ]
+}
