@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "kind": "independent-source-review",
+  "reviewer": "sql_explorer_review",
+  "reviewDate": "2026-10-26",
+  "sources": [
+    {
+      "path": "build/current_toolchain_v3_window.py",
+      "sha256": "81a27c110360f6fe0e0f10127078574851411dd7c32a4092208c5c28cd94d96e"
+    },
+    {
+      "path": "build/current_toolchain_v3_linux.py",
+      "sha256": "017f38e1bc1d1d8f57bc62e2df45aca277beaea4130752f0f680b98a980d5041"
+    }
+  ],
+  "conclusion": "No further source blocker found in the reviewed deadline, custody, or zero-start paths.",
+  "budgetOrigin": "windows-execute-entry; the fresh coordinator grant must explicitly use this origin",
+  "findings": [
+    "Windows anchors UTC and monotonic deadlines at execute entry before imports and preflight; later checks do not rebase them.",
+    "Linux derives its local monotonic deadline from the shared absolute payload expiry and its main-entry clock snapshot.",
+    "Windows rechecks admission after output setup and Job/lease setup; Linux rechecks immediately before Popen after stdin/hash/log setup.",
+    "NO_START_ADMISSION requires that OwnedJob.start was never called; any created Job must have no root handle/PID and prove empty before close. No Linux completion or build success is fabricated.",
+    "An uncertain attempted start remains HOLD. Started Windows handles close only after matching Linux cleanup evidence and exact root-terminal/Job0; failed closes retain the individual handle.",
+    "Linux retains the unreaped leader through uncertain cleanup, requires its matching identity in the final pre-wait snapshot, and never signals or waits again after reaping.",
+    "Dependency hashes are checked before import. Preparation excludes unused V2 Linux source while preserving recipe/source bindings."
+  ],
+  "limits": [
+    "Source review only; this is not live Win32, WSL, POSIX, SDK, native build, packaged OHOS, or device proof.",
+    "Admission checks are cooperative, not atomic process-creation or hard realtime guarantees. Blocking OS calls and initial cross-OS clock skew remain unproven.",
+    "Cleanup may exceed payload/grant deadlines while retaining custody; permanent uncertainty may require root intervention.",
+    "The author-reported 12 Windows and 11 Linux pure passes were not independently rerun.",
+    "No host grant or slot release is issued by this review."
+  ],
+  "reviewActions": {
+    "sourceReads": true,
+    "sourceEdits": false,
+    "repositoryImports": false,
+    "prepare": false,
+    "wsl": false,
+    "sdk": false,
+    "processTests": false
+  }
+}

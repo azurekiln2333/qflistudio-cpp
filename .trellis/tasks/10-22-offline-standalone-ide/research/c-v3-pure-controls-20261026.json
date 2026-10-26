@@ -1,0 +1,52 @@
+{
+  "startedAt": "2026-10-26T10:06:37.384879+00:00",
+  "authority": "Pure Python fake controls only",
+  "command": "python -B - (in-process runpy suites with audit and subprocess deny guards)",
+  "independentReviewSha256": "a7cf5cd491d97735dcf4e3663f54fafc06c1e03bbb8b34e1d1f6d49f4c37d3db",
+  "sourceHashesBefore": {
+    "current_toolchain_v3_window.py": "81a27c110360f6fe0e0f10127078574851411dd7c32a4092208c5c28cd94d96e",
+    "current_toolchain_v3_linux.py": "017f38e1bc1d1d8f57bc62e2df45aca277beaea4130752f0f680b98a980d5041",
+    "current_toolchain_v3_fake_controls.py": "1289a78cea35c2c6f7dd023308eacfaa27a6048e0b86cddc988c17d87792d6fa",
+    "current_toolchain_v3_windows_fake_controls.py": "e80d4558c7258668258a954fab3a85816f8894b257389e186b2941a5417d9641"
+  },
+  "sdkExecuted": false,
+  "wslExecuted": false,
+  "prepareExecuted": false,
+  "liveWin32Executed": false,
+  "realChildExecuted": false,
+  "auditDeniedAttempts": [],
+  "suites": [
+    {
+      "file": "current_toolchain_v3_windows_fake_controls.py",
+      "command": "runpy.run_path('build/current_toolchain_v3_windows_fake_controls.py', run_name='__main__')",
+      "expectedControls": 12,
+      "observedPassLines": 12,
+      "passed": true,
+      "elapsedSeconds": 0.398056,
+      "stdoutSha256": "bd72a05ad29c15b4d0629e75ae191ae973773c3d783c2d172668573a0dc9984b",
+      "stdoutBytes": 1054,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrBytes": 0
+    },
+    {
+      "file": "current_toolchain_v3_fake_controls.py",
+      "command": "runpy.run_path('build/current_toolchain_v3_fake_controls.py', run_name='__main__')",
+      "expectedControls": 11,
+      "observedPassLines": 11,
+      "passed": true,
+      "elapsedSeconds": 0.047759,
+      "stdoutSha256": "4e486d2212aaa912d462a5ff805744c1d5444cc89ccf8963cb3a90e3d7af801d",
+      "stdoutBytes": 772,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrBytes": 0
+    }
+  ],
+  "sourceHashesAfter": {
+    "current_toolchain_v3_window.py": "81a27c110360f6fe0e0f10127078574851411dd7c32a4092208c5c28cd94d96e",
+    "current_toolchain_v3_linux.py": "017f38e1bc1d1d8f57bc62e2df45aca277beaea4130752f0f680b98a980d5041",
+    "current_toolchain_v3_fake_controls.py": "1289a78cea35c2c6f7dd023308eacfaa27a6048e0b86cddc988c17d87792d6fa",
+    "current_toolchain_v3_windows_fake_controls.py": "e80d4558c7258668258a954fab3a85816f8894b257389e186b2941a5417d9641"
+  },
+  "sourceHashesStable": true,
+  "passed": true
+}

@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "grant": 895,
+  "releaseAccepted": 904,
+  "successorGrant": 905,
+  "originalExecChunk": "8484c4",
+  "session": 71189,
+  "terminalToolChunk": "229ce0",
+  "originalTerminalTranscriptUtc": "2026-10-26T09:57:32.369Z",
+  "originalExitCode": 0,
+  "corroborationPublisherChunk": "06b0da",
+  "corroborationTerminalTranscriptUtc": "2026-10-26T09:58:19.362Z",
+  "corroborationExitCode": 0,
+  "conservativeProofSeconds": 158.018692,
+  "within180": true,
+  "validationRoot": {
+    "pid": 82672,
+    "threadId": 83464,
+    "createdSuspended": true,
+    "assignedBeforeResume": true,
+    "terminal": true,
+    "creationFiletime100ns": "134374821414952833",
+    "jobActiveProcesses": 0,
+    "exitCode": 0
+  },
+  "senderRoot": {
+    "pid": 23080,
+    "threadId": 34436,
+    "createdSuspended": true,
+    "assignedBeforeResume": true,
+    "terminal": true,
+    "creationFiletime100ns": "134374822437902519",
+    "jobActiveProcesses": 0,
+    "exitCode": 0
+  },
+  "heldJobs": 0,
+  "gate": "PASS",
+  "testPassed": 321,
+  "testSkipped": 0,
+  "hostOnly": true,
+  "coreCleanClaim": false,
+  "files": [
+    {
+      "path": "D:\\MyNewProjects\\qfli_web\\.trellis\\tasks\\10-22-standalone-offline-ide\\research\\web-app-c895-20261026-observed\\observer.json",
+      "sha256": "a0ba56504d4ea6251fa8edac4113dc4385f10dcfc9eb5e775b89dc4cffb26a7e"
+    },
+    {
+      "path": "D:\\MyNewProjects\\qfli_web\\.trellis\\tasks\\10-22-standalone-offline-ide\\research\\web-app-c895-20261026-observed\\final-sender.json",
+      "sha256": "a2840316d13a3e677cb5d3b6c0217e99bac7828d6da3ecf96fc63384d298df72"
+    },
+    {
+      "path": "D:\\MyNewProjects\\qfli_web\\.trellis\\tasks\\10-22-standalone-offline-ide\\research\\web-app-c895-20261026-relay\\wrapper.json",
+      "sha256": "8c5ebfff5b98822213201dcd5fd2037f7dca49029327f3ab2a571c655e44a4de"
+    },
+    {
+      "path": "D:\\MyNewProjects\\qfli_web\\.trellis\\tasks\\10-22-standalone-offline-ide\\research\\web-app-c895-20261026\\job.json",
+      "sha256": "766504143f713604e6a8544db584ee5e62ac25055de441e2bc6ebac1b528c683"
+    }
+  ]
+}
