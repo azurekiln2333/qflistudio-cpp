@@ -233,6 +233,65 @@ std::this_thread::sleep_for(std::chrono::milliseconds(1));return 0;}`,{extension
   }
   assert.deepEqual(await run('int main(void){return 0;}'),{code:0,out:'',err:''});
   console.log('PASS: real compiler/CPU/sleep/pre-start cancellation, destroy/GC during worker and successful fresh run');
+  async function terminal(command, argv, {cwd=project, cancelOnOutput=false} = {}) {
+    return await new Promise((resolve, reject) => {
+      let out='', err='', exits=0, cancelled=false;
+      const handle=native.create(options(event => {
+        if(event.kind==='stdout') {
+          out+=event.text;
+          if(cancelOnOutput && !cancelled && out.includes('started')) { cancelled=true; native.cancel(handle); }
+        } else if(event.kind==='stderr') err+=event.text;
+        else if(event.kind==='exit') {
+          clearTimeout(timer); assert.equal(++exits,1); verifyCleanup(); native.destroy(handle);
+          resolve({code:event.exitCode,out,err});
+        }
+      }));
+      const timer=setTimeout(()=>{native.cancel(handle);reject(Error(`terminal timed out: ${command} ${argv}`));},20000);
+      assert.equal(native.terminal(handle,project,cwd,command,argv,cache),true);
+      assert.equal(native.terminal(handle,project,cwd,command,argv,cache),false);
+    });
+  }
+  result=await terminal('clang',['--version']); assert.equal(result.code,0); assert.match(result.out,/22\.1\.0/); assert.equal(result.err,'');
+  result=await terminal('clang',['--help']); assert.equal(result.code,0); assert.match(result.out,/clang/i);
+  fs.writeFileSync(path.join(project,'preprocess.c'),'#define ANSWER 42\nint main(void){return ANSWER;}');
+  result=await terminal('clang',['-E','preprocess.c']);
+  assert.equal(result.code,0); assert.equal(result.err,''); assert.match(result.out,/int main\(void\)\{return 42;\}/);
+  assert.doesNotMatch(result.out,/#define ANSWER/);
+  fs.writeFileSync(path.join(project,'cpp-with-c-extension.c'),'#include <cstdio>\n#include <vector>\nint main(){std::vector<int> v{2,3,5};std::printf("C extension as C++=%zu\\n",v.size());}');
+  assert.deepEqual(await terminal('clang++',['-std=c++20','cpp-with-c-extension.c','-o','cpp-with-c-extension']),{code:0,out:'',err:''});
+  assert.deepEqual(await terminal('./cpp-with-c-extension',[]),{code:0,out:'C extension as C++=3\n',err:''});
+  fs.writeFileSync(path.join(project,'terminal.c'),'#include <stdio.h>\nint main(int argc,char **argv){printf("terminal-%s\\n",argc>1?argv[1]:"C");return 0;}');
+  assert.deepEqual(await terminal('clang',['-std=c17','terminal.c','-o','terminal-program']),{code:0,out:'',err:''});
+  assert.deepEqual(await terminal('./terminal-program',[]),{code:0,out:'terminal-C\n',err:''});
+  assert.deepEqual(await terminal('./terminal-program',['argument with spaces']),{code:0,out:'terminal-argument with spaces\n',err:''});
+  assert.deepEqual(await terminal('clang',['-c','terminal.c','-o','terminal.o']),{code:0,out:'',err:''});
+  assert.deepEqual(await terminal('clang',['terminal.o','-o','relinked']),{code:0,out:'',err:''});
+  assert.deepEqual(await terminal('./relinked',[]),{code:0,out:'terminal-C\n',err:''});
+  fs.writeFileSync(path.join(project,'quoted source.c'),'#ifndef VALUE\n#error missing define\n#endif\nint main(void){return VALUE;}');
+  assert.deepEqual(await terminal('clang',['-DVALUE=7','quoted source.c','-o','quoted program']),{code:0,out:'',err:''});
+  assert.deepEqual(await terminal('./quoted program',[]),{code:7,out:'',err:''});
+  fs.writeFileSync(path.join(project,'terminal.cpp'),'#include <iostream>\n#include <vector>\n#include <stdexcept>\nint main(){try{throw std::runtime_error("terminal-Cpp");}catch(const std::exception &e){std::cout<<e.what()<<"="<<std::vector<int>{2,3,5}.size()<<"\\n";}}');
+  assert.deepEqual(await terminal('clang++',['-std=c++20','terminal.cpp','-o','cpp-program']),{code:0,out:'',err:''});
+  assert.deepEqual(await terminal('./cpp-program',[]),{code:0,out:'terminal-Cpp=3\n',err:''});
+  fs.writeFileSync(path.join(project,'broken.c'),'int main(void){broken source;}');
+  result=await terminal('clang',['broken.c','-o','broken']); assert.equal(result.code,1); assert.match(result.err,/error:/);
+  assert.deepEqual(await terminal('./terminal-program',[]),{code:0,out:'terminal-C\n',err:''});
+  const subdir=path.join(project,'nested'); fs.mkdirSync(subdir);
+  fs.writeFileSync(path.join(subdir,'nested.c'),'int main(void){return 9;}');
+  assert.deepEqual(await terminal('clang',['nested.c','-o','nested-program'],{cwd:subdir}),{code:0,out:'',err:''});
+  assert.deepEqual(await terminal('./nested-program',[],{cwd:subdir}),{code:9,out:'',err:''});
+  fs.writeFileSync(path.join(project,'loop.c'),'#include <stdio.h>\nint main(void){puts("started");fflush(stdout);for(;;){}}');
+  assert.deepEqual(await terminal('clang',['loop.c','-o','loop']),{code:0,out:'',err:''});
+  result=await terminal('./loop',[],{cancelOnOutput:true}); assert.equal(result.code,130); assert.match(result.out,/started/);
+  assert.deepEqual(await terminal('./terminal-program',[]),{code:0,out:'terminal-C\n',err:''});
+  const invalidTerminal=native.create(options(()=>{}));
+  assert.equal(native.terminal(invalidTerminal,project,base,'clang',[],cache),false);
+  assert.equal(native.terminal(invalidTerminal,project,project,'sh',[],cache),false);
+  assert.equal(native.terminal(invalidTerminal,project,project,'clang',[1],cache),false);
+  fs.symlinkSync(outside,path.join(project,'escape-program'));
+  assert.equal(native.terminal(invalidTerminal,project,project,'./escape-program',[],cache),false);
+  native.destroy(invalidTerminal);
+  console.log('PASS: actual terminal version/help, preprocessing to stdout, clang++ C-extension input, C/C++/EH, object linking, argv, cwd, quoted paths/defines, diagnostics, cancel/recovery and confinement');
   await require(path.join(fixtures,'../../../native/toolchain/tests/code-analysis-regression.cjs'))(native,project,cache,sdk);
   verifyCleanup(); console.log(`PASS: ${serial} actual in-process compiler/interpreter runs; exit follows cleanup`);
 })().catch(error => { console.error(error); process.exit(1); });

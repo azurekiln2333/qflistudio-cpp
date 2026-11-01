@@ -53,6 +53,17 @@ def main():
     parser.add_argument('--sdk', type=Path, required=True)
     parser.add_argument('--report', type=Path, required=True)
     options = parser.parse_args()
+    # The native API intentionally requires absolute sandbox/resource paths.
+    # Accept ordinary CLI-relative paths here, before forwarding to that API.
+    options.compiler = options.compiler.resolve()
+    options.runtime = options.runtime.resolve()
+    options.sdk = options.sdk.resolve()
+    options.report = options.report.resolve()
+    for label, executable in [('compiler', options.compiler), ('runtime', options.runtime)]:
+        if not executable.is_file():
+            parser.error(f'{label} executable is missing: {executable}')
+    if not (options.sdk / 'share/wasi-sysroot/include/wasm32-wasip1/stdio.h').is_file():
+        parser.error(f'WASI SDK resources are missing: {options.sdk}')
     root = options.project_root.resolve()
     example_file = root / 'tool/forge_content/staging/forge_examples.json'
     tutorial_file = root / 'tool/forge_content/staging/forge_tutorials.json'
