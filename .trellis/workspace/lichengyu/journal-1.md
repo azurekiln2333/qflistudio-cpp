@@ -185,3 +185,85 @@ Replaced the blocked OHOS process toolchain with signed in-process LLVM22/WASI33
 ### Next Steps
 
 - Keep the cross-platform runtime task in progress for independent iOS and Web gates. Five matching cpp remotes are authorized for normal main push; synchronization evidence is native/build/remote-sync-20261016.json.
+
+
+## Session 5: OHOS Clang terminal and live shared UI delivered to 14 Ultra
+<!-- trellis-session: v=2 fp=e20f31bf653fa567 -->
+
+**Date**: 2026-10-17
+**Task**: OHOS Clang terminal and live shared UI delivered to 14 Ultra
+**Branch**: `main`
+
+### Summary
+
+Coordinated 3 pi agents through Herdr; fixed terminal routing, compiler archive linkage, early cancellation and stale shared-core resolution. 190 app tests, analysis, actual native and ArkTS regressions passed. 20 phone terminal cases passed; production HAP restored and ordinary terminal/editor Run Stop recovery plus About/title/My UI verified.
+
+### Main Changes
+
+- OHOS terminal compiler and program command bridge; live shared-core release dependency guard
+
+### Git Commits
+
+(No commits - planning session)
+
+### Testing
+
+- [OK] 190 application tests; 166 focused checks; actual native and ArkTS regressions; 20/20 phone cases and production UI Run Stop recovery
+
+### Status
+
+[OK] **Completed**
+
+
+## Session 6: OHOS native startup and C icon delivered
+<!-- trellis-session: v=2 fp=b8fcaffc17a50dce -->
+
+**Date**: 2026-10-17
+**Task**: OHOS native startup and C icon delivered
+**Branch**: `main`
+
+### Summary
+
+Matched JVMX ArkUI startup through deferred first frame and progress, synchronized icon resources, built and installed the signed .cpp production HAP, and captured native splash/home/About on nova 14 Ultra.
+
+### Main Changes
+
+- Three Herdr pi agents implemented native splash, Dart handshake and independent review; root integrated and verified.
+- Preserved .cpp bundle, existing projects and old .forge installation without uninstall or signing changes.
+
+### Git Commits
+
+(No commits - planning session)
+
+### Testing
+
+- [OK] Dart analysis clean; 8 focused startup tests passed; signed Hvigor HAP build and package verifier passed.
+- [OK] Device layout captured native splash Stack and Progress IDs at 100 percent, then ready home and updated About icon.
+
+### Status
+
+[OK] **Completed**
+
+
+## Session 7: OHOS HAP packaging restricted to ARM64
+<!-- trellis-session: v=2 fp=347393e23016a200 -->
+
+**Date**: 2026-10-17
+**Task**: OHOS HAP packaging restricted to ARM64
+**Branch**: `main`
+
+### Summary
+
+Moved x86_64 exclusion from symbol stripping to actual native library packaging filter; also excluded armeabi-v7a and preserved ARM64 build flags.
+
+### Git Commits
+
+(No commits - planning session)
+
+### Testing
+
+- [OK] Signed HAP rebuilt; four packaged native libraries all ELF64 AArch64, no x86_64 or armeabi-v7a paths, portable verifier passed.
+
+### Status
+
+[OK] **Completed**

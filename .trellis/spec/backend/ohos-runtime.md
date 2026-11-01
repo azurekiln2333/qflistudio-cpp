@@ -24,6 +24,7 @@ The module remains `libqfli_ohos_runner.so`:
 ```typescript
 create({toolchainRoot: string, onEvent: (event: RunnerEvent) => void}): RunnerHandle | null;
 run(handle, projectPath, entryFile, sources: string[], cacheDirectory): boolean;
+terminal(handle, projectRoot, workingDirectory, command, arguments: string[], cacheDirectory): boolean;
 cancel(handle): void;
 destroy(handle): void;
 ```
@@ -37,6 +38,10 @@ MethodChannel `qfli_forge/native` retains `start({runId,type,projectPath,entryFi
 sources?}) -> {available:boolean}` and `cancel({runId})`. EventChannel
 `qfli_forge/native/events` retains independent stdout/stderr line events and
 one terminal `{runId,kind:'exit',exitCode}`. Dart subscribes before starting.
+`terminalStart({runId,projectPath,workingDirectory,command,arguments})` uses the
+same active slot, preparation, event stream and cancellation as `start`.
+`forgeProfile.terminalCommandDelegate` selects this route on OHOS. Both Dart
+entry points share one broadcast EventChannel subscription and run-ID counter.
 
 ## 3. Contracts
 
@@ -107,6 +112,40 @@ one terminal `{runId,kind:'exit',exitCode}`. Dart subscribes before starting.
   disconnect during preparation remains accepted cancellation, terminal 130
   after preparation cleanup. Preserve diagnostics, nonzero statuses and empty
   output lines. Missing resources report unavailable without a C-only fallback.
+- Terminal compiler commands accept exactly `clang` and `clang++`, tokenize
+  quoted operands once in Dart, and preserve the sandbox cwd without `chdir`.
+  Confine source, object/archive, include and output paths to the canonical
+  sandbox root. Compile and link in process; publish explicit/default output
+  only after success. Compilation never starts the program automatically.
+  Explicit `./program` or `../program` executes an existing confined module;
+  forward argv to WASI and use cwd/input.txt for finite input. Shell pipelines,
+  redirection, chaining and globs retain the shared sandbox diagnostics.
+- A stop received while the delegate awaits toolchain preparation must reach
+  the cancel callback when `SandboxShellBackend.runStreams` attaches it.
+- Production builds use `tool/build_ohos_release.ps1`: refresh pub dependencies
+  and verify core/re_editor resolve to the live sibling sources. Never leave
+  `.dart_tool/package_config.json` pointing at an ignored shared-core snapshot.
+  Rebuild/stage compiler and runtime adapters after native API changes before
+  HAP linking; a header or NAPI call alone cannot update the static archives.
+- Package only ARM64: retain `externalNativeOptions.abiFilters: ['arm64-v8a']`
+  and Flutter `--target-platform ohos-arm64`. Use
+  `nativeLib.filter.excludes` for `**/x86_64/**` and `**/armeabi-v7a/**`
+  to exclude dependency libraries from the HAP as well. Putting these patterns
+  under `nativeLib.debugSymbol.exclude` only changes symbol stripping and does
+  not exclude them from packaging. Verify the final HAP's native library paths
+  and ELF machine types, not just the CMake build target.
+- The OHOS launch view is an ArkUI `StartupSplash` supplied through
+  `FlutterPage.splashScreenView`, following JVMX. Dart must defer its first
+  engine frame before `runApp` and release it after bootstrap and the ready
+  page's layout, including a `finally` release on failure. Progress travels
+  through `qflistudio/platform.startupProgress` to the native event hub; accept
+  only finite numbers and clamp them to 0..1. Unsubscribe when the view leaves.
+- Keep AppScope `app_icon.png`, entry `icon.png`, and Flutter
+  `assets/app_icon.png` in sync. Native resource compilation can resize PNGs,
+  so inspect packaged artwork as well as the Flutter asset hash. Check the
+  HAP bundle ID and explicitly launch it on device: changing `.forge` to
+  `.cpp` creates a separate installation, and the old launcher entry may still
+  open an earlier build. Do not uninstall an existing app to refresh its icon.
 
 ## 4. Validation & Error Matrix
 
@@ -157,6 +196,9 @@ one terminal `{runId,kind:'exit',exitCode}`. Dart subscribes before starting.
 - Phone gate: require `QFLI_C_OHOS_AUDIT` with `ok:true` from the actual owning
   app, inspect every case, and exercise ordinary editor Run/Stop. Record exact
   HAP/device/ABI/results; host and build checks do not establish phone success.
+- Terminal phone gate uses `tool/ohos_terminal_audit.dart` and requires
+  `QFLI_OHOS_TERMINAL_AUDIT` with `ok:true`. Restore the signed production
+  `lib/main.dart` HAP afterward, then verify the ordinary terminal and shared UI.
 
 ## 7. Wrong vs Correct
 

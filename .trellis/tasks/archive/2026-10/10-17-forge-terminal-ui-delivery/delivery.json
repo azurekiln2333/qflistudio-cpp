@@ -1,0 +1,375 @@
+{
+  "date": "2026-10-17",
+  "platform": "OHOS",
+  "device": {
+    "model": "nova 14 Ultra / MRT-AL10",
+    "hdc": "192.168.68.207:46551",
+    "terminalAudit": {
+      "ok": true,
+      "elapsedMs": 4248,
+      "cases": [
+        {
+          "name": "version",
+          "exitCode": 0,
+          "ms": 1414,
+          "ok": true
+        },
+        {
+          "name": "help",
+          "exitCode": 0,
+          "ms": 229,
+          "ok": true
+        },
+        {
+          "name": "compile-C",
+          "exitCode": 0,
+          "ms": 102,
+          "ok": true
+        },
+        {
+          "name": "run-C",
+          "exitCode": 0,
+          "ms": 14,
+          "ok": true
+        },
+        {
+          "name": "run-C-argv-spaces",
+          "exitCode": 0,
+          "ms": 10,
+          "ok": true
+        },
+        {
+          "name": "compile-object",
+          "exitCode": 0,
+          "ms": 18,
+          "ok": true
+        },
+        {
+          "name": "link-existing-object",
+          "exitCode": 0,
+          "ms": 48,
+          "ok": true
+        },
+        {
+          "name": "run-linked-object",
+          "exitCode": 0,
+          "ms": 20,
+          "ok": true
+        },
+        {
+          "name": "compile-Cpp",
+          "exitCode": 0,
+          "ms": 1782,
+          "ok": true
+        },
+        {
+          "name": "run-Cpp",
+          "exitCode": 0,
+          "ms": 79,
+          "ok": true
+        },
+        {
+          "name": "compile-cpp-language-on-c-source",
+          "exitCode": 0,
+          "ms": 84,
+          "ok": true
+        },
+        {
+          "name": "run-cpp-language-on-c-source",
+          "exitCode": 0,
+          "ms": 15,
+          "ok": true
+        },
+        {
+          "name": "-E-preprocess-file",
+          "exitCode": 0,
+          "ms": 23,
+          "ok": true
+        },
+        {
+          "name": "-E-preprocess-stdout",
+          "exitCode": 0,
+          "ms": 25,
+          "ok": true
+        },
+        {
+          "name": "compile-nested-cwd",
+          "exitCode": 0,
+          "ms": 99,
+          "ok": true
+        },
+        {
+          "name": "run-nested-cwd",
+          "exitCode": 0,
+          "ms": 14,
+          "ok": true
+        },
+        {
+          "name": "quoted-source-and-define",
+          "exitCode": 0,
+          "ms": 95,
+          "ok": true
+        },
+        {
+          "name": "nonzero-exit",
+          "exitCode": 7,
+          "ms": 14,
+          "ok": true
+        },
+        {
+          "name": "compile-diagnostics",
+          "exitCode": 1,
+          "ms": 27,
+          "ok": true
+        },
+        {
+          "name": "recovery",
+          "exitCode": 0,
+          "ms": 21,
+          "ok": true
+        }
+      ]
+    },
+    "terminalCases": [
+      {
+        "name": "version",
+        "command": "clang --version",
+        "cwd": "/data/storage/el2/base/haps/entry/cache/forge-terminal-audit-KTJFGP",
+        "exitCode": 0,
+        "ms": 1414,
+        "stdout": "clang version 22.1.0 (https://github.com/azurekiln2333/qflistudio-cpp.git 06b0634447a58887334d8da487db5dcf47031b0a)\nTarget: wasm32-unknown-wasip1\nThread model: posix\nInstalledDir: /data/storage/el2/base/haps/entry/files/forge-toolchain/ohos-wasi/1-1792183654537-wasi33-layout2/bin\n",
+        "stderr": "",
+        "ok": true
+      },
+      {
+        "name": "help",
+        "command": "clang --help",
+        "cwd": "/data/storage/el2/base/haps/entry/cache/forge-terminal-audit-KTJFGP",
+        "exitCode": 0,
+        "ms": 229,
+        "stdout": "OVERVIEW: clang LLVM compiler\n\nUSAGE: clang [options] file...\n\nCL.EXE COMPATIBILITY OPTIONS:\n  /?                      Display available options\n  /arch:<value>           Set architecture for code generation\n  /arm64EC                Set build target to arm64ec\n  /Brepro-                Write current time into COFF output (default)\n  /Brepro                 Do not write current time into COFF output (breaks link.exe /incremental)\n  /clang:<arg>            Pass <arg> to the clang driver\n  /C                      Do not discard comments when preprocessing\n  /c                      Compile only\n  /d1PP                   Retain macro definitions in /E mode\n  /d1reportAllClassLayout Dump record layout information\n  /d2epilogunwindrequirev2\n                          Require generation of unwind v2 (epilog) information for x64 Windows\n  /d2epilogunwind         Best effort generate unwind v2 (ep",
+        "stderr": "",
+        "ok": true
+      },
+      {
+        "name": "compile-C",
+        "command": "clang -std=c17 hello.c -o hello",
+        "cwd": "/data/storage/el2/base/haps/entry/cache/forge-terminal-audit-KTJFGP",
+        "exitCode": 0,
+        "ms": 102,
+        "stdout": "",
+        "stderr": "",
+        "ok": true
+      },
+      {
+        "name": "run-C",
+        "command": "./hello",
+        "cwd": "/data/storage/el2/base/haps/entry/cache/forge-terminal-audit-KTJFGP",
+        "exitCode": 0,
+        "ms": 14,
+        "stdout": "terminal-C-ok argc=1\n",
+        "stderr": "",
+        "ok": true
+      },
+      {
+        "name": "run-C-argv-spaces",
+        "command": "./hello \"one two\" three",
+        "cwd": "/data/storage/el2/base/haps/entry/cache/forge-terminal-audit-KTJFGP",
+        "exitCode": 0,
+        "ms": 10,
+        "stdout": "terminal-C-ok argc=3\n",
+        "stderr": "",
+        "ok": true
+      },
+      {
+        "name": "compile-object",
+        "command": "clang -c hello.c -o hello.o",
+        "cwd": "/data/storage/el2/base/haps/entry/cache/forge-terminal-audit-KTJFGP",
+        "exitCode": 0,
+        "ms": 18,
+        "stdout": "",
+        "stderr": "",
+        "ok": true
+      },
+      {
+        "name": "link-existing-object",
+        "command": "clang hello.o -o relinked",
+        "cwd": "/data/storage/el2/base/haps/entry/cache/forge-terminal-audit-KTJFGP",
+        "exitCode": 0,
+        "ms": 48,
+        "stdout": "",
+        "stderr": "",
+        "ok": true
+      },
+      {
+        "name": "run-linked-object",
+        "command": "./relinked",
+        "cwd": "/data/storage/el2/base/haps/entry/cache/forge-terminal-audit-KTJFGP",
+        "exitCode": 0,
+        "ms": 20,
+        "stdout": "terminal-C-ok argc=1\n",
+        "stderr": "",
+        "ok": true
+      },
+      {
+        "name": "compile-Cpp",
+        "command": "clang++ -std=c++20 hello.cpp -o cpp-program",
+        "cwd": "/data/storage/el2/base/haps/entry/cache/forge-terminal-audit-KTJFGP",
+        "exitCode": 0,
+        "ms": 1782,
+        "stdout": "",
+        "stderr": "",
+        "ok": true
+      },
+      {
+        "name": "run-Cpp",
+        "command": "./cpp-program",
+        "cwd": "/data/storage/el2/base/haps/entry/cache/forge-terminal-audit-KTJFGP",
+        "exitCode": 0,
+        "ms": 79,
+        "stdout": "terminal-Cpp-ok=3\n",
+        "stderr": "",
+        "ok": true
+      },
+      {
+        "name": "compile-cpp-language-on-c-source",
+        "command": "clang++ -std=c++20 forced.cpp.c -o forced-cpp",
+        "cwd": "/data/storage/el2/base/haps/entry/cache/forge-terminal-audit-KTJFGP",
+        "exitCode": 0,
+        "ms": 84,
+        "stdout": "",
+        "stderr": "",
+        "ok": true
+      },
+      {
+        "name": "run-cpp-language-on-c-source",
+        "command": "./forced-cpp",
+        "cwd": "/data/storage/el2/base/haps/entry/cache/forge-terminal-audit-KTJFGP",
+        "exitCode": 0,
+        "ms": 15,
+        "stdout": "",
+        "stderr": "",
+        "ok": true
+      },
+      {
+        "name": "-E-preprocess-file",
+        "command": "clang -E pp.c -o pp.i",
+        "cwd": "/data/storage/el2/base/haps/entry/cache/forge-terminal-audit-KTJFGP",
+        "exitCode": 0,
+        "ms": 23,
+        "stdout": "",
+        "stderr": "",
+        "ok": true
+      },
+      {
+        "name": "-E-preprocess-stdout",
+        "command": "clang -E pp.c",
+        "cwd": "/data/storage/el2/base/haps/entry/cache/forge-terminal-audit-KTJFGP",
+        "exitCode": 0,
+        "ms": 25,
+        "stdout": "# 1 \"/data/storage/el2/base/haps/entry/cache/forge-terminal-audit-KTJFGP/pp.c\"\n# 1 \"<built-in>\" 1\n# 1 \"<built-in>\" 3\n# 380 \"<built-in>\" 3\n# 1 \"<command line>\" 1\n# 1 \"<built-in>\" 2\n# 1 \"/data/storage/el2/base/haps/entry/cache/forge-terminal-audit-KTJFGP/pp.c\" 2\n\nint pp_value = 4242;\n",
+        "stderr": "",
+        "ok": true
+      },
+      {
+        "name": "compile-nested-cwd",
+        "command": "clang -std=c17 nested.c -o nested-program",
+        "cwd": "/data/storage/el2/base/haps/entry/cache/forge-terminal-audit-KTJFGP/nested",
+        "exitCode": 0,
+        "ms": 99,
+        "stdout": "",
+        "stderr": "",
+        "ok": true
+      },
+      {
+        "name": "run-nested-cwd",
+        "command": "./nested-program",
+        "cwd": "/data/storage/el2/base/haps/entry/cache/forge-terminal-audit-KTJFGP/nested",
+        "exitCode": 0,
+        "ms": 14,
+        "stdout": "nested-cwd-ok\n",
+        "stderr": "",
+        "ok": true
+      },
+      {
+        "name": "quoted-source-and-define",
+        "command": "clang -DVALUE=7 \"quote name.c\" -o \"quote program\"",
+        "cwd": "/data/storage/el2/base/haps/entry/cache/forge-terminal-audit-KTJFGP",
+        "exitCode": 0,
+        "ms": 95,
+        "stdout": "",
+        "stderr": "",
+        "ok": true
+      },
+      {
+        "name": "nonzero-exit",
+        "command": "./\"quote program\"",
+        "cwd": "/data/storage/el2/base/haps/entry/cache/forge-terminal-audit-KTJFGP",
+        "exitCode": 7,
+        "ms": 14,
+        "stdout": "",
+        "stderr": "",
+        "ok": true
+      },
+      {
+        "name": "compile-diagnostics",
+        "command": "clang broken.c -o broken",
+        "cwd": "/data/storage/el2/base/haps/entry/cache/forge-terminal-audit-KTJFGP",
+        "exitCode": 1,
+        "ms": 27,
+        "stdout": "",
+        "stderr": "/data/storage/el2/base/haps/entry/cache/forge-terminal-audit-KTJFGP/broken.c:1:18: error: use of undeclared identifier 'broken'\n    1 | int main(void) { broken source; }\n      |                  ^~~~~~\n1 error generated.\n",
+        "ok": true
+      },
+      {
+        "name": "recovery",
+        "command": "./hello",
+        "cwd": "/data/storage/el2/base/haps/entry/cache/forge-terminal-audit-KTJFGP",
+        "exitCode": 0,
+        "ms": 21,
+        "stdout": "terminal-C-ok argc=1\n",
+        "stderr": "",
+        "ok": true
+      }
+    ],
+    "productionInstalledWithReplace": true,
+    "productionPid": 58103,
+    "ordinaryTerminalVersion": "clang version 22.1.0",
+    "editorRunOutput": "Hello, QFLIStudio+!",
+    "editorStopExitCode": 130,
+    "editorRecoveryOutput": "Hello, QFLIStudio+!",
+    "uiVerified": [
+      "home primary title",
+      "tools primary title",
+      "tutorials primary title",
+      "examples primary title",
+      "profile primary title 我的",
+      "About branding and C/C++ description",
+      "About QQ feedback group 694120628 and copy action"
+    ]
+  },
+  "bundle": "com.azurekiln.qfli.forge",
+  "entry": "lib/main.dart",
+  "coreCommit": "183865fcff8884f395350de219e604b8040ac082",
+  "coreResolution": "../qfli_studio_core",
+  "hap": "D:\\MyNewProjects\\qfli_c\\build\\ohos\\hap\\entry-default-signed.hap",
+  "hapSha256": "7c527c571ce26c8308f4cf95b52407379ffa7c7e0299c46c750a048567dbd9a7",
+  "hapBytes": 151020498,
+  "runnerSha256": "cde3ce8fd0a65c884a06ea45829f1c381246d29049a4db2515a274ae64e7763d",
+  "herdrWorkers": {
+    "forge-native": "w6:p4",
+    "forge-terminal": "w6:p5",
+    "forge-core": "w6:p7"
+  },
+  "checks": {
+    "applicationTests": 190,
+    "analysis": "No issues found",
+    "focusedCoreAndAppTests": 166,
+    "arktsRegression": true,
+    "actualHostNativeRegression": true,
+    "devEcoHvigorAssembleHap": true,
+    "releasePackageVerification": true
+  },
+  "remaining": [],
+  "committed": false
+}

@@ -1,0 +1,64 @@
+{
+  "date": "2026-10-17",
+  "artifact": {
+    "hap": "build\\ohos\\hap\\entry-default-signed.hap",
+    "size": 151351928,
+    "sha256": "450dc25834cbd99565f8a874d9d358bb645d92f07b61f0bda3d5cb4997edc689",
+    "icons": {
+      "resources/base/media/app_icon.png": {
+        "size": 110400,
+        "dimensions": [
+          512,
+          512
+        ],
+        "sha256": "2818a1ad060ceab5f2f55bc311ebccbab1a106aa4697169e2e531539777948dd"
+      },
+      "resources/base/media/icon.png": {
+        "size": 110400,
+        "dimensions": [
+          512,
+          512
+        ],
+        "sha256": "2818a1ad060ceab5f2f55bc311ebccbab1a106aa4697169e2e531539777948dd"
+      },
+      "resources/rawfile/flutter_assets/assets/app_icon.png": {
+        "size": 265026,
+        "dimensions": [
+          1024,
+          1024
+        ],
+        "sha256": "daee6bd062dce7370e320c33c1e2641656d996c5b2e702940cc821c5d23190dd"
+      }
+    },
+    "bundle": "com.azurekiln.qfli.cpp",
+    "versionCode": 1,
+    "nativeRunnerSha256": "cde3ce8fd0a65c884a06ea45829f1c381246d29049a4db2515a274ae64e7763d"
+  },
+  "device": {
+    "name": "com.azurekiln.qfli.cpp",
+    "versionCode": 1,
+    "versionName": "1.0.0",
+    "installTime": 1792184955535,
+    "updateTime": 1792215078123,
+    "pid": "50882"
+  },
+  "validation": {
+    "dartAnalysis": "passed",
+    "startupTests": 8,
+    "signedHapBuild": "passed",
+    "portablePackageVerification": "passed",
+    "installReplacement": "passed",
+    "nativeSplashVisible": true,
+    "nativeProgress": 100,
+    "readyHomeVisible": true,
+    "aboutNewIcon": "visually verified",
+    "existingProjects": [
+      "Demo",
+      "Demo2",
+      "Demo3",
+      "HelloWorld"
+    ],
+    "oldForgeBundleRetained": true
+  },
+  "evidence": "native\\build\\forge-startup-device-20261017"
+}
