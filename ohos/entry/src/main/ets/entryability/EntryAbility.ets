@@ -20,6 +20,8 @@ const CHANNEL_PLATFORM = 'qflistudio/platform';
 const CHANNEL_HUAWEI = 'qflistudio/huawei_account';
 // Standalone C/C++ keeps platform integration local.
 const OFFLINE_ONLY = true;
+// 原生启动遮罩（pages/Index.ets 的 StartupSplash）订阅的进度广播事件名。
+const EVENT_STARTUP_PROGRESS = 'EVENT_STARTUP_PROGRESS';
 
 export default class EntryAbility extends FlutterAbility {
   onWindowStageCreate(windowStage: window.WindowStage): void {
@@ -78,6 +80,20 @@ export default class EntryAbility extends FlutterAbility {
           router.pushUrl({ url: 'pages/AgreementReader', params: { url, title } })
             .then(() => result.success(null))
             .catch((err: BusinessError) => result.error('AGREEMENT_OPEN_FAILED', `${err.code}: ${err.message}`, null));
+        } else if (call.method === 'startupProgress') {
+          // Dart 上报的初始化进度（0..1）。只接受有限数值，越界值收敛到
+          // [0,1]，然后在原生遮罩的 eventHub 上广播，遮罩进度条据此前进。
+          // 遮罩消失后事件无人订阅，属正常情况，仍然回 success。
+          const progress = call.argument('progress') as number;
+          if (typeof progress === 'number' && Number.isFinite(progress)) {
+            abilityContext.eventHub.emit(
+              EVENT_STARTUP_PROGRESS,
+              Math.max(0, Math.min(1, progress)),
+            );
+            result.success(null);
+          } else {
+            result.error('INVALID_PROGRESS', 'Startup progress must be a finite number', null);
+          }
         } else if (call.method === 'openUrl') {
           const url = call.argument('url') as string;
           const want: Want = {
