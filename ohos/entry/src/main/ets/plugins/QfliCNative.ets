@@ -470,11 +470,57 @@ function analyzeStart(call: MethodCall, result: MethodResult, context: common.Co
     qfliRunner.analyze(handle, projectPath, activeFile, language === 'cpp', documents, context.cacheDir) as boolean);
 }
 
+/** Run one explicit terminal command through the shared signed backend. */
+function terminalStart(call: MethodCall, result: MethodResult, context: common.Context): void {
+  const runId = call.argument('runId') as string | undefined;
+  const projectPath = call.argument('projectPath') as string | undefined;
+  const workingDirectory = call.argument('workingDirectory') as string | undefined;
+  const command = call.argument('command') as string | undefined;
+  const rawArguments = call.argument('arguments') as string[] | null;
+
+  if (
+    typeof runId !== 'string' || runId.length === 0 ||
+    typeof projectPath !== 'string' || !projectPath.startsWith('/') || projectPath.indexOf('\0') >= 0 ||
+    typeof workingDirectory !== 'string' || !workingDirectory.startsWith('/') || workingDirectory.indexOf('\0') >= 0 ||
+    typeof command !== 'string' || command.length === 0 || command.indexOf('\0') >= 0
+  ) {
+    result.error('invalid_run', '终端命令参数不完整。', null);
+    return;
+  }
+
+  if (!Array.isArray(rawArguments)) {
+    result.error('invalid_run', '终端命令参数列表无效。', null);
+    return;
+  }
+  const arguments_: string[] = [];
+  for (const argument of rawArguments) {
+    if (typeof argument !== 'string' || argument.indexOf('\0') >= 0) {
+      result.error('invalid_run', '终端命令参数无效。', null);
+      return;
+    }
+    arguments_.push(argument);
+  }
+
+  if (eventSink === null) {
+    result.error('missing_listener', '编译运行输出通道未连接。', null);
+    return;
+  }
+  if (activeRun !== null) {
+    result.error('runner_busy', '已有程序正在编译或运行。', null);
+    return;
+  }
+
+  const run = new ActiveRun(runId);
+  activeRun = run;
+  startAfterPrepare(run, result, context, (handle: RunnerHandle) =>
+    qfliRunner.terminal(handle, projectPath, workingDirectory, command, arguments_, context.cacheDir) as boolean);
+}
+
 /**
  * 抢占一次运行，等待工具链准备/创建句柄后再执行 [launch]。
  *
  * [launch] 拿到的句柄已经被记录在 [run] 上，因此取消路径无需区分 start 与
- * analyzeStart：两者共享同一套事件、exit 和 destroy 收尾。
+ * terminalStart：两者共享同一套事件、exit 和 destroy 收尾。
  */
 async function startAfterPrepare(
   run: ActiveRun,
@@ -600,6 +646,10 @@ export function registerQfliNativeChannel(
     onMethodCall(call: MethodCall, result: MethodResult): void {
       if (call.method === 'start') {
         start(call, result, context);
+        return;
+      }
+      if (call.method === 'terminalStart') {
+        terminalStart(call, result, context);
         return;
       }
       if (call.method === 'analyzeStart') {

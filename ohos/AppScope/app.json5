@@ -1,6 +1,6 @@
 {
   "app": {
-    "bundleName": "com.azurekiln.qfli.forge",
+    "bundleName": "com.azurekiln.qfli.cpp",
     "vendor": "example",
     "versionCode": 1000000,
     "versionName": "1.0.0",

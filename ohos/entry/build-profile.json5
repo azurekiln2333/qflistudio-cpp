@@ -3,6 +3,13 @@
   "apiType": 'stageMode',
   "buildOption": {
     "nativeLib": {
+      "filter": {
+        // Package only ARM64, including native libraries supplied by HAR dependencies.
+        "excludes": [
+          "**/x86_64/**",
+          "**/armeabi-v7a/**"
+        ]
+      },
       "debugSymbol": {
         "strip": true,
         // Preserve the SDK runtime library used by the packaged static adapters.

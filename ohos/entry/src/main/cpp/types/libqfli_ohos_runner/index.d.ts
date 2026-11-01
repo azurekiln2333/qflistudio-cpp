@@ -29,6 +29,13 @@ interface QfliOhosRunner {
   /** Syntax/type-check exact unsaved buffers; emits structured UTF-8 byte ranges. */
   analyze(handle: RunnerHandle, projectPath: string, activeFile: string,
     isCpp: boolean, documents: AnalysisDocument[], cacheDirectory: string): boolean;
+  /**
+   * Runs one explicit terminal command (clang/clang++ or ./program) through the
+   * same signed compiler/interpreter session as run, but with an argv instead
+   * of project source discovery. Returns false when the command is rejected.
+   */
+  terminal(handle: RunnerHandle, projectRoot: string, workingDirectory: string,
+    command: string, arguments: string[], cacheDirectory: string): boolean;
   cancel(handle: RunnerHandle): void;
   destroy(handle: RunnerHandle): void;
 }
