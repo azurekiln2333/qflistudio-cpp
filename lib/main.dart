@@ -13,9 +13,11 @@ import 'package:qfli_studio_core/store/settings_store.dart';
 
 import 'forge_runner.dart';
 import 'forge_code_analyzer.dart';
+import 'forge_terminal.dart';
 import 'forge_content_repository.dart';
 import 'forge_tools_page.dart';
 import 'android_startup.dart';
+import 'ohos_startup.dart';
 
 /// 本 App 的产品名。窗口标题、任务切换器和应用内顶栏都读它。
 const String _appTitle = StudioProductCatalog.forge;
@@ -30,6 +32,9 @@ final StudioProfile forgeProfile = StudioProfile(
   templates: [ProjectTemplate.empty, ProjectTemplate.c, ProjectTemplate.cpp],
   runner: ForgeProgramRunner(),
   codeAnalyzer: ForgeCodeAnalyzer(),
+  // 终端里显式的 clang/clang++ 命令与已编译程序走同一条签名原生桥，
+  // 桌面端仍由真实 shell 接管（delegate 返回 false）。
+  terminalCommandDelegate: forgeTerminalCommandDelegate,
   toolsPageBuilder: (_) => const ForgeToolsPage(),
   toolsTabBuilder: (_, onOpenTerminal) =>
       ForgeToolsBody(onOpenTerminal: onOpenTerminal),
@@ -48,10 +53,17 @@ final StudioProfile cProfile = forgeProfile;
 
 void main() async {
   final binding = WidgetsFlutterBinding.ensureInitialized();
-  final startup = !kIsWeb && defaultTargetPlatform == TargetPlatform.android
+  // OHOS holds its native ArkUI splash until the home page is laid out; Android
+  // keeps its own loading layer. Other platforms hold nothing.
+  final androidStartup =
+      !kIsWeb && defaultTargetPlatform == TargetPlatform.android
       ? AndroidStartup(binding: binding)
       : null;
-  startup?.holdFirstFrame();
+  final ohosStartup = !kIsWeb && defaultTargetPlatform.name == 'ohos'
+      ? OhosStartup(binding: binding)
+      : null;
+  androidStartup?.holdFirstFrame();
+  ohosStartup?.holdFirstFrame();
 
   // 在 runApp 之前定档。
   StudioProfile.current = cProfile;
@@ -62,7 +74,7 @@ void main() async {
   final ready = ValueNotifier<bool>(false);
   // 先 runApp 品牌启动页（与原生遮罩同色，无白屏），数据后台并行加载。
   runApp(QfliApp(store: store, auth: auth, settings: settings, ready: ready));
-  // 首轮布局后再做磁盘/插件初始化；Android 首帧仍由原生启动层等待。
+  // 首轮布局后再做磁盘/插件初始化；Android 与 OHOS 的首帧仍由原生启动层等待。
   binding.addPostFrameCallback((_) {
     Future<void> load(ValueChanged<double>? onProgress) => AppBootstrap.run(
       store: store,
@@ -71,6 +83,12 @@ void main() async {
       ready: ready,
       onProgress: onProgress,
     );
-    unawaited(startup == null ? load(null) : startup.complete(load));
+    if (ohosStartup != null) {
+      unawaited(ohosStartup.complete(load));
+    } else {
+      unawaited(
+        androidStartup == null ? load(null) : androidStartup.complete(load),
+      );
+    }
   });
 }
