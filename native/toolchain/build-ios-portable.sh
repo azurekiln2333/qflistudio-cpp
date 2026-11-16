@@ -64,6 +64,9 @@ set_ios_toolchain() {
   libtool="$(xcrun --sdk "$platform" --find libtool)"
   common=(
     -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_SYSTEM_NAME=iOS
+    # LLVM's auxiliary tool targets are command-line tools, not app bundles.
+    # iOS CMake defaults to bundles and otherwise rejects LLVM install rules.
+    -DCMAKE_MACOSX_BUNDLE=OFF
     "-DCMAKE_SYSTEM_PROCESSOR=$arch"
     "-DCMAKE_OSX_SYSROOT=$sdk_path" "-DCMAKE_OSX_ARCHITECTURES=$arch"
     -DCMAKE_OSX_DEPLOYMENT_TARGET=13.0 -DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY
@@ -83,7 +86,12 @@ cmake_minimum_required(VERSION 3.24)
 project(qfli_ios_archive_preflight LANGUAGES C CXX)
 add_library(qfli_ios_preflight STATIC check.c check.cpp)
 target_compile_features(qfli_ios_preflight PRIVATE cxx_std_17)
+# LLVM declares auxiliary CLI install rules even in a libraries-only build.
+# Configuring this excluded target catches accidental iOS bundle defaults.
+add_executable(qfli_ios_auxiliary EXCLUDE_FROM_ALL main.c)
+install(TARGETS qfli_ios_auxiliary RUNTIME DESTINATION bin)
 CMAKE
+printf '%s\n' 'int main(void) { return 0; }' > "$preflight_source/main.c"
 printf '%s\n' '#include <stddef.h>' 'int qfli_preflight_c(void) { return sizeof(size_t); }' > "$preflight_source/check.c"
 printf '%s\n' '#include <vector>' '#include <stdexcept>' \
   'extern "C" int qfli_preflight_cpp(void) { return std::vector<int>{1, 2}.at(0); }' > "$preflight_source/check.cpp"
@@ -243,15 +251,8 @@ for platform in "${platforms[@]}"; do
     directory="$build_root/$platform-$arch"
     mkdir -p "$directory"
     set_ios_toolchain "$platform" "$arch"
-    cmake -S "$repo_root/native/compiler" -B "$directory/compiler" "${common[@]}" \
-      "-DFETCHCONTENT_SOURCE_DIR_LLVM22=$llvm_source" \
-      "-DLLVM_TABLEGEN=$host_bin/llvm-tblgen" "-DLLVM_MIN_TBLGEN=$host_bin/llvm-min-tblgen" \
-      "-DCLANG_TABLEGEN=$host_bin/clang-tblgen" \
-      "-DLLVM_NATIVE_TOOL_DIR=$host_bin" -DLLVM_HOST_TRIPLE="$arch-apple-darwin" \
-      -DLLVM_BUILD_LLVM_DYLIB=OFF -DLLVM_LINK_LLVM_DYLIB=OFF \
-      -DLLVM_ENABLE_TERMINFO=OFF -DLLVM_ENABLE_BACKTRACES=OFF -DLLVM_ENABLE_LIBEDIT=OFF \
-      -DLLVM_ENABLE_ZLIB=OFF -DLLVM_ENABLE_ZSTD=OFF -DQFLI_BUILD_COMPILER_TESTS=OFF
-    cmake --build "$directory/compiler" --target qfli_compiler --parallel "$jobs"
+    # The interpreter has no LLVM build dependency. Validate its Apple target
+    # before spending time compiling the much larger LLVM/Clang libraries.
     cmake -S "$repo_root/native/portable" -B "$directory/runtime" "${common[@]}" \
       "-DFETCHCONTENT_SOURCE_DIR_WASMEDGE=$wasmedge_source" \
       "-DFETCHCONTENT_SOURCE_DIR_FMT=$fmt_source" \
@@ -264,6 +265,15 @@ for platform in "${platforms[@]}"; do
     grep -q '^WASMEDGE_USE_LLVM:BOOL=OFF$' "$directory/runtime/CMakeCache.txt" || {
       echo 'Wasm interpreter must have LLVM/JIT disabled' >&2; exit 1;
     }
+    cmake -S "$repo_root/native/compiler" -B "$directory/compiler" "${common[@]}" \
+      "-DFETCHCONTENT_SOURCE_DIR_LLVM22=$llvm_source" \
+      "-DLLVM_TABLEGEN=$host_bin/llvm-tblgen" "-DLLVM_MIN_TBLGEN=$host_bin/llvm-min-tblgen" \
+      "-DCLANG_TABLEGEN=$host_bin/clang-tblgen" \
+      "-DLLVM_NATIVE_TOOL_DIR=$host_bin" -DLLVM_HOST_TRIPLE="$arch-apple-darwin" \
+      -DLLVM_BUILD_LLVM_DYLIB=OFF -DLLVM_LINK_LLVM_DYLIB=OFF \
+      -DLLVM_ENABLE_TERMINFO=OFF -DLLVM_ENABLE_BACKTRACES=OFF -DLLVM_ENABLE_LIBEDIT=OFF \
+      -DLLVM_ENABLE_ZLIB=OFF -DLLVM_ENABLE_ZSTD=OFF -DQFLI_BUILD_COMPILER_TESTS=OFF
+    cmake --build "$directory/compiler" --target qfli_compiler --parallel "$jobs"
     libraries=("$directory/compiler/libqfli_compiler.a"
       "$directory/compiler/_deps/llvm22-build/lib/"*.a
       "$directory/runtime/libqfli_wasm.a"

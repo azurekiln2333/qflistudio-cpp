@@ -1,0 +1,40 @@
+{
+  "recordedLocalDate": "2026-11-17",
+  "runner": {
+    "label": "macos-15-intel",
+    "xcode": "16.4 (16F6)",
+    "iosSdk": "18.5",
+    "cmake": "4.4.2",
+    "python": "3.14.7"
+  },
+  "failures": [
+    {
+      "runId": 43940966765,
+      "jobId": 133558036225,
+      "phase": "Target CMake compiler ABI probe, after successful host TableGen build",
+      "error": "Apple libtool was invoked with ar qc arguments and reported no output file specified",
+      "cause": "CMAKE_C_CREATE_STATIC_LIBRARY provided to the outer configure was not propagated to try_compile",
+      "fix": "Use ios-libtool.cmake through CMAKE_USER_MAKE_RULES_OVERRIDE and run a C/C++ archive preflight before dependency downloads",
+      "verifiedByNextRun": true
+    },
+    {
+      "runId": 43944200018,
+      "jobId": 133569374801,
+      "phase": "Target LLVM CMake configuration, after successful archive preflight and host TableGen build",
+      "error": "install TARGETS given no BUNDLE DESTINATION for MACOSX_BUNDLE executable target llvm-tblgen (also lld and Clang CLI targets)",
+      "cause": "CMake's iOS platform defaults CMAKE_MACOSX_BUNDLE to ON, but LLVM auxiliary command-line targets use RUNTIME install destinations",
+      "fix": "Set CMAKE_MACOSX_BUNDLE=OFF for native dependency builds and include an excluded CLI install target in the early preflight",
+      "localLog": "native/build/ci-tools/ios-sim-x64-bundle-failure.log",
+      "verifiedByNextRun": false,
+      "localContractValidation": {
+        "platform": "Windows CMake with APPLE target classification enabled, LANGUAGES NONE",
+        "operation": "Configure an excluded executable with RUNTIME-only install rule; no compiler, Apple SDK, or build was invoked",
+        "bundleOnExitCode": 1,
+        "bundleOnError": "install TARGETS given no BUNDLE DESTINATION for MACOSX_BUNDLE executable target auxiliary",
+        "bundleOffExitCode": 0
+      }
+    }
+  ],
+  "runtimeBuildOrder": "Build the independent WasmEdge interpreter before target LLVM/Clang libraries to expose Apple runtime failures sooner",
+  "appExecutionVerified": false
+}

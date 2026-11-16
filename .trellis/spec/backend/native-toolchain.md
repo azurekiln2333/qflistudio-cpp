@@ -139,7 +139,12 @@ actual application process before changing the capability declaration.
   archive recipe, not GNU ar flags. Pass `ios-libtool.cmake` through
   CMAKE_USER_MAKE_RULES_OVERRIDE so nested try_compile projects inherit it.
   Run a small C/C++ target archive preflight before downloads or host TableGen.
+  Set CMAKE_MACOSX_BUNDLE=OFF for native dependencies. LLVM auxiliary tools
+  use RUNTIME install destinations, which reject the iOS bundle default.
+  Include an excluded executable with that install rule in the preflight.
   Disable WasmEdge LTO for published archives.
+- Build the iOS WasmEdge interpreter before the target LLVM libraries. It has
+  no LLVM dependency, so Apple runtime failures can be caught earlier.
 - iOS slice identity includes source commit, SDK, dependencies, patches, headers
   and resources. Reject mismatched or duplicate slices before assembly.
 - CI exports must match the current adapter interfaces. When using a publishing
