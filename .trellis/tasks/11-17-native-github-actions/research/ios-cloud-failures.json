@@ -32,9 +32,39 @@
         "bundleOnExitCode": 1,
         "bundleOnError": "install TARGETS given no BUNDLE DESTINATION for MACOSX_BUNDLE executable target auxiliary",
         "bundleOffExitCode": 0
-      }
+      },
+      "verifiedScope": "Run 43948687527 passed the CLI install preflight and runtime CMake configure. Target LLVM configure was not reached because runtime Ninja parsing failed."
+    },
+    {
+      "runId": 43948687527,
+      "jobIds": [
+        133585085445,
+        133585085815
+      ],
+      "phase": "Ninja parsing after successful runtime CMake configure/generate, before target LLVM configuration",
+      "error": "ninja: error: build.ninja:540: unknown pool name 'link'",
+      "cause": "Pinned WasmEdge cmake/Helper.cmake sets CMAKE_JOB_POOLS and CMAKE_JOB_POOL_LINK in its dependency directory for Release + Ninja. Ninja pool declarations are generated from the root scope, where this pool was absent. LLVM_PARALLEL_LINK_JOBS was unused and did not cause the failure.",
+      "fix": "Pass CMAKE_JOB_POOLS=link=1 at the iOS runtime root configure. Build runtime before lazy one-time host TableGen and target LLVM builds.",
+      "localLogs": [
+        "native/build/ci-tools/ios-device-runtime-failure.log",
+        "native/build/ci-tools/ios-sim-x64-pool-failure.log"
+      ],
+      "localContractValidation": {
+        "operation": "LANGUAGES NONE CMake parent with dependency-scoped CMAKE_JOB_POOLS=link=2 and CMAKE_JOB_POOL_LINK=link, followed by Ninja -n auxiliary",
+        "rootPoolAbsent": {
+          "configureExitCode": 0,
+          "ninjaDryRunExitCode": 1,
+          "error": "unknown pool name 'link'"
+        },
+        "rootPoolDefined": {
+          "configureExitCode": 0,
+          "ninjaDryRunExitCode": 0
+        },
+        "nativeCompilerOrAppleSdkInvoked": false
+      },
+      "verifiedByNextRun": false
     }
   ],
-  "runtimeBuildOrder": "Build the independent WasmEdge interpreter before target LLVM/Clang libraries to expose Apple runtime failures sooner",
+  "runtimeBuildOrder": "Build the independent WasmEdge interpreter before host TableGen and target LLVM/Clang libraries; create and verify host tools once only after the first runtime succeeds.",
   "appExecutionVerified": false
 }

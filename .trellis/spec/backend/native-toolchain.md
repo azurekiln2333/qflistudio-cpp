@@ -143,8 +143,11 @@ actual application process before changing the capability declaration.
   use RUNTIME install destinations, which reject the iOS bundle default.
   Include an excluded executable with that install rule in the preflight.
   Disable WasmEdge LTO for published archives.
-- Build the iOS WasmEdge interpreter before the target LLVM libraries. It has
-  no LLVM dependency, so Apple runtime failures can be caught earlier.
+- Build the iOS WasmEdge interpreter before host TableGen and target LLVM
+  libraries. It has no LLVM dependency, so Apple runtime failures surface first.
+  Define `CMAKE_JOB_POOLS=link=1` in its root configure. WasmEdge sets the
+  link pool name inside a dependency directory, which alone does not emit the
+  Ninja pool declaration. Validate this with a Ninja dry run, not only CMake.
 - iOS slice identity includes source commit, SDK, dependencies, patches, headers
   and resources. Reject mismatched or duplicate slices before assembly.
 - CI exports must match the current adapter interfaces. When using a publishing
