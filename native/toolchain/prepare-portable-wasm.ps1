@@ -1,7 +1,8 @@
 [CmdletBinding()]
 param(
     [string]$DownloadDirectory,
-    [switch]$IncludeCompiler
+    [switch]$IncludeCompiler,
+    [switch]$ArchivesOnly
 )
 
 $ErrorActionPreference = 'Stop'
@@ -38,9 +39,9 @@ foreach ($name in $names) {
     if ($hash -ne $dependency.sha256) {
         throw "Checksum mismatch in existing archive: $archive"
     }
-    if (!(Test-Path -LiteralPath $source -PathType Container)) {
+    if (-not $ArchivesOnly -and !(Test-Path -LiteralPath $source -PathType Container)) {
         & $tar -xzf $archive -C $DownloadDirectory
         if ($LASTEXITCODE -ne 0) { throw "Extraction failed: $archive" }
     }
-    Write-Host "Verified $name : $source"
+    Write-Host "Verified $name : $archive"
 }

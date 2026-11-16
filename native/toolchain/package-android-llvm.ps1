@@ -3,6 +3,7 @@ param(
     [string]$AndroidSdk = 'D:/ProgramData/Android/Sdk',
     [ValidateSet('27.0.12077973')]
     [string]$NdkVersion = '27.0.12077973',
+    [string]$NdkDirectory,
     [Parameter(Mandatory = $true)]
     [string]$TargetBuildDirectory,
     [ValidateSet('arm64-v8a', 'x86_64')]
@@ -24,12 +25,22 @@ if (-not $SourceDirectory) { $SourceDirectory = Join-Path $PSScriptRoot '../buil
 $TargetBuildDirectory = [IO.Path]::GetFullPath($TargetBuildDirectory)
 $SourceDirectory = [IO.Path]::GetFullPath($SourceDirectory)
 $OutputDirectory = [IO.Path]::GetFullPath($OutputDirectory)
-$ndk = Join-Path $AndroidSdk "ndk/$NdkVersion"
-$prebuilt = Join-Path $ndk 'toolchains/llvm/prebuilt/windows-x86_64'
-$readobj = Join-Path $prebuilt 'bin/llvm-readobj.exe'
-$strip = Join-Path $prebuilt 'bin/llvm-strip.exe'
-$hostClang = Join-Path $prebuilt 'bin/clang.exe'
-$hostLld = Join-Path $prebuilt 'bin/ld.lld.exe'
+if (-not $NdkDirectory) { $NdkDirectory = Join-Path $AndroidSdk "ndk/$NdkVersion" }
+$ndk = [IO.Path]::GetFullPath($NdkDirectory)
+if ([Environment]::OSVersion.Platform -eq [PlatformID]::Win32NT) {
+    $hostTag = 'windows-x86_64'
+    $executableSuffix = '.exe'
+} elseif ([Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([Runtime.InteropServices.OSPlatform]::Linux)) {
+    $hostTag = 'linux-x86_64'
+    $executableSuffix = ''
+} else {
+    throw 'Android packaging supports Windows and Linux hosts only'
+}
+$prebuilt = Join-Path $ndk "toolchains/llvm/prebuilt/$hostTag"
+$readobj = Join-Path $prebuilt "bin/llvm-readobj$executableSuffix"
+$strip = Join-Path $prebuilt "bin/llvm-strip$executableSuffix"
+$hostClang = Join-Path $prebuilt "bin/clang$executableSuffix"
+$hostLld = Join-Path $prebuilt "bin/ld.lld$executableSuffix"
 if (-not $ValidationCompiler) { $ValidationCompiler = $hostClang }
 $cpu = if ($TargetArchitecture -eq 'arm64-v8a') { 'aarch64' } else { 'x86_64' }
 $machine = if ($TargetArchitecture -eq 'arm64-v8a') { 183 } else { 62 }

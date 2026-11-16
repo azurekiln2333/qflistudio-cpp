@@ -1,0 +1,4 @@
+{"file":".trellis/spec/backend/native-toolchain.md","reason":"Pinned LLVM and provenance rules"}
+{"file":".trellis/spec/backend/android-runtime.md","reason":"Android ABI, resources and packaging validation"}
+{"file":".trellis/spec/backend/portable-runtime.md","reason":"WASI resource and runtime boundaries"}
+{"file":".trellis/tasks/11-17-native-github-actions/design.md","reason":"Authorized cloud build scope"}

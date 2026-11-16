@@ -92,3 +92,21 @@ configure a fresh build directory.
 Wrong: equate a runnable ARM64 compiler with an integrated phone backend.
 Correct: validate compiler invocation and generated-program execution from the
 actual application process before changing the capability declaration.
+
+## GitHub native artifact builds
+
+- `.github/workflows/native-artifacts.yml` uses hosted Ubuntu 24.04 runners.
+- Android ABIs have isolated jobs and build roots. The Linux bootstrap pins
+  LLVM 15.0.7 and NDK 27.0.12077973, then reuses the platform-aware packager.
+- Preserve Windows package behavior when resolving host NDK tool paths.
+- Upload final jniLibs/assets, manifests and validation reports. Never upload
+  the full native/build tree or local SDK/signing material.
+- `prepare-portable-wasm.ps1 -ArchivesOnly -IncludeCompiler` verifies all
+  dependency archives without extraction for the OHOS resource-only job.
+- Resource ZIP metadata uses a fixed timestamp. Validate the ZIP through
+  `verify-ohos-portable-package.py` before exporting a downloadable artifact.
+- A WASI resource ZIP is not an OHOS static library package or installable HAP.
+  OHOS archives still require the matching SDK resource input. Android fixture
+  cross-linking does not establish device execution.
+- Native artifacts have 30-day retention; diagnostic logs have 7-day retention.
+  Every native artifact includes source commit, run URL, and SHA256 inventory.
