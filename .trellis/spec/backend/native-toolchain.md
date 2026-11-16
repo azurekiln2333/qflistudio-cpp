@@ -135,7 +135,10 @@ actual application process before changing the capability declaration.
   Missing C++ headers must fail the early fixture validation, not after LLVM.
 - Use versioned Ubuntu linker paths: lld-18 provides `/usr/bin/ld.lld-18`.
 - iOS host tools include llvm-min-tblgen. Use Apple's libtool with the static
-  archive recipe, not GNU ar flags. Disable WasmEdge LTO for published archives.
+  archive recipe, not GNU ar flags. Pass `ios-libtool.cmake` through
+  CMAKE_USER_MAKE_RULES_OVERRIDE so nested try_compile projects inherit it.
+  Run a small C/C++ target archive preflight before downloads or host TableGen.
+  Disable WasmEdge LTO for published archives.
 - iOS slice identity includes source commit, SDK, dependencies, patches, headers
   and resources. Reject mismatched or duplicate slices before assembly.
 - CI exports must match the current adapter interfaces. When using a publishing

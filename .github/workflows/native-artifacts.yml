@@ -28,7 +28,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: native-artifacts-${{ github.ref }}
+  group: native-artifacts-${{ github.ref }}-${{ inputs.target || 'all' }}
   cancel-in-progress: false
 
 defaults:

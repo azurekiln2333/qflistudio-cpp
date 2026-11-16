@@ -55,6 +55,50 @@ build_root="$(cd "$build_root" && pwd)"
 case "$build_root" in
   *$'\n'*|*'"'*|*'$'*|*'#'*) echo 'Build path contains unsupported xcconfig characters' >&2; exit 2 ;;
 esac
+
+set_ios_toolchain() {
+  local platform="$1" arch="$2"
+  sdk_path="$(xcrun --sdk "$platform" --show-sdk-path)"
+  compiler="$(xcrun --sdk "$platform" --find clang)"
+  compiler_cpp="$(xcrun --sdk "$platform" --find clang++)"
+  libtool="$(xcrun --sdk "$platform" --find libtool)"
+  common=(
+    -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_SYSTEM_NAME=iOS
+    "-DCMAKE_SYSTEM_PROCESSOR=$arch"
+    "-DCMAKE_OSX_SYSROOT=$sdk_path" "-DCMAKE_OSX_ARCHITECTURES=$arch"
+    -DCMAKE_OSX_DEPLOYMENT_TARGET=13.0 -DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY
+    "-DCMAKE_C_COMPILER=$compiler" "-DCMAKE_CXX_COMPILER=$compiler_cpp"
+    "-DCMAKE_AR=$libtool" -DCMAKE_POSITION_INDEPENDENT_CODE=ON
+    "-DCMAKE_USER_MAKE_RULES_OVERRIDE=$repo_root/native/toolchain/ios-libtool.cmake"
+    -DBUILD_SHARED_LIBS=OFF -DLLVM_PARALLEL_LINK_JOBS=1
+  )
+}
+
+# Test the same target compiler and archive rules before downloading sources or
+# spending time on host TableGen. CMake's own C/C++ ABI probes run here too.
+preflight_source="$build_root/preflight/source"
+mkdir -p "$preflight_source"
+cat > "$preflight_source/CMakeLists.txt" <<'CMAKE'
+cmake_minimum_required(VERSION 3.24)
+project(qfli_ios_archive_preflight LANGUAGES C CXX)
+add_library(qfli_ios_preflight STATIC check.c check.cpp)
+target_compile_features(qfli_ios_preflight PRIVATE cxx_std_17)
+CMAKE
+printf '%s\n' '#include <stddef.h>' 'int qfli_preflight_c(void) { return sizeof(size_t); }' > "$preflight_source/check.c"
+printf '%s\n' '#include <vector>' '#include <stdexcept>' \
+  'extern "C" int qfli_preflight_cpp(void) { return std::vector<int>{1, 2}.at(0); }' > "$preflight_source/check.cpp"
+for platform in "${platforms[@]}"; do
+  if [[ "$platform" == iphoneos ]]; then arches=(arm64); else arches=(arm64 x86_64); fi
+  if [[ -n "$slice" ]]; then arches=("${slice#*-}"); fi
+  for arch in "${arches[@]}"; do
+    set_ios_toolchain "$platform" "$arch"
+    directory="$build_root/preflight/$platform-$arch"
+    cmake -S "$preflight_source" -B "$directory" "${common[@]}"
+    cmake --build "$directory" --parallel "$jobs"
+    xcrun lipo "$directory/libqfli_ios_preflight.a" -verify_arch "$arch"
+  done
+done
+
 manifest="$repo_root/native/toolchain/portable-dependencies.json"
 manifest_value() {
   python3 -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))[sys.argv[2]][sys.argv[3]])' \
@@ -194,28 +238,11 @@ print()' "$manifest" "$repo_root/native/portable/patches" \
 for platform in "${platforms[@]}"; do
   if [[ "$platform" == iphoneos ]]; then arches=(arm64); else arches=(arm64 x86_64); fi
   if [[ -n "$slice" ]]; then arches=("${slice#*-}"); fi
-  sdk_path="$(xcrun --sdk "$platform" --show-sdk-path)"
-  compiler="$(xcrun --sdk "$platform" --find clang)"
-  compiler_cpp="$(xcrun --sdk "$platform" --find clang++)"
-  libtool="$(xcrun --sdk "$platform" --find libtool)"
   merged=()
   for arch in "${arches[@]}"; do
     directory="$build_root/$platform-$arch"
     mkdir -p "$directory"
-    common=(
-      -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_SYSTEM_NAME=iOS
-      "-DCMAKE_SYSTEM_PROCESSOR=$arch"
-      "-DCMAKE_OSX_SYSROOT=$sdk_path" "-DCMAKE_OSX_ARCHITECTURES=$arch"
-      -DCMAKE_OSX_DEPLOYMENT_TARGET=13.0 -DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY
-      "-DCMAKE_C_COMPILER=$compiler" "-DCMAKE_CXX_COMPILER=$compiler_cpp"
-      "-DCMAKE_AR=$libtool" -DCMAKE_POSITION_INDEPENDENT_CODE=ON
-      # WasmEdge's aggregate archive needs Apple libtool. CMake's default
-      # incremental `ar qc` recipe is incompatible with that executable.
-      '-DCMAKE_C_CREATE_STATIC_LIBRARY=<CMAKE_AR> -static -o <TARGET> <LINK_FLAGS> <OBJECTS>'
-      '-DCMAKE_CXX_CREATE_STATIC_LIBRARY=<CMAKE_AR> -static -o <TARGET> <LINK_FLAGS> <OBJECTS>'
-      -DBUILD_SHARED_LIBS=OFF
-      -DLLVM_PARALLEL_LINK_JOBS=1
-    )
+    set_ios_toolchain "$platform" "$arch"
     cmake -S "$repo_root/native/compiler" -B "$directory/compiler" "${common[@]}" \
       "-DFETCHCONTENT_SOURCE_DIR_LLVM22=$llvm_source" \
       "-DLLVM_TABLEGEN=$host_bin/llvm-tblgen" "-DLLVM_MIN_TBLGEN=$host_bin/llvm-min-tblgen" \
