@@ -111,6 +111,7 @@ struct Pipe {
 };
 
 struct RunState {
+    enum class Mode { Project, Compiler, Program };
     napi_threadsafe_function events = nullptr;
     std::string sdkRoot;
     std::string project;
@@ -119,6 +120,10 @@ struct RunState {
     bool analyzing = false;
     bool analysisCpp = false;
     std::vector<std::string> analysisText;
+    Mode mode = Mode::Project;
+    std::string workingDirectory;
+    std::string command;
+    std::vector<std::string> arguments;
     std::string cache;
     bool accepted = false; // JS-thread owned; never reopened after acceptance.
     std::atomic<bool> cancelled{false};
@@ -260,7 +265,7 @@ int Execute(RunState *state, const std::string &directory) {
     try {
         outputReader = std::thread(DrainPipe, state, output.reader.value, false);
         errorReader = std::thread(DrainPipe, state, errors.reader.value, true);
-        {
+        if (state->mode != RunState::Mode::Program) {
             std::lock_guard<std::mutex> lock(state->sessionMutex);
             state->compiler = qfli_compiler_create();
             qfli_compiler_set_threads(state->compiler, 1);
@@ -275,6 +280,14 @@ int Execute(RunState *state, const std::string &directory) {
             code = qfli_compiler_analyze(state->compiler, state->sdkRoot.c_str(),
                 state->project.c_str(), state->entry.c_str(), state->analysisCpp,
                 snapshots.data(), snapshots.size(), output.writer.value, errors.writer.value);
+        } else if (state->mode == RunState::Mode::Program) {
+            code = 0;
+        } else if (state->compiler != nullptr && state->mode == RunState::Mode::Compiler) {
+            std::vector<const char *> arguments;
+            for (const std::string &argument : state->arguments) arguments.push_back(argument.c_str());
+            code = qfli_compiler_command(state->compiler, state->sdkRoot.c_str(), state->project.c_str(),
+                state->workingDirectory.c_str(), directory.c_str(), state->command.c_str(),
+                arguments.data(), arguments.size(), output.writer.value, errors.writer.value);
         } else if (state->compiler != nullptr) {
             std::vector<const char *> sources;
             for (const std::string &source : state->sources) sources.push_back(source.c_str());
@@ -284,8 +297,10 @@ int Execute(RunState *state, const std::string &directory) {
             WriteDiagnostic(errors.writer.value, "Forge: cannot create compiler session\n");
         }
         DestroySessions(state);
-        if (code == 0 && !state->analyzing && !state->cancelled.load()) {
-            input.Reset(open(Join(state->project, "input.txt").c_str(), O_RDONLY | O_CLOEXEC | O_NOFOLLOW | O_NONBLOCK));
+        if (code == 0 && !state->analyzing && state->mode != RunState::Mode::Compiler && !state->cancelled.load()) {
+            const std::string &workingDirectory = state->mode == RunState::Mode::Program ?
+                state->workingDirectory : state->project;
+            input.Reset(open(Join(workingDirectory, "input.txt").c_str(), O_RDONLY | O_CLOEXEC | O_NOFOLLOW | O_NONBLOCK));
             const bool missingInput = input.value < 0 && errno == ENOENT;
             if (missingInput) input.Reset(open("/dev/null", O_RDONLY | O_CLOEXEC));
             struct stat info;
@@ -300,8 +315,13 @@ int Execute(RunState *state, const std::string &directory) {
                     if (state->cancelled.load()) qfli_wasm_cancel(state->runtime);
                 }
                 if (state->runtime != nullptr) {
-                    code = qfli_wasm_run(state->runtime, Join(directory, "program.wasm").c_str(),
-                        state->project.c_str(), input.value, output.writer.value, errors.writer.value, 0);
+                    const std::string module = state->mode == RunState::Mode::Program ?
+                        state->entry : Join(directory, "program.wasm");
+                    std::vector<const char *> arguments;
+                    for (const std::string &argument : state->arguments) arguments.push_back(argument.c_str());
+                    code = qfli_wasm_run_with_args(state->runtime, module.c_str(), workingDirectory.c_str(),
+                        input.value, output.writer.value, errors.writer.value, 0,
+                        arguments.data(), arguments.size());
                     const char *message = qfli_wasm_error(state->runtime);
                     if (message != nullptr && *message && !state->cancelled.load()) {
                         WriteDiagnostic(errors.writer.value, std::string("Forge: ") + message + "\n");
@@ -546,6 +566,65 @@ napi_value Analyze(napi_env env, napi_callback_info info) {
     return Boolean(env, true);
 }
 
+bool WithinProject(const std::string &project, const std::string &path) {
+    const std::string prefix = Join(project, "");
+    return path == project || path.compare(0, prefix.size(), prefix) == 0;
+}
+
+napi_value Terminal(napi_env env, napi_callback_info info) {
+    size_t argc = 6;
+    napi_value args[6] = {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr};
+    if (napi_get_cb_info(env, info, &argc, args, nullptr, nullptr) != napi_ok || argc != 6) return Boolean(env, false);
+    auto state = ReadHandle(env, args[0]);
+    if (state == nullptr || state->accepted) return Boolean(env, false);
+    std::string project, workingDirectory, command, cache;
+    if (!ReadString(env, args[1], &project) || !ResolvePath(project, &project) ||
+        !ReadString(env, args[2], &workingDirectory) || !ResolvePath(workingDirectory, &workingDirectory) ||
+        !ReadString(env, args[3], &command) || command.empty() ||
+        !ReadString(env, args[5], &cache) || !ResolvePath(cache, &cache) ||
+        !WithinProject(project, workingDirectory)) return Boolean(env, false);
+    struct stat infoProject, infoCwd, infoCache;
+    if (stat(project.c_str(), &infoProject) != 0 || !S_ISDIR(infoProject.st_mode) ||
+        stat(workingDirectory.c_str(), &infoCwd) != 0 || !S_ISDIR(infoCwd.st_mode) ||
+        access(workingDirectory.c_str(), R_OK | X_OK) != 0 ||
+        stat(cache.c_str(), &infoCache) != 0 || !S_ISDIR(infoCache.st_mode) ||
+        access(cache.c_str(), W_OK | X_OK) != 0) return Boolean(env, false);
+    bool array = false;
+    uint32_t length = 0;
+    if (napi_is_array(env, args[4], &array) != napi_ok || !array ||
+        napi_get_array_length(env, args[4], &length) != napi_ok || length > 4096) return Boolean(env, false);
+    std::vector<std::string> arguments;
+    for (uint32_t index = 0; index < length; ++index) {
+        napi_value value = nullptr;
+        std::string argument;
+        if (napi_get_element(env, args[4], index, &value) != napi_ok ||
+            !ReadString(env, value, &argument)) return Boolean(env, false);
+        arguments.push_back(std::move(argument));
+    }
+    const bool compiler = command == "clang" || command == "clang++";
+    std::string module;
+    if (!compiler) {
+        if ((command.compare(0, 2, "./") != 0 && command.compare(0, 3, "../") != 0) ||
+            !ResolvePath(Join(workingDirectory, command), &module) ||
+            !WithinProject(project, module) || !IsRegular(module)) return Boolean(env, false);
+    }
+    state->mode = compiler ? RunState::Mode::Compiler : RunState::Mode::Program;
+    state->project = std::move(project);
+    state->workingDirectory = std::move(workingDirectory);
+    state->entry = std::move(module);
+    state->command = std::move(command);
+    state->arguments = std::move(arguments);
+    state->cache = std::move(cache);
+    state->accepted = true;
+    try {
+        std::thread(RunOnWorker, state).detach();
+    } catch (const std::exception &) {
+        state->accepted = false;
+        return Boolean(env, false);
+    }
+    return Boolean(env, true);
+}
+
 napi_value Cancel(napi_env env, napi_callback_info info) {
     size_t argc = 1;
     napi_value args[1] = {nullptr};
@@ -574,6 +653,7 @@ static napi_value Init(napi_env env, napi_value exports) {
         {"create", nullptr, Create, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"run", nullptr, Run, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"analyze", nullptr, Analyze, nullptr, nullptr, nullptr, napi_default, nullptr},
+        {"terminal", nullptr, Terminal, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"cancel", nullptr, Cancel, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"destroy", nullptr, Destroy, nullptr, nullptr, nullptr, napi_default, nullptr},
     };

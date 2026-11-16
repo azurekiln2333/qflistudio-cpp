@@ -21,6 +21,23 @@ int qfli_compiler_compile(qfli_compiler_session *session, const char *sdk_root,
                           const char *project_path, const char *output_directory,
                           const char *const *sources, size_t source_count,
                           int diagnostic_fd);
+
+// Execute one clang/clang++ command line entirely in process (no subprocess,
+// no chdir, no process-wide descriptor redirection). compiler_name is exactly
+// "clang" or "clang++". sdk_root, project_root, working_directory and
+// temporary_directory must be absolute; the working directory must live under
+// project_root. User source/include/output operands are confined under the
+// canonical project_root. Output reaches the borrowed output_fd, diagnostics
+// reach diagnostic_fd. Returns 0 on success, 1 on a compiler/linker failure,
+// 127 on invalid input or an unsupported flag, and 130 when cancelled.
+int qfli_compiler_command(qfli_compiler_session *session, const char *sdk_root,
+                          const char *project_root,
+                          const char *working_directory,
+                          const char *temporary_directory,
+                          const char *compiler_name,
+                          const char *const *arguments,
+                          size_t argument_count, int output_fd,
+                          int diagnostic_fd);
 void qfli_compiler_cancel(qfli_compiler_session *session);
 // Destroy only after the compile call and any cancellation calls have returned.
 void qfli_compiler_destroy(qfli_compiler_session *session);

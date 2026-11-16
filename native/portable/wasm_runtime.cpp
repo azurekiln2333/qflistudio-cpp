@@ -266,7 +266,16 @@ qfli_wasm_session *qfli_wasm_create(void) {
 int qfli_wasm_run(qfli_wasm_session *session, const char *module_path,
                   const char *project_path, int input_fd, int output_fd,
                   int error_fd, uint64_t cost_limit) {
+  return qfli_wasm_run_with_args(session, module_path, project_path, input_fd,
+                                  output_fd, error_fd, cost_limit, nullptr, 0);
+}
+
+int qfli_wasm_run_with_args(qfli_wasm_session *session, const char *module_path,
+                            const char *project_path, int input_fd, int output_fd,
+                            int error_fd, uint64_t cost_limit,
+                            const char *const *arguments, size_t argument_count) {
   if (!session || !module_path || !project_path) return kRuntimeError;
+  if ((argument_count && !arguments) || argument_count > UINT32_MAX - 1) return kRuntimeError;
   if (session->used.exchange(true)) return kRuntimeError;
   if (session->cancelled.load()) return kCancelled;
   try {
@@ -282,11 +291,15 @@ int qfli_wasm_run(qfli_wasm_session *session, const char *module_path,
     WasmEdge_ConfigureStatisticsSetCostMeasuring(config.get(), cost_limit != 0);
 
     // WASI borrows these FDs without changing the app's process-wide stdio.
-    const char *args[] = {module_path};
+    std::vector<const char *> args{module_path};
+    for (size_t index = 0; index < argument_count; ++index) {
+      if (!arguments[index]) return fail(*session, "Invalid program argument.");
+      args.push_back(arguments[index]);
+    }
     const std::string mapping = std::string("/:") + project_path;
     const char *preopens[] = {mapping.c_str()};
     Owned<WasmEdge_ModuleInstanceContext, WasmEdge_ModuleInstanceDelete> wasi(
-        WasmEdge_ModuleInstanceCreateWASIWithFds(args, 1, nullptr, 0, preopens,
+        WasmEdge_ModuleInstanceCreateWASIWithFds(args.data(), static_cast<uint32_t>(args.size()), nullptr, 0, preopens,
                                                  1, input_fd, output_fd, error_fd),
         WasmEdge_ModuleInstanceDelete);
     if (!wasi) return fail(*session, "Cannot initialize WASI input/output.");
