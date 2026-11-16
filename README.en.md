@@ -139,3 +139,9 @@ The current source description does not mean every feature has shipped.
 Device acceptance must correspond to an actual installed package and test records.
 The native runtime spec is in `.trellis/spec/backend/`.
 The development workflow is in `.trellis/workflow.md`.
+
+## License
+
+This project is licensed under the GNU General Public License v3.0.
+See [LICENSE](LICENSE) for the full text, matching the main QFLIStudio project.
+Third-party components retain their respective licenses.
