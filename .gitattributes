@@ -10,4 +10,5 @@
 native/portable/patches/*.patch text eol=lf whitespace=-blank-at-eol
 native/toolchain/build-ohos-portable.sh text eol=lf
 native/toolchain/build-android-llvm-linux.sh text eol=lf
+native/toolchain/build-ios-portable.sh text eol=lf
 .github/workflows/*.yml text eol=lf

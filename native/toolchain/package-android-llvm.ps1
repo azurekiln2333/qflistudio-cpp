@@ -189,12 +189,17 @@ $validationDirectory = Join-Path $OutputDirectory "validation/$TargetArchitectur
 New-Item -ItemType Directory -Path $validationDirectory -Force | Out-Null
 $fixture = Join-Path $PSScriptRoot 'tests/fixture'
 $common = @("--target=$triple$ApiLevel", "--sysroot=$(Join-Path $resources 'sysroot')", '-resource-dir', (Join-Path $resources $resourceDirectory), '-fPIC')
+# Distro Clang builds can default to libstdc++, even for Android. Select the
+# packaged libc++ headers and runtime explicitly, as the Android app does.
+$cpp = @('-stdlib=libc++', '-nostdinc++', '-isystem', (Join-Path $includes 'c++/v1'))
+Require-File (Join-Path $includes 'c++/v1/algorithm')
 Invoke-Checked $ValidationCompiler ($common + @('--driver-mode=gcc', '-std=c17', '-I', (Join-Path $fixture 'include'), '-c', (Join-Path $fixture 'answer.c'), '-o', (Join-Path $validationDirectory 'answer.o')))
 Invoke-Checked $ValidationCompiler ($common + @('--driver-mode=gcc', '-std=c17', '-I', (Join-Path $fixture 'include'), '-c', (Join-Path $fixture 'main.c'), '-o', (Join-Path $validationDirectory 'main-c.o')))
-Invoke-Checked $ValidationCompiler ($common + @('--driver-mode=g++', '-std=c++20', '-I', (Join-Path $fixture 'include'), '-c', (Join-Path $fixture 'main.cpp'), '-o', (Join-Path $validationDirectory 'main-cpp.o')))
-Invoke-Checked $ValidationCompiler ($common + @('--driver-mode=g++', '-std=c++20', '-I', (Join-Path $fixture 'include'), '-c', (Join-Path $PSScriptRoot 'tests/android/answer.cpp'), '-o', (Join-Path $validationDirectory 'answer-cpp.o')))
+Invoke-Checked $ValidationCompiler ($common + $cpp + @('--driver-mode=g++', '-std=c++20', '-I', (Join-Path $fixture 'include'), '-c', (Join-Path $fixture 'main.cpp'), '-o', (Join-Path $validationDirectory 'main-cpp.o')))
+Invoke-Checked $ValidationCompiler ($common + $cpp + @('--driver-mode=g++', '-std=c++20', '-I', (Join-Path $fixture 'include'), '-c', (Join-Path $PSScriptRoot 'tests/android/answer.cpp'), '-o', (Join-Path $validationDirectory 'answer-cpp.o')))
 Invoke-Checked $ValidationCompiler ($common + @('--driver-mode=gcc', '-std=c17', '-c', (Join-Path $PSScriptRoot 'tests/android/math.c'), '-o', (Join-Path $validationDirectory 'math.o')))
-$links = @("--ld-path=$hostLld", '-Wl,-z,defs', '-Wl,-z,max-page-size=16384,-z,common-page-size=16384', '-latomic', '-lm')
+$runtime = @('--rtlib=compiler-rt', '--unwindlib=libunwind')
+$links = $runtime + @("--ld-path=$hostLld", '-Wl,-z,defs', '-Wl,-z,max-page-size=16384,-z,common-page-size=16384', '-latomic', '-lm')
 $cases = @(
     @{ name = 'c'; mode = 'gcc'; objects = @('answer.o', 'main-c.o') },
     @{ name = 'cpp'; mode = 'g++'; objects = @('answer.o', 'main-cpp.o') },
@@ -203,16 +208,17 @@ $cases = @(
 )
 foreach ($case in $cases) {
     $objects = @($case.objects | ForEach-Object { Join-Path $validationDirectory $_ })
+    $languageArguments = if ($case.mode -eq 'g++') { @('-stdlib=libc++') } else { @() }
     foreach ($format in @('shared', 'executable')) {
         $output = Join-Path $validationDirectory "$($case.name)-$format"
         $formatArguments = if ($format -eq 'shared') { @('-shared') } else { @() }
-        Invoke-Checked $ValidationCompiler ($common + @("--driver-mode=$($case.mode)") + $links + $formatArguments + $objects + @('-o', $output))
+        Invoke-Checked $ValidationCompiler ($common + @("--driver-mode=$($case.mode)") + $languageArguments + $links + $formatArguments + $objects + @('-o', $output))
         $null = Inspect-Elf $output
         if ($format -eq 'shared') { Require-ExportedMain $output }
     }
 }
 $invalidArguments = $common + @('--driver-mode=gcc', '-std=c17', '-x', 'c', '-fsyntax-only', '-')
-$unresolvedArguments = $common + @('--driver-mode=gcc', "--ld-path=$hostLld", '-shared', '-Wl,-z,defs', (Join-Path $validationDirectory 'main-c.o'), '-o', (Join-Path $validationDirectory 'unresolved-shared'))
+$unresolvedArguments = $common + $runtime + @('--driver-mode=gcc', "--ld-path=$hostLld", '-shared', '-Wl,-z,defs', (Join-Path $validationDirectory 'main-c.o'), '-o', (Join-Path $validationDirectory 'unresolved-shared'))
 $previousErrorAction = $ErrorActionPreference
 try {
     # Windows PowerShell turns redirected native stderr into error records.

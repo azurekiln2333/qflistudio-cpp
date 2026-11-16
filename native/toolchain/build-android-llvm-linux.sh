@@ -9,6 +9,7 @@ Usage: bash native/toolchain/build-android-llvm-linux.sh --ndk PATH [options]
   --jobs N           Parallel compiler jobs, 1-32 (default: 2)
   --build-root PATH  Build directory (default: native/build/android-linux-ABI)
   --source PATH      Reuse a clean LLVM 15.0.7 checkout, or clone to this path
+  --preflight-only   Validate resources after host tools; skip target clang/lld
   --help             Show this help
 
 Requires Linux x86_64, Clang 15, CMake, Ninja, Git, Python 3 and PowerShell 7.
@@ -24,6 +25,7 @@ jobs=2
 build_root=""
 source=""
 ndk=""
+preflight_only=0
 llvm_tag=llvmorg-15.0.7
 llvm_commit=8dfdcc7b7bf66834a761bd8de445840ef68e4d1a
 ndk_version=27.0.12077973
@@ -42,6 +44,7 @@ while (($#)); do
       esac
       shift 2 ;;
     --help) usage; exit 0 ;;
+    --preflight-only) preflight_only=1; shift ;;
     *) printf 'Unknown option: %s\n' "$1" >&2; usage >&2; exit 2 ;;
   esac
 done
@@ -140,7 +143,6 @@ print(version, end="")
 if not re.search(r"LLVM version 15\.0\.7(?:\r?\n|$)", version):
     raise SystemExit("Host TableGen must report LLVM 15.0.7")'
 done
-
 if [[ "$abi" == arm64-v8a ]]; then backend=AArch64; triple=aarch64-linux-android;
 else backend=X86; triple=x86_64-linux-android; fi
 cmake -S "$source/llvm" -B "$target" "${common[@]}" \
@@ -155,6 +157,17 @@ cmake -S "$source/llvm" -B "$target" "${common[@]}" \
 verify_cache "$target/CMakeCache.txt" 'CMAKE_PROJECT_VERSION=15.0.7' \
   'C_SUPPORTS_FPIC=1' 'CXX_SUPPORTS_FPIC=1' 'LLVM_ENABLE_PROJECTS=clang;lld'
 cmake --build "$target" --target clang-resource-headers --parallel "$jobs"
+# ARM resource headers use the host TableGen tools. Catch SDK/driver
+# integration failures before the full target compiler is compiled.
+# Keep each attempt in a fresh directory so failed diagnostics remain available.
+preflight="$(mktemp -d "$build_root/preflight.XXXXXX")"
+pwsh -NoLogo -NoProfile -File "$repo_root/native/toolchain/package-android-llvm.ps1" \
+  -NdkDirectory "$ndk" -NdkVersion "$ndk_version" -TargetBuildDirectory "$target" \
+  -TargetArchitecture "$abi" -ApiLevel "$api" -SourceDirectory "$source" \
+  -OutputDirectory "$preflight" -ValidationCompiler /usr/bin/clang-15 -ResourcesOnly
+printf 'Android %s resource preflight passed: %s\n' "$abi" "$preflight"
+if ((preflight_only)); then exit 0; fi
+
 cmake --build "$target" --target clang lld --parallel "$jobs"
 git -C "$source" diff --quiet HEAD -- || fail "Build changed the pinned LLVM source: $source"
 

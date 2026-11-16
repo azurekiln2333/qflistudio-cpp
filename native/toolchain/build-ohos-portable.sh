@@ -4,13 +4,15 @@ export PYTHONDONTWRITEBYTECODE=1
 
 usage() {
   cat <<'USAGE'
-Usage: bash native/toolchain/build-ohos-portable.sh --ohos-resources PATH [options]
+Usage: bash native/toolchain/build-ohos-portable.sh (--native-sdk PATH | --ohos-resources PATH) [options]
+  --native-sdk PATH      Raw OHOS native SDK with Clang 15.0.4 resources
   --ohos-resources PATH  ARM64 package-llvm.ps1 resources (LLVM 15.0.7/OHOS SDK)
   --build-root PATH      Build directory (default: native/build/ohos-portable)
   --downloads PATH       Pinned dependency archives (default: native/build/portable-deps)
   --host-tools PATH      Existing LLVM 22.1.0 TableGen bin directory
   --jobs N               Parallel compiler jobs (default: 6)
   --configure-only       Verify inputs and configure without building target libraries
+  --preflight-only       Cross-link SDK fixtures and compile the app bridge, then stop
   --help                Show this help
 
 Run on Linux or WSL with Clang 15, LLVM ar/ranlib, CMake, Make, Python and Git.
@@ -23,15 +25,18 @@ repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 build_root="$repo_root/native/build/ohos-portable"
 downloads="$repo_root/native/build/portable-deps"
 resources=""
+native_sdk=""
 host_bin=""
 jobs=6
 configure_only=0
+preflight_only=0
 while (($#)); do
   case "$1" in
-    --ohos-resources|--build-root|--downloads|--host-tools|--jobs)
+    --native-sdk|--ohos-resources|--build-root|--downloads|--host-tools|--jobs)
       (($# >= 2)) || { usage >&2; exit 2; }
       case "$1" in
         --ohos-resources) resources="$2" ;;
+        --native-sdk) native_sdk="$2" ;;
         --build-root) build_root="$2" ;;
         --downloads) downloads="$2" ;;
         --host-tools) host_bin="$2" ;;
@@ -39,18 +44,29 @@ while (($#)); do
       esac
       shift 2 ;;
     --configure-only) configure_only=1; shift ;;
+    --preflight-only) preflight_only=1; shift ;;
     --help) usage; exit 0 ;;
     *) echo "Unknown option: $1" >&2; exit 2 ;;
   esac
 done
-[[ -n "$resources" && "$jobs" =~ ^[1-9][0-9]*$ ]] || { usage >&2; exit 2; }
+[[ "$jobs" =~ ^[1-9][0-9]*$ ]] || { usage >&2; exit 2; }
+[[ -n "$resources" || -n "$native_sdk" ]] || { usage >&2; exit 2; }
+[[ -z "$resources" || -z "$native_sdk" ]] || { echo 'Select one SDK input mode.' >&2; exit 2; }
 [[ "$(uname -s)" == Linux ]] || { echo 'Use Linux or WSL for this cross build.' >&2; exit 1; }
-for tool in cmake make python3 git clang-15 clang++-15 llvm-ar-18 llvm-ranlib-18 llvm-nm-18 llvm-readobj-18 ld.lld tar; do
+for tool in cmake make python3 git clang-15 clang++-15 llvm-ar-18 llvm-ranlib-18 llvm-nm-18 llvm-readobj-18 ld.lld-18 tar; do
   command -v "$tool" >/dev/null || { echo "Missing build tool: $tool" >&2; exit 1; }
 done
 mkdir -p "$build_root"
 build_root="$(cd "$build_root" && pwd)"
+if [[ -n "$native_sdk" ]]; then
+  python3 "$repo_root/native/toolchain/stage-ohos-sdk.py" --native-sdk "$native_sdk" \
+    --output "$build_root/sdk-resources"
+  resources="$build_root/sdk-resources"
+fi
 resources="$(cd "$resources" && pwd)"
+python3 "$repo_root/native/toolchain/verify-ohos-native.py" --resources "$resources" \
+  --output "$build_root/preflight"
+if ((preflight_only)); then exit 0; fi
 downloads="$(cd "$downloads" && pwd)"
 manifest="$repo_root/native/toolchain/portable-dependencies.json"
 
@@ -61,14 +77,23 @@ import hashlib, json, pathlib, subprocess, sys
 manifest, downloads, build, resources, repo = map(pathlib.Path, sys.argv[1:])
 deps = json.loads(manifest.read_text())
 sdk = json.loads((resources / 'toolchain.json').read_text())
-if sdk.get('llvmVersion') != '15.0.7' or sdk.get('targetTriple') != 'aarch64-unknown-linux-ohos':
-    raise SystemExit('Expected the pinned ARM64 OHOS LLVM 15.0.7 resource layout')
-for name, record in [('bin/clang', 'compilerMetadata'), ('bin/ld.lld', 'linkerMetadata'),
+if sdk.get('inputKind') == 'native-sdk':
+    if sdk.get('targetTriple') != 'aarch64-unknown-linux-ohos':
+        raise SystemExit('Expected ARM64 OHOS SDK resources')
+    for name, expected in sdk['files'].items():
+        if hashlib.sha256((resources / name).read_bytes()).hexdigest() != expected:
+            raise SystemExit('Staged native SDK checksum mismatch: ' + name)
+    resource_version = sdk['compilerResourceVersion']
+else:
+    if sdk.get('llvmVersion') != '15.0.7' or sdk.get('targetTriple') != 'aarch64-unknown-linux-ohos':
+        raise SystemExit('Expected the pinned ARM64 OHOS LLVM 15.0.7 resource layout')
+    for name, record in [('bin/clang', 'compilerMetadata'), ('bin/ld.lld', 'linkerMetadata'),
                      ('lib/aarch64-unknown-linux-ohos/libc++_shared.so', 'runtimeMetadata')]:
-    if hashlib.sha256((resources / name).read_bytes()).hexdigest() != sdk[record]['sha256']:
-        raise SystemExit('OHOS resource manifest hash mismatch: ' + name)
+        if hashlib.sha256((resources / name).read_bytes()).hexdigest() != sdk[record]['sha256']:
+            raise SystemExit('OHOS resource manifest hash mismatch: ' + name)
+    resource_version = '15.0.7'
 for name in ('bin/ohos.cfg', 'sysroot/usr/include/stdio.h', 'include/c++/v1/vector',
-             'lib/clang/15.0.7/lib/aarch64-unknown-linux-ohos/libclang_rt.builtins.a'):
+             f'lib/clang/{resource_version}/lib/aarch64-unknown-linux-ohos/libclang_rt.builtins.a'):
     if not (resources / name).is_file():
         raise SystemExit('Missing OHOS SDK resource: ' + name)
 
@@ -144,7 +169,8 @@ spdlog_source="$build_root/sources/$(dependency_dir spdlog)"
 if [[ -z "$host_bin" ]]; then
   cmake -S "$repo_root/native/compiler" -B "$build_root/host" -G 'Unix Makefiles' \
     -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang-15 -DCMAKE_CXX_COMPILER=clang++-15 \
-    -DFETCHCONTENT_SOURCE_DIR_LLVM22="$llvm_source" -DQFLI_BUILD_COMPILER_TESTS=OFF
+    -DFETCHCONTENT_SOURCE_DIR_LLVM22="$llvm_source" -DQFLI_BUILD_COMPILER_TESTS=OFF \
+    -DLLVM_PARALLEL_LINK_JOBS=1
   cmake --build "$build_root/host" --target llvm-tblgen llvm-min-tblgen clang-tblgen --parallel "$jobs"
   host_bin="$build_root/host/_deps/llvm22-build/bin"
 fi
@@ -168,8 +194,8 @@ entries = {'CMAKE_SYSTEM_NAME': 'Linux', 'CMAKE_SYSTEM_PROCESSOR': 'aarch64',
            'CMAKE_AR': '/usr/bin/llvm-ar-18', 'CMAKE_RANLIB': '/usr/bin/llvm-ranlib-18',
            'CMAKE_SYSROOT': resources / 'sysroot', 'CMAKE_C_FLAGS_INIT': flags,
            'CMAKE_CXX_FLAGS_INIT': flags + ' -nostdinc++',
-           'CMAKE_EXE_LINKER_FLAGS_INIT': '--ld-path=/usr/bin/ld.lld',
-           'CMAKE_SHARED_LINKER_FLAGS_INIT': '--ld-path=/usr/bin/ld.lld',
+           'CMAKE_EXE_LINKER_FLAGS_INIT': '--ld-path=/usr/bin/ld.lld-18',
+           'CMAKE_SHARED_LINKER_FLAGS_INIT': '--ld-path=/usr/bin/ld.lld-18',
            'CMAKE_FIND_ROOT_PATH': resources, 'CMAKE_FIND_ROOT_PATH_MODE_PROGRAM': 'NEVER',
            'CMAKE_FIND_ROOT_PATH_MODE_LIBRARY': 'ONLY', 'CMAKE_FIND_ROOT_PATH_MODE_INCLUDE': 'ONLY',
            'CMAKE_FIND_ROOT_PATH_MODE_PACKAGE': 'ONLY'}
@@ -194,12 +220,16 @@ cmake -S "$repo_root/native/compiler" -B "$build_root/compiler" "${common[@]}" \
   -DCLANG_TABLEGEN="$host_bin/clang-tblgen" -DLLVM_NATIVE_TOOL_DIR="$host_bin" \
   -DLLVM_HOST_TRIPLE=aarch64-unknown-linux-ohos -DLLVM_DEFAULT_TARGET_TRIPLE=wasm32-unknown-wasip1 \
   -DLLVM_ENABLE_BACKTRACES=OFF -DLLVM_ENABLE_TERMINFO=OFF \
+  -DLLVM_PARALLEL_LINK_JOBS=1 \
   -DLLVM_BUILD_LLVM_DYLIB=OFF -DLLVM_LINK_LLVM_DYLIB=OFF -DQFLI_BUILD_COMPILER_TESTS=OFF
 cmake -S "$repo_root/native/portable" -B "$build_root/runtime" "${common[@]}" \
   -DFETCHCONTENT_SOURCE_DIR_WASMEDGE="$wasmedge_source" \
   -DFETCHCONTENT_SOURCE_DIR_FMT="$fmt_source" -DFETCHCONTENT_SOURCE_DIR_SPDLOG="$spdlog_source" \
   -DCMAKE_DISABLE_FIND_PACKAGE_fmt=ON -DCMAKE_DISABLE_FIND_PACKAGE_spdlog=ON \
   -DWASMEDGE_USE_LLVM=OFF -DQFLI_BUILD_WASM_TESTS=OFF
+grep -q '^WASMEDGE_USE_LLVM:BOOL=OFF$' "$build_root/runtime/CMakeCache.txt" || {
+  echo 'The OHOS runtime must use the interpreter with LLVM/JIT disabled.' >&2; exit 1;
+}
 if ((configure_only)); then exit 0; fi
 cmake --build "$build_root/compiler" --target qfli_compiler --parallel "$jobs"
 cmake --build "$build_root/runtime" --target qfli_wasm --parallel "$jobs"
@@ -218,6 +248,7 @@ for name, paths in {
     if not all(path.is_file() for path in paths): raise SystemExit('Missing ' + name + ' static libraries')
     output = libs / ('libqfli_' + name + '.a')
     pending = output.with_suffix('.a.pending')
+    pending.unlink(missing_ok=True)
     # MRI retains identically named members from different LLVM libraries.
     script = 'CREATE "' + str(pending) + '"\n'
     script += ''.join('ADDLIB "' + str(path) + '"\n' for path in paths) + 'SAVE\nEND\n'
@@ -248,4 +279,6 @@ metadata.update({'architecture': 'arm64-v8a', 'target': 'wasm32-unknown-wasip1',
                  'libraries': {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in libs.glob('*.a')}})
 (package / 'build-manifest.json').write_text(json.dumps(metadata, indent=2) + '\n')
 PY
+python3 "$repo_root/native/toolchain/verify-ohos-native.py" --resources "$resources" \
+  --package "$build_root/package" --output "$build_root/package/validation"
 printf 'OHOS portable static package: %s/package\n' "$build_root"
