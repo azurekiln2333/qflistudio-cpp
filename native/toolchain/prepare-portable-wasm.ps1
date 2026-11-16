@@ -14,8 +14,8 @@ $DownloadDirectory = [IO.Path]::GetFullPath($DownloadDirectory)
 $manifest = Get-Content (Join-Path $PSScriptRoot 'portable-dependencies.json') -Raw | ConvertFrom-Json
 $names = @('wasiSdk', 'wasmedge', 'fmt', 'spdlog')
 if ($IncludeCompiler) { $names += 'llvm22' }
-$curl = (Get-Command curl -CommandType Application -ErrorAction Stop).Source
-$tar = (Get-Command tar -CommandType Application -ErrorAction Stop).Source
+$curl = (Get-Command curl -CommandType Application -ErrorAction Stop | Select-Object -First 1).Source
+$tar = (Get-Command tar -CommandType Application -ErrorAction Stop | Select-Object -First 1).Source
 New-Item -ItemType Directory -Path $DownloadDirectory -Force | Out-Null
 
 foreach ($name in $names) {
