@@ -1,0 +1,24 @@
+{
+  "runId": 43920643526,
+  "artifactId": 14253852031,
+  "downloadVerified": true,
+  "artifactSha256": "8b3acecf35bd343b964edd5af84d60afd00eda72810b09c13d5f1fb15fd7d1b1",
+  "resources": {
+    "sha256": "2aa77aa2dabebc7fd3ca37ff566536694734ee2d9dd1e623d2cba6f5537fd9e4",
+    "resourceFiles": 4114,
+    "llvmVersion": "22.1.0",
+    "execution": "interpreter"
+  },
+  "source": {
+    "platform": "ohos-resources",
+    "sourceCommit": "15539aad9d35c6a52e81083760daf6369f13079a",
+    "sourceDirty": false,
+    "runId": "43920643526",
+    "runAttempt": "1",
+    "runUrl": "https://github.com/azurekiln2333/qflistudio-cpp/actions/runs/43920643526",
+    "packagerSha256": "4e5d373e8b2dbe3d9bb19435bf0d558dd277a92fe0d5393fc15481de9d24313c",
+    "llvmVersion": "22.1.0",
+    "dataOnly": true,
+    "appExecutionVerified": false
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "version": "5.1.0.107",
+  "apiVersion": "18",
+  "release": "OpenHarmony 5.1.0 Release",
+  "url": "https://repo.huaweicloud.com/openharmony/os/5.1.0-Release/ohos-sdk-windows_linux-public.tar.gz",
+  "sha256": "8c1f97df34812e45fa4f0e3275987b261e80622abb7c51392bb063f853451344",
+  "archive": "ohos-sdk-windows_linux-public.tar.gz",
+  "nativeMember": "ohos-sdk/linux/native-linux-x64-5.1.0.107-Release.zip",
+  "nativeSha256": "3125d36ab66720d3b7aeef18f83dc31c02c8c73185255c04ee4d2a948a2f20f0",
+  "source": "https://github.com/openharmony/docs/blob/master/en/release-notes/OpenHarmony-v5.1.0-release.md"
+}

@@ -18,8 +18,12 @@ history. Do not delete local packages or publish local SDK/signing material.
 - Keep platform artifacts separate and provide checksums, source revision,
   validation evidence, and exact download instructions.
 - Do not imply that the resource ZIP is the full OHOS native library package.
-- Keep OHOS archive compilation explicitly blocked on a matching SDK resource
-  input. Web/iOS binaries remain outside this first cloud trial.
+- Build full OHOS ARM64 compiler/runtime archives from a pinned public native
+  SDK, recording its version independently of the existing local SDK.
+- Build iOS device ARM64 and simulator ARM64/x86_64 archives on macOS, then
+  assemble an XCFramework with WASI resources and a local installation helper.
+- Preserve native package consumption paths. Web binaries and signed app
+  installers remain outside the native dependency workflow.
 
 ## Acceptance
 
@@ -28,3 +32,11 @@ history. Do not delete local packages or publish local SDK/signing material.
 - Successful artifacts are inspected and their contents documented.
 - Failures are diagnosed and corrected where possible; incomplete builds are
   reported honestly, separately from existing local packages.
+
+## Clarification on 2026-11-17
+
+The user explicitly rejected the initial partial scope and requested complete
+OHOS, iOS and Android native builds. Correct the Linux Android C++ standard
+library configuration and run resource preflight before full LLVM compilation.
+Do not delete local directories: provide a measured cleanup list and retain
+the currently consumed Android/OHOS packages until replacements are verified.
