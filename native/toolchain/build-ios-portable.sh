@@ -73,7 +73,7 @@ set_ios_toolchain() {
     "-DCMAKE_C_COMPILER=$compiler" "-DCMAKE_CXX_COMPILER=$compiler_cpp"
     "-DCMAKE_AR=$libtool" -DCMAKE_POSITION_INDEPENDENT_CODE=ON
     "-DCMAKE_USER_MAKE_RULES_OVERRIDE=$repo_root/native/toolchain/ios-libtool.cmake"
-    -DBUILD_SHARED_LIBS=OFF -DLLVM_PARALLEL_LINK_JOBS=1
+    -DBUILD_SHARED_LIBS=OFF
   )
 }
 
@@ -199,17 +199,21 @@ fmt_source="$build_root/sources/$(manifest_value fmt directory)"
 spdlog_source="$build_root/sources/$(manifest_value spdlog directory)"
 
 host="$build_root/host"
-cmake -S "$repo_root/native/compiler" -B "$host" -G Ninja \
-  -DCMAKE_BUILD_TYPE=Release -DFETCHCONTENT_SOURCE_DIR_LLVM22="$llvm_source" \
-  -DQFLI_BUILD_COMPILER_TESTS=OFF -DLLVM_ENABLE_TERMINFO=OFF \
-  -DLLVM_ENABLE_LIBEDIT=OFF -DLLVM_ENABLE_ZLIB=OFF -DLLVM_ENABLE_ZSTD=OFF \
-  -DLLVM_PARALLEL_LINK_JOBS=1
-cmake --build "$host" --target llvm-tblgen llvm-min-tblgen clang-tblgen --parallel "$jobs"
 host_bin="$host/_deps/llvm22-build/bin"
-for tool in llvm-tblgen llvm-min-tblgen clang-tblgen; do
-  [[ -x "$host_bin/$tool" ]] || { echo "Missing native TableGen: $tool" >&2; exit 1; }
-  "$host_bin/$tool" --version | python3 -c 'import sys; v=sys.stdin.read(); print(v,end=""); assert "22.1.0" in v'
-done
+host_ready=0
+build_host_tablegen() {
+  local tool
+  cmake -S "$repo_root/native/compiler" -B "$host" -G Ninja \
+    -DCMAKE_BUILD_TYPE=Release -DFETCHCONTENT_SOURCE_DIR_LLVM22="$llvm_source" \
+    -DQFLI_BUILD_COMPILER_TESTS=OFF -DLLVM_ENABLE_TERMINFO=OFF \
+    -DLLVM_ENABLE_LIBEDIT=OFF -DLLVM_ENABLE_ZLIB=OFF -DLLVM_ENABLE_ZSTD=OFF \
+    -DLLVM_PARALLEL_LINK_JOBS=1
+  cmake --build "$host" --target llvm-tblgen llvm-min-tblgen clang-tblgen --parallel "$jobs"
+  for tool in llvm-tblgen llvm-min-tblgen clang-tblgen; do
+    [[ -x "$host_bin/$tool" ]] || { echo "Missing native TableGen: $tool" >&2; exit 1; }
+    "$host_bin/$tool" --version | python3 -c 'import sys; v=sys.stdin.read(); print(v,end=""); assert "22.1.0" in v'
+  done
+}
 
 final_package="$build_root/package"
 package="$(mktemp -d "$build_root/package.XXXXXX")"
@@ -252,8 +256,11 @@ for platform in "${platforms[@]}"; do
     mkdir -p "$directory"
     set_ios_toolchain "$platform" "$arch"
     # The interpreter has no LLVM build dependency. Validate its Apple target
-    # before spending time compiling the much larger LLVM/Clang libraries.
+    # before spending time on host TableGen or target LLVM/Clang libraries.
+    # WasmEdge selects the link pool in a subdirectory; define it at the root
+    # so Ninja emits the pool declaration alongside those dependency targets.
     cmake -S "$repo_root/native/portable" -B "$directory/runtime" "${common[@]}" \
+      -DCMAKE_JOB_POOLS=link=1 \
       "-DFETCHCONTENT_SOURCE_DIR_WASMEDGE=$wasmedge_source" \
       "-DFETCHCONTENT_SOURCE_DIR_FMT=$fmt_source" \
       "-DFETCHCONTENT_SOURCE_DIR_SPDLOG=$spdlog_source" \
@@ -265,11 +272,16 @@ for platform in "${platforms[@]}"; do
     grep -q '^WASMEDGE_USE_LLVM:BOOL=OFF$' "$directory/runtime/CMakeCache.txt" || {
       echo 'Wasm interpreter must have LLVM/JIT disabled' >&2; exit 1;
     }
+    if [[ "$host_ready" == 0 ]]; then
+      build_host_tablegen
+      host_ready=1
+    fi
     cmake -S "$repo_root/native/compiler" -B "$directory/compiler" "${common[@]}" \
       "-DFETCHCONTENT_SOURCE_DIR_LLVM22=$llvm_source" \
       "-DLLVM_TABLEGEN=$host_bin/llvm-tblgen" "-DLLVM_MIN_TBLGEN=$host_bin/llvm-min-tblgen" \
       "-DCLANG_TABLEGEN=$host_bin/clang-tblgen" \
       "-DLLVM_NATIVE_TOOL_DIR=$host_bin" -DLLVM_HOST_TRIPLE="$arch-apple-darwin" \
+      -DLLVM_PARALLEL_LINK_JOBS=1 \
       -DLLVM_BUILD_LLVM_DYLIB=OFF -DLLVM_LINK_LLVM_DYLIB=OFF \
       -DLLVM_ENABLE_TERMINFO=OFF -DLLVM_ENABLE_BACKTRACES=OFF -DLLVM_ENABLE_LIBEDIT=OFF \
       -DLLVM_ENABLE_ZLIB=OFF -DLLVM_ENABLE_ZSTD=OFF -DQFLI_BUILD_COMPILER_TESTS=OFF
