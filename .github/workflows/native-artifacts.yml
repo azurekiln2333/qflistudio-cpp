@@ -1,0 +1,147 @@
+name: Native artifacts
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Packages to build (OHOS resources are data only)
+        type: choice
+        default: all
+        options:
+          - all
+          - android
+          - ohos-resources
+  push:
+    branches:
+      - main
+      - ci/native-artifacts
+    paths:
+      - .github/workflows/native-artifacts.yml
+      - native/toolchain/**
+      - native/portable/patches/**
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-artifacts-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  android:
+    if: github.event_name != 'workflow_dispatch' || inputs.target != 'ohos-resources'
+    name: Android ${{ matrix.abi }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 330
+    strategy:
+      fail-fast: false
+      matrix:
+        abi: [arm64-v8a, x86_64]
+    env:
+      ABI: ${{ matrix.abi }}
+      BUILD_ROOT: ${{ github.workspace }}/native/build/ci-android-${{ matrix.abi }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Install fixed build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y clang-15 lld-15 ninja-build
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'ndk;27.0.12077973'
+          cmake --version
+          pwsh --version
+          df -h .
+      - name: Build and validate the native toolchain
+        run: |
+          mkdir -p native/build/ci-logs
+          bash native/toolchain/build-android-llvm-linux.sh \
+            --abi "$ABI" --jobs 4 --build-root "$BUILD_ROOT" \
+            --ndk "$ANDROID_HOME/ndk/27.0.12077973" \
+            2>&1 | tee "native/build/ci-logs/android-$ABI.log"
+      - name: Package download
+        run: |
+          python3 native/toolchain/package-ci-artifact.py android \
+            --abi "$ABI" --package "$BUILD_ROOT/package" --output native/build/ci-dist
+      - name: Upload native package
+        id: upload
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: qfli-native-android-${{ matrix.abi }}
+          path: native/build/ci-dist/*
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 30
+      - name: Describe download
+        env:
+          ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
+        run: |
+          {
+            echo "### Android $ABI"
+            echo "[Download native package]($ARTIFACT_URL) (retained for 30 days)."
+            echo 'Contains jniLibs, toolchain assets, validation reports and SHA256SUMS.'
+            echo 'Extract the inner tar.gz into native/build/android-package.'
+            echo 'This is a native dependency package, not an APK. Device execution was not tested.'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload build diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: logs-android-${{ matrix.abi }}
+          path: |
+            native/build/ci-logs/
+            native/build/ci-android-${{ matrix.abi }}/host/CMakeCache.txt
+            native/build/ci-android-${{ matrix.abi }}/target-${{ matrix.abi }}/CMakeCache.txt
+            native/build/ci-android-${{ matrix.abi }}/target-${{ matrix.abi }}/CMakeFiles/CMakeConfigureLog.yaml
+          if-no-files-found: warn
+          retention-days: 7
+
+  ohos-resources:
+    if: github.event_name != 'workflow_dispatch' || inputs.target != 'android'
+    name: OHOS WASI resources (data only)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Download and verify pinned archives
+        shell: pwsh
+        run: ./native/toolchain/prepare-portable-wasm.ps1 -IncludeCompiler -ArchivesOnly
+      - name: Package WASI resources
+        shell: pwsh
+        run: ./native/toolchain/package-ohos-portable.ps1 -Python python3
+      - name: Verify and prepare download
+        run: |
+          mkdir -p native/build/ci-reports
+          python3 native/toolchain/verify-ohos-portable-package.py --project-root . \
+            | tee native/build/ci-reports/ohos-resources.json
+          python3 native/toolchain/package-ci-artifact.py ohos-resources \
+            --package ohos/entry/src/main/resources/rawfile/qfli_toolchain \
+            --verification native/build/ci-reports/ohos-resources.json \
+            --output native/build/ci-dist
+      - name: Upload WASI resources
+        id: upload
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: qfli-ohos-wasi-resources
+          path: native/build/ci-dist/*
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 30
+      - name: Describe download
+        env:
+          ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
+        run: |
+          {
+            echo '### OHOS WASI resources'
+            echo "[Download resource package]($ARTIFACT_URL) (retained for 30 days)."
+            echo 'Contains ohos-wasi.zip, its SHA256 sidecar, provenance and resource validation.'
+            echo 'Copy ohos-wasi.zip and its sidecar into ohos/entry/src/main/resources/rawfile/qfli_toolchain.'
+            echo 'This is data only: no OHOS compiler/runtime archives, native bridge, or HAP.'
+            echo 'Full OHOS native compilation still needs the matching SDK resource input.'
+          } >> "$GITHUB_STEP_SUMMARY"

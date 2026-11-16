@@ -144,7 +144,10 @@ try:
             'resourceTreeSha256': hashlib.sha256(inventory.encode()).hexdigest(),
             'resources': [records[name] for name in required],
         }
-        package.writestr('toolchain.json', json.dumps(toolchain, indent=2) + '\n')
+        entry = zipfile.ZipInfo('toolchain.json', (2026, 1, 1, 0, 0, 0))
+        entry.compress_type = zipfile.ZIP_DEFLATED
+        entry.external_attr = 0o100644 << 16
+        package.writestr(entry, json.dumps(toolchain, indent=2) + '\n')
     with zipfile.ZipFile(temporary) as package:
         invalid = package.testzip()
         if invalid:
