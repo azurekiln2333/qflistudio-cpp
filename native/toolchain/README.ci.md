@@ -139,6 +139,7 @@ native/build/ios-portable/package/
 ```
 
 在 Mac 上进入仓库根目录。
+本地安装器要求 Python 3.9 或更高版本。
 运行配置安装器：
 
 ```sh

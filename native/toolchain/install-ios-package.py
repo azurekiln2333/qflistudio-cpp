@@ -7,6 +7,14 @@ import json
 from pathlib import Path
 
 
+def sha256(path):
+    digest = hashlib.sha256()
+    with path.open('rb') as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b''):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
 def main():
     repo = Path(__file__).resolve().parents[2]
     parser = argparse.ArgumentParser(description=__doc__)
@@ -25,9 +33,8 @@ def main():
         library = (package / relative).resolve()
         if not library.is_relative_to(package):
             raise ValueError(f'Unsafe package path: {relative}')
-        with library.open('rb') as stream:
-            if hashlib.file_digest(stream, 'sha256').hexdigest() != expected:
-                raise ValueError(f'Library checksum mismatch: {relative}')
+        if sha256(library) != expected:
+            raise ValueError(f'Library checksum mismatch: {relative}')
     for relative in ('resources/sdk/toolchain.json',
                      'resources/sdk/share/wasi-sysroot/lib/wasm32-wasip1/eh/libunwind.a',
                      'include/qfli_compiler.h', 'include/qfli_wasm.h'):
@@ -39,8 +46,7 @@ def main():
             if path.is_symlink():
                 raise ValueError(f'Unexpected symbolic link: {path}')
             if path.is_file():
-                with path.open('rb') as stream:
-                    inventory[path.relative_to(package / directory).as_posix()] = hashlib.file_digest(stream, 'sha256').hexdigest()
+                inventory[path.relative_to(package / directory).as_posix()] = sha256(path)
         digest = hashlib.sha256(json.dumps(inventory, sort_keys=True).encode()).hexdigest()
         if digest != report[field]:
             raise ValueError(f'iOS package {directory} checksum mismatch')

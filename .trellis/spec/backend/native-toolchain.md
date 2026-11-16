@@ -127,6 +127,7 @@ actual application process before changing the capability declaration.
   `package-ios-xcframework.py assemble --slice-dir PATH ... --output PATH`
   merges exactly device ARM64 and simulator ARM64/x86_64.
   `install-ios-package.py --package PATH` generates local Flutter xcconfig.
+  Keep the local installer compatible with Python 3.9; hash files in chunks.
 
 ### Contracts and failures
 
