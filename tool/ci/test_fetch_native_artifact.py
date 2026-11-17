@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
-"""Unit tests for the pure functions of fetch_native_artifact.py."""
+"""Unit tests for fetch_native_artifact.py. No test calls the GitHub API."""
 
 from __future__ import annotations
 
+import contextlib
 import hashlib
 import importlib.util
 import io
 from pathlib import Path
+import sys
 import tarfile
 import tempfile
 import unittest
+from unittest import mock
 import zipfile
 
 HERE = Path(__file__).resolve().parent
@@ -190,6 +193,29 @@ class ExtractTest(unittest.TestCase):
             with self.assertRaises(tarfile.TarError):
                 fetch_native_artifact.extract(archive, Path(scratch) / "target")
             self.assertFalse((Path(scratch) / "escape.txt").exists())
+
+
+class MainTest(unittest.TestCase):
+    def run_main(self, artifacts: list[dict], scratch: Path) -> tuple[int, str]:
+        arguments = [
+            "fetch_native_artifact.py", "--name", NAME, "--repository", "owner/repository",
+            "--extract-to", str(scratch / "package"), "--record", str(scratch / "record.json"),
+        ]
+        errors = io.StringIO()
+        with mock.patch.object(fetch_native_artifact, "list_artifacts", return_value=artifacts):
+            with mock.patch.object(sys, "argv", arguments), contextlib.redirect_stderr(errors):
+                return fetch_native_artifact.main(), errors.getvalue()
+
+    def test_missing_input_fails_and_names_the_source_workflow(self) -> None:
+        for artifacts in ([], [artifact(1, "2026-11-17T00:00:00Z", expired=True)]):
+            with self.subTest(artifacts=len(artifacts)), tempfile.TemporaryDirectory() as directory:
+                scratch = Path(directory)
+                status, errors = self.run_main(artifacts, scratch)
+                self.assertEqual(status, 1)
+                self.assertIn("Native input failed: No unexpired artifact", errors)
+                self.assertIn('Run the "Native artifacts" workflow first.', errors)
+                self.assertFalse((scratch / "record.json").exists())
+                self.assertFalse((scratch / "package").exists())
 
 
 if __name__ == "__main__":
