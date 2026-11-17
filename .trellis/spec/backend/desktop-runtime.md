@@ -30,8 +30,14 @@ not execute Flutter or validate the macOS/iOS application shell.
   file discovery does not depend on compiler extension inference.
 - Preserve per-driver standard probes: C17/C11 and C++20/17/14/11.
 - Compiler discovery preserves environment overrides QFLI_CLANG/QFLI_CLANGXX,
-  QFLI_CC/QFLI_CXX, QFLI_TOOLCHAIN_HOME, constructor root, bundled toolchain/bin,
-  Windows Dev-Cpp paths and PATH candidates, in existing precedence.
+  QFLI_CC/QFLI_CXX, QFLI_TOOLCHAIN_HOME, constructor root, configured and
+  managed desktop toolchains, bundled toolchain/bin, Windows Dev-Cpp paths and
+  PATH candidates, in existing precedence. The environment page and runner use
+  the same candidate list.
+- Desktop settings store the selected toolchain directory and compiler family
+  preference in the application storage directory. Setup actions never edit
+  PATH, the registry or a shell profile. A child process receives the selected
+  toolchain bin directory so its runtime libraries resolve.
 - Keep project root and optional include/ header paths as argument-array entries.
 - Link libm after object files on Linux; do not assume libm is implicit for C.
 - Feed input.txt to the program, close stdin, and preserve stdout/stderr and

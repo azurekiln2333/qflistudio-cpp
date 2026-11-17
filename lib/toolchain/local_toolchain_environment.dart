@@ -1,42 +1,7 @@
-import 'package:flutter/foundation.dart';
-
-import 'toolchain_environment.dart';
-
-/// Compiler environment of this computer.
-class LocalToolchainEnvironment extends ChangeNotifier
-    implements ToolchainEnvironment {
-  @override
-  bool get supported => false;
-
-  @override
-  ToolchainSettings get settings => const ToolchainSettings();
-
-  @override
-  Future<void> load() async {}
-
-  @override
-  Future<void> setDirectory(String? directory) async {}
-
-  @override
-  Future<void> setPreference(CompilerPreference preference) async {}
-
-  @override
-  Future<List<DetectedCompiler>> detect() async => const [];
-
-  @override
-  Future<List<ToolchainSetupOption>> setupOptions() async => const [];
-
-  @override
-  Stream<ToolchainSetupProgress> runSetup(String optionId) =>
-      const Stream.empty();
-
-  @override
-  Future<void> cancelSetup() async {}
-
-  @override
-  Future<void> remove(String optionId) async {}
-}
-
-/// The instance that the runner and the environment page share.
-final ToolchainEnvironment forgeToolchainEnvironment =
-    LocalToolchainEnvironment();
+// Compiler environment of this computer.
+//
+// A web build compiles nothing on this computer, so the conditional import
+// picks a class whose every member is inert and whose `supported` is false.
+// Only the native import reads `dart:io`, and the web build never compiles it.
+export 'local_toolchain_environment_stub.dart'
+    if (dart.library.io) 'local_toolchain_environment_native.dart';

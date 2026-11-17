@@ -300,6 +300,11 @@ class DesktopArchiveTest(unittest.TestCase):
         self.assertEqual({(member.uid, member.gid, member.uname) for member in members}, {(0, 0, 'root')})
         self.assertEqual(content, b'lib/libapp.so')
 
+    def test_portable_file_list_ignores_the_completion_marker(self):
+        source = set(self.FILES)
+        extracted = source | {package_app.PORTABLE_MARKER}
+        self.assertEqual(package_app.check_portable_file_list(source, extracted - {package_app.PORTABLE_MARKER}), len(source))
+
 
 class AndroidCommandTest(unittest.TestCase):
     """Run the android command on a fake APK, without Flutter."""

@@ -169,6 +169,17 @@ abstract class ToolchainEnvironment implements Listenable {
 
   Future<void> setPreference(CompilerPreference preference);
 
+  /// Stored settings. The web build cannot start a process that would read
+  /// them, so shared code that only reads the settings still compiles there.
+  ToolchainSettings? get storedSettings => settings;
+
+  /// Managed toolchain roots, or null.
+  ///
+  /// Windows only. `ClangProgramRunner` reads them once per run, so a finished
+  /// setup works without a restart and `remove` takes effect at the next run.
+  /// A build without a file system reports null.
+  Future<List<String>>? get managedRoots => null;
+
   /// Probes the compilers in the order that the runner uses.
   ///
   /// The first entry of each language is the compiler that the next run uses.

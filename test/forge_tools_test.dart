@@ -1,9 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:qfli_c/forge_environment_page.dart';
 import 'package:qfli_c/forge_integer_tools.dart';
 import 'package:qfli_c/forge_tools_page.dart';
 import 'package:qfli_c/main.dart' show forgeProfile;
+import 'package:qfli_c/toolchain/toolchain_environment.dart';
+
+/// 只用于验证入口：页面本身的行为由 `forge_environment_page_test.dart` 覆盖。
+class _StubEnvironment extends ChangeNotifier implements ToolchainEnvironment {
+  @override
+  ToolchainSettings? get storedSettings => settings;
+
+  @override
+  Future<List<String>>? get managedRoots => null;
+  _StubEnvironment({required this.supported});
+
+  @override
+  final bool supported;
+
+  @override
+  ToolchainSettings get settings => const ToolchainSettings();
+
+  @override
+  Future<void> load() async {}
+
+  @override
+  Future<void> setDirectory(String? directory) async {}
+
+  @override
+  Future<void> setPreference(CompilerPreference preference) async {}
+
+  @override
+  Future<List<DetectedCompiler>> detect() async => const [];
+
+  @override
+  Future<List<ToolchainSetupOption>> setupOptions() async => const [];
+
+  @override
+  Stream<ToolchainSetupProgress> runSetup(String optionId) =>
+      const Stream.empty();
+
+  @override
+  Future<void> cancelSetup() async {}
+
+  @override
+  Future<void> remove(String optionId) async {}
+}
 
 void main() {
   test('Forge contributes a tools page to the existing navigation', () {
@@ -310,4 +353,97 @@ void main() {
       expect(tester.takeException(), isNull);
     });
   }
+
+  group('Environment entry', () {
+    /// 五个工具分区在两种情况下都直接可见，且元素位置不变。
+    final sections = [
+      const ValueKey('integer-section'),
+      const ValueKey('bit-section'),
+      const ValueKey('string-section'),
+      const ValueKey('layout-section'),
+      const ValueKey('ascii-section'),
+    ];
+
+    Future<void> pumpBody(
+      WidgetTester tester,
+      ToolchainEnvironment environment,
+    ) async {
+      tester.view.physicalSize = const Size(1000, 1200);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      // 宿主用 MaterialApp 提供导航；这里用最小外壳。
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(body: ForgeToolsBody(environment: environment)),
+        ),
+      );
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets(
+      'a supported environment shows a direct button that opens the page',
+      (tester) async {
+        final environment = _StubEnvironment(supported: true);
+        await pumpBody(tester, environment);
+
+        final entry = find.byKey(const ValueKey('environment-entry'));
+        expect(entry, findsOneWidget);
+        expect(find.text('环境配置'), findsOneWidget);
+        expect(find.text('打开终端'), findsNothing);
+        for (final key in sections) {
+          expect(find.byKey(key), findsOneWidget);
+        }
+
+        await tester.tap(entry);
+        await tester.pumpAndSettle();
+        expect(find.byType(ForgeEnvironmentPage), findsOneWidget);
+        final page = tester.widget<ForgeEnvironmentPage>(
+          find.byType(ForgeEnvironmentPage),
+        );
+        expect(page.environment, same(environment));
+        expect(find.text('环境配置'), findsOneWidget);
+      },
+    );
+
+    testWidgets('an unsupported environment shows nothing and starts no page', (
+      tester,
+    ) async {
+      final environment = _StubEnvironment(supported: false);
+      await pumpBody(tester, environment);
+
+      expect(find.byKey(const ValueKey('environment-entry')), findsNothing);
+      expect(find.text('环境配置'), findsNothing);
+      for (final key in sections) {
+        expect(find.byKey(key), findsOneWidget);
+      }
+    });
+
+    testWidgets('the terminal button keeps its place beside the entry', (
+      tester,
+    ) async {
+      final environment = _StubEnvironment(supported: true);
+      tester.view.physicalSize = const Size(360, 900);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      var opened = 0;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: ForgeToolsBody(
+              environment: environment,
+              onOpenTerminal: () => opened++,
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('打开终端'), findsOneWidget);
+      expect(find.byKey(const ValueKey('environment-entry')), findsOneWidget);
+      await tester.tap(find.text('打开终端'));
+      await tester.pumpAndSettle();
+      expect(opened, 1);
+      expect(tester.takeException(), isNull);
+    });
+  });
 }

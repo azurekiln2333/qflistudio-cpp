@@ -57,6 +57,17 @@ DEB_MAINTAINER = f'{APP_NAME} CI <noreply@github.com>'
 CONTROL_FIELDS = ['Package', 'Version', 'Architecture', 'Maintainer', 'Depends', 'Homepage']
 # Sizes that the hicolor icon theme declares for application icons.
 HICOLOR_SIZES = {16, 22, 24, 32, 36, 48, 64, 72, 96, 128, 192, 256, 512}
+# Sizes that tool/icons/generate_app_icons.py writes into linux/packaging/icons.
+LINUX_ICON_SIZES = [16, 24, 32, 48, 64, 128, 256, 512]
+LINUX_ICON_DIR = 'linux/packaging/icons'
+# The AppDir root icon and .DirIcon use the 256 px generated Linux icon.
+APPDIR_ICON_SIZE = 256
+APPDIR_ICON = '.DirIcon'
+APPDIR_LAUNCHER = 'AppRun'
+APPIMAGE_TOOLS_VARIABLE = 'QFLI_APPIMAGE_TOOLS'
+PORTABLE_BUILD_ID_LENGTH = 12
+# The launcher writes this file after the last copied file.
+PORTABLE_MARKER = '.qfli-portable-complete'
 IOS_APP = 'Payload/Runner.app/'
 IOS_REQUIRED = [
     'Runner', 'Info.plist', 'Frameworks/App.framework/App',
@@ -74,13 +85,17 @@ SIGNING_NOTES = {
     ],
     'windows': [
         'Signing: unsigned.',
-        'Windows SmartScreen can warn before the installer starts.',
+        'Windows SmartScreen can warn before the installer or the single-file edition starts.',
+        'The single-file edition installs nothing.',
+        'Its first start copies the application to %LOCALAPPDATA%\\QFLIForge\\portable\\<build id> and starts it from there.',
         _HOST_COMPILER,
         _UNTESTED,
     ],
     'linux': [
         'Signing: unsigned.',
         'The package was built and checked on Ubuntu 24.04.',
+        'Rename the file first: an AppImage keeps its root icon only under its own name.',
+        'The AppImage sets no library path, so the host clang, gcc and pkexec keep their environment.',
         _HOST_COMPILER,
         _UNTESTED,
     ],
@@ -222,6 +237,83 @@ def icon_install_path(width, height):
     if width == height and width in HICOLOR_SIZES:
         return f'usr/share/icons/hicolor/{width}x{height}/apps/{APP_ID}.png'
     return f'usr/share/pixmaps/{APP_ID}.png'
+
+
+def linux_icon_files(root):
+    """Return the generated Linux icons as (size, path), sorted by size."""
+    directory = Path(root) / LINUX_ICON_DIR
+    if not directory.is_dir():
+        raise PackageError(
+            f'Linux icon directory is missing: {directory}. '
+            'Run tool/icons/generate_app_icons.py and commit its output.')
+    icons = []
+    for size in LINUX_ICON_SIZES:
+        path = directory / f'app_icon_{size}.png'
+        if not path.is_file():
+            raise PackageError(f'Linux icon is missing: {path}')
+        icons.append((size, path))
+    return icons
+
+
+def check_linux_icon_sizes(root):
+    """Check that every generated Linux icon is a square PNG of its own size."""
+    for size, path in linux_icon_files(root):
+        actual = png_size(path.read_bytes()[:24])
+        if actual != (size, size):
+            raise PackageError(f'Linux icon {path.name} is {actual[0]}x{actual[1]}, expected {size}x{size}')
+    return [f'linux-icon-{size}' for size in LINUX_ICON_SIZES]
+
+
+def icon_install_paths(icons):
+    """Return the Debian tree path of each (size, path) icon."""
+    return {size: icon_install_path(size, size) for size, _ in icons}
+
+
+def appdir_layout(icons):
+    """Return the AppDir member name of each (size, path) icon, the root icon first."""
+    root = next(path for size, path in icons if size == APPDIR_ICON_SIZE)
+    layout = [(APPDIR_LAUNCHER, None), (f'{APP_ID}.desktop', None),
+              (f'{APP_ID}.png', root), (APPDIR_ICON, root)]
+    layout += [(f'usr/share/icons/hicolor/{size}x{size}/apps/{APP_ID}.png', path)
+               for size, path in icons]
+    return layout
+
+
+def appdir_icon_names(icons):
+    return [name for name, source in appdir_layout(icons) if source is not None]
+
+
+def app_run_script(binary):
+    """Return AppRun. It starts the launcher and keeps the caller's environment."""
+    return (
+        '#!/bin/sh\n'
+        '# Retained AppDir entry point. The AppImage runtime normally starts the\n'
+        '# launcher below directly, so this file changes no library path.\n'
+        'set -eu\n'
+        'here=$(cd "$(dirname "$0")" && pwd)\n'
+        f'exec "$here/{binary}" "$@"\n'
+    )
+
+
+def portable_build_id(commit, run_id):
+    """Return the directory name of one single-file edition."""
+    commit, run_id = (commit or '').strip(), (run_id or '').strip()
+    if not commit or not run_id:
+        raise PackageError('The single-file edition needs GITHUB_SHA and GITHUB_RUN_ID.')
+    if not re.fullmatch(r'[0-9a-f]{40}', commit) or not re.fullmatch(r'[0-9A-Za-z_-]+', run_id):
+        raise PackageError(f'Unexpected build identity: commit {commit!r}, run {run_id!r}')
+    return f'{commit[:PORTABLE_BUILD_ID_LENGTH]}-{run_id}'
+
+
+def check_portable_file_list(source_files, extracted_files):
+    """Compare the files of a build output with the files of one extraction."""
+    expected = set(source_files)
+    actual = set(extracted_files)
+    if actual != expected:
+        raise PackageError(
+            f'Extracted files differ: missing {sorted(expected - actual)[:10]}, '
+            f'unexpected {sorted(actual - expected)[:10]}')
+    return len(actual)
 
 
 def control_file(version, installed_kib=None):
@@ -460,25 +552,82 @@ def build_windows_zip(source, output):
     return target
 
 
-def package_windows(source, output, version):
+def find_makensis():
+    """Find makensis.exe in the NSIS 3 directories, then on PATH."""
+    candidates = []
+    for variable in ['ProgramFiles(x86)', 'ProgramFiles']:
+        if os.environ.get(variable):
+            candidates.append(Path(os.environ[variable]) / 'NSIS' / 'makensis.exe')
+    candidates.append(shutil.which('makensis'))
+    for candidate in candidates:
+        if candidate and Path(candidate).is_file():
+            return Path(candidate)
+    raise PackageError('NSIS 3 (makensis.exe) is not installed on this runner')
+
+
+def build_windows_portable(source, output, build_id):
+    """Build the single-file edition: a launcher that carries the build output."""
+    target = output / 'qfli-forge-windows-x64-portable.exe'
+    target.unlink(missing_ok=True)
+    application = output / 'qfli-forge-windows-x64-portable'
+    shutil.rmtree(application, ignore_errors=True)
+    # NSIS stores relative paths from the script directory, so copy the build there.
+    shutil.copytree(source, application, symlinks=True)
+    try:
+        # Start makensis from Python: Git Bash rewrites /DNAME definitions as paths.
+        run([
+            find_makensis(), '/V2', '/NOCD',
+            f'/DBuildId={build_id}',
+            f'/DApplicationDir={application}',
+            f'/DOutputFile={target}',
+            f'/DIconFile={ROOT / "windows/runner/resources/app_icon.ico"}',
+            ROOT / 'tool/ci/windows_portable.nsi',
+        ])
+    finally:
+        shutil.rmtree(application, ignore_errors=True)
+    if not target.is_file():
+        raise PackageError(f'NSIS did not write {target}')
+    return target
+
+
+def verify_windows_portable(portable, source, extraction):
+    """Extract without starting, compare the file list, and run it again."""
+    extraction.mkdir(parents=True)
+    target = extraction / APP_NAME
+    command = [portable, '/EXTRACTONLY', f'/D={target}']
+    run(command, timeout=1800)
+    # The marker belongs to the launcher, not to the Flutter build output.
+    extracted = files_under(target) - {PORTABLE_MARKER}
+    check_portable_file_list(files_under(source), extracted)
+    # The marker file of a complete extraction makes the second run start no extraction.
+    if not (target / PORTABLE_MARKER).is_file():
+        raise PackageError(f'The extraction wrote no {PORTABLE_MARKER} marker')
+    run(command, timeout=600)
+    return ['portable-extract-only', 'portable-file-list', 'portable-marker',
+            'portable-repeat-extraction']
+
+
+def package_windows(source, output, version, build_id):
     if not source.is_dir():
         raise PackageError(f'Application build is missing: {source}')
     require_files(source, WINDOWS_REQUIRED)
     setup = build_windows_setup(source, output, version)
     validation = ['windows-build-files', *verify_windows_setup(setup, source)]
     archive = build_windows_zip(source, output)
-    return [setup, archive], [*validation, 'portable-zip-file-list']
+    validation.append('portable-zip-file-list')
+    portable = build_windows_portable(source, output, build_id)
+    with workspace() as directory:
+        validation += verify_windows_portable(portable, source, directory / 'extract')
+    return [setup, archive, portable], validation
 
 
 # Linux.
 
-def build_deb(source, output, version):
-    """Build the Debian package. Return the package and its icon path."""
+def build_deb(source, output, version, icons):
+    """Build the Debian package. Return the package and the icon install paths."""
     target = output / 'qfli-forge-linux-x64.deb'
     target.unlink(missing_ok=True)
-    icon_source = ROOT / 'assets/app_icon.png'
-    with icon_source.open('rb') as stream:
-        icon_path = icon_install_path(*png_size(stream.read(24)))
+    icon_paths = icon_install_paths(icons)
     with workspace() as work:
         root = work / 'root'
         application = root / 'opt' / DEB_PACKAGE
@@ -489,9 +638,10 @@ def build_deb(source, output, version):
         entry = root / 'usr/share/applications' / f'{APP_ID}.desktop'
         entry.parent.mkdir(parents=True)
         write_text(entry, desktop_entry())
-        icon = root / icon_path
-        icon.parent.mkdir(parents=True)
-        shutil.copyfile(icon_source, icon)
+        for size, icon_source in icons:
+            icon = root / icon_paths[size]
+            icon.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(icon_source, icon)
         copyright_file = root / 'usr/share/doc' / DEB_PACKAGE / 'copyright'
         copyright_file.parent.mkdir(parents=True)
         shutil.copyfile(ROOT / 'LICENSE', copyright_file)
@@ -502,7 +652,7 @@ def build_deb(source, output, version):
         (root / 'DEBIAN').mkdir(mode=0o755)
         write_text(root / 'DEBIAN/control', control_file(version, -(-size // 1024)))
         run(['dpkg-deb', '--root-owner-group', '-Zxz', '--build', root, target])
-    return target, icon_path
+    return target, icon_paths
 
 
 def ldd(binary, strict):
@@ -516,7 +666,7 @@ def ldd(binary, strict):
         raise PackageError(f'ldd failed for {binary}:\n{result.stdout}')
 
 
-def verify_deb(package, version, icon_path):
+def verify_deb(package, version, icon_paths):
     """Install through apt, check the installed files and remove the package."""
     fields = output_of(['dpkg-deb', '--field', package, *CONTROL_FIELDS])
     check_control_fields(parse_control_fields(fields), version)
@@ -526,7 +676,8 @@ def verify_deb(package, version, icon_path):
         launcher = Path('/usr/bin') / DEB_PACKAGE
         if not launcher.is_symlink() or launcher.resolve(strict=True) != application / BINARY_NAME:
             raise PackageError(f'Launcher {launcher} does not link to {application / BINARY_NAME}')
-        for installed in [f'/usr/share/applications/{APP_ID}.desktop', f'/{icon_path}']:
+        for installed in [f'/usr/share/applications/{APP_ID}.desktop',
+                          *(f'/{path}' for path in icon_paths.values())]:
             if not Path(installed).is_file():
                 raise PackageError(f'Package did not install {installed}')
         ldd(application / BINARY_NAME, strict=True)
@@ -537,7 +688,7 @@ def verify_deb(package, version, icon_path):
     if application.exists():
         raise PackageError(f'Package removal left {application}')
     return ['deb-package-fields', 'deb-apt-install', 'deb-launcher-link', 'deb-desktop-entry',
-            'deb-icon', 'deb-shared-library-resolution', 'deb-apt-remove']
+            'deb-icons', 'deb-shared-library-resolution', 'deb-apt-remove']
 
 
 def _root_owned(member):
@@ -558,6 +709,88 @@ def build_linux_tar(source, output):
     return target
 
 
+def build_appdir(directory, source, icons):
+    """Lay out an AppDir from the bundle that the .deb uses. Return its root."""
+    directory.mkdir(parents=True)
+    shutil.copytree(source, directory, symlinks=True, dirs_exist_ok=True)
+    for name, icon_source in appdir_layout(icons):
+        target = directory / name
+        if icon_source is None:
+            continue
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(icon_source, target)
+    launcher = directory / APPDIR_LAUNCHER
+    write_text(launcher, app_run_script(BINARY_NAME))
+    launcher.chmod(0o755)
+    write_text(directory / f'{APP_ID}.desktop', desktop_entry())
+    return directory
+
+
+def appimage_tools(environment=None):
+    """Return appimagetool and the type-2 runtime that fetch_appimage_tools.py downloaded."""
+    environment = os.environ if environment is None else environment
+    configured = environment.get(APPIMAGE_TOOLS_VARIABLE)
+    if not configured:
+        raise PackageError(
+            f'{APPIMAGE_TOOLS_VARIABLE} is not set. '
+            'Run tool/ci/fetch_appimage_tools.py before package_app.py linux.')
+    directory = Path(configured)
+    tools = directory / 'appimagetool-x86_64.AppImage'
+    runtime = directory / 'runtime-x86_64'
+    for path in [tools, runtime]:
+        if not path.is_file():
+            raise PackageError(f'AppImage tool is missing: {path}')
+        if not os.access(path, os.X_OK):
+            raise PackageError(f'AppImage tool is not executable: {path}')
+    return tools, runtime, directory
+
+
+def build_appimage(source, output, icons, tools, runtime, work):
+    """Build the single-file Linux edition from an AppDir of the bundle."""
+    target = output / 'qfli-forge-linux-x64.AppImage'
+    target.unlink(missing_ok=True)
+    appdir = build_appdir(work / 'AppDir', source, icons)
+    environment = dict(os.environ, ARCH='x86_64', VERSION='1.0')
+    # The runner has no FUSE 2: extract the tool into a temporary copy and run it there.
+    run([tools, '--appimage-extract-and-run', '--no-appstream', '--verbose',
+         '--runtime-file', runtime, appdir, target], cwd=work, env=environment)
+    target.chmod(0o755)
+    return target
+
+
+def check_appimage(path):
+    """Check the magic, the extractability and the file list of one AppImage."""
+    if not os.access(path, os.X_OK):
+        raise PackageError(f'AppImage is not executable: {path}')
+    with path.open('rb') as stream:
+        magic = stream.read(4)
+    if magic != b'\x7fELF':
+        raise PackageError(f'AppImage does not start with the ELF magic: {path}')
+    return ['appimage-executable', 'appimage-elf-magic']
+
+
+def verify_appimage(path, source, icons, work):
+    """Extract the AppImage and compare the application files with the bundle."""
+    validation = check_appimage(path)
+    extraction = work / 'appimage-extracted'
+    extraction.mkdir(parents=True)
+    run([path, '--appimage-extract'], cwd=extraction, timeout=1800)
+    squashfs = extraction / 'squashfs-root'
+    if not (squashfs / APPDIR_LAUNCHER).is_file():
+        raise PackageError(f'The AppImage holds no {APPDIR_LAUNCHER}')
+    for name in appdir_icon_names(icons):
+        if not (squashfs / name).is_file():
+            raise PackageError(f'The AppImage holds no {name}')
+    expected = files_under(source) | {APPDIR_LAUNCHER, f'{APP_ID}.desktop', APPDIR_ICON,
+                                      *appdir_icon_names(icons)}
+    actual = files_under(squashfs)
+    # .DirIcon may be a symlink to the root icon instead of a second copy.
+    if (squashfs / APPDIR_ICON).is_symlink():
+        actual.add(APPDIR_ICON)
+    check_portable_file_list(sorted(expected), sorted(actual))
+    return [*validation, 'appimage-extract', 'appimage-file-list', 'appimage-icons']
+
+
 def package_linux(source, output, version):
     if not source.is_dir():
         raise PackageError(f'Application build is missing: {source}')
@@ -566,10 +799,17 @@ def package_linux(source, output, version):
         raise PackageError(f'Launcher is not executable: {source / BINARY_NAME}')
     if not (source / 'data/flutter_assets').is_dir():
         raise PackageError(f'Incomplete application build: {source / "data/flutter_assets"}')
-    package, icon_path = build_deb(source, output, version)
-    validation = ['linux-bundle-files', *verify_deb(package, version, icon_path)]
+    icons = linux_icon_files(ROOT)
+    validation = ['linux-bundle-files', *check_linux_icon_sizes(ROOT)]
+    package, icon_paths = build_deb(source, output, version, icons)
+    validation += verify_deb(package, version, icon_paths)
     archive = build_linux_tar(source, output)
-    return [package, archive], [*validation, 'tar-file-list']
+    validation.append('tar-file-list')
+    tools, runtime, _ = appimage_tools()
+    with workspace() as work:
+        appimage = build_appimage(source, output, icons, tools, runtime, work)
+        validation += verify_appimage(appimage, source, icons, work)
+    return [package, archive, appimage], validation
 
 
 # macOS.
@@ -678,7 +918,8 @@ def package(args):
     else:
         architecture = ARCHITECTURES[args.platform]
         if args.platform == 'windows':
-            targets, validation = package_windows(source, output, version)
+            build_id = portable_build_id(os.environ.get('GITHUB_SHA'), os.environ.get('GITHUB_RUN_ID'))
+            targets, validation = package_windows(source, output, version, build_id)
         elif args.platform == 'linux':
             targets, validation = package_linux(source, output, version)
         elif args.platform == 'macos':
