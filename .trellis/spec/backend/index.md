@@ -20,6 +20,7 @@ This directory contains guidelines for backend development. Fill in each file wi
 | [Quality Guidelines](./quality-guidelines.md) | Code standards, forbidden patterns | To fill |
 | [Logging Guidelines](./logging-guidelines.md) | Structured logging, log levels | To fill |
 | [Native Toolchain](./native-toolchain.md) | LLVM host tools, OHOS cross build, runtime validation gates | Recorded |
+| [Application Installers](./app-installers.md) | GitHub installer builds for six platforms, native inputs, signing boundary and download contents | Recorded |
 | [Code Analysis](./code-analysis.md) | Exact unsaved Clang snapshots, ranges, confinement, lifecycle and package gates | Recorded |
 | [Android Runtime](./android-runtime.md) | Android LLVM packages, process isolation, streaming and cancellation | Recorded |
 | [OHOS Runtime](./ohos-runtime.md) | Signed LLVM/WASI interpreter, threads, resource hashes, NAPI ownership and phone verification | Recorded |
