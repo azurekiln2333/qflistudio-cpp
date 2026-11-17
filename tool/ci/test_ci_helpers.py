@@ -340,8 +340,10 @@ class AndroidCommandTest(unittest.TestCase):
         package = 'qfli-forge-android-arm64-v8a-test-signed.apk'
         self.assertEqual(
             sorted(path.name for path in self.output.iterdir()),
-            sorted([package, 'SHA256SUMS', 'SIGNING.txt', 'provenance.json']))
+            sorted([package, 'LICENSE', 'SHA256SUMS', 'SIGNING.txt', 'provenance.json']))
         self.assertEqual((self.output / package).read_bytes(), apk.read_bytes())
+        self.assertEqual(
+            (self.output / 'LICENSE').read_bytes(), (package_app.ROOT / 'LICENSE').read_bytes())
         digest = package_app.sha256(apk)
         self.assertEqual((self.output / 'SHA256SUMS').read_bytes(), f'{digest}  {package}\n'.encode())
         signing = (self.output / 'SIGNING.txt').read_bytes()

@@ -263,6 +263,7 @@ jobs:
           {
             echo '### Linux x64'
             echo "[Download Debian package and tar.gz bundle]($ARTIFACT_URL) (retained for 30 days)."
+            echo 'Unsigned: the Debian package and the tar.gz bundle carry no signature.'
             echo 'Built on Ubuntu 24.04; the package dependencies come from that release.'
             echo 'The application compiles with a host clang or gcc from PATH. The package was installed and removed through apt in this job; the user interface was not tested.'
           } >> "$GITHUB_STEP_SUMMARY"

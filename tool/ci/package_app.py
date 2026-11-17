@@ -360,7 +360,7 @@ def require_files(root, relatives):
 
 
 def write_records(output, platform, architecture, version, targets, validation, native_input=None):
-    """Write SHA256SUMS, SIGNING.txt and provenance.json beside the package files."""
+    """Write SHA256SUMS, SIGNING.txt, provenance.json and LICENSE beside the package files."""
     packages = [
         {'file': target.name, 'sha256': sha256(target), 'size': target.stat().st_size}
         for target in targets
@@ -369,6 +369,7 @@ def write_records(output, platform, architecture, version, targets, validation, 
     write_text(output / 'SHA256SUMS', checksum_lines(packages))
     write_text(output / 'SIGNING.txt', signing_note(platform))
     write_text(output / 'provenance.json', json.dumps(record, indent=2) + '\n')
+    shutil.copyfile(ROOT / 'LICENSE', output / 'LICENSE')
     print(json.dumps(record, indent=2))
     return record
 

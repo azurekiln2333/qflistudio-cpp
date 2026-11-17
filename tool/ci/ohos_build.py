@@ -364,6 +364,7 @@ def package() -> None:
         "deviceRuntimeVerified": False,
     }
     (output / "provenance.json").write_text(json.dumps(evidence, indent=2) + "\n", encoding="utf-8")
+    shutil.copyfile(PROJECT / "LICENSE", output / "LICENSE")
     checksum_directory(output)
     print(f"Packaged {HAP_OUTPUT} and {APP_OUTPUT} in dist/app.")
 
