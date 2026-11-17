@@ -267,3 +267,41 @@ Moved x86_64 exclusion from symbol stripping to actual native library packaging 
 ### Status
 
 [OK] **Completed**
+
+
+## Session 8: Verified Android OHOS and iOS cloud artifacts
+<!-- trellis-session: v=2 fp=2812c15de2973f32 -->
+
+**Date**: 2026-11-17
+**Task**: Verified Android OHOS and iOS cloud artifacts
+**Branch**: `ci/native-artifacts`
+
+### Summary
+
+Published GPL alignment and complete mobile native workflows; downloaded and verified final packages for Android ARM64/x86_64, OHOS ARM64 and iOS device/simulators.
+
+### Main Changes
+
+- Preserved local signing configuration and existing native packages; published only the reviewed CI branch and required interfaces.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `1cc0b11` | docs(license): align GPL-3.0 licensing with qflistudio |
+| `0819d2e` | ci(native): build complete Android OHOS and iOS dependency packages |
+| `043abaa` | fix(ci): define the iOS runtime Ninja link pool [skip ci] |
+| `bf1d1f5` | docs(ci): record verified mobile artifacts and download paths [skip ci] |
+
+### Testing
+
+- [OK] Android and full OHOS succeeded in run 43940966765; all iOS slices and XCFramework assembly succeeded in run 43952556198.
+- [OK] Downloaded archive hashes and inventories passed; OHOS API18 archives also linked with local API26 SDK.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- Review PR #1 for main-branch merge; application signing and device execution remain separate.

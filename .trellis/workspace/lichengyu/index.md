@@ -8,8 +8,8 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 7
-- **Last Active**: 2026-10-17
+- **Total Sessions**: 8
+- **Last Active**: 2026-11-17
 <!-- @@@/auto:current-status -->
 
 ---
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~269 | Active |
+| `journal-1.md` | ~307 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 8 | 2026-11-17 | Verified Android OHOS and iOS cloud artifacts | `1cc0b11`, `0819d2e`, `043abaa`, `bf1d1f5` | `ci/native-artifacts` |
 | 7 | 2026-10-17 | OHOS HAP packaging restricted to ARM64 | - | `main` |
 | 6 | 2026-10-17 | OHOS native startup and C icon delivered | - | `main` |
 | 5 | 2026-10-17 | OHOS Clang terminal and live shared UI delivered to 14 Ultra | - | `main` |
