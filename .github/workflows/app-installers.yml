@@ -1,0 +1,493 @@
+name: Application installers
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Application packages to build
+        type: choice
+        default: all
+        options:
+          - all
+          - android
+          - ios
+          - ohos
+          - linux
+          - windows
+          - macos
+      native_run_id:
+        description: Native artifacts run id for Android, iOS and OHOS inputs (default is the newest run on main)
+        type: string
+        required: false
+  push:
+    branches:
+      - main
+      - ci/app-installers
+    paths:
+      - .github/workflows/app-installers.yml
+      - tool/ci/**
+      - lib/**
+      - packages/**
+      - assets/**
+      - tool/forge_content/staging/**
+      - pubspec.yaml
+      - pubspec.lock
+      - android/**
+      - ios/**
+      - ohos/**
+      - linux/**
+      - windows/**
+      - macos/**
+      - '!**/*.md'
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: app-installers-${{ github.ref }}-${{ inputs.target || 'all' }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+    working-directory: qfli_c
+
+env:
+  CORE_REVISION: 573d1b6eecf1c2b392ad753264a5a09f62f8335e
+  FLUTTER_VERSION: 3.41.9
+  FLUTTER_REVISION: 00b0c91f06209d9e4a41f71b7a512d6eb3b9c694
+  NATIVE_RUN_ID: ${{ inputs.native_run_id }}
+
+jobs:
+  android:
+    if: github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'android'
+    name: Android ${{ matrix.abi }} APK
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {abi: arm64-v8a, arch: arm64}
+          - {abi: x86_64, arch: x64}
+    env:
+      ABI: ${{ matrix.abi }}
+      ARCH: ${{ matrix.arch }}
+    steps:
+      - name: Check out application
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          path: qfli_c
+          persist-credentials: false
+      - name: Check out pinned shared core
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: azurekiln2333/qflistudio-core
+          ref: 573d1b6eecf1c2b392ad753264a5a09f62f8335e
+          path: qfli_studio_core
+          persist-credentials: false
+      - name: Check out Flutter 3.41.9
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: flutter/flutter
+          ref: 00b0c91f06209d9e4a41f71b7a512d6eb3b9c694
+          path: flutter
+          persist-credentials: false
+      - name: Initialize Flutter and resolve dependencies
+        run: |
+          set -euo pipefail
+          git -C ../flutter tag "$FLUTTER_VERSION" "$FLUTTER_REVISION"
+          echo "$GITHUB_WORKSPACE/flutter/bin" >> "$GITHUB_PATH"
+          ../flutter/bin/flutter config --no-analytics
+          ../flutter/bin/flutter --version
+          python3 tool/ci/prepare_core.py --core ../qfli_studio_core --flutter ../flutter
+          ../flutter/bin/flutter pub get
+      - name: Install the pinned Android NDK
+        run: |
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'ndk;27.0.12077973'
+      - name: Download and verify the native toolchain package
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 tool/ci/fetch_native_artifact.py \
+            --name "qfli-native-android-$ABI" \
+            --extract-to native/build/android-package \
+            --record "$RUNNER_TEMP/native-input.json" \
+            ${NATIVE_RUN_ID:+--run-id "$NATIVE_RUN_ID"}
+      - name: Build the APK
+        run: flutter build apk --release --no-pub --target-platform "android-$ARCH"
+      - name: Verify and package the APK
+        run: |
+          python3 tool/ci/package_app.py android --abi "$ABI" --output dist/app \
+            --native-record "$RUNNER_TEMP/native-input.json"
+      - name: Upload APK
+        id: upload
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: app-android-${{ matrix.abi }}
+          path: qfli_c/dist/app/
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 30
+      - name: Describe download
+        env:
+          ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
+        run: |
+          {
+            echo "### Android $ABI"
+            echo "[Download APK]($ARTIFACT_URL) (retained for 30 days)."
+            echo 'Signed with an ephemeral debug key: uninstall an earlier CI build before installing this one.'
+            echo 'Contains the native Clang toolchain for this ABI. Device execution was not tested.'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  windows:
+    if: github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'windows'
+    name: Windows x64 installer
+    runs-on: windows-2022
+    timeout-minutes: 60
+    steps:
+      - name: Check out application
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          path: qfli_c
+          persist-credentials: false
+      - name: Check out pinned shared core
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: azurekiln2333/qflistudio-core
+          ref: 573d1b6eecf1c2b392ad753264a5a09f62f8335e
+          path: qfli_studio_core
+          persist-credentials: false
+      - name: Check out Flutter 3.41.9
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: flutter/flutter
+          ref: 00b0c91f06209d9e4a41f71b7a512d6eb3b9c694
+          path: flutter
+          persist-credentials: false
+      - name: Initialize Flutter and resolve dependencies
+        run: |
+          set -euo pipefail
+          git -C ../flutter tag "$FLUTTER_VERSION" "$FLUTTER_REVISION"
+          echo "$GITHUB_WORKSPACE/flutter/bin" >> "$GITHUB_PATH"
+          ../flutter/bin/flutter config --no-analytics
+          ../flutter/bin/flutter --version
+          python tool/ci/prepare_core.py --core ../qfli_studio_core --flutter ../flutter
+          ../flutter/bin/flutter pub get
+      - name: Build the Windows application
+        run: flutter build windows --release --no-pub
+      - name: Ensure Inno Setup 6 is available
+        run: |
+          if [[ ! -f "/c/Program Files (x86)/Inno Setup 6/ISCC.exe" ]]; then
+            choco install innosetup --no-progress -y
+          fi
+      - name: Build and verify the installer
+        run: python tool/ci/package_app.py windows --output dist/app
+      - name: Upload Windows packages
+        id: upload
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: app-windows-x64
+          path: qfli_c/dist/app/
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 30
+      - name: Describe download
+        env:
+          ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
+        run: |
+          {
+            echo '### Windows x64'
+            echo "[Download installer and portable ZIP]($ARTIFACT_URL) (retained for 30 days)."
+            echo 'Unsigned: Windows SmartScreen can warn before the installer starts.'
+            echo 'The application compiles with a host clang or gcc from PATH. The installer was installed and removed silently in this job; the user interface was not tested.'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  linux:
+    if: github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'linux'
+    name: Linux x64 packages
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - name: Check out application
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          path: qfli_c
+          persist-credentials: false
+      - name: Check out pinned shared core
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: azurekiln2333/qflistudio-core
+          ref: 573d1b6eecf1c2b392ad753264a5a09f62f8335e
+          path: qfli_studio_core
+          persist-credentials: false
+      - name: Check out Flutter 3.41.9
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: flutter/flutter
+          ref: 00b0c91f06209d9e4a41f71b7a512d6eb3b9c694
+          path: flutter
+          persist-credentials: false
+      - name: Install Linux build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y \
+            clang cmake ninja-build pkg-config libgtk-3-dev libstdc++-12-dev dpkg-dev
+      - name: Initialize Flutter and resolve dependencies
+        run: |
+          set -euo pipefail
+          git -C ../flutter tag "$FLUTTER_VERSION" "$FLUTTER_REVISION"
+          echo "$GITHUB_WORKSPACE/flutter/bin" >> "$GITHUB_PATH"
+          ../flutter/bin/flutter config --no-analytics
+          ../flutter/bin/flutter --version
+          python3 tool/ci/prepare_core.py --core ../qfli_studio_core --flutter ../flutter
+          ../flutter/bin/flutter pub get
+      - name: Build the Linux application
+        run: flutter build linux --release --no-pub
+      - name: Build and verify the Debian package
+        run: python3 tool/ci/package_app.py linux --output dist/app
+      - name: Upload Linux packages
+        id: upload
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: app-linux-x64
+          path: qfli_c/dist/app/
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 30
+      - name: Describe download
+        env:
+          ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
+        run: |
+          {
+            echo '### Linux x64'
+            echo "[Download Debian package and tar.gz bundle]($ARTIFACT_URL) (retained for 30 days)."
+            echo 'Unsigned: the Debian package and the tar.gz bundle carry no signature.'
+            echo 'Built on Ubuntu 24.04; the package dependencies come from that release.'
+            echo 'The application compiles with a host clang or gcc from PATH. The package was installed and removed through apt in this job; the user interface was not tested.'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  macos:
+    if: github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'macos'
+    name: macOS universal disk image
+    runs-on: macos-15
+    timeout-minutes: 60
+    env:
+      FLUTTER_XCODE_CODE_SIGN_IDENTITY: '-'
+      FLUTTER_XCODE_CODE_SIGN_STYLE: Manual
+      FLUTTER_XCODE_DEVELOPMENT_TEAM: ''
+    steps:
+      - name: Check out application
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          path: qfli_c
+          persist-credentials: false
+      - name: Check out pinned shared core
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: azurekiln2333/qflistudio-core
+          ref: 573d1b6eecf1c2b392ad753264a5a09f62f8335e
+          path: qfli_studio_core
+          persist-credentials: false
+      - name: Check out Flutter 3.41.9
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: flutter/flutter
+          ref: 00b0c91f06209d9e4a41f71b7a512d6eb3b9c694
+          path: flutter
+          persist-credentials: false
+      - name: Initialize Flutter and resolve dependencies
+        run: |
+          set -euo pipefail
+          git -C ../flutter tag "$FLUTTER_VERSION" "$FLUTTER_REVISION"
+          echo "$GITHUB_WORKSPACE/flutter/bin" >> "$GITHUB_PATH"
+          ../flutter/bin/flutter config --no-analytics --enable-macos-desktop
+          ../flutter/bin/flutter precache --macos
+          ../flutter/bin/flutter --version
+          python3 tool/ci/prepare_core.py --core ../qfli_studio_core --flutter ../flutter
+          ../flutter/bin/flutter pub get
+      - name: Build the macOS application with ad hoc signing
+        run: flutter build macos --release --no-pub
+      - name: Build and verify the disk image
+        run: python3 tool/ci/package_app.py macos --output dist/app
+      - name: Upload macOS disk image
+        id: upload
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: app-macos-universal
+          path: qfli_c/dist/app/
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 30
+      - name: Describe download
+        env:
+          ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
+        run: |
+          {
+            echo '### macOS universal'
+            echo "[Download disk image]($ARTIFACT_URL) (retained for 30 days)."
+            echo 'Ad hoc signed, not notarized: Gatekeeper blocks the first start until the user allows it.'
+            echo 'The application compiles with a host clang from PATH. The user interface was not tested.'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  ios:
+    if: github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'ios'
+    name: iOS ARM64 unsigned IPA
+    runs-on: macos-15
+    timeout-minutes: 60
+    steps:
+      - name: Check out application
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          path: qfli_c
+          persist-credentials: false
+      - name: Check out pinned shared core
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: azurekiln2333/qflistudio-core
+          ref: 573d1b6eecf1c2b392ad753264a5a09f62f8335e
+          path: qfli_studio_core
+          persist-credentials: false
+      - name: Check out Flutter 3.41.9
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: flutter/flutter
+          ref: 00b0c91f06209d9e4a41f71b7a512d6eb3b9c694
+          path: flutter
+          persist-credentials: false
+      - name: Initialize Flutter and resolve dependencies
+        run: |
+          set -euo pipefail
+          git -C ../flutter tag "$FLUTTER_VERSION" "$FLUTTER_REVISION"
+          echo "$GITHUB_WORKSPACE/flutter/bin" >> "$GITHUB_PATH"
+          ../flutter/bin/flutter config --no-analytics
+          ../flutter/bin/flutter precache --ios
+          ../flutter/bin/flutter --version
+          python3 tool/ci/prepare_core.py --core ../qfli_studio_core --flutter ../flutter
+          ../flutter/bin/flutter pub get
+      - name: Download and verify the native runtime package
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 tool/ci/fetch_native_artifact.py \
+            --name qfli-native-ios \
+            --extract-to native/build/ios-portable/package \
+            --record "$RUNNER_TEMP/native-input.json" \
+            ${NATIVE_RUN_ID:+--run-id "$NATIVE_RUN_ID"}
+          python3 native/toolchain/install-ios-package.py --package native/build/ios-portable/package
+      - name: Build the unsigned iOS archive
+        run: flutter build ipa --release --no-codesign --no-pub
+      - name: Package and verify the unsigned IPA
+        run: |
+          python3 tool/ci/package_app.py ios --output dist/app \
+            --native-record "$RUNNER_TEMP/native-input.json"
+      - name: Upload iOS packages
+        id: upload
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: app-ios-arm64-unsigned
+          path: qfli_c/dist/app/
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 30
+      - name: Describe download
+        env:
+          ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
+        run: |
+          {
+            echo '### iOS ARM64'
+            echo "[Download unsigned IPA and Xcode archive]($ARTIFACT_URL) (retained for 30 days)."
+            echo 'Unsigned: sign the IPA or the archive with an Apple development or distribution identity before installation.'
+            echo 'Contains the portable C/C++ runtime and WASI SDK resources. Device execution was not tested.'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  ohos:
+    if: github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'ohos'
+    name: OHOS ARM64 unsigned HAP and APP
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    env:
+      OHOS_COMMAND_LINE_TOOLS_URL: ${{ vars.OHOS_COMMAND_LINE_TOOLS_URL }}
+      OHOS_COMMAND_LINE_TOOLS_SHA256: ${{ vars.OHOS_COMMAND_LINE_TOOLS_SHA256 }}
+      FLUTTER_OHOS_REVISION: 62357a93d653bf844f730bb1f4b7cc9e2139d14e
+      FLUTTER_OHOS_TAG: 3.41.9+ohos-1.0.2
+    steps:
+      - name: Check out application
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          path: qfli_c
+          persist-credentials: false
+      - name: Remove local signing configuration from the CI copy
+        run: python3 tool/ci/ohos_build.py sanitize
+      - name: Install the verified HarmonyOS command line tools
+        run: |
+          df -h .
+          python3 tool/ci/ohos_build.py bootstrap
+      - name: Select the runner's Java 21 runtime
+        run: |
+          set -euo pipefail
+          test -x "$JAVA_HOME_21_X64/bin/java"
+          echo "JAVA_HOME=$JAVA_HOME_21_X64" >> "$GITHUB_ENV"
+          echo "$JAVA_HOME_21_X64/bin" >> "$GITHUB_PATH"
+          "$JAVA_HOME_21_X64/bin/java" -version
+      - name: Check out pinned shared core
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: azurekiln2333/qflistudio-core
+          ref: 573d1b6eecf1c2b392ad753264a5a09f62f8335e
+          path: qfli_studio_core
+          persist-credentials: false
+      - name: Check out the pinned Flutter OHOS release
+        run: |
+          set -euo pipefail
+          git clone --depth 1 --single-branch --branch "$FLUTTER_OHOS_TAG" \
+            https://gitcode.com/CPF-Flutter/flutter_flutter.git ../flutter_ohos
+          test "$(git -C ../flutter_ohos rev-parse HEAD)" = "$FLUTTER_OHOS_REVISION"
+          echo "$GITHUB_WORKSPACE/flutter_ohos/bin" >> "$GITHUB_PATH"
+          echo "FLUTTER_ROOT=$GITHUB_WORKSPACE/flutter_ohos" >> "$GITHUB_ENV"
+      - name: Download and verify the native runtime package
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 tool/ci/fetch_native_artifact.py \
+            --name qfli-native-ohos-arm64-v8a \
+            --extract-to . \
+            --record "$RUNNER_TEMP/native-input.json" \
+            ${NATIVE_RUN_ID:+--run-id "$NATIVE_RUN_ID"}
+          test -f native/build/ohos-portable/package/lib/arm64-v8a/libqfli_compiler.a
+          test -f ohos/entry/src/main/resources/rawfile/qfli_toolchain/ohos-wasi.zip
+      - name: Initialize Flutter and resolve application dependencies
+        run: |
+          set -euo pipefail
+          flutter config --no-analytics --ohos-sdk "$DEVECO_SDK_HOME"
+          flutter --version --machine > "$RUNNER_TEMP/ohos-flutter-version.json"
+          flutter pub get
+      - name: Build unsigned ARM64 HAP and APP
+        env:
+          JAVA_TOOL_OPTIONS: -Xms32m -Xmx1536m -XX:+UseSerialGC
+        run: |
+          set -euo pipefail
+          flutter build hap --release --no-pub --no-codesign --target-platform ohos-arm64
+          flutter build app --release --no-pub --no-codesign --target-platform ohos-arm64
+      - name: Verify and package the HAP and APP
+        run: python3 tool/ci/ohos_build.py package
+      - name: Upload OHOS packages
+        id: upload
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: app-ohos-arm64-unsigned
+          path: qfli_c/dist/app/
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 30
+      - name: Describe download
+        env:
+          ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
+        run: |
+          {
+            echo '### OHOS ARM64'
+            echo "[Download unsigned HAP and APP]($ARTIFACT_URL) (retained for 30 days)."
+            echo 'Unsigned: sign the package with a HarmonyOS certificate and profile before installation.'
+            echo 'Contains the native runner library and WASI resources. Device execution was not tested.'
+          } >> "$GITHUB_STEP_SUMMARY"
