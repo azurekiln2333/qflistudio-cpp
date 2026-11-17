@@ -15,7 +15,8 @@
       "error": "Apple libtool was invoked with ar qc arguments and reported no output file specified",
       "cause": "CMAKE_C_CREATE_STATIC_LIBRARY provided to the outer configure was not propagated to try_compile",
       "fix": "Use ios-libtool.cmake through CMAKE_USER_MAKE_RULES_OVERRIDE and run a C/C++ archive preflight before dependency downloads",
-      "verifiedByNextRun": true
+      "verifiedByNextRun": true,
+      "verifiedBySuccessfulRun": 43952556198
     },
     {
       "runId": 43944200018,
@@ -33,7 +34,8 @@
         "bundleOnError": "install TARGETS given no BUNDLE DESTINATION for MACOSX_BUNDLE executable target auxiliary",
         "bundleOffExitCode": 0
       },
-      "verifiedScope": "Run 43948687527 passed the CLI install preflight and runtime CMake configure. Target LLVM configure was not reached because runtime Ninja parsing failed."
+      "verifiedScope": "Run 43948687527 passed the CLI install preflight and runtime CMake configure. Target LLVM configure was not reached because runtime Ninja parsing failed.",
+      "verifiedBySuccessfulRun": 43952556198
     },
     {
       "runId": 43948687527,
@@ -62,9 +64,17 @@
         },
         "nativeCompilerOrAppleSdkInvoked": false
       },
-      "verifiedByNextRun": false
+      "verifiedByNextRun": false,
+      "verifiedBySuccessfulRun": 43952556198
     }
   ],
   "runtimeBuildOrder": "Build the independent WasmEdge interpreter before host TableGen and target LLVM/Clang libraries; create and verify host tools once only after the first runtime succeeds.",
-  "appExecutionVerified": false
+  "appExecutionVerified": false,
+  "successfulRun": {
+    "runId": 43952556198,
+    "commit": "5e4d284acc7bd3a5f373fd74bf407f973889f321",
+    "allSlicesBuilt": true,
+    "nativeLinkVerified": true,
+    "xcframeworkAssemblySucceeded": true
+  }
 }
