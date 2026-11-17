@@ -92,3 +92,79 @@ configure a fresh build directory.
 Wrong: equate a runnable ARM64 compiler with an integrated phone backend.
 Correct: validate compiler invocation and generated-program execution from the
 actual application process before changing the capability declaration.
+
+## GitHub native artifact builds
+
+- `.github/workflows/native-artifacts.yml` uses hosted Ubuntu 24.04 runners.
+- Android ABIs have isolated jobs and build roots. The Linux bootstrap pins
+  LLVM 15.0.7 and NDK 27.0.12077973, then reuses the platform-aware packager.
+- Preserve Windows package behavior when resolving host NDK tool paths.
+- Upload final jniLibs/assets, manifests and validation reports. Never upload
+  the full native/build tree or local SDK/signing material.
+- `prepare-portable-wasm.ps1 -ArchivesOnly -IncludeCompiler` verifies all
+  dependency archives without extraction for the OHOS resource-only job.
+- Resource ZIP metadata uses a fixed timestamp. Validate the ZIP through
+  `verify-ohos-portable-package.py` before exporting a downloadable artifact.
+- A WASI resource ZIP is not an OHOS static library package or installable HAP.
+  Full OHOS builds use the pinned public API 18 SDK rather than a local SDK
+  upload. Record this SDK independently of existing API 26 local packages.
+  Android fixture cross-linking does not establish device execution.
+- Native artifacts have 30-day retention; diagnostic logs have 7-day retention.
+  Every native artifact includes source commit, run URL, and SHA256 inventory.
+
+## Complete mobile dependency workflow
+
+### Scope and commands
+
+- Android `build-android-llvm-linux.sh --ndk PATH --abi ABI [--preflight-only]`
+  builds host TableGen, generates resource headers, then validates resources
+  before the expensive target clang/lld build. ARM headers need TableGen.
+- OHOS `prepare-ohos-sdk.py --output PATH` checks both official archive hashes.
+  `build-ohos-portable.sh --native-sdk PATH/native` builds compiler/runtime
+  archives using the SDK's headers and runtime. Legacy `--ohos-resources`
+  remains available. The two input modes are mutually exclusive.
+- iOS `build-ios-portable.sh --slice SLICE --no-install` builds one Apple slice.
+  `package-ios-xcframework.py assemble --slice-dir PATH ... --output PATH`
+  merges exactly device ARM64 and simulator ARM64/x86_64.
+  `install-ios-package.py --package PATH` generates local Flutter xcconfig.
+  Keep the local installer compatible with Python 3.9; hash files in chunks.
+
+### Contracts and failures
+
+- Ubuntu Clang 15 must select libc++ explicitly. Use `-nostdinc++ -isystem`
+  for packaged C++ headers and select compiler-rt/libunwind for links.
+  Missing C++ headers must fail the early fixture validation, not after LLVM.
+- Use versioned Ubuntu linker paths: lld-18 provides `/usr/bin/ld.lld-18`.
+- iOS host tools include llvm-min-tblgen. Use Apple's libtool with the static
+  archive recipe, not GNU ar flags. Pass `ios-libtool.cmake` through
+  CMAKE_USER_MAKE_RULES_OVERRIDE so nested try_compile projects inherit it.
+  Run a small C/C++ target archive preflight before downloads or host TableGen.
+  Set CMAKE_MACOSX_BUNDLE=OFF for native dependencies. LLVM auxiliary tools
+  use RUNTIME install destinations, which reject the iOS bundle default.
+  Include an excluded executable with that install rule in the preflight.
+  Disable WasmEdge LTO for published archives.
+- Build the iOS WasmEdge interpreter before host TableGen and target LLVM
+  libraries. It has no LLVM dependency, so Apple runtime failures surface first.
+  Define `CMAKE_JOB_POOLS=link=1` in its root configure. WasmEdge sets the
+  link pool name inside a dependency directory, which alone does not emit the
+  Ninja pool declaration. Validate this with a Ninja dry run, not only CMake.
+- iOS slice identity includes source commit, SDK, dependencies, patches, headers
+  and resources. Reject mismatched or duplicate slices before assembly.
+- CI exports must match the current adapter interfaces. When using a publishing
+  worktree, sync required native sources explicitly; never publish unrelated
+  signing configuration or a broad unreviewed commit range.
+- Include GPL LICENSE and retain upstream license files in downloadable packages.
+
+### Verification
+
+Run syntax checks and actionlint, validate Android fixtures for both ABIs,
+check real OHOS bridge compilation/linking, and verify iOS slice architecture,
+native dependency linking and XCFramework metadata. Compare downloaded archive
+checksums and internal inventories. App/device execution is a separate gate.
+
+Good: independently verified final packages with recorded SDK/source identity.
+Base: scripts pass local checks while cloud builds remain pending.
+Bad: call WASI data a complete native package or claim cloud success from lint.
+
+Wrong: rely on distro Clang defaults for Android C++ headers. Correct: select
+the packaged libc++ headers/runtime explicitly and validate before full build.

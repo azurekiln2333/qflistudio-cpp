@@ -1,0 +1,109 @@
+{
+  "date": "2026-11-17",
+  "publicBranch": "ci/native-artifacts",
+  "pullRequest": 1,
+  "license": {
+    "name": "GPL-3.0",
+    "publicCommit": "6e8a7a9",
+    "matchesMainProjectBytes": true,
+    "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+  },
+  "sourcePublication": {
+    "publicCommit": "98dc393",
+    "strategy": "Whitelist current compiler/runtime adapters and OHOS bridge; exclude local signing configuration"
+  },
+  "allPlatforms": {
+    "runId": 43940966765,
+    "commit": "2f68789a181a88963476185c424d8cb9872a2948",
+    "android": "success: ARM64 and x86_64",
+    "ohosNative": "success",
+    "ohosResources": "success",
+    "ios": "Failed in target compiler try_compile: libtool received GNU ar qc flags"
+  },
+  "iosRetry": {
+    "runId": 43944200018,
+    "commit": "d615e99a327a99ae37591836c3b8f3d3ee7a56e5",
+    "status": "failure: target LLVM install rules require disabling iOS app bundle defaults",
+    "archivePreflightVerified": true,
+    "fix": "CMAKE_USER_MAKE_RULES_OVERRIDE propagates Apple archive rules to nested try_compile; tiny target preflight now runs before downloads and host TableGen"
+  },
+  "iosBundleRetry": {
+    "runId": 43948687527,
+    "commit": "2febe32f6c4592f9a3df1f4036673f12624576cc",
+    "status": "cancelled after runtime Ninja failed: unknown link pool",
+    "fix": "Disable iOS App Bundle defaults, exercise LLVM's CLI install rule in preflight, and build the smaller WasmEdge interpreter before target LLVM"
+  },
+  "iosPoolRetry": {
+    "runId": 43952556198,
+    "commit": "5e4d284acc7bd3a5f373fd74bf407f973889f321",
+    "status": "success: all three slices and XCFramework assembly",
+    "fix": "Define the runtime Ninja link pool at the root and defer host TableGen until the runtime build succeeds"
+  },
+  "localValidation": {
+    "androidBothAbis": "8 link fixtures, 4 exported-main checks, 2 expected failures per ABI passed on Windows",
+    "ohosApi18": "Official archive and inner ZIP checksums passed; LLVM15 mixed C/C++ link and actual bridge compilation passed",
+    "ohosApi26": "Existing complete static archives linked into the actual bridge; ARM64, 16KiB and needed-library checks passed",
+    "ohosLocalExport": "Downloaded-layout export and all 13 inventory files verified; not a cloud-build claim",
+    "ios": "Bash/Python checks and assembly/installer contract tests passed; real Apple slice builds, native links and XCFramework assembly passed in run 43952556198",
+    "actionlint": "passed",
+    "controlledChinese": "0 hard violations"
+  },
+  "cloudResourceDownload": {
+    "runId": 43940966765,
+    "artifactId": 14261014481,
+    "sha256": "87eab168c9f135e8da4cd3029b9839c81ece35ab83b0a853ba541aedde107e81",
+    "inventoryFilesVerified": 7,
+    "sourceDirty": false
+  },
+  "cloudIosDownload": {
+    "runId": 43952556198,
+    "artifactId": 14278134493,
+    "sha256": "66a0be30282b33299b79635bda7940f2560a9bf6788230a952bfd590cac2bf1c",
+    "inventoryFilesVerified": 10042,
+    "sourceDirty": false,
+    "downloadVerified": true,
+    "nativeLinkVerified": true,
+    "xcframeworkVerified": true,
+    "sliceCount": 3,
+    "xcodeVersion": "16.4 (16F6)",
+    "iosSdkVersion": "18.5",
+    "deploymentTarget": "13.0",
+    "appExecutionVerified": false
+  },
+  "cloudOhosDownload": {
+    "runId": 43940966765,
+    "artifactId": 14266297771,
+    "sha256": "8db703ce4a2000967c8f4e4dc731d140050ebd8a3b18c73567c0852406f18ccf",
+    "inventoryFilesVerified": 19,
+    "resourceFilesVerified": 4114,
+    "sourceDirty": false,
+    "sdkVersion": "5.1.0.107",
+    "sdkApiVersion": "18",
+    "downloadVerified": true,
+    "currentAdapterAndPatchHashesVerified": true,
+    "cloudApi18BridgeLinkVerified": true,
+    "localApi26BridgeLinkVerifiedWithDownloadedArchives": true,
+    "architectureAnd16KiBAlignmentVerified": true,
+    "appExecutionVerified": false
+  },
+  "cloudAndroidDownloads": {
+    "arm64-v8a": {
+      "runId": 43940966765,
+      "artifactId": 14265532150,
+      "sha256": "18dfa24f0396c44c5fc83bbcc7fa60529e7c7caa0ad2cf92240af07edcab0c35",
+      "inventoryFilesVerified": 20,
+      "sourceDirty": false,
+      "fixturesCrossLinked": 8,
+      "downloadVerified": true
+    },
+    "x86_64": {
+      "runId": 43940966765,
+      "artifactId": 14263658801,
+      "sha256": "60e0892c76e55f4120538924823127dfd28e6b93b2cf972bf898c4a97feb7a21",
+      "inventoryFilesVerified": 20,
+      "sourceDirty": false,
+      "fixturesCrossLinked": 8,
+      "downloadVerified": true
+    }
+  }
+}

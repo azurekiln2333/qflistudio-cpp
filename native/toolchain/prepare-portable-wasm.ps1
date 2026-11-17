@@ -1,7 +1,8 @@
 [CmdletBinding()]
 param(
     [string]$DownloadDirectory,
-    [switch]$IncludeCompiler
+    [switch]$IncludeCompiler,
+    [switch]$ArchivesOnly
 )
 
 $ErrorActionPreference = 'Stop'
@@ -13,8 +14,8 @@ $DownloadDirectory = [IO.Path]::GetFullPath($DownloadDirectory)
 $manifest = Get-Content (Join-Path $PSScriptRoot 'portable-dependencies.json') -Raw | ConvertFrom-Json
 $names = @('wasiSdk', 'wasmedge', 'fmt', 'spdlog')
 if ($IncludeCompiler) { $names += 'llvm22' }
-$curl = (Get-Command curl -CommandType Application -ErrorAction Stop).Source
-$tar = (Get-Command tar -CommandType Application -ErrorAction Stop).Source
+$curl = (Get-Command curl -CommandType Application -ErrorAction Stop | Select-Object -First 1).Source
+$tar = (Get-Command tar -CommandType Application -ErrorAction Stop | Select-Object -First 1).Source
 New-Item -ItemType Directory -Path $DownloadDirectory -Force | Out-Null
 
 foreach ($name in $names) {
@@ -38,9 +39,9 @@ foreach ($name in $names) {
     if ($hash -ne $dependency.sha256) {
         throw "Checksum mismatch in existing archive: $archive"
     }
-    if (!(Test-Path -LiteralPath $source -PathType Container)) {
+    if (-not $ArchivesOnly -and !(Test-Path -LiteralPath $source -PathType Container)) {
         & $tar -xzf $archive -C $DownloadDirectory
         if ($LASTEXITCODE -ne 0) { throw "Extraction failed: $archive" }
     }
-    Write-Host "Verified $name : $source"
+    Write-Host "Verified $name : $archive"
 }

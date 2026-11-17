@@ -1,0 +1,80 @@
+{
+  "recordedLocalDate": "2026-11-17",
+  "runner": {
+    "label": "macos-15-intel",
+    "xcode": "16.4 (16F6)",
+    "iosSdk": "18.5",
+    "cmake": "4.4.2",
+    "python": "3.14.7"
+  },
+  "failures": [
+    {
+      "runId": 43940966765,
+      "jobId": 133558036225,
+      "phase": "Target CMake compiler ABI probe, after successful host TableGen build",
+      "error": "Apple libtool was invoked with ar qc arguments and reported no output file specified",
+      "cause": "CMAKE_C_CREATE_STATIC_LIBRARY provided to the outer configure was not propagated to try_compile",
+      "fix": "Use ios-libtool.cmake through CMAKE_USER_MAKE_RULES_OVERRIDE and run a C/C++ archive preflight before dependency downloads",
+      "verifiedByNextRun": true,
+      "verifiedBySuccessfulRun": 43952556198
+    },
+    {
+      "runId": 43944200018,
+      "jobId": 133569374801,
+      "phase": "Target LLVM CMake configuration, after successful archive preflight and host TableGen build",
+      "error": "install TARGETS given no BUNDLE DESTINATION for MACOSX_BUNDLE executable target llvm-tblgen (also lld and Clang CLI targets)",
+      "cause": "CMake's iOS platform defaults CMAKE_MACOSX_BUNDLE to ON, but LLVM auxiliary command-line targets use RUNTIME install destinations",
+      "fix": "Set CMAKE_MACOSX_BUNDLE=OFF for native dependency builds and include an excluded CLI install target in the early preflight",
+      "localLog": "native/build/ci-tools/ios-sim-x64-bundle-failure.log",
+      "verifiedByNextRun": false,
+      "localContractValidation": {
+        "platform": "Windows CMake with APPLE target classification enabled, LANGUAGES NONE",
+        "operation": "Configure an excluded executable with RUNTIME-only install rule; no compiler, Apple SDK, or build was invoked",
+        "bundleOnExitCode": 1,
+        "bundleOnError": "install TARGETS given no BUNDLE DESTINATION for MACOSX_BUNDLE executable target auxiliary",
+        "bundleOffExitCode": 0
+      },
+      "verifiedScope": "Run 43948687527 passed the CLI install preflight and runtime CMake configure. Target LLVM configure was not reached because runtime Ninja parsing failed.",
+      "verifiedBySuccessfulRun": 43952556198
+    },
+    {
+      "runId": 43948687527,
+      "jobIds": [
+        133585085445,
+        133585085815
+      ],
+      "phase": "Ninja parsing after successful runtime CMake configure/generate, before target LLVM configuration",
+      "error": "ninja: error: build.ninja:540: unknown pool name 'link'",
+      "cause": "Pinned WasmEdge cmake/Helper.cmake sets CMAKE_JOB_POOLS and CMAKE_JOB_POOL_LINK in its dependency directory for Release + Ninja. Ninja pool declarations are generated from the root scope, where this pool was absent. LLVM_PARALLEL_LINK_JOBS was unused and did not cause the failure.",
+      "fix": "Pass CMAKE_JOB_POOLS=link=1 at the iOS runtime root configure. Build runtime before lazy one-time host TableGen and target LLVM builds.",
+      "localLogs": [
+        "native/build/ci-tools/ios-device-runtime-failure.log",
+        "native/build/ci-tools/ios-sim-x64-pool-failure.log"
+      ],
+      "localContractValidation": {
+        "operation": "LANGUAGES NONE CMake parent with dependency-scoped CMAKE_JOB_POOLS=link=2 and CMAKE_JOB_POOL_LINK=link, followed by Ninja -n auxiliary",
+        "rootPoolAbsent": {
+          "configureExitCode": 0,
+          "ninjaDryRunExitCode": 1,
+          "error": "unknown pool name 'link'"
+        },
+        "rootPoolDefined": {
+          "configureExitCode": 0,
+          "ninjaDryRunExitCode": 0
+        },
+        "nativeCompilerOrAppleSdkInvoked": false
+      },
+      "verifiedByNextRun": false,
+      "verifiedBySuccessfulRun": 43952556198
+    }
+  ],
+  "runtimeBuildOrder": "Build the independent WasmEdge interpreter before host TableGen and target LLVM/Clang libraries; create and verify host tools once only after the first runtime succeeds.",
+  "appExecutionVerified": false,
+  "successfulRun": {
+    "runId": 43952556198,
+    "commit": "5e4d284acc7bd3a5f373fd74bf407f973889f321",
+    "allSlicesBuilt": true,
+    "nativeLinkVerified": true,
+    "xcframeworkAssemblySucceeded": true
+  }
+}

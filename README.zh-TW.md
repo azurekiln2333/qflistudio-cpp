@@ -139,3 +139,10 @@ python scripts/ste-lint-zh.py README.md README.zh-TW.md
 裝置驗收必須對應實際安裝套件與測試記錄。
 原生執行環境規範見 `.trellis/spec/backend/`。
 開發流程見 `.trellis/workflow.md`。
+
+## 授權條款
+
+本專案採用 GNU GPL v3.0 授權條款。
+授權條款全文見 [LICENSE](LICENSE)。
+授權條款與主專案 QFLIStudio 保持一致。
+第三方元件保留各自的授權條款。
