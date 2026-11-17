@@ -1,0 +1,4 @@
+{"file": ".trellis/spec/backend/native-toolchain.md", "reason": "Native artifact layout consumed by the app builds"}
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "Quality rules for scripts and verification claims"}
+{"file": ".trellis/spec/backend/android-runtime.md", "reason": "APK native library and asset contract"}
+{"file": ".trellis/spec/backend/ohos-runtime.md", "reason": "HAP native runner and rawfile contract"}
