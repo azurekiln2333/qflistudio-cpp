@@ -1,0 +1,261 @@
+diff --git a/lib/config/client_platform.dart b/lib/config/client_platform.dart
+--- a/lib/config/client_platform.dart
++++ b/lib/config/client_platform.dart
+@@ -49,15 +49,15 @@
+     return sanitizeVersion(raw);
+   }
+ 
+-  /// 运行时平台映射。[TargetPlatform.ohos] 是 Flutter 鸿蒙分支的枚举值。
+-  static String fromTargetPlatform(TargetPlatform target) => switch (target) {
+-    TargetPlatform.ohos => 'harmonyos',
+-    TargetPlatform.android => 'android',
+-    TargetPlatform.iOS => 'ios',
+-    TargetPlatform.windows => 'windows',
+-    TargetPlatform.macOS => 'macos',
+-    TargetPlatform.linux => 'linux',
+-    TargetPlatform.fuchsia => 'linux',
++  /// Map platform names without depending on the OHOS-only enum member.
++  static String fromTargetPlatform(TargetPlatform target) => switch (target.name) {
++    'ohos' => 'harmonyos',
++    'android' => 'android',
++    'iOS' => 'ios',
++    'windows' => 'windows',
++    'macOS' => 'macos',
++    'linux' || 'fuchsia' => 'linux',
++    _ => 'linux',
+   };
+ 
+   /// 只保留 ASCII 可见字符（0x21–0x7E），并限制长度。
+diff --git a/lib/interop/interop_transport.dart b/lib/interop/interop_transport.dart
+--- a/lib/interop/interop_transport.dart
++++ b/lib/interop/interop_transport.dart
+@@ -109,13 +109,11 @@
+   static const MethodChannel methods = MethodChannel('qfli_interop/bridge');
+   static const EventChannel events = EventChannel('qfli_interop/bridge/events');
+ 
+-  static const Set<TargetPlatform> _supported = <TargetPlatform>{
+-    TargetPlatform.ohos,
+-  };
++  static const Set<String> _supported = <String>{'ohos'};
+ 
+   @override
+   bool get isSupported {
+-    if (_supported.contains(defaultTargetPlatform)) return true;
++    if (_supported.contains(defaultTargetPlatform.name)) return true;
+     // HarmonyOS reports as ohos once the engine is patched; a manual override
+     // keeps the channel reachable in a debug build on an older engine.
+     return Platform.environment['QFLI_INTEROP'] == '1';
+diff --git a/lib/pages/auth/agreement_page.dart b/lib/pages/auth/agreement_page.dart
+--- a/lib/pages/auth/agreement_page.dart
++++ b/lib/pages/auth/agreement_page.dart
+@@ -45,7 +45,7 @@
+       setState(() => _error = '协议地址无效');
+       return;
+     }
+-    if (kIsWeb || defaultTargetPlatform != TargetPlatform.ohos) {
++    if (kIsWeb || defaultTargetPlatform.name != 'ohos') {
+       setState(() {
+         _error = null;
+         _manualUrl = uri.toString();
+diff --git a/lib/pages/auth/huawei_quick_login_view.dart b/lib/pages/auth/huawei_quick_login_view.dart
+--- a/lib/pages/auth/huawei_quick_login_view.dart
++++ b/lib/pages/auth/huawei_quick_login_view.dart
+@@ -1,12 +1,9 @@
+-import 'dart:async';
++import 'package:flutter/material.dart';
+ 
+-import 'package:flutter/foundation.dart';
+-import 'package:flutter/material.dart';
+-import 'package:flutter/services.dart';
+-
+-const _viewType = 'qflistudio/huawei_quick_login';
+-
+-class HuaweiQuickLoginView extends StatefulWidget {
++/// Standard Flutter has no HarmonyOS platform view implementation.
++/// The login page hides this view outside OHOS. The OHOS build uses the
++/// original core source and must never apply this CI compatibility patch.
++class HuaweiQuickLoginView extends StatelessWidget {
+   const HuaweiQuickLoginView({
+     super.key,
+     required this.agreementAccepted,
+@@ -19,109 +16,6 @@
+   final ValueChanged<String> onError;
+ 
+   @override
+-  State<HuaweiQuickLoginView> createState() => _HuaweiQuickLoginViewState();
++  Widget build(BuildContext context) =>
++      const Text('当前平台不支持华为一键登录');
+ }
+-
+-class _HuaweiQuickLoginViewState extends State<HuaweiQuickLoginView> {
+-  MethodChannel? _channel;
+-
+-  @override
+-  void didChangeDependencies() {
+-    super.didChangeDependencies();
+-    unawaited(_updateTheme());
+-  }
+-
+-  @override
+-  void didUpdateWidget(covariant HuaweiQuickLoginView oldWidget) {
+-    super.didUpdateWidget(oldWidget);
+-    if (oldWidget.agreementAccepted != widget.agreementAccepted) {
+-      unawaited(_updateAgreementStatus());
+-    }
+-  }
+-
+-  @override
+-  void dispose() {
+-    _channel?.setMethodCallHandler(null);
+-    super.dispose();
+-  }
+-
+-  Future<void> _onPlatformViewCreated(int viewId) async {
+-    final channel = MethodChannel('$_viewType$viewId');
+-    _channel = channel;
+-    channel.setMethodCallHandler((call) async {
+-      switch (call.method) {
+-        case 'loginSuccess':
+-          final code = call.arguments;
+-          if (code is String && code.isNotEmpty) {
+-            widget.onAuthorizationCode(code);
+-          } else {
+-            widget.onError('华为账号未返回授权码');
+-          }
+-          break;
+-        case 'loginError':
+-          final message = call.arguments;
+-          widget.onError(message is String ? message : '华为账号一键登录失败');
+-          break;
+-      }
+-    });
+-    await _updateTheme();
+-    if (mounted) await _updateAgreementStatus();
+-  }
+-
+-  Map<String, int> _themeColors() {
+-    final scheme = Theme.of(context).colorScheme;
+-    final disabledBackground = Color.alphaBlend(
+-      scheme.onSurface.withValues(alpha: 0.12),
+-      scheme.surface,
+-    );
+-    return {
+-      'background': scheme.primary.toARGB32(),
+-      'foreground': scheme.onPrimary.toARGB32(),
+-      'disabledBackground': disabledBackground.toARGB32(),
+-      'disabledForeground': Color.alphaBlend(
+-        scheme.onSurface.withValues(alpha: 0.38),
+-        disabledBackground,
+-      ).toARGB32(),
+-    };
+-  }
+-
+-  Future<void> _updateTheme() async {
+-    final channel = _channel;
+-    if (channel == null || !mounted) return;
+-    try {
+-      await channel.invokeMethod<void>('setTheme', _themeColors());
+-    } on PlatformException catch (e) {
+-      if (mounted) widget.onError('更新按钮颜色失败：${e.message ?? e.code}');
+-    } on MissingPluginException {
+-      if (mounted) widget.onError('华为一键登录组件未加载');
+-    }
+-  }
+-
+-  Future<void> _updateAgreementStatus() async {
+-    final channel = _channel;
+-    if (channel == null) return;
+-    try {
+-      await channel.invokeMethod<void>(
+-        'setAgreementAccepted',
+-        widget.agreementAccepted,
+-      );
+-    } on PlatformException catch (e) {
+-      widget.onError('更新协议状态失败：${e.message ?? e.code}');
+-    } on MissingPluginException {
+-      widget.onError('华为一键登录组件未加载');
+-    }
+-  }
+-
+-  @override
+-  Widget build(BuildContext context) {
+-    if (defaultTargetPlatform != TargetPlatform.ohos) {
+-      return const SizedBox.shrink();
+-    }
+-    return OhosView(
+-      viewType: _viewType,
+-      creationParams: _themeColors(),
+-      creationParamsCodec: const StandardMessageCodec(),
+-      onPlatformViewCreated: _onPlatformViewCreated,
+-    );
+-  }
+-}
+diff --git a/lib/pages/auth/login_page.dart b/lib/pages/auth/login_page.dart
+--- a/lib/pages/auth/login_page.dart
++++ b/lib/pages/auth/login_page.dart
+@@ -191,7 +191,7 @@
+   @override
+   Widget build(BuildContext context) {
+     final scheme = Theme.of(context).colorScheme;
+-    final isOhos = defaultTargetPlatform == TargetPlatform.ohos;
++    final isOhos = defaultTargetPlatform.name == 'ohos';
+     // On HarmonyOS the account is created only through Huawei one-tap login,
+     // so alternate sign-in entries (and the registration form behind them)
+     // are not offered there.
+diff --git a/lib/services/app_private_roots.dart b/lib/services/app_private_roots.dart
+--- a/lib/services/app_private_roots.dart
++++ b/lib/services/app_private_roots.dart
+@@ -16,10 +16,8 @@
+       }
+     }
+ 
+-    final mobile = switch (defaultTargetPlatform) {
+-      TargetPlatform.android ||
+-      TargetPlatform.ohos ||
+-      TargetPlatform.iOS => true,
++    final mobile = switch (defaultTargetPlatform.name) {
++      'android' || 'ohos' || 'iOS' => true,
+       _ => false,
+     };
+     final support = await read(getApplicationSupportDirectory);
+diff --git a/lib/terminal/shell/local_shell_io.dart b/lib/terminal/shell/local_shell_io.dart
+--- a/lib/terminal/shell/local_shell_io.dart
++++ b/lib/terminal/shell/local_shell_io.dart
+@@ -73,15 +73,12 @@
+ /// app is cross-compiled — and it cannot be overridden in a test, so the branch
+ /// would be untestable.
+ bool localShellAvailable() {
+-  if (kIsWeb) return false;
++  if (kIsWeb || defaultTargetPlatform.name == 'ohos') return false;
+   switch (defaultTargetPlatform) {
+     case TargetPlatform.windows:
+     case TargetPlatform.macOS:
+     case TargetPlatform.linux:
+       return true;
+-    // HarmonyOS: the shell at /bin/sh or /system/bin/sh usually exists but the
+-    // app is not permitted to exec it, so this is a no as well.
+-    case TargetPlatform.ohos:
+     case TargetPlatform.android:
+     case TargetPlatform.iOS:
+     case TargetPlatform.fuchsia:
+diff --git a/lib/terminal/widgets/terminal_input.dart b/lib/terminal/widgets/terminal_input.dart
+--- a/lib/terminal/widgets/terminal_input.dart
++++ b/lib/terminal/widgets/terminal_input.dart
+@@ -51,7 +51,7 @@
+   /// (`kIsOhosMobileLike`), and because it stays correct under widget tests
+   /// where `dart:io`'s platform differs from the target being built.
+   static bool get isOhosPlatform =>
+-      !kIsWeb && defaultTargetPlatform == TargetPlatform.ohos;
++      !kIsWeb && defaultTargetPlatform.name == 'ohos';
+ 
+   /// Non-dismissing, submit-capable action; see the class doc for the full
+   /// reasoning and the two actions that must not be used.
+diff --git a/vendor/re_editor/lib/src/_consts.dart b/vendor/re_editor/lib/src/_consts.dart
+--- a/vendor/re_editor/lib/src/_consts.dart
++++ b/vendor/re_editor/lib/src/_consts.dart
+@@ -9,4 +9,4 @@
+ /// （usePrefix）与移动选择手柄都依赖 kIsAndroid/kIsIOS，ohos 上均为
+ /// false，导致软键盘在空行无法退格、长按无选择手柄。一并按移动端处理。
+ final bool kIsOhosMobileLike =
+-    !kIsWeb && defaultTargetPlatform == TargetPlatform.ohos;
++    !kIsWeb && defaultTargetPlatform.name == 'ohos';
