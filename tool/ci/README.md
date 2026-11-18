@@ -25,6 +25,8 @@
 七个任务均通过构建和安装包内容校验。
 本轮未验证设备运行。
 本轮未验证界面操作。
+上述记录不包含本次新增的单文件版本。
+新增版本仍需通过云端构建。
 
 ## 产物范围
 
@@ -32,8 +34,8 @@
 | --- | --- | --- |
 | `app-android-arm64-v8a` | `qfli-forge-android-arm64-v8a-test-signed.apk` | 临时调试密钥 |
 | `app-android-x86_64` | `qfli-forge-android-x86_64-test-signed.apk` | 临时调试密钥 |
-| `app-windows-x64` | `qfli-forge-windows-x64-setup.exe`、`qfli-forge-windows-x64.zip` | 未签名 |
-| `app-linux-x64` | `qfli-forge-linux-x64.deb`、`qfli-forge-linux-x64.tar.gz` | 未签名 |
+| `app-windows-x64` | `qfli-forge-windows-x64-setup.exe`、`qfli-forge-windows-x64.zip`、`qfli-forge-windows-x64-portable.exe` | 未签名 |
+| `app-linux-x64` | `qfli-forge-linux-x64.deb`、`qfli-forge-linux-x64.tar.gz`、`qfli-forge-linux-x64.AppImage` | 未签名 |
 | `app-macos-universal` | `QFLIForge-macos-universal.dmg` | ad hoc 签名，未公证 |
 | `app-ios-arm64-unsigned` | `QFLIForge-ios-arm64-unsigned.ipa`、`QFLIForge-ios-arm64-unsigned.xcarchive.zip` | 未签名 |
 | `app-ohos-arm64-unsigned` | `qfli-forge-ohos-arm64-unsigned.hap`、`qfli-forge-ohos-arm64-unsigned.app` | 未签名 |
@@ -41,6 +43,26 @@
 每个产物还包含 `SHA256SUMS`、`SIGNING.txt`、`provenance.json` 和 `LICENSE`。
 `LICENSE` 是本仓库的 GNU GPL 第 3 版许可证文本。
 OHOS 产物另含 `hap-contents.json`。
+
+## 桌面架构与版本
+
+x64、x86_64 和 AMD64 表示同一架构。
+Android 使用 ABI 名称 `x86_64`。
+Flutter 桌面使用名称 `x64`。
+Windows 和 Linux 暂无 32 位或 arm64 安装包。
+macOS 同时包含 arm64 和 x86_64。
+
+| 平台 | 版本 | 首次使用 |
+| --- | --- | --- |
+| Windows | `setup.exe` | 运行安装器 |
+| Windows | `.zip` | 解压后运行应用 |
+| Windows | `portable.exe` | 自动解压后启动应用 |
+| Linux | `.deb` | 用 apt 安装 |
+| Linux | `.tar.gz` | 解压后运行应用 |
+| Linux | `.AppImage` | 配置权限后启动 |
+| macOS | `.dmg` | 将应用复制到 Applications |
+
+Windows 单文件版不需要管理员权限。
 
 ## 下载
 

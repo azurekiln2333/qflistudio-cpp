@@ -226,12 +226,15 @@ class WindowsArchiveSetup extends ToolchainSetup {
     host.notifyChanged();
   }
 
-  Future<void> _execute(StreamController<ToolchainSetupProgress> controller) async {
+  Future<void> _execute(
+    StreamController<ToolchainSetupProgress> controller,
+  ) async {
     void report(ToolchainSetupProgress progress) {
       if (!controller.isClosed) controller.add(progress);
     }
 
     String? temporary;
+    var targetWasReplaced = false;
     try {
       report(
         const ToolchainSetupProgress(
@@ -295,7 +298,8 @@ class WindowsArchiveSetup extends ToolchainSetup {
       );
       await _verify(File(archive));
       _throwIfCancelled();
-      temporary = '$targetDirectory.unpacking'
+      temporary =
+          '$targetDirectory.unpacking'
           '-${DateTime.now().microsecondsSinceEpoch}';
       await _deleteIfPresent(Directory(temporary));
       report(
@@ -324,16 +328,19 @@ class WindowsArchiveSetup extends ToolchainSetup {
           output: '压缩包中没有 ${package.compilerFile}，已停止安装。',
         );
       }
+      // Keep the archive root below the managed option directory.
+      // `readInstalledRoot` and the lookup both resolve `targetDirectory`
+      // through `package.archiveRoot`, so moving only the inner directory
+      // would make every non-empty archive root undiscoverable.
       await _deleteIfPresent(Directory(targetDirectory));
-      await Directory(unpacked).rename(targetDirectory);
+      targetWasReplaced = true;
+      await Directory(temporary).rename(targetDirectory);
       await _deleteIfPresent(Directory(temporary));
       temporary = null;
       await _deleteIfPresent(File(archive));
       await File(
         p.join(targetDirectory, _markerName),
       ).writeAsString(_markerContent, flush: true);
-      _installed = true;
-      host.notifyChanged();
       report(
         const ToolchainSetupProgress(
           phase: ToolchainSetupPhase.detecting,
@@ -351,6 +358,8 @@ class WindowsArchiveSetup extends ToolchainSetup {
           output: '安装完成，但没有找到可用的编译器。',
         );
       }
+      _installed = true;
+      host.notifyChanged();
       final first = usable.first;
       report(
         ToolchainSetupProgress(
@@ -362,6 +371,7 @@ class WindowsArchiveSetup extends ToolchainSetup {
       );
     } on ToolchainDownloadException catch (error) {
       await _deleteIfPresent(temporary == null ? null : Directory(temporary));
+      if (targetWasReplaced) await _deleteIfPresent(Directory(targetDirectory));
       report(
         ToolchainSetupProgress(
           phase: error.cancelled
@@ -372,6 +382,7 @@ class WindowsArchiveSetup extends ToolchainSetup {
       );
     } on ToolchainCommandException catch (error) {
       await _deleteIfPresent(temporary == null ? null : Directory(temporary));
+      if (targetWasReplaced) await _deleteIfPresent(Directory(targetDirectory));
       report(
         ToolchainSetupProgress(
           phase: _cancelRequested
@@ -382,6 +393,7 @@ class WindowsArchiveSetup extends ToolchainSetup {
       );
     } on FileSystemException catch (error) {
       await _deleteIfPresent(temporary == null ? null : Directory(temporary));
+      if (targetWasReplaced) await _deleteIfPresent(Directory(targetDirectory));
       report(
         ToolchainSetupProgress(
           phase: ToolchainSetupPhase.failed,
@@ -557,7 +569,9 @@ class LinuxPackageSetup extends ToolchainSetup {
   @override
   Future<void> remove() async {}
 
-  Future<void> _execute(StreamController<ToolchainSetupProgress> controller) async {
+  Future<void> _execute(
+    StreamController<ToolchainSetupProgress> controller,
+  ) async {
     void report(ToolchainSetupProgress progress) {
       if (!controller.isClosed) controller.add(progress);
     }
@@ -700,7 +714,9 @@ class MacCommandLineToolsSetup extends ToolchainSetup {
   @override
   Future<void> remove() async {}
 
-  Future<void> _execute(StreamController<ToolchainSetupProgress> controller) async {
+  Future<void> _execute(
+    StreamController<ToolchainSetupProgress> controller,
+  ) async {
     void report(ToolchainSetupProgress progress) {
       if (!controller.isClosed) controller.add(progress);
     }

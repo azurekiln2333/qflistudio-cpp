@@ -86,8 +86,8 @@ Every job writes `dist/app/` and uploads that directory.
 | Artifact | Package files | Signing |
 | --- | --- | --- |
 | `app-android-<abi>` | `qfli-forge-android-<abi>-test-signed.apk` | ephemeral debug key |
-| `app-windows-x64` | `qfli-forge-windows-x64-setup.exe`, `qfli-forge-windows-x64.zip` | unsigned |
-| `app-linux-x64` | `qfli-forge-linux-x64.deb`, `qfli-forge-linux-x64.tar.gz` | unsigned |
+| `app-windows-x64` | `qfli-forge-windows-x64-setup.exe`, `qfli-forge-windows-x64.zip`, `qfli-forge-windows-x64-portable.exe` | unsigned |
+| `app-linux-x64` | `qfli-forge-linux-x64.deb`, `qfli-forge-linux-x64.tar.gz`, `qfli-forge-linux-x64.AppImage` | unsigned |
 | `app-macos-universal` | `QFLIForge-macos-universal.dmg` | ad hoc, not notarized |
 | `app-ios-arm64-unsigned` | `QFLIForge-ios-arm64-unsigned.ipa`, `QFLIForge-ios-arm64-unsigned.xcarchive.zip` | unsigned |
 | `app-ohos-arm64-unsigned` | `qfli-forge-ohos-arm64-unsigned.hap`, `qfli-forge-ohos-arm64-unsigned.app` | unsigned |

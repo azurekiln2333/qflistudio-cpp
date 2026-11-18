@@ -64,7 +64,7 @@ const WindowsToolchainPackage llvmMinGwPackage = WindowsToolchainPackage(
       'https://github.com/mstorsjo/llvm-mingw/releases/download/20250305/'
       'llvm-mingw-20250305-ucrt-x86_64.zip',
   bytes: 151580565,
-  sha256: 'd955112db27ebebec0b1fc77d4fcfe7b51ed767912e74e4e00b4a63e9d3ac97',
+  sha256: 'd955112db27ebbefec0b1fc77d4fcfe7b51ed767912e74e4e00b4a63e9d3ac97',
   archiveRoot: 'llvm-mingw-20250305-ucrt-x86_64',
   compilerFile: 'gcc.exe',
 );
@@ -85,7 +85,7 @@ const WindowsToolchainPackage winLibsGccPackage = WindowsToolchainPackage(
       'winlibs-x86_64-posix-seh-gcc-15.2.0-mingw-w64ucrt-13.0.0-r2.zip',
   bytes: 264007421,
   sha256: '3b86551fb163859f805145e5c1b0d4a48324654b99863bef7da5af6d9fc9d813',
-  archiveRoot: '',
+  archiveRoot: 'mingw64',
   compilerFile: 'gcc.exe',
 );
 
