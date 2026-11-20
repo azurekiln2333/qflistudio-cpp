@@ -48,6 +48,27 @@ Evidence is stored in cloud-evidence/ beside this record. Artifact retention end
 
 Android uses a temporary debug key. Windows and Linux packages are unsigned. macOS is ad hoc signed and not notarized. iOS and OHOS packages are unsigned.
 
+## Main branch build after synchronization
+
+Run 44822103705 completed successfully on 2026-11-20 UTC.
+The run built app commit f2529c32da5e52ba1efbd0c44d685284f494e1fc.
+The workflow pinned core commit cbaa4a4166461baafff7c1a343bd3ca1865fcc4f.
+All seven jobs succeeded and uploaded non-expired artifacts.
+Android, iOS, and OHOS jobs checked out the pinned core and verified native inputs.
+
+| Artifact | Size in bytes |
+| --- | ---: |
+| app-android-arm64-v8a | 67638542 |
+| app-android-x86_64 | 70828637 |
+| app-windows-x64 | 31873405 |
+| app-linux-x64 | 40235182 |
+| app-macos-universal | 29868789 |
+| app-ios-arm64-unsigned | 210506901 |
+| app-ohos-arm64-unsigned | 223796963 |
+
+The run confirms cloud build success, not device installation or runtime acceptance.
+The verifier did not download full packages or recalculate payload hashes.
+
 ## Native workflow coverage
 
 Native 工作流构建 Android 两种架构。
