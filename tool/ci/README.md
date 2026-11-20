@@ -5,6 +5,21 @@
 工作流覆盖 Android、iOS、OHOS、Windows、Linux 和 macOS。
 工作流不构建 Web 版本。
 
+## 公共 UI 版本
+
+安装包使用共享 core 的 `cbaa4a4` 提交。
+该提交包含编辑器快捷栏和新版侧栏。
+该提交也更新主页导航与聊天组件。
+Forge 保留离线策略和 C/C++ 工具。
+Forge 不显示联网产品的 AI 入口。
+本地路径依赖读取 core 的工作区内容。
+云构建按提交号检出 core。
+更新 UI 时，请同时更新工作流和兼容脚本的版本。
+
+本地测试通过。
+本轮云构建结果见 Trellis 任务记录。
+任务目录为 `.trellis/tasks/11-21-sync-core-ui-installers/`。
+
 ## 已验证的云端构建
 
 以下任务已于 2026 年 11 月 17 日（UTC）成功。

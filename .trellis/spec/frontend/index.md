@@ -21,6 +21,7 @@ This directory contains guidelines for frontend development. Fill in each file w
 | [Quality Guidelines](./quality-guidelines.md) | Code standards, forbidden patterns | To fill |
 | [Type Safety](./type-safety.md) | Type patterns, validation | To fill |
 | [Forge Tools](./forge-tools.md) | Integer precision, bit operations, ASCII, responsive tools UI | Recorded |
+| [Shared Core UI](./shared-core-ui.md) | Local dependency resolution, installer pins and Forge UI integration | Recorded |
 | [Forge Curriculum](./forge-curriculum.md) | C/C++ content author/generate/verify/merge contract, schema, standards, foreign-row preservation | Recorded |
 
 ---

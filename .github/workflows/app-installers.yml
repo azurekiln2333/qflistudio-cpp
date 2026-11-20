@@ -23,6 +23,7 @@ on:
     branches:
       - main
       - ci/app-installers
+      - ci/ui-core-installers-20261121
     paths:
       - .github/workflows/app-installers.yml
       - tool/ci/**
@@ -54,7 +55,7 @@ defaults:
     working-directory: qfli_c
 
 env:
-  CORE_REVISION: 573d1b6eecf1c2b392ad753264a5a09f62f8335e
+  CORE_REVISION: cbaa4a4166461baafff7c1a343bd3ca1865fcc4f
   FLUTTER_VERSION: 3.41.9
   FLUTTER_REVISION: 00b0c91f06209d9e4a41f71b7a512d6eb3b9c694
   NATIVE_RUN_ID: ${{ inputs.native_run_id }}
@@ -76,19 +77,19 @@ jobs:
       ARCH: ${{ matrix.arch }}
     steps:
       - name: Check out application
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           path: qfli_c
           persist-credentials: false
       - name: Check out pinned shared core
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: azurekiln2333/qflistudio-core
-          ref: 573d1b6eecf1c2b392ad753264a5a09f62f8335e
+          ref: cbaa4a4166461baafff7c1a343bd3ca1865fcc4f
           path: qfli_studio_core
           persist-credentials: false
       - name: Check out Flutter 3.41.9
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: flutter/flutter
           ref: 00b0c91f06209d9e4a41f71b7a512d6eb3b9c694
@@ -123,7 +124,7 @@ jobs:
             --native-record "$RUNNER_TEMP/native-input.json"
       - name: Upload APK
         id: upload
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: app-android-${{ matrix.abi }}
           path: qfli_c/dist/app/
@@ -148,19 +149,19 @@ jobs:
     timeout-minutes: 60
     steps:
       - name: Check out application
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           path: qfli_c
           persist-credentials: false
       - name: Check out pinned shared core
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: azurekiln2333/qflistudio-core
-          ref: 573d1b6eecf1c2b392ad753264a5a09f62f8335e
+          ref: cbaa4a4166461baafff7c1a343bd3ca1865fcc4f
           path: qfli_studio_core
           persist-credentials: false
       - name: Check out Flutter 3.41.9
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: flutter/flutter
           ref: 00b0c91f06209d9e4a41f71b7a512d6eb3b9c694
@@ -186,7 +187,7 @@ jobs:
         run: python tool/ci/package_app.py windows --output dist/app
       - name: Upload Windows packages
         id: upload
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: app-windows-x64
           path: qfli_c/dist/app/
@@ -211,19 +212,19 @@ jobs:
     timeout-minutes: 60
     steps:
       - name: Check out application
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           path: qfli_c
           persist-credentials: false
       - name: Check out pinned shared core
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: azurekiln2333/qflistudio-core
-          ref: 573d1b6eecf1c2b392ad753264a5a09f62f8335e
+          ref: cbaa4a4166461baafff7c1a343bd3ca1865fcc4f
           path: qfli_studio_core
           persist-credentials: false
       - name: Check out Flutter 3.41.9
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: flutter/flutter
           ref: 00b0c91f06209d9e4a41f71b7a512d6eb3b9c694
@@ -249,7 +250,7 @@ jobs:
         run: python3 tool/ci/package_app.py linux --output dist/app
       - name: Upload Linux packages
         id: upload
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: app-linux-x64
           path: qfli_c/dist/app/
@@ -279,19 +280,19 @@ jobs:
       FLUTTER_XCODE_DEVELOPMENT_TEAM: ''
     steps:
       - name: Check out application
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           path: qfli_c
           persist-credentials: false
       - name: Check out pinned shared core
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: azurekiln2333/qflistudio-core
-          ref: 573d1b6eecf1c2b392ad753264a5a09f62f8335e
+          ref: cbaa4a4166461baafff7c1a343bd3ca1865fcc4f
           path: qfli_studio_core
           persist-credentials: false
       - name: Check out Flutter 3.41.9
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: flutter/flutter
           ref: 00b0c91f06209d9e4a41f71b7a512d6eb3b9c694
@@ -313,7 +314,7 @@ jobs:
         run: python3 tool/ci/package_app.py macos --output dist/app
       - name: Upload macOS disk image
         id: upload
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: app-macos-universal
           path: qfli_c/dist/app/
@@ -338,19 +339,19 @@ jobs:
     timeout-minutes: 60
     steps:
       - name: Check out application
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           path: qfli_c
           persist-credentials: false
       - name: Check out pinned shared core
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: azurekiln2333/qflistudio-core
-          ref: 573d1b6eecf1c2b392ad753264a5a09f62f8335e
+          ref: cbaa4a4166461baafff7c1a343bd3ca1865fcc4f
           path: qfli_studio_core
           persist-credentials: false
       - name: Check out Flutter 3.41.9
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: flutter/flutter
           ref: 00b0c91f06209d9e4a41f71b7a512d6eb3b9c694
@@ -384,7 +385,7 @@ jobs:
             --native-record "$RUNNER_TEMP/native-input.json"
       - name: Upload iOS packages
         id: upload
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: app-ios-arm64-unsigned
           path: qfli_c/dist/app/
@@ -414,7 +415,7 @@ jobs:
       FLUTTER_OHOS_TAG: 3.41.9+ohos-1.0.2
     steps:
       - name: Check out application
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           path: qfli_c
           persist-credentials: false
@@ -432,10 +433,10 @@ jobs:
           echo "$JAVA_HOME_21_X64/bin" >> "$GITHUB_PATH"
           "$JAVA_HOME_21_X64/bin/java" -version
       - name: Check out pinned shared core
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: azurekiln2333/qflistudio-core
-          ref: 573d1b6eecf1c2b392ad753264a5a09f62f8335e
+          ref: cbaa4a4166461baafff7c1a343bd3ca1865fcc4f
           path: qfli_studio_core
           persist-credentials: false
       - name: Check out the pinned Flutter OHOS release
@@ -474,7 +475,7 @@ jobs:
         run: python3 tool/ci/ohos_build.py package
       - name: Upload OHOS packages
         id: upload
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: app-ohos-arm64-unsigned
           path: qfli_c/dist/app/
