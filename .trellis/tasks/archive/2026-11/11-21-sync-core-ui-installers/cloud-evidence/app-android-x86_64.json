@@ -1,0 +1,63 @@
+{
+  "artifactId": 14659747142,
+  "name": "app-android-x86_64",
+  "archiveBytes": 70828637,
+  "createdAt": "2026-11-20T18:58:14Z",
+  "expiresAt": "2026-12-20T18:58:12Z",
+  "rangeRequests": 3,
+  "bytesTransferred": 180830,
+  "provenance": {
+    "applicationCommit": "6908e44ecb5edbc8a3a1388d40ec8d3166a35ac5",
+    "repository": "azurekiln2333/qflistudio-cpp",
+    "runId": "44797136694",
+    "runUrl": "https://github.com/azurekiln2333/qflistudio-cpp/actions/runs/44797136694",
+    "coreCommit": "cbaa4a4166461baafff7c1a343bd3ca1865fcc4f",
+    "flutterCommit": "00b0c91f06209d9e4a41f71b7a512d6eb3b9c694",
+    "platform": "android",
+    "architecture": "x86_64",
+    "applicationVersion": "1.0.0+1",
+    "signing": "ephemeral debug key",
+    "nativeInput": {
+      "name": "qfli-native-android-x86_64",
+      "artifactId": 14294256324,
+      "runId": 44001588302,
+      "headSha": "ba5c33ada5d7e6d5a69d92477e2a1bb2243e60db",
+      "headBranch": "main",
+      "createdAt": "2026-11-17T02:47:01Z",
+      "expiresAt": "2026-12-17T02:46:58Z",
+      "archive": "qfli-native-android-x86_64.tar.gz",
+      "archiveSha256": "79a889601713290f8b4b89742f53eb3ed96cea1b871be6879f37bf810d8816e1"
+    },
+    "packages": [
+      {
+        "file": "qfli-forge-android-x86_64-test-signed.apk",
+        "sha256": "b32caa114ea5816a0f068f149f9716487946caab589c7ba60d554323d56b66b2",
+        "size": 70791269
+      }
+    ],
+    "validation": [
+      "apk-single-abi",
+      "apk-flutter-libraries",
+      "apk-native-toolchain-libraries",
+      "apk-toolchain-asset"
+    ],
+    "deviceRuntimeVerified": false
+  },
+  "signingText": "Signing: ephemeral debug key.\nEach CI run creates a new key. An update over an earlier CI build fails: uninstall first.\nNot for store upload.\nDevice or UI execution was not tested.\n",
+  "sha256Sums": "b32caa114ea5816a0f068f149f9716487946caab589c7ba60d554323d56b66b2  qfli-forge-android-x86_64-test-signed.apk\n",
+  "packageFiles": [
+    {
+      "name": "qfli-forge-android-x86_64-test-signed.apk",
+      "size": 70791269,
+      "crc32": "1e659298"
+    }
+  ],
+  "validation": {
+    "coreCommitMatches": true,
+    "applicationCommitMatches": true,
+    "sha256FileFormatValid": true,
+    "packagePayloadHashesVerified": false,
+    "metadataZipCrcVerified": true
+  },
+  "passed": true
+}

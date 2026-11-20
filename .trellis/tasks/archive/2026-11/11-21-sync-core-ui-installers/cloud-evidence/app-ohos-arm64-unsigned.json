@@ -1,0 +1,111 @@
+{
+  "artifactId": 14658279977,
+  "name": "app-ohos-arm64-unsigned",
+  "archiveBytes": 223795322,
+  "createdAt": "2026-11-20T18:59:10Z",
+  "expiresAt": "2026-12-20T18:59:08Z",
+  "rangeRequests": 3,
+  "bytesTransferred": 186491,
+  "provenance": {
+    "applicationCommit": "6908e44ecb5edbc8a3a1388d40ec8d3166a35ac5",
+    "repository": "azurekiln2333/qflistudio-cpp",
+    "runId": "44797136694",
+    "runUrl": "https://github.com/azurekiln2333/qflistudio-cpp/actions/runs/44797136694",
+    "coreCommit": "cbaa4a4166461baafff7c1a343bd3ca1865fcc4f",
+    "flutterCommit": "62357a93d653bf844f730bb1f4b7cc9e2139d14e",
+    "flutterTag": "3.41.9+ohos-1.0.2",
+    "platform": "HarmonyOS",
+    "architecture": "arm64-v8a",
+    "applicationVersion": "1.0.0+1",
+    "signing": "unsigned",
+    "nativeInput": {
+      "name": "qfli-native-ohos-arm64-v8a",
+      "artifactId": 14295390494,
+      "runId": 44001588302,
+      "headSha": "ba5c33ada5d7e6d5a69d92477e2a1bb2243e60db",
+      "headBranch": "main",
+      "createdAt": "2026-11-17T03:02:40Z",
+      "expiresAt": "2026-12-17T03:02:36Z",
+      "archive": "qfli-native-ohos-arm64-v8a.tar.gz",
+      "archiveSha256": "f6c13172e5a3512435736cbc241edab099caff28b2252d22ebafdbef8eb6fcab"
+    },
+    "toolchain": {
+      "archiveSha256": "58da7359019e9360a8bb82da0cd1d3b3b26fedc338379f257849f2162e3ac1fc",
+      "archiveSize": 2347882285,
+      "archiveSource": "https://contentcenter-vali-drcn.dbankcdn.cn/pvt_2/DeveloperAlliance_package_901_9/d1/v3/PCx_dpJhQG63WXNUPT30vg/commandline-tools-linux-x64-26.0.0.821.zip",
+      "archiveVersion": "26.0.0.821",
+      "sourceReference": "https://github.com/apap6628114/lnga_harmony/blob/233f20b5654486a96f6b5657fe3bd9d7e19e8578/.github/workflows/build-hap.yml",
+      "sdk": {
+        "apiVersion": "26",
+        "displayName": "HarmonyOS 26.0.0",
+        "path": "HarmonyOS-26.0.0",
+        "platformVersion": "26.0.0",
+        "releaseType": "Release",
+        "version": "26.0.0.105",
+        "stage": "Release"
+      }
+    },
+    "flutter": {
+      "frameworkVersion": "3.41.9+ohos-1.0.2",
+      "channel": "[user-branch]",
+      "repositoryUrl": "unknown source",
+      "frameworkRevision": "62357a93d653bf844f730bb1f4b7cc9e2139d14e",
+      "frameworkCommitDate": "2026-09-24 18:28:11 +0800",
+      "engineRevision": "42d3d75a56efe1a2e9902f52dc8006099c45d937",
+      "engineCommitDate": "2026-04-28 17:31:55.000Z",
+      "engineContentHash": "9161402dc0e134b3fb5adee5046b6e84b1a5e1c1",
+      "engineBuildDate": "2026-04-28 19:37:18.442",
+      "dartSdkVersion": "3.11.5",
+      "devToolsVersion": "2.54.1",
+      "flutterVersion": "3.41.9+ohos-1.0.2",
+      "flutterRoot": "/home/runner/work/qflistudio-cpp/qflistudio-cpp/flutter_ohos"
+    },
+    "packages": [
+      {
+        "file": "qfli-forge-ohos-arm64-unsigned.hap",
+        "sha256": "cd806f5adcc71197457822ff2ceaf9ee4f6f0210522c5298a8ae7f17dbaf4103",
+        "size": 152555900
+      },
+      {
+        "file": "qfli-forge-ohos-arm64-unsigned.app",
+        "sha256": "918dabcb8c5813f103b86e639e0a7556d5ae69244c7b6972a81e3322906ff607",
+        "size": 71198587
+      }
+    ],
+    "validation": [
+      "HAP contains libs/arm64-v8a/libflutter.so",
+      "HAP contains libs/arm64-v8a/libapp.so",
+      "HAP contains libs/arm64-v8a/libqfli_ohos_runner.so",
+      "HAP contains resources/rawfile/qfli_toolchain/ohos-wasi.zip",
+      "HAP libs/ holds only arm64-v8a",
+      "APP entry-default.hap contains libs/arm64-v8a/libflutter.so",
+      "APP entry-default.hap contains libs/arm64-v8a/libapp.so",
+      "APP entry-default.hap contains libs/arm64-v8a/libqfli_ohos_runner.so",
+      "APP entry-default.hap contains resources/rawfile/qfli_toolchain/ohos-wasi.zip",
+      "APP entry-default.hap libs/ holds only arm64-v8a"
+    ],
+    "deviceRuntimeVerified": false
+  },
+  "signingText": "QFLIForge HarmonyOS packages (ARM64)\n\nSigning: unsigned.\nThe CI copy removed the signing configuration before the build.\nSign the HAP or the APP with a HarmonyOS certificate and profile before installation.\nAn unsigned package does not install on a device.\nDevice execution was not tested.\n",
+  "sha256Sums": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986  LICENSE\n85449e4860d8873c1b16b559bd891eb6417cc3dd7494083770b3101fb3e2f7d5  SIGNING.txt\n30052174f4ff177e8251676d47533905048e05d59587212fb1f24b4cc52d402a  hap-contents.json\n0539b393f78f5d8da7c3524e7357c3bd0777e17bba4d57079dc93458e4da92a8  provenance.json\n918dabcb8c5813f103b86e639e0a7556d5ae69244c7b6972a81e3322906ff607  qfli-forge-ohos-arm64-unsigned.app\ncd806f5adcc71197457822ff2ceaf9ee4f6f0210522c5298a8ae7f17dbaf4103  qfli-forge-ohos-arm64-unsigned.hap\n",
+  "packageFiles": [
+    {
+      "name": "qfli-forge-ohos-arm64-unsigned.app",
+      "size": 71198587,
+      "crc32": "0c7f7f45"
+    },
+    {
+      "name": "qfli-forge-ohos-arm64-unsigned.hap",
+      "size": 152555900,
+      "crc32": "f4623ab5"
+    }
+  ],
+  "validation": {
+    "coreCommitMatches": true,
+    "applicationCommitMatches": true,
+    "sha256FileFormatValid": true,
+    "packagePayloadHashesVerified": false,
+    "metadataZipCrcVerified": true
+  },
+  "passed": true
+}

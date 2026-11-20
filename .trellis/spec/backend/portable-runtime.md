@@ -13,6 +13,14 @@ load generated native machine code or enable JIT on ordinary iOS.
   sources, source_count, diagnostic_fd): absolute paths, borrowed diagnostic FD.
 - qfli_wasm_run(session, module_path, project_path, input_fd, output_fd,
   error_fd, cost_limit): borrowed independent descriptors, project preopen.
+- qfli_compiler_command(session, sdk_root, project_root, working_directory,
+  temporary_directory, compiler_name, arguments, argument_count, output_fd,
+  diagnostic_fd): one sandbox-confined clang/clang++ command; no subprocess,
+  process cwd mutation or process stdio redirection. Version/help use the actual
+  bundled Clang. Support source compilation, object/archive linking, -c/-S/-E,
+  -o/-std/-I/-D/-O and warning options; unsupported options report status 127.
+- qfli_wasm_run_with_args adds arguments/argument_count after cost_limit;
+  module_path supplies argv[0]. The original entry point forwards zero arguments.
 - Both opaque sessions expose create/cancel/destroy. Each session is used once;
   destroy only after run/compile and concurrent cancellation have returned.
 - qfli_compiler_set_threads(session, enabled) selects the standard WASI threads

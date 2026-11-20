@@ -25,3 +25,21 @@ Validation: actual configured Flutter/OHOS SDK analysis/tests, all-example nativ
   unsaved source/header overlays, structured byte ranges converted to UTF-16 and
   actual NAPI/ArkTS/channel acceptance. No user execution or project-source writes.
   Existing terminal/startup/native changes remain separately owned and unstaged.
+
+## Commit sweep
+
+Swept all uncommitted work and grouped it by theme. Tracked icons that
+changed on purpose are included.
+
+| Commit | Theme |
+| --- | --- |
+| `b930c01` feat(native): run compiler and wasm programs in process | native |
+| `ed4c9c0` feat(ohos): expose the in-process terminal to the ArkTS shell | ohos |
+| `79714d5` feat(forge): wire the terminal delegate and the OHOS splash hold | lib/main.dart, on its own because it carries two themes |
+| `27676aa` feat(ohos): hold a native startup splash with real progress | ohos + icons |
+| `04611d4` feat(forge): give the shared terminal a native command delegate | lib |
+| `e932e92` test(native): cover the in-process bridge and the portable curriculum | tests + tool |
+| `925591f` docs(spec): record the in-process bridge and the terminal contract | docs, LICENSE, archive |
+
+Skipped: none. Untracked build output, logs and crash dumps were not
+present in this repository.

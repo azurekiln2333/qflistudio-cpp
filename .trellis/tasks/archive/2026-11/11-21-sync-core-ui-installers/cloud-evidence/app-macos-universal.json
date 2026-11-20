@@ -1,0 +1,56 @@
+{
+  "artifactId": 14658949011,
+  "name": "app-macos-universal",
+  "archiveBytes": 29868784,
+  "createdAt": "2026-11-20T18:59:47Z",
+  "expiresAt": "2026-12-20T18:59:44Z",
+  "rangeRequests": 3,
+  "bytesTransferred": 246513,
+  "provenance": {
+    "applicationCommit": "6908e44ecb5edbc8a3a1388d40ec8d3166a35ac5",
+    "repository": "azurekiln2333/qflistudio-cpp",
+    "runId": "44797136694",
+    "runUrl": "https://github.com/azurekiln2333/qflistudio-cpp/actions/runs/44797136694",
+    "coreCommit": "cbaa4a4166461baafff7c1a343bd3ca1865fcc4f",
+    "flutterCommit": "00b0c91f06209d9e4a41f71b7a512d6eb3b9c694",
+    "platform": "macos",
+    "architecture": "universal",
+    "applicationVersion": "1.0.0+1",
+    "signing": "ad hoc",
+    "nativeInput": null,
+    "packages": [
+      {
+        "file": "QFLIForge-macos-universal.dmg",
+        "sha256": "c61d65355376e8ea25d4e2ee5fa261b912f61949d0edabebf3378118e9233f58",
+        "size": 29831770
+      }
+    ],
+    "validation": [
+      "application-universal-architectures",
+      "application-codesign-verification",
+      "image-verify",
+      "image-application",
+      "image-applications-link",
+      "mounted-universal-architectures",
+      "mounted-codesign-verification"
+    ],
+    "deviceRuntimeVerified": false
+  },
+  "signingText": "Signing: ad hoc.\nNot notarized. Gatekeeper asks on first start.\nThe application needs a host clang or gcc on PATH to compile programs.\nDevice or UI execution was not tested.\n",
+  "sha256Sums": "c61d65355376e8ea25d4e2ee5fa261b912f61949d0edabebf3378118e9233f58  QFLIForge-macos-universal.dmg\n",
+  "packageFiles": [
+    {
+      "name": "QFLIForge-macos-universal.dmg",
+      "size": 29831770,
+      "crc32": "62e01570"
+    }
+  ],
+  "validation": {
+    "coreCommitMatches": true,
+    "applicationCommitMatches": true,
+    "sha256FileFormatValid": true,
+    "packagePayloadHashesVerified": false,
+    "metadataZipCrcVerified": true
+  },
+  "passed": true
+}

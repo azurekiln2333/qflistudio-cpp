@@ -1,0 +1,78 @@
+{
+  "artifactId": 14660315498,
+  "name": "app-ios-arm64-unsigned",
+  "archiveBytes": 210506900,
+  "createdAt": "2026-11-20T19:01:18Z",
+  "expiresAt": "2026-12-20T19:01:15Z",
+  "rangeRequests": 2,
+  "bytesTransferred": 5269,
+  "provenance": {
+    "applicationCommit": "6908e44ecb5edbc8a3a1388d40ec8d3166a35ac5",
+    "repository": "azurekiln2333/qflistudio-cpp",
+    "runId": "44797136694",
+    "runUrl": "https://github.com/azurekiln2333/qflistudio-cpp/actions/runs/44797136694",
+    "coreCommit": "cbaa4a4166461baafff7c1a343bd3ca1865fcc4f",
+    "flutterCommit": "00b0c91f06209d9e4a41f71b7a512d6eb3b9c694",
+    "platform": "ios",
+    "architecture": "arm64",
+    "applicationVersion": "1.0.0+1",
+    "signing": "unsigned",
+    "nativeInput": {
+      "name": "qfli-native-ios",
+      "artifactId": 14299499948,
+      "runId": 44001588302,
+      "headSha": "ba5c33ada5d7e6d5a69d92477e2a1bb2243e60db",
+      "headBranch": "main",
+      "createdAt": "2026-11-17T04:44:24Z",
+      "expiresAt": "2026-12-17T04:44:01Z",
+      "archive": "qfli-native-ios.tar.gz",
+      "archiveSha256": "a3565412c24be1d7a081348b233b640522a414f73a25efd7479fcc43ab5ef6dd"
+    },
+    "packages": [
+      {
+        "file": "QFLIForge-ios-arm64-unsigned.xcarchive.zip",
+        "sha256": "c1785431b070ead2ee575de3d9d785cc1d201e039877307f0722fb8619dc834d",
+        "size": 125963980
+      },
+      {
+        "file": "QFLIForge-ios-arm64-unsigned.ipa",
+        "sha256": "327b82b9383354d0574f261bd39501c92e4d45c2a864d627e8b586bb4afeab1f",
+        "size": 84505059
+      }
+    ],
+    "validation": [
+      "application-files",
+      "application-no-provisioning-profile",
+      "application-arm64",
+      "xcarchive-zip-application",
+      "ipa-payload-only",
+      "ipa-application-executable",
+      "ipa-flutter-frameworks",
+      "ipa-wasi-sdk-resources",
+      "ipa-no-provisioning-profile"
+    ],
+    "deviceRuntimeVerified": false
+  },
+  "signingText": "Signing: unsigned.\nSign with an Apple identity and profile before installation.\nDevice or UI execution was not tested.\n",
+  "sha256Sums": "c1785431b070ead2ee575de3d9d785cc1d201e039877307f0722fb8619dc834d  QFLIForge-ios-arm64-unsigned.xcarchive.zip\n327b82b9383354d0574f261bd39501c92e4d45c2a864d627e8b586bb4afeab1f  QFLIForge-ios-arm64-unsigned.ipa\n",
+  "packageFiles": [
+    {
+      "name": "QFLIForge-ios-arm64-unsigned.ipa",
+      "size": 84505059,
+      "crc32": "13422fce"
+    },
+    {
+      "name": "QFLIForge-ios-arm64-unsigned.xcarchive.zip",
+      "size": 125963980,
+      "crc32": "13318243"
+    }
+  ],
+  "validation": {
+    "coreCommitMatches": true,
+    "applicationCommitMatches": true,
+    "sha256FileFormatValid": true,
+    "packagePayloadHashesVerified": false,
+    "metadataZipCrcVerified": true
+  },
+  "passed": true
+}

@@ -17,8 +17,8 @@ Forge 不显示联网产品的 AI 入口。
 更新 UI 时，请同时更新工作流和兼容脚本的版本。
 
 本地测试通过。
-本轮云构建结果见 Trellis 任务记录。
-任务目录为 `.trellis/tasks/11-21-sync-core-ui-installers/`。
+本轮云构建详情见项目状态记录。
+记录位置为 `.trellis/PROJECT_STATUS.md`。
 
 ## 已验证的云端构建
 
@@ -41,6 +41,22 @@ Forge 不显示联网产品的 AI 入口。
 本轮未验证设备运行。
 本轮未验证界面操作。
 
+## 最近一次云构建
+
+运行编号为 `44797136694`。
+运行时间为 2026 年 11 月 20 日（UTC）。
+运行分支为 `ci/ui-core-installers-20261121`。
+七个任务均以 `success` 结束。
+构建使用 core 提交 `cbaa4a4`。
+构建使用 app 提交 `6908e44`。
+所有产物的来源提交均匹配。
+本轮未验证设备安装或运行。
+
+任务记录位于 `.trellis/tasks/archive/2026-11/11-21-sync-core-ui-installers/`。
+产物元数据证据保存在任务目录的 `cloud-evidence/`。
+SHA256SUMS 格式通过校验。
+未下载完整产物或重算载荷哈希。
+
 ## 产物范围
 
 | 产物名称 | 安装包文件 | 签名状态 |
@@ -56,6 +72,18 @@ Forge 不显示联网产品的 AI 入口。
 每个产物还包含 `SHA256SUMS`、`SIGNING.txt`、`provenance.json` 和 `LICENSE`。
 `LICENSE` 是本仓库的 GNU GPL 第 3 版许可证文本。
 OHOS 产物另含 `hap-contents.json`。
+
+## Native 依赖工作流
+
+独立 Native 工作流覆盖 Android、iOS 和 OHOS。
+Android 构建 ARM64 与 x86_64 包。
+iOS 构建真机和模拟器静态库。
+iOS 模拟器包含 ARM64 与 x86_64。
+OHOS 构建 ARM64 编译器与 WASI 资源。
+
+该工作流不构建 Windows、Linux 或 macOS 编译器包。
+桌面安装包会构建 Flutter runner 和插件。
+桌面 C/C++ 编译仍依赖系统 clang 或 gcc。
 
 ## 下载
 
