@@ -23,6 +23,11 @@ dependencies:
   file: ^7.0.1
   web: ^1.1.1
 
+  # 桌面环境配置（lib/toolchain/、forge_environment_page.dart）：
+  # 校验工具链压缩包的 SHA-256，选择工具链目录。
+  crypto: ^3.0.6
+  file_selector: ^1.0.3
+
   cupertino_icons: ^1.0.8
 
 dependency_overrides:

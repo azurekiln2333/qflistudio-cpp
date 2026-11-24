@@ -4,102 +4,145 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'forge_development_tools.dart';
+import 'forge_environment_page.dart';
 import 'forge_integer_tools.dart';
+import 'toolchain/local_toolchain_environment.dart';
+import 'toolchain/toolchain_environment.dart';
 
 class ForgeToolsPage extends StatelessWidget {
-  const ForgeToolsPage({super.key, this.onOpenTerminal});
+  const ForgeToolsPage({super.key, this.onOpenTerminal, this.environment});
 
   final VoidCallback? onOpenTerminal;
+
+  /// 编译器环境。为 null 时使用应用共享的实例。
+  final ToolchainEnvironment? environment;
 
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(title: const Text('C/C++ 工具')),
-    body: ForgeToolsBody(onOpenTerminal: onOpenTerminal),
+    body: ForgeToolsBody(
+      onOpenTerminal: onOpenTerminal,
+      environment: environment,
+    ),
   );
 }
 
 /// Direct tools-tab content. The host supplies its own Scaffold and navigation.
 class ForgeToolsBody extends StatelessWidget {
-  const ForgeToolsBody({super.key, this.onOpenTerminal});
+  const ForgeToolsBody({super.key, this.onOpenTerminal, this.environment});
 
   final VoidCallback? onOpenTerminal;
 
+  /// 编译器环境。为 null 时使用应用共享的实例。
+  final ToolchainEnvironment? environment;
+
+  /// 只有在桌面平台才提供「环境配置」入口，其他平台不渲染、也不初始化该页。
+  ToolchainEnvironment? get _environment =>
+      (environment ?? forgeToolchainEnvironment).supported
+      ? (environment ?? forgeToolchainEnvironment)
+      : null;
+
   @override
-  Widget build(BuildContext context) => SingleChildScrollView(
-    key: const PageStorageKey('forge-tools-scroll'),
-    padding: const EdgeInsets.all(16),
-    child: Align(
-      alignment: Alignment.topCenter,
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 1200),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final scale = MediaQuery.textScalerOf(context).scale(16) / 16;
-            final columns = constraints.maxWidth >= 900 * scale ? 2 : 1;
-            final width = (constraints.maxWidth - (columns - 1) * 16) / columns;
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const Text('所有工具均在本机计算。直接输入即可转换、检查或复制结果。'),
-                if (onOpenTerminal != null) ...[
-                  const SizedBox(height: 12),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: OutlinedButton.icon(
-                      onPressed: onOpenTerminal,
-                      icon: const Icon(Icons.terminal),
-                      label: const Text('打开终端'),
+  Widget build(BuildContext context) {
+    final environment = _environment;
+    return SingleChildScrollView(
+      key: const PageStorageKey('forge-tools-scroll'),
+      padding: const EdgeInsets.all(16),
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1200),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final scale = MediaQuery.textScalerOf(context).scale(16) / 16;
+              final columns = constraints.maxWidth >= 900 * scale ? 2 : 1;
+              final width =
+                  (constraints.maxWidth - (columns - 1) * 16) / columns;
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Text('所有工具均在本机计算。直接输入即可转换、检查或复制结果。'),
+                  if (onOpenTerminal != null || environment != null) ...[
+                    const SizedBox(height: 12),
+                    Wrap(
+                      spacing: 12,
+                      runSpacing: 8,
+                      children: [
+                        if (onOpenTerminal != null)
+                          OutlinedButton.icon(
+                            onPressed: onOpenTerminal,
+                            icon: const Icon(Icons.terminal),
+                            label: const Text('打开终端'),
+                          ),
+                        if (environment != null)
+                          OutlinedButton.icon(
+                            key: const ValueKey('environment-entry'),
+                            onPressed: () =>
+                                _openEnvironment(context, environment),
+                            icon: const Icon(Icons.settings_suggest_outlined),
+                            label: const Text('环境配置'),
+                          ),
+                      ],
                     ),
+                  ],
+                  const SizedBox(height: 16),
+                  Wrap(
+                    spacing: 16,
+                    runSpacing: 16,
+                    children: [
+                      for (final tool in const <Widget>[
+                        _ToolSection(
+                          key: ValueKey('integer-section'),
+                          title: '进制转换',
+                          icon: Icons.numbers,
+                          child: _IntegerTool(calculate: false),
+                        ),
+                        _ToolSection(
+                          key: ValueKey('bit-section'),
+                          title: '位运算',
+                          icon: Icons.calculate_outlined,
+                          child: _IntegerTool(calculate: true),
+                        ),
+                        _ToolSection(
+                          key: ValueKey('string-section'),
+                          title: 'UTF-8 / C 字符串',
+                          icon: Icons.data_object,
+                          child: _CStringTool(),
+                        ),
+                        _ToolSection(
+                          key: ValueKey('layout-section'),
+                          title: '类型与结构体布局',
+                          icon: Icons.view_agenda_outlined,
+                          child: _CLayoutTool(),
+                        ),
+                        _ToolSection(
+                          key: ValueKey('ascii-section'),
+                          title: 'ASCII',
+                          icon: Icons.text_fields,
+                          child: _AsciiTool(),
+                        ),
+                      ])
+                        SizedBox(width: width, child: tool),
+                    ],
                   ),
                 ],
-                const SizedBox(height: 16),
-                Wrap(
-                  spacing: 16,
-                  runSpacing: 16,
-                  children: [
-                    for (final tool in const <Widget>[
-                      _ToolSection(
-                        key: ValueKey('integer-section'),
-                        title: '进制转换',
-                        icon: Icons.numbers,
-                        child: _IntegerTool(calculate: false),
-                      ),
-                      _ToolSection(
-                        key: ValueKey('bit-section'),
-                        title: '位运算',
-                        icon: Icons.calculate_outlined,
-                        child: _IntegerTool(calculate: true),
-                      ),
-                      _ToolSection(
-                        key: ValueKey('string-section'),
-                        title: 'UTF-8 / C 字符串',
-                        icon: Icons.data_object,
-                        child: _CStringTool(),
-                      ),
-                      _ToolSection(
-                        key: ValueKey('layout-section'),
-                        title: '类型与结构体布局',
-                        icon: Icons.view_agenda_outlined,
-                        child: _CLayoutTool(),
-                      ),
-                      _ToolSection(
-                        key: ValueKey('ascii-section'),
-                        title: 'ASCII',
-                        icon: Icons.text_fields,
-                        child: _AsciiTool(),
-                      ),
-                    ])
-                      SizedBox(width: width, child: tool),
-                  ],
-                ),
-              ],
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }
+
+Future<void> _openEnvironment(
+  BuildContext context,
+  ToolchainEnvironment environment,
+) => Navigator.of(context).push(
+  MaterialPageRoute<void>(
+    builder: (_) => ForgeEnvironmentPage(environment: environment),
+  ),
+);
 
 class _ToolSection extends StatelessWidget {
   const _ToolSection({

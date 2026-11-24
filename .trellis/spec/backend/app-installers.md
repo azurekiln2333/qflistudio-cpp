@@ -86,8 +86,8 @@ Every job writes `dist/app/` and uploads that directory.
 | Artifact | Package files | Signing |
 | --- | --- | --- |
 | `app-android-<abi>` | `qfli-forge-android-<abi>-test-signed.apk` | ephemeral debug key |
-| `app-windows-x64` | `qfli-forge-windows-x64-setup.exe`, `qfli-forge-windows-x64.zip` | unsigned |
-| `app-linux-x64` | `qfli-forge-linux-x64.deb`, `qfli-forge-linux-x64.tar.gz` | unsigned |
+| `app-windows-x64` | `qfli-forge-windows-x64-setup.exe`, `qfli-forge-windows-x64.zip`, `qfli-forge-windows-x64-portable.exe` | unsigned |
+| `app-linux-x64` | `qfli-forge-linux-x64.deb`, `qfli-forge-linux-x64.tar.gz`, `qfli-forge-linux-x64.AppImage` | unsigned |
 | `app-macos-universal` | `QFLIForge-macos-universal.dmg` | ad hoc, not notarized |
 | `app-ios-arm64-unsigned` | `QFLIForge-ios-arm64-unsigned.ipa`, `QFLIForge-ios-arm64-unsigned.xcarchive.zip` | unsigned |
 | `app-ohos-arm64-unsigned` | `qfli-forge-ohos-arm64-unsigned.hap`, `qfli-forge-ohos-arm64-unsigned.app` | unsigned |
@@ -215,8 +215,11 @@ download directory.
   manual review covered the workflow file.
 - Native artifacts expire after 30 days. After expiry, run "Native artifacts"
   first.
-- The pinned `actions/checkout` v4.2.2 and `actions/upload-artifact` v4.6.2
-  raise a Node.js 20 deprecation warning. Update both pins together.
+- The workflow uses the pinned Node.js 24 action releases: checkout v7.0.1,
+  upload-artifact v7.0.2 and download-artifact v8.0.2.
+- Windows publishes a setup program, a portable ZIP and an unsigned
+  single-file launcher. Linux publishes a Debian package, a tar.gz bundle and
+  an unsigned AppImage. x64 and x86_64 name the same desktop architecture.
 - The `choco install innosetup` fallback of the Windows job pins no version.
 - `git diff --check` reports the blank context lines of
   `tool/ci/stock-flutter-core.patch`. Each line holds the single space of the

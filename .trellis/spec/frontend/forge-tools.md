@@ -45,6 +45,10 @@ standalone Scaffold/AppBar wrapper around the same body.
   apostrophes, and backslashes.
 - Render the actual terminal callback as a direct button only when provided by
   the host. Do not substitute a decorative terminal or fake backend.
+- On Windows, Linux and macOS, show a direct `环境配置` entry beside the
+  terminal action. The page uses the shared desktop toolchain environment and
+  keeps the five tool sections in their existing order. Other platforms render
+  no environment entry.
 - Reuse Material controls and existing navigation. No sample project data.
 
 ## C Byte Literals And UTF-8

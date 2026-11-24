@@ -12,6 +12,10 @@ import 'android_clang_runner.dart';
 import 'native_clang_runner.dart';
 import 'run_title.dart';
 import 'source_selection.dart';
+import 'toolchain/compiler_candidate.dart';
+import 'toolchain/local_toolchain_environment.dart';
+import 'toolchain/toolchain_environment.dart';
+import 'toolchain/toolchain_lookup.dart';
 
 /// Native C/C++ compiler backend for QFLIForge.
 ///
@@ -22,8 +26,10 @@ class ClangProgramRunner implements ProgramRunner {
   ClangProgramRunner({
     ProcessSupervisor? supervisor,
     String? toolchainDirectory,
+    ToolchainEnvironment? environment,
   }) : _supervisor = supervisor ?? ProcessSupervisor(),
-       _toolchainDirectory = toolchainDirectory;
+       _toolchainDirectory = toolchainDirectory,
+       _environment = environment ?? forgeToolchainEnvironment;
 
   static const _nativeChannel = MethodChannel('qfli_forge/native');
   static const _extensions = <String>{
@@ -79,6 +85,12 @@ class ClangProgramRunner implements ProgramRunner {
 
   final ProcessSupervisor _supervisor;
   final String? _toolchainDirectory;
+
+  /// Settings and managed toolchains of the environment page.
+  ///
+  /// Read for every run, so a changed setting or a finished setup applies at
+  /// the next run without a restart of the application.
+  final ToolchainEnvironment _environment;
 
   @override
   Future<ProgramRunResult?> run({
@@ -172,7 +184,7 @@ class ClangProgramRunner implements ProgramRunner {
       final compiler = await _findCompiler(projectType, projectPath);
       if (compiler == null) {
         return _unavailable(
-          '未找到可用的 C/C++ 编译工具链。',
+          '未找到可用的 C/C++ 编译工具链。请在工具页打开「环境配置」。',
           projectPath: projectPath,
           entryFile: entryFile,
         );
@@ -235,107 +247,90 @@ class ClangProgramRunner implements ProgramRunner {
     );
   }
 
-  Future<_Compiler?> _findCompiler(String type, String projectPath) async {
-    final isC = type == 'c';
-    final names = isC ? const ['clang', 'gcc'] : const ['clang++', 'g++'];
-    final configured = [
-      Platform.environment[isC ? 'QFLI_CLANG' : 'QFLI_CLANGXX'],
-      Platform.environment[isC ? 'QFLI_CC' : 'QFLI_CXX'],
-    ];
-    final roots = <String>[
-      ?_toolchainDirectory,
-      if (Platform.environment['QFLI_TOOLCHAIN_HOME'] case final String home)
-        home,
-      p.join(p.dirname(Platform.resolvedExecutable), 'toolchain'),
-      if (Platform.isWindows) ...[
-        p.join(
-          p.rootPrefix(p.absolute(projectPath)),
-          'ProgramFiles',
-          'Dev-Cpp',
-          'MinGW64',
-        ),
-        p.join(
-          p.rootPrefix(Platform.resolvedExecutable),
-          'ProgramFiles',
-          'Dev-Cpp',
-          'MinGW64',
-        ),
-        p.join(
-          Platform.environment['ProgramFiles'] ?? '',
-          'Dev-Cpp',
-          'MinGW64',
-        ),
-      ],
-    ];
-    final candidates = <String>{
-      ...configured.whereType<String>().where((value) => value.isNotEmpty),
-      for (final root in roots)
-        for (final name in names)
-          p.join(root, 'bin', Platform.isWindows ? '$name.exe' : name),
-      ...names,
-    };
-    for (final candidate in candidates) {
-      if (p.isAbsolute(candidate) && !File(candidate).existsSync()) continue;
-      final compiler = await _probeCompiler(candidate, type);
-      if (compiler != null) return compiler;
+  /// Compiler that the next run of a [type] program uses, or null.
+  ///
+  /// [ToolchainLookup] holds the one candidate list that the environment page
+  /// shows as well, so the page never presents a compiler that a run does not
+  /// pick. Places 1 to 3 of that list stay first whatever the preference says.
+  Future<DetectedCompiler?> _findCompiler(
+    String type,
+    String projectPath,
+  ) async {
+    final language = type == 'c' ? CompilerLanguage.c : CompilerLanguage.cpp;
+    if (!_environment.supported) {
+      return _lookup(projectPath).find(
+        language,
+        overrideDirectory: _toolchainDirectory,
+      );
     }
-    return null;
+    await _environment.load();
+    return _lookup(projectPath).find(
+      language,
+      preference: _environment.settings.preference,
+      overrideDirectory: _toolchainDirectory,
+      overrideHome: Platform.environment['QFLI_TOOLCHAIN_HOME'],
+      configuredDirectory: _environment.settings.directory,
+      managedRoots: await _managedRoots(),
+    );
   }
 
-  Future<_Compiler?> _probeCompiler(String executable, String type) async {
-    final temporary = await Directory.systemTemp.createTemp(
-      'qfli_compiler_probe_',
-    );
-    try {
-      final source = File(
-        p.join(temporary.path, type == 'c' ? 'probe.c' : 'probe.cpp'),
-      );
-      await source.writeAsString(
-        type == 'c'
-            ? '#include <stdio.h>\nint main(void) { puts("ok"); return 0; }\n'
-            : '#include <iostream>\nint main() { std::cout << "ok"; return 0; }\n',
-      );
-      final output = p.join(
-        temporary.path,
-        Platform.isWindows ? 'probe.exe' : 'probe',
-      );
-      final standards = type == 'c'
-          ? const ['c17', 'c11']
-          : const ['c++20', 'c++17', 'c++14', 'c++11'];
-      for (final standard in standards) {
-        try {
-          final process = await Process.start(executable, [
-            '-std=$standard',
-            source.path,
-            '-o',
-            output,
-          ]);
-          final stdoutDone = process.stdout.drain<void>();
-          final stderrDone = process.stderr.drain<void>();
-          int code;
-          try {
-            code = await process.exitCode.timeout(const Duration(seconds: 20));
-          } on TimeoutException {
-            process.kill();
-            await process.exitCode;
-            return null;
-          }
-          await Future.wait([stdoutDone, stderrDone]);
-          if (code == 0 && File(output).existsSync()) {
-            return _Compiler(executable, standard);
-          }
-        } on ProcessException {
-          return null;
-        }
-      }
-    } finally {
-      await temporary.delete(recursive: true);
+  /// The candidate list of this computer, for one project.
+  ToolchainLookup _lookup(String projectPath) => ToolchainLookup(
+    isWindows: Platform.isWindows,
+    environment: Platform.environment,
+    executableDirectory: p.dirname(Platform.resolvedExecutable),
+    projectPath: projectPath,
+  );
+
+  /// Toolchain roots that a setup action of the environment page installed.
+  ///
+  /// Read for every run: a finished setup must work without a restart, and it
+  /// must stop working after `remove`. The web build reports none.
+  Future<List<String>> _managedRoots() async {
+    final environment = _environment;
+    if (!environment.supported) return const [];
+    return await environment.managedRoots ?? const [];
+  }
+
+  /// Environment of a compiler, link or program child.
+  ///
+  /// A program of a toolchain outside `PATH` needs the runtime libraries of
+  /// that toolchain: MinGW links `libstdc++-6.dll`, `libgcc_s_seh-1.dll` and
+  /// `libwinpthread-1.dll`, LLVM-MinGW links `libc++.dll` and `libunwind.dll`.
+  /// Windows ended such a program with `0xC0000135` and no output. The `bin`
+  /// directories of the toolchains go in front of the inherited `PATH`, which
+  /// itself stays unchanged. On POSIX they go to `LD_LIBRARY_PATH` (Linux) and
+  /// `DYLD_LIBRARY_PATH` (macOS).
+  ///
+  /// [executables] holds every compiler of the run, because the C part of a
+  /// C++ project may come from another toolchain than its link step.
+  Map<String, String> _childEnvironment(List<String> executables) {
+    final environment = Map<String, String>.from(Platform.environment);
+    final directories = <String>{
+      for (final executable in executables)
+        if (p.isAbsolute(executable)) p.dirname(executable),
+    };
+    if (directories.isEmpty) return environment;
+    final joined = directories.join(Platform.isWindows ? ';' : ':');
+    if (Platform.isWindows) {
+      // CreateProcess reads `Path`, and a child that gets only `PATH` keeps the
+      // inherited `Path`. Use the spelling that the parent already has.
+      final name =
+          environment.containsKey('PATH') && !environment.containsKey('Path')
+          ? 'PATH'
+          : 'Path';
+      final current = environment[name] ?? '';
+      environment[name] = current.isEmpty ? joined : '$joined;$current';
+      return environment;
     }
-    return null;
+    final name = Platform.isMacOS ? 'DYLD_LIBRARY_PATH' : 'LD_LIBRARY_PATH';
+    final current = environment[name] ?? '';
+    environment[name] = current.isEmpty ? joined : '$joined:$current';
+    return environment;
   }
 
   ProgramRunResult _runDesktop({
-    required _Compiler compiler,
+    required DetectedCompiler compiler,
     required String type,
     required List<String> sources,
     required String projectPath,
@@ -366,7 +361,7 @@ class ClangProgramRunner implements ProgramRunner {
         if (includeDir.existsSync()) {
           includeArgs.addAll(['-I', includeDir.path]);
         }
-        _Compiler? cCompiler;
+        DetectedCompiler? cCompiler;
         if (type == 'cpp' &&
             sources.any(
               (source) => p.extension(source).toLowerCase() == '.c',
@@ -377,6 +372,12 @@ class ClangProgramRunner implements ProgramRunner {
             return;
           }
         }
+        // The program that a toolchain outside PATH built needs the runtime
+        // libraries of that toolchain; see [_childEnvironment].
+        final environment = _childEnvironment([
+          compiler.executable,
+          if (cCompiler case final DetectedCompiler driver) driver.executable,
+        ]);
         final objects = <String>[];
         for (var index = 0; index < sources.length; index++) {
           if (cancelled) return;
@@ -394,7 +395,7 @@ class ClangProgramRunner implements ProgramRunner {
             source,
             '-o',
             object,
-          ], workingDirectory: projectPath);
+          ], workingDirectory: projectPath, environment: environment);
           current = compile;
           if (cancelled) {
             await compile.cancel();
@@ -415,7 +416,7 @@ class ClangProgramRunner implements ProgramRunner {
           if (Platform.isLinux) '-lm',
           '-o',
           output,
-        ], workingDirectory: projectPath);
+        ], workingDirectory: projectPath, environment: environment);
         current = link;
         if (cancelled) {
           await link.cancel();
@@ -435,6 +436,7 @@ class ClangProgramRunner implements ProgramRunner {
           output,
           const [],
           workingDirectory: projectPath,
+          environment: environment,
         );
         current = program;
         if (cancelled) {
@@ -580,16 +582,4 @@ class ClangProgramRunner implements ProgramRunner {
   void _finish(Completer<int> completer, int code) {
     if (!completer.isCompleted) completer.complete(code);
   }
-}
-
-class _Compiler {
-  const _Compiler(this.executable, this.standard);
-
-  final String executable;
-  final String standard;
-
-  String get label =>
-      p.basenameWithoutExtension(executable).toLowerCase().contains('clang')
-      ? 'Clang'
-      : 'GCC';
 }

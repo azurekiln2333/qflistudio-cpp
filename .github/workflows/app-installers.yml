@@ -144,7 +144,7 @@ jobs:
 
   windows:
     if: github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'windows'
-    name: Windows x64 installer
+    name: Windows x64 (x86_64) packages
     runs-on: windows-2022
     timeout-minutes: 60
     steps:
@@ -183,7 +183,12 @@ jobs:
           if [[ ! -f "/c/Program Files (x86)/Inno Setup 6/ISCC.exe" ]]; then
             choco install innosetup --no-progress -y
           fi
-      - name: Build and verify the installer
+      - name: Ensure NSIS 3 is available
+        run: |
+          if [[ ! -f "/c/Program Files (x86)/NSIS/makensis.exe" ]]; then
+            choco install nsis --no-progress -y
+          fi
+      - name: Build and verify the installer and the single-file edition
         run: python tool/ci/package_app.py windows --output dist/app
       - name: Upload Windows packages
         id: upload
@@ -199,15 +204,20 @@ jobs:
           ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
         run: |
           {
-            echo '### Windows x64'
-            echo "[Download installer and portable ZIP]($ARTIFACT_URL) (retained for 30 days)."
-            echo 'Unsigned: Windows SmartScreen can warn before the installer starts.'
+            echo '### Windows x64 (x86_64)'
+            echo "[Download setup program, portable ZIP and single-file edition]($ARTIFACT_URL) (retained for 30 days)."
+            echo 'Unsigned: Windows SmartScreen can warn before the installer or the single file starts.'
+            echo '`qfli-forge-windows-x64-setup.exe` installs the application.'
+            echo '`qfli-forge-windows-x64.zip` holds the application files for a manual copy.'
+            echo '`qfli-forge-windows-x64-portable.exe` needs no installation and no administrator rights.'
+            echo 'The single file extracts once to `%LOCALAPPDATA%\QFLIForge\portable\<build id>\` and starts the application from there.'
+            echo 'x64 and x86_64 name the same architecture.'
             echo 'The application compiles with a host clang or gcc from PATH. The installer was installed and removed silently in this job; the user interface was not tested.'
           } >> "$GITHUB_STEP_SUMMARY"
 
   linux:
     if: github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'linux'
-    name: Linux x64 packages
+    name: Linux x64 (x86_64) packages
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     steps:
@@ -246,7 +256,9 @@ jobs:
           ../flutter/bin/flutter pub get
       - name: Build the Linux application
         run: flutter build linux --release --no-pub
-      - name: Build and verify the Debian package
+      - name: Download the pinned AppImage tools
+        run: python3 tool/ci/fetch_appimage_tools.py --output "$RUNNER_TEMP/appimage-tools"
+      - name: Build and verify the Debian package, the archive and the AppImage
         run: python3 tool/ci/package_app.py linux --output dist/app
       - name: Upload Linux packages
         id: upload
@@ -262,10 +274,15 @@ jobs:
           ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
         run: |
           {
-            echo '### Linux x64'
-            echo "[Download Debian package and tar.gz bundle]($ARTIFACT_URL) (retained for 30 days)."
-            echo 'Unsigned: the Debian package and the tar.gz bundle carry no signature.'
+            echo '### Linux x64 (x86_64)'
+            echo "[Download Debian package, tar.gz bundle and AppImage]($ARTIFACT_URL) (retained for 30 days)."
+            echo 'Unsigned: the Debian package, the tar.gz bundle and the AppImage carry no signature.'
             echo 'Built on Ubuntu 24.04; the package dependencies come from that release.'
+            echo '`qfli-forge-linux-x64.deb` installs the application with apt.'
+            echo '`qfli-forge-linux-x64.tar.gz` holds the application files for a manual copy.'
+            echo '`qfli-forge-linux-x64.AppImage` runs without installation after `chmod +x`.'
+            echo 'The AppImage starts the host clang, gcc and pkexec; it sets no library path of its own.'
+            echo 'x64 and x86_64 name the same architecture.'
             echo 'The application compiles with a host clang or gcc from PATH. The package was installed and removed through apt in this job; the user interface was not tested.'
           } >> "$GITHUB_STEP_SUMMARY"
 

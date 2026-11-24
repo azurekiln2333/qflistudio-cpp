@@ -300,6 +300,48 @@ class DesktopArchiveTest(unittest.TestCase):
         self.assertEqual({(member.uid, member.gid, member.uname) for member in members}, {(0, 0, 'root')})
         self.assertEqual(content, b'lib/libapp.so')
 
+    def test_portable_file_list_ignores_the_completion_marker(self):
+        source = set(self.FILES)
+        extracted = source | {package_app.PORTABLE_MARKER}
+        self.assertEqual(package_app.check_portable_file_list(source, extracted - {package_app.PORTABLE_MARKER}), len(source))
+
+    def test_portable_build_id_requires_a_valid_commit_and_run(self):
+        self.assertEqual(
+            package_app.portable_build_id('a' * 40, '44123456789'),
+            'aaaaaaaaaaaa-44123456789',
+        )
+        for commit, run_id in [('', '1'), ('a' * 39, '1'), ('g' * 40, '1'), ('a' * 40, 'bad/run')]:
+            with self.assertRaises(PackageError):
+                package_app.portable_build_id(commit, run_id)
+
+    def test_portable_file_list_reports_missing_and_unexpected_files(self):
+        with self.assertRaisesRegex(PackageError, r'missing .*b\.txt'):
+            package_app.check_portable_file_list(['a.txt', 'b.txt'], ['a.txt'])
+        with self.assertRaisesRegex(PackageError, r'unexpected .*extra\.txt'):
+            package_app.check_portable_file_list(['a.txt'], ['a.txt', 'extra.txt'])
+
+    def test_linux_icons_are_discovered_in_declared_order(self):
+        root = Path(tempfile.mkdtemp())
+        self.addCleanup(lambda: __import__('shutil').rmtree(root, ignore_errors=True))
+        icon_dir = root / package_app.LINUX_ICON_DIR
+        icon_dir.mkdir(parents=True)
+        for size in package_app.LINUX_ICON_SIZES:
+            header = (
+                b'\x89PNG\r\n\x1a\n' + struct.pack('>I', 13) + b'IHDR'
+                + struct.pack('>II', size, size)
+            )
+            (icon_dir / f'app_icon_{size}.png').write_bytes(header)
+        icons = package_app.linux_icon_files(root)
+        self.assertEqual([size for size, _ in icons], package_app.LINUX_ICON_SIZES)
+        self.assertEqual(package_app.check_linux_icon_sizes(root), [f'linux-icon-{size}' for size in package_app.LINUX_ICON_SIZES])
+        layout = package_app.appdir_layout(icons)
+        self.assertEqual(layout[0], (package_app.APPDIR_LAUNCHER, None))
+        self.assertIn(package_app.APPDIR_ICON, package_app.appdir_icon_names(icons))
+        self.assertIn(
+            f'usr/share/icons/hicolor/{package_app.APPDIR_ICON_SIZE}x{package_app.APPDIR_ICON_SIZE}/apps/{package_app.APP_ID}.png',
+            package_app.appdir_icon_names(icons),
+        )
+
 
 class AndroidCommandTest(unittest.TestCase):
     """Run the android command on a fake APK, without Flutter."""
