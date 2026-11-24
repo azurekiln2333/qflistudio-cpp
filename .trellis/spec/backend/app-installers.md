@@ -113,8 +113,12 @@ Every job writes `dist/app/` and uploads that directory.
 - The OHOS job runs `ohos_build.py sanitize` before any build step. It empties
   `app.signingConfigs` and removes each product's `signingConfig` in the CI
   copy of `ohos/build-profile.json5`.
-- No job reads a repository secret. No keystore, certificate or profile enters
-  the repository or an artifact.
+- The workflow reads no repository secret. It sanitizes the OHOS signing
+  config in its disposable checkout. Do not infer that every local checkout or
+  branch is free of signing config.
+- Keep local signing material out of commits. Before a push, scan the
+  outgoing commits for `storePassword` and `keyPassword`. The release
+  signing config stays on the local machine only.
 - A label must state the signing state. An unsigned IPA, HAP or APP does not
   install on a device.
 
@@ -225,3 +229,14 @@ download directory.
   Report that commit as not verified on macOS and iOS. Use "Re-run failed
   jobs" on the run page, or push a commit that changes a trigger path. A
   re-run needs an authenticated call. The public API cannot start one.
+
+
+## Validation update (2026-11-20)
+
+Run 44797136694 on ci/ui-core-installers-20261121 completed with all seven
+jobs successful. Artifact provenance matched app commit
+6908e44ecb5edbc8a3a1388d40ec8d3166a35ac5 and core commit
+cbaa4a4166461baafff7c1a343bd3ca1865fcc4f. The run used checkout v7.0.1 and
+upload-artifact v7.0.2. It used a push event; workflow_dispatch remains
+untested. See the archived Trellis task for artifact metadata and signing
+limits.

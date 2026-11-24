@@ -1,0 +1,68 @@
+{
+  "artifactId": 14659306994,
+  "name": "app-linux-x64",
+  "archiveBytes": 40238135,
+  "createdAt": "2026-11-20T18:56:38Z",
+  "expiresAt": "2026-12-20T18:56:37Z",
+  "rangeRequests": 3,
+  "bytesTransferred": 261176,
+  "provenance": {
+    "applicationCommit": "6908e44ecb5edbc8a3a1388d40ec8d3166a35ac5",
+    "repository": "azurekiln2333/qflistudio-cpp",
+    "runId": "44797136694",
+    "runUrl": "https://github.com/azurekiln2333/qflistudio-cpp/actions/runs/44797136694",
+    "coreCommit": "cbaa4a4166461baafff7c1a343bd3ca1865fcc4f",
+    "flutterCommit": "00b0c91f06209d9e4a41f71b7a512d6eb3b9c694",
+    "platform": "linux",
+    "architecture": "x64",
+    "applicationVersion": "1.0.0+1",
+    "signing": "unsigned",
+    "nativeInput": null,
+    "packages": [
+      {
+        "file": "qfli-forge-linux-x64.deb",
+        "sha256": "2d3273656679c60fd576e2128e2a21a2dd42c6fea266d32996a1b7a7d3f8a0fa",
+        "size": 16480208
+      },
+      {
+        "file": "qfli-forge-linux-x64.tar.gz",
+        "sha256": "9c7c4f649224846606f88c24afef2ae645340249c558d726baecb09ece3135cf",
+        "size": 23720541
+      }
+    ],
+    "validation": [
+      "linux-bundle-files",
+      "deb-package-fields",
+      "deb-apt-install",
+      "deb-launcher-link",
+      "deb-desktop-entry",
+      "deb-icon",
+      "deb-shared-library-resolution",
+      "deb-apt-remove",
+      "tar-file-list"
+    ],
+    "deviceRuntimeVerified": false
+  },
+  "signingText": "Signing: unsigned.\nThe package was built and checked on Ubuntu 24.04.\nThe application needs a host clang or gcc on PATH to compile programs.\nDevice or UI execution was not tested.\n",
+  "sha256Sums": "2d3273656679c60fd576e2128e2a21a2dd42c6fea266d32996a1b7a7d3f8a0fa  qfli-forge-linux-x64.deb\n9c7c4f649224846606f88c24afef2ae645340249c558d726baecb09ece3135cf  qfli-forge-linux-x64.tar.gz\n",
+  "packageFiles": [
+    {
+      "name": "qfli-forge-linux-x64.tar.gz",
+      "size": 23720541,
+      "crc32": "9b72aa58"
+    },
+    {
+      "name": "qfli-forge-linux-x64.deb",
+      "size": 16480208,
+      "crc32": "f8687634"
+    }
+  ],
+  "validation": {
+    "coreCommitMatches": true,
+    "applicationCommitMatches": true,
+    "sha256FileFormatValid": true,
+    "packagePayloadHashesVerified": false,
+    "metadataZipCrcVerified": true
+  },
+  "passed": true
+}

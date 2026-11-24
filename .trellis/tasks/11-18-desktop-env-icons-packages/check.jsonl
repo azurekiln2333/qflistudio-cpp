@@ -1,0 +1,4 @@
+{"file": ".trellis/spec/backend/app-installers.md", "reason": "Workflow and packaging contract that package CI extends"}
+{"file": ".trellis/spec/backend/desktop-runtime.md", "reason": "Compiler lookup order and runner rules that package ENV-CORE keeps"}
+{"file": ".trellis/spec/frontend/forge-tools.md", "reason": "Tools page contract that the environment entry of package ENV-UI keeps"}
+{"file": ".trellis/spec/backend/offline-platform-policy.md", "reason": "Network use stays out of the OHOS product"}

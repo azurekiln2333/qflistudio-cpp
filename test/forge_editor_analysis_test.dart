@@ -34,6 +34,9 @@ void main() {
       (tester) async {
         final fixture = _EditorFixture(variant.language, variant.extension);
         await fixture.mount(tester, variant.size);
+        final quickBar = find.byKey(const ValueKey('editor-quick-bar'));
+        expect(quickBar, findsOneWidget);
+        expect(tester.getSize(quickBar).height, 25);
         final analysis = tester
             .widget<EditorProblemsBar>(find.byType(EditorProblemsBar))
             .analysis;

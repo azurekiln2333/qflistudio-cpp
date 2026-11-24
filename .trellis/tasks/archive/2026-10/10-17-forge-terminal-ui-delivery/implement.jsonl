@@ -1,3 +1,3 @@
 {"file":".trellis/spec/backend/ohos-runtime.md","reason":"OHOS signed compiler/interpreter and native lifecycle"}
 {"file":".trellis/spec/backend/portable-runtime.md","reason":"Shared compiler and WASI contracts"}
-{"file":".trellis/tasks/10-17-forge-terminal-ui-delivery/design.md","reason":"Worker ownership and terminal protocol"}
+{"file":".trellis/tasks/archive/2026-10/10-17-forge-terminal-ui-delivery/design.md","reason":"Worker ownership and terminal protocol"}

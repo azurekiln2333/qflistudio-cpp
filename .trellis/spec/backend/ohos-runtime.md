@@ -1,3 +1,5 @@
+> Publication status (2026-11-21): This spec includes local OHOS terminal and startup work. The cloud app commit 6908e44 does not include terminalStart, startupProgress, tool/build_ohos_release.ps1 or tool/ohos_terminal_audit.dart. Keep the matching contracts below as local progress until a reviewed release integrates those files.
+
 # OHOS LLVM / WASI Runtime Contract
 
 ## 1. Scope / Trigger

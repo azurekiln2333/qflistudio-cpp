@@ -15,8 +15,10 @@ import subprocess
 import sys
 
 
-CORE_REVISION = "573d1b6eecf1c2b392ad753264a5a09f62f8335e"
+CORE_REVISION = "cbaa4a4166461baafff7c1a343bd3ca1865fcc4f"
 PATCH = Path(__file__).with_name("stock-flutter-core.patch")
+SOURCE_ROOTS = ("lib", "vendor/re_editor/lib")
+FORK_ONLY_API = re.compile(r"\bTargetPlatform\s*\.\s*ohos\b|\bOhosView\b")
 
 
 def git(core: Path, *arguments: str) -> str:
@@ -57,6 +59,27 @@ def prepare(
     git(core, "apply", "--check", str(patch))
     if not check_only:
         git(core, "apply", str(patch))
+        verify_portable_sources(core)
+
+
+def verify_portable_sources(core: Path) -> None:
+    """Reject fork-only APIs after the stock Flutter compatibility patch."""
+    offenders = []
+    for relative in SOURCE_ROOTS:
+        root = core / relative
+        if not root.is_dir():
+            raise RuntimeError(f"Core source directory is missing: {root}")
+        for path in sorted(root.rglob("*.dart")):
+            for number, line in enumerate(
+                path.read_text(encoding="utf-8").splitlines(), start=1
+            ):
+                if FORK_ONLY_API.search(line):
+                    offenders.append(f"{path.relative_to(core)}:{number}: {line.strip()}")
+    if offenders:
+        raise RuntimeError(
+            "OHOS-only API remains in the stock Flutter core: "
+            + "; ".join(offenders)
+        )
 
 
 def main() -> int:

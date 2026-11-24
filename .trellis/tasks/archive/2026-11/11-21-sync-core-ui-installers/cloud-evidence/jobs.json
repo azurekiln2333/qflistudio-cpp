@@ -1,0 +1,55 @@
+{
+  "runId": 44797136694,
+  "headSha": "6908e44ecb5edbc8a3a1388d40ec8d3166a35ac5",
+  "jobs": [
+    {
+      "name": "OHOS ARM64 unsigned HAP and APP",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-11-20T18:54:21Z",
+      "completed_at": "2026-11-20T18:59:13Z"
+    },
+    {
+      "name": "Windows x64 installer",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-11-20T18:54:21Z",
+      "completed_at": "2026-11-20T18:57:41Z"
+    },
+    {
+      "name": "macOS universal disk image",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-11-20T18:54:22Z",
+      "completed_at": "2026-11-20T18:59:52Z"
+    },
+    {
+      "name": "Android arm64-v8a APK",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-11-20T18:54:21Z",
+      "completed_at": "2026-11-20T18:59:28Z"
+    },
+    {
+      "name": "Linux x64 packages",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-11-20T18:54:21Z",
+      "completed_at": "2026-11-20T18:56:40Z"
+    },
+    {
+      "name": "iOS ARM64 unsigned IPA",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-11-20T18:54:23Z",
+      "completed_at": "2026-11-20T19:01:26Z"
+    },
+    {
+      "name": "Android x86_64 APK",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-11-20T18:54:21Z",
+      "completed_at": "2026-11-20T18:58:17Z"
+    }
+  ]
+}

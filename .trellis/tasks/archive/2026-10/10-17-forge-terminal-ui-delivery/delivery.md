@@ -1,7 +1,7 @@
 # OHOS terminal and shared UI delivery — 2026-10-17
 
 Completed and installed the signed production `lib/main.dart` HAP on the
-user-authorized nova 14 Ultra / MRT-AL10 at `192.168.68.207:46551`.
+user-authorized nova 14 Ultra / MRT-AL10 at `[LAN endpoint omitted]`.
 Bundle: `com.azurekiln.qfli.forge`, ability: `EntryAbility`.
 
 ## Resolved defects

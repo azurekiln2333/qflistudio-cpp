@@ -3,7 +3,7 @@
   "platform": "OHOS",
   "device": {
     "model": "nova 14 Ultra / MRT-AL10",
-    "hdc": "192.168.68.207:46551",
+    "hdc": "[LAN endpoint omitted]",
     "terminalAudit": {
       "ok": true,
       "elapsedMs": 4248,

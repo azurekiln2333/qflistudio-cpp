@@ -1,0 +1,63 @@
+{
+  "artifactId": 14658759105,
+  "name": "app-android-arm64-v8a",
+  "archiveBytes": 67638542,
+  "createdAt": "2026-11-20T18:59:25Z",
+  "expiresAt": "2026-12-20T18:59:23Z",
+  "rangeRequests": 3,
+  "bytesTransferred": 136463,
+  "provenance": {
+    "applicationCommit": "6908e44ecb5edbc8a3a1388d40ec8d3166a35ac5",
+    "repository": "azurekiln2333/qflistudio-cpp",
+    "runId": "44797136694",
+    "runUrl": "https://github.com/azurekiln2333/qflistudio-cpp/actions/runs/44797136694",
+    "coreCommit": "cbaa4a4166461baafff7c1a343bd3ca1865fcc4f",
+    "flutterCommit": "00b0c91f06209d9e4a41f71b7a512d6eb3b9c694",
+    "platform": "android",
+    "architecture": "arm64-v8a",
+    "applicationVersion": "1.0.0+1",
+    "signing": "ephemeral debug key",
+    "nativeInput": {
+      "name": "qfli-native-android-arm64-v8a",
+      "artifactId": 14293513598,
+      "runId": 44001588302,
+      "headSha": "ba5c33ada5d7e6d5a69d92477e2a1bb2243e60db",
+      "headBranch": "main",
+      "createdAt": "2026-11-17T02:44:49Z",
+      "expiresAt": "2026-12-17T02:44:47Z",
+      "archive": "qfli-native-android-arm64-v8a.tar.gz",
+      "archiveSha256": "4e7187bff6fbb1b0fc1339d90db4b91a36171a943a8c4732848127a34336e67d"
+    },
+    "packages": [
+      {
+        "file": "qfli-forge-android-arm64-v8a-test-signed.apk",
+        "sha256": "713922aa452aa9ac58df8e91211d8def61e9a4bcd974b3f79d593582d99d1f85",
+        "size": 67601153
+      }
+    ],
+    "validation": [
+      "apk-single-abi",
+      "apk-flutter-libraries",
+      "apk-native-toolchain-libraries",
+      "apk-toolchain-asset"
+    ],
+    "deviceRuntimeVerified": false
+  },
+  "signingText": "Signing: ephemeral debug key.\nEach CI run creates a new key. An update over an earlier CI build fails: uninstall first.\nNot for store upload.\nDevice or UI execution was not tested.\n",
+  "sha256Sums": "713922aa452aa9ac58df8e91211d8def61e9a4bcd974b3f79d593582d99d1f85  qfli-forge-android-arm64-v8a-test-signed.apk\n",
+  "packageFiles": [
+    {
+      "name": "qfli-forge-android-arm64-v8a-test-signed.apk",
+      "size": 67601153,
+      "crc32": "90ee8395"
+    }
+  ],
+  "validation": {
+    "coreCommitMatches": true,
+    "applicationCommitMatches": true,
+    "sha256FileFormatValid": true,
+    "packagePayloadHashesVerified": false,
+    "metadataZipCrcVerified": true
+  },
+  "passed": true
+}

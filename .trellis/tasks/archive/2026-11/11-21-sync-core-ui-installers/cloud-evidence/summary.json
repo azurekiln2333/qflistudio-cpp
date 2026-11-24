@@ -1,0 +1,48 @@
+{
+  "runId": 44797136694,
+  "headSha": "6908e44ecb5edbc8a3a1388d40ec8d3166a35ac5",
+  "status": "completed",
+  "conclusion": "success",
+  "auditedAt": "2026-11-20T19:03:33.661205+00:00",
+  "expectedCore": "cbaa4a4166461baafff7c1a343bd3ca1865fcc4f",
+  "expectedApplication": "6908e44ecb5edbc8a3a1388d40ec8d3166a35ac5",
+  "results": [
+    {
+      "name": "app-ios-arm64-unsigned",
+      "passed": true,
+      "bytesTransferred": 5269
+    },
+    {
+      "name": "app-android-x86_64",
+      "passed": true,
+      "bytesTransferred": 180830
+    },
+    {
+      "name": "app-linux-x64",
+      "passed": true,
+      "bytesTransferred": 261176
+    },
+    {
+      "name": "app-macos-universal",
+      "passed": true,
+      "bytesTransferred": 246513
+    },
+    {
+      "name": "app-android-arm64-v8a",
+      "passed": true,
+      "bytesTransferred": 136463
+    },
+    {
+      "name": "app-windows-x64",
+      "passed": true,
+      "bytesTransferred": 153829
+    },
+    {
+      "name": "app-ohos-arm64-unsigned",
+      "passed": true,
+      "bytesTransferred": 186491
+    }
+  ],
+  "missingArtifacts": [],
+  "allPresentAndPassed": true
+}

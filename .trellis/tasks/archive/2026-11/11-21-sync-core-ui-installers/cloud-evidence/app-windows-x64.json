@@ -1,0 +1,64 @@
+{
+  "artifactId": 14658674206,
+  "name": "app-windows-x64",
+  "archiveBytes": 31873252,
+  "createdAt": "2026-11-20T18:57:35Z",
+  "expiresAt": "2026-12-20T18:57:32Z",
+  "rangeRequests": 3,
+  "bytesTransferred": 153829,
+  "provenance": {
+    "applicationCommit": "6908e44ecb5edbc8a3a1388d40ec8d3166a35ac5",
+    "repository": "azurekiln2333/qflistudio-cpp",
+    "runId": "44797136694",
+    "runUrl": "https://github.com/azurekiln2333/qflistudio-cpp/actions/runs/44797136694",
+    "coreCommit": "cbaa4a4166461baafff7c1a343bd3ca1865fcc4f",
+    "flutterCommit": "00b0c91f06209d9e4a41f71b7a512d6eb3b9c694",
+    "platform": "windows",
+    "architecture": "x64",
+    "applicationVersion": "1.0.0+1",
+    "signing": "unsigned",
+    "nativeInput": null,
+    "packages": [
+      {
+        "file": "qfli-forge-windows-x64-setup.exe",
+        "sha256": "0801cde456aed4bd49a4dce816c791db18a96375beb03d33a8cee6ca7ee2d6d5",
+        "size": 14561273
+      },
+      {
+        "file": "qfli-forge-windows-x64.zip",
+        "sha256": "4b00f758aebb4360eb23108cf4d66d5225accab90ea6972dfad8c96640c7fc3b",
+        "size": 17273953
+      }
+    ],
+    "validation": [
+      "windows-build-files",
+      "installer-silent-install",
+      "installer-file-list",
+      "installer-silent-uninstall",
+      "portable-zip-file-list"
+    ],
+    "deviceRuntimeVerified": false
+  },
+  "signingText": "Signing: unsigned.\nWindows SmartScreen can warn before the installer starts.\nThe application needs a host clang or gcc on PATH to compile programs.\nDevice or UI execution was not tested.\n",
+  "sha256Sums": "0801cde456aed4bd49a4dce816c791db18a96375beb03d33a8cee6ca7ee2d6d5  qfli-forge-windows-x64-setup.exe\n4b00f758aebb4360eb23108cf4d66d5225accab90ea6972dfad8c96640c7fc3b  qfli-forge-windows-x64.zip\n",
+  "packageFiles": [
+    {
+      "name": "qfli-forge-windows-x64-setup.exe",
+      "size": 14561273,
+      "crc32": "11fc9c02"
+    },
+    {
+      "name": "qfli-forge-windows-x64.zip",
+      "size": 17273953,
+      "crc32": "bb91eaa1"
+    }
+  ],
+  "validation": {
+    "coreCommitMatches": true,
+    "applicationCommitMatches": true,
+    "sha256FileFormatValid": true,
+    "packagePayloadHashesVerified": false,
+    "metadataZipCrcVerified": true
+  },
+  "passed": true
+}

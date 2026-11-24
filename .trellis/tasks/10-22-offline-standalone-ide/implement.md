@@ -43,4 +43,3 @@ changed on purpose are included.
 
 Skipped: none. Untracked build output, logs and crash dumps were not
 present in this repository.
-
