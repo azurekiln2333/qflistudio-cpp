@@ -157,7 +157,9 @@ class PrepareCoreTest(unittest.TestCase):
             "  Widget build(BuildContext context) => const SizedBox.shrink();\n"
             "}\n"
         )
-        target.write_text(stub, encoding="utf-8", newline="")
+        # Match the checkout's line endings; Windows checks the patch out as CRLF.
+        newline = "\r\n" if b"\r\n" in PATCH.read_bytes() else "\n"
+        target.write_text(stub.replace("\n", newline), encoding="utf-8", newline="")
         self.git("apply", "--reverse", str(PATCH))
         self.assertIn("return OhosView(", target.read_text(encoding="utf-8"))
         self.commit_fixture()
