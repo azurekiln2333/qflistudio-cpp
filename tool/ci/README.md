@@ -56,13 +56,20 @@ macOS 同时包含 arm64 和 x86_64。
 | --- | --- | --- |
 | Windows | `setup.exe` | 运行安装器 |
 | Windows | `.zip` | 解压后运行应用 |
-| Windows | `portable.exe` | 自动解压后启动应用 |
+| Windows | `portable.exe` | 解压到 `%LOCALAPPDATA%/QFLIForge/portable/<构建编号>` 后启动 |
 | Linux | `.deb` | 用 apt 安装 |
 | Linux | `.tar.gz` | 解压后运行应用 |
 | Linux | `.AppImage` | 配置权限后启动 |
 | macOS | `.dmg` | 将应用复制到 Applications |
 
 Windows 单文件版不需要管理员权限。
+
+## 工作流动作版本
+
+checkout 使用 v7.0.1。
+upload-artifact 使用 v7.0.2。
+download-artifact 使用 v8.0.2。
+三个版本均使用 Node.js 24。
 
 ## 下载
 
