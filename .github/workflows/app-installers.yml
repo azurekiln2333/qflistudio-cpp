@@ -16,7 +16,7 @@ on:
           - windows
           - macos
       native_run_id:
-        description: Native artifacts run id for Android, iOS and OHOS inputs (default is the newest run on main)
+        description: Native artifacts run id for Android, iOS and OHOS inputs (default is the native run that runs first)
         type: string
         required: false
   push:
@@ -27,6 +27,8 @@ on:
     paths:
       - .github/workflows/app-installers.yml
       - tool/ci/**
+      - test/**
+      - native/**
       - lib/**
       - packages/**
       - assets/**
@@ -58,11 +60,75 @@ env:
   CORE_REVISION: cbaa4a4166461baafff7c1a343bd3ca1865fcc4f
   FLUTTER_VERSION: 3.41.9
   FLUTTER_REVISION: 00b0c91f06209d9e4a41f71b7a512d6eb3b9c694
-  NATIVE_RUN_ID: ${{ inputs.native_run_id }}
 
 jobs:
+  ci-tests:
+    name: Python CI helper tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out application
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: qfli_c
+          persist-credentials: false
+      - name: Run Python unit tests
+        run: python3 -I -m unittest discover -s tool/ci -p 'test_*.py'
+
+  native-artifacts:
+    if: ${{ !inputs.native_run_id && (github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'android' || inputs.target == 'ios' || inputs.target == 'ohos') }}
+    name: Build native dependencies
+    needs: ci-tests
+    uses: ./.github/workflows/native-artifacts.yml
+    with:
+      target: ${{ inputs.target || 'all' }}
+
+  native-input-gate:
+    name: Check native artifact availability
+    needs: [ci-tests, native-artifacts]
+    if: ${{ always() && needs.ci-tests.result == 'success' && (github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'android' || inputs.target == 'ios' || inputs.target == 'ohos') }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ github.token }}
+      NATIVE_RESULT: ${{ needs.native-artifacts.result }}
+      NATIVE_RUN_ID: ${{ inputs.native_run_id || needs.native-artifacts.outputs.native_run_id }}
+      NATIVE_BRANCH: ${{ github.head_ref || github.ref_name }}
+      TARGET: ${{ inputs.target || 'all' }}
+    steps:
+      - name: Check out application
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: qfli_c
+          persist-credentials: false
+      - name: Check native artifact availability before platform builds
+        run: |
+          set -euo pipefail
+          if [[ "$NATIVE_RESULT" == failure || "$NATIVE_RESULT" == cancelled ]]; then
+            echo '::error::Native artifacts workflow failed. Review its failed jobs, fix or rerun them, then rerun Application installers.'
+            exit 1
+          fi
+          if [[ -z "$NATIVE_RUN_ID" ]]; then
+            echo '::error::No successful native artifact run is available. Run Native artifacts successfully, or provide an unexpired native_run_id.'
+            exit 1
+          fi
+          names=()
+          if [[ "$TARGET" == all || "$TARGET" == android ]]; then
+            names+=(qfli-native-android-arm64-v8a qfli-native-android-x86_64)
+          fi
+          if [[ "$TARGET" == all || "$TARGET" == ios ]]; then names+=(qfli-native-ios); fi
+          if [[ "$TARGET" == all || "$TARGET" == ohos ]]; then names+=(qfli-native-ohos-arm64-v8a); fi
+          for name in "${names[@]}"; do
+            python3 tool/ci/fetch_native_artifact.py \
+              --name "$name" --repository "$GITHUB_REPOSITORY" \
+              --branch "$NATIVE_BRANCH" --run-id "$NATIVE_RUN_ID" \
+              --check-only --extract-to "$RUNNER_TEMP/not-used" \
+              --record "$RUNNER_TEMP/not-used.json"
+          done
+
   android:
-    if: github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'android'
+    needs: [ci-tests, native-artifacts, native-input-gate]
+    if: ${{ always() && needs.ci-tests.result == 'success' && needs.native-input-gate.result == 'success' && (github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'android') && (needs.native-artifacts.result == 'success' || (needs.native-artifacts.result == 'skipped' && inputs.native_run_id != '')) }}
     name: Android ${{ matrix.abi }} APK
     runs-on: ubuntu-24.04
     timeout-minutes: 60
@@ -75,6 +141,8 @@ jobs:
     env:
       ABI: ${{ matrix.abi }}
       ARCH: ${{ matrix.arch }}
+      NATIVE_BRANCH: ${{ github.head_ref || github.ref_name }}
+      NATIVE_RUN_ID: ${{ inputs.native_run_id || needs.native-artifacts.outputs.native_run_id }}
     steps:
       - name: Check out application
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -115,6 +183,7 @@ jobs:
             --name "qfli-native-android-$ABI" \
             --extract-to native/build/android-package \
             --record "$RUNNER_TEMP/native-input.json" \
+            --branch "$NATIVE_BRANCH" \
             ${NATIVE_RUN_ID:+--run-id "$NATIVE_RUN_ID"}
       - name: Build the APK
         run: flutter build apk --release --no-pub --target-platform "android-$ARCH"
@@ -143,6 +212,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
   windows:
+    needs: ci-tests
     if: github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'windows'
     name: Windows x64 (x86_64) packages
     runs-on: windows-2022
@@ -216,6 +286,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
   linux:
+    needs: ci-tests
     if: github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'linux'
     name: Linux x64 (x86_64) packages
     runs-on: ubuntu-24.04
@@ -287,6 +358,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
   macos:
+    needs: ci-tests
     if: github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'macos'
     name: macOS universal disk image
     runs-on: macos-15
@@ -350,10 +422,14 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
   ios:
-    if: github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'ios'
+    needs: [ci-tests, native-artifacts, native-input-gate]
+    if: ${{ always() && needs.ci-tests.result == 'success' && needs.native-input-gate.result == 'success' && (github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'ios') && (needs.native-artifacts.result == 'success' || (needs.native-artifacts.result == 'skipped' && inputs.native_run_id != '')) }}
     name: iOS ARM64 unsigned IPA
     runs-on: macos-15
     timeout-minutes: 60
+    env:
+      NATIVE_BRANCH: ${{ github.head_ref || github.ref_name }}
+      NATIVE_RUN_ID: ${{ inputs.native_run_id || needs.native-artifacts.outputs.native_run_id }}
     steps:
       - name: Check out application
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -392,6 +468,7 @@ jobs:
             --name qfli-native-ios \
             --extract-to native/build/ios-portable/package \
             --record "$RUNNER_TEMP/native-input.json" \
+            --branch "$NATIVE_BRANCH" \
             ${NATIVE_RUN_ID:+--run-id "$NATIVE_RUN_ID"}
           python3 native/toolchain/install-ios-package.py --package native/build/ios-portable/package
       - name: Build the unsigned iOS archive
@@ -421,7 +498,8 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
   ohos:
-    if: github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'ohos'
+    needs: [ci-tests, native-artifacts, native-input-gate]
+    if: ${{ always() && needs.ci-tests.result == 'success' && needs.native-input-gate.result == 'success' && (github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'ohos') && (needs.native-artifacts.result == 'success' || (needs.native-artifacts.result == 'skipped' && inputs.native_run_id != '')) }}
     name: OHOS ARM64 unsigned HAP and APP
     runs-on: ubuntu-24.04
     timeout-minutes: 120
@@ -430,6 +508,8 @@ jobs:
       OHOS_COMMAND_LINE_TOOLS_SHA256: ${{ vars.OHOS_COMMAND_LINE_TOOLS_SHA256 }}
       FLUTTER_OHOS_REVISION: 62357a93d653bf844f730bb1f4b7cc9e2139d14e
       FLUTTER_OHOS_TAG: 3.41.9+ohos-1.0.2
+      NATIVE_BRANCH: ${{ github.head_ref || github.ref_name }}
+      NATIVE_RUN_ID: ${{ inputs.native_run_id || needs.native-artifacts.outputs.native_run_id }}
     steps:
       - name: Check out application
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -472,6 +552,7 @@ jobs:
             --name qfli-native-ohos-arm64-v8a \
             --extract-to . \
             --record "$RUNNER_TEMP/native-input.json" \
+            --branch "$NATIVE_BRANCH" \
             ${NATIVE_RUN_ID:+--run-id "$NATIVE_RUN_ID"}
           test -f native/build/ohos-portable/package/lib/arm64-v8a/libqfli_compiler.a
           test -f ohos/entry/src/main/resources/rawfile/qfli_toolchain/ohos-wasi.zip
