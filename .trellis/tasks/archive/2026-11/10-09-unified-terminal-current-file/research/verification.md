@@ -1,5 +1,14 @@
 # Final verification
 
+## Housekeeping checkpoint (2026-11-25)
+
+The results below are historical verification, not a new test run. Commit
+`41ffe52` includes this implementation and task evidence and is an ancestor of
+`github/main`. The original Git deferral is resolved. This task is complete
+within its documented source/host scope and is archived. References to an
+uncommitted working tree below describe the original session only. Future
+builds run on GitHub; no local build was run for this housekeeping pass.
+
 ## Outcome
 
 Implementation and independent review passed. Pi implemented in the requested right Herdr pane (w6:p2, pi-c-terminal); the coordinator directed the work, inspected the shared-core boundary, and recorded the final results.
@@ -37,9 +46,9 @@ Primary commands:
     flutter test test/terminal_pane_test.dart test/editor_run_test.dart
     ./gradlew.bat :app:compileDebugKotlin --offline --console=plain --no-daemon --max-workers=2
     node --check web/forge-worker.js
-    node --experimental-vm-modules .trellis/tasks/10-09-unified-terminal-current-file/research/check_worker_payload.mjs
-    flutter test --no-pub --reporter expanded .trellis/tasks/10-09-unified-terminal-current-file/research/check_runner_regressions_test.dart --name 'interpreter retains the full header set|rejects an entry outside project'
-    python ./.trellis/scripts/task.py validate .trellis/tasks/10-09-unified-terminal-current-file
+    node --experimental-vm-modules .trellis/tasks/archive/2026-11/10-09-unified-terminal-current-file/research/check_worker_payload.mjs
+    flutter test --no-pub --reporter expanded .trellis/tasks/archive/2026-11/10-09-unified-terminal-current-file/research/check_runner_regressions_test.dart --name 'interpreter retains the full header set|rejects an entry outside project'
+    python ./.trellis/scripts/task.py validate .trellis/tasks/archive/2026-11/10-09-unified-terminal-current-file
 
 The shared UI command ran in ../qfli_studio_core. Gradle ran in android with JAVA_HOME=D:/ProgramFiles/Android/Android Studio/jbr. Shared UI source/test timestamps remain earlier than the coordinator's passing test record.
 
@@ -58,4 +67,4 @@ All 51 pre-implementation source snapshots still match their SHA-256 manifest. r
 
 The coordinator cleaned 46 generated check-/compiler- temporary directories only after both agents stopped execution, validating every absolute path and rejecting reparse points. Baseline snapshots, repro scripts and result files were retained; cleaned-temporary-artifacts.txt records the exact directory list.
 
-No files were staged, committed or pushed by this task. Existing cross-platform runtime changes remain uncommitted and some task edits sit on top of those untracked files. commit-plan.md records the proposed fix commit, the prerequisite and excluded dirty paths. Implementation is complete. The user approved the plan and temporary Git deferral until the existing runtime baseline is committed. finish-work/archive/journal auto-commits have not run.
+No files were staged, committed or pushed by this task's original session. Those sentences record the historical handoff, not the current workspace. Commit `41ffe52` later included the implementation and task evidence. The temporary Git deferral is resolved. No device or Apple execution is claimed here.

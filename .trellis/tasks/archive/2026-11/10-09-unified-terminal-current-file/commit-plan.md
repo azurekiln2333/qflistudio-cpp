@@ -1,5 +1,15 @@
 # Approved commit handoff plan
 
+## Resolved handoff (2026-11-25)
+
+Commit `41ffe52` includes the source-selection implementation and this task's
+evidence. It is an ancestor of `github/main`. The historical temporary Git
+deferral below is resolved; the task is complete and archived. The original
+plan is retained for provenance, not as a current instruction to create a
+branch or commit the same work again. No new device execution is claimed.
+
+## Historical plan
+
 No files have been staged or committed by this task. Implementation and independent verification are complete. The user approved this plan and explicitly chose to preserve the working tree without committing yet.
 
 ## Proposed work commit

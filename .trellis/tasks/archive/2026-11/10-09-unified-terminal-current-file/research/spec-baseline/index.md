@@ -12,14 +12,15 @@ This directory contains guidelines for backend development. Fill in each file wi
 
 ## Guidelines Index
 
+
 | Guide | Description | Status |
 |-------|-------------|--------|
-| [Directory Structure](./directory-structure.md) | Module organization and file layout | To fill |
-| [Database Guidelines](./database-guidelines.md) | ORM patterns, queries, migrations | To fill |
-| [Error Handling](./error-handling.md) | Error types, handling strategies | To fill |
-| [Quality Guidelines](./quality-guidelines.md) | Code standards, forbidden patterns | To fill |
-| [Logging Guidelines](./logging-guidelines.md) | Structured logging, log levels | To fill |
-| [Native Toolchain](./native-toolchain.md) | LLVM host tools, OHOS cross build, runtime validation gates | Recorded |
+| [Directory Structure](../../../../../../spec/backend/directory-structure.md) | Module organization and file layout | To fill |
+| [Database Guidelines](../../../../../../spec/backend/database-guidelines.md) | ORM patterns, queries, migrations | To fill |
+| [Error Handling](../../../../../../spec/backend/error-handling.md) | Error types, handling strategies | To fill |
+| [Quality Guidelines](../../../../../../spec/backend/quality-guidelines.md) | Code standards, forbidden patterns | To fill |
+| [Logging Guidelines](../../../../../../spec/backend/logging-guidelines.md) | Structured logging, log levels | To fill |
+| [Native Toolchain](../../../../../../spec/backend/native-toolchain.md) | LLVM host tools, OHOS cross build, runtime validation gates | Not copied into this snapshot |
 | [Android Runtime](./android-runtime.md) | Android LLVM packages, process isolation, streaming and cancellation | Recorded |
 | [Desktop Runtime](./desktop-runtime.md) | Mixed translation units, language modes, libm, process cleanup and verification | Recorded |
 | [Portable Runtime](./portable-runtime.md) | LLVM/WASI resources, interpreter limits, exceptions, cancellation and iOS channels | Recorded |

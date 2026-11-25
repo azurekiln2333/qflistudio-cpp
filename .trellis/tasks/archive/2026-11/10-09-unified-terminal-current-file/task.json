@@ -3,7 +3,7 @@
   "name": "unified-terminal-current-file",
   "title": "Unified QFLI terminal and current-file run",
   "description": "Audit Java and shared-core changes; coordinate pi to unify terminal scrollback and add long-press current-file execution.",
-  "status": "in_progress",
+  "status": "completed",
   "dev_type": null,
   "scope": null,
   "package": null,
@@ -11,11 +11,11 @@
   "creator": "lichengyu",
   "assignee": "lichengyu",
   "createdAt": "2026-10-09",
-  "completedAt": null,
+  "completedAt": "2026-11-25",
   "branch": "main",
   "base_branch": "main",
   "worktree_path": null,
-  "commit": null,
+  "commit": "41ffe52",
   "pr_url": null,
   "subtasks": [],
   "children": [],
@@ -48,10 +48,11 @@
     ".trellis/spec/backend/web-runtime.md",
     ".trellis/spec/backend/source-selection.md"
   ],
-  "notes": "Implementation and independent review passed: 141 application tests, 22 shared UI tests, Android Kotlin compilation, targeted analysis and worker payload checks. User approved the commit plan with temporary deferral: preserve working-tree changes until the existing cross-platform runtime baseline is committed. No staging, commit, push, archive or journal auto-commit performed.",
+  "notes": "2026-11-25 housekeeping: historical implementation and independent review passed: 141 application tests, 22 shared UI tests, Android Kotlin compilation, targeted analysis and worker payload checks. Commit 41ffe52 contains the source-selection implementation and task evidence and is an ancestor of github/main. The temporary Git deferral is resolved. Completion closes this task's documented source/host scope only; it adds no device or Apple execution claim. Archived without auto-commit.",
   "meta": {
     "implementation_verified": true,
-    "git_handoff": "deferred_until_runtime_baseline",
-    "git_decision": "User approved: adopt plan, do not commit yet."
+    "git_handoff": "included_in_published_runtime_baseline",
+    "git_decision": "Historical deferral resolved by main commit 41ffe52; housekeeping archive authorized on 2026-11-25.",
+    "archivedAt": "2026-11-25"
   }
 }

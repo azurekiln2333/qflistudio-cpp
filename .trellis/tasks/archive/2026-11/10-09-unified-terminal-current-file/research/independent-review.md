@@ -7,7 +7,7 @@ Reviewer scope: read-only product review against research/baseline, with repros 
 Command:
 
 ```
-D:\ProgramFiles\flutter_ohos\bin\cache\dart-sdk\bin\dart.exe --packages=.dart_tool/package_config.json .trellis/tasks/10-09-unified-terminal-current-file/research/check_selector_repro.dart
+D:\ProgramFiles\flutter_ohos\bin\cache\dart-sdk\bin\dart.exe --packages=.dart_tool/package_config.json .trellis/tasks/archive/2026-11/10-09-unified-terminal-current-file/research/check_selector_repro.dart
 ```
 
 All five inputs returned `actualDefinesMain: true`, `expectedDefinesMain: false`, and `selected: ["entry.c"]`, thereby excluding the necessary helper.
@@ -63,7 +63,7 @@ The coordinator's exact C++ raw-literal candidate was checked once. It is kept (
 After pi became idle, the reviewer ran only the three previously failing assertions against the final source tree:
 
 ```
-flutter test --no-pub --reporter expanded .trellis/tasks/10-09-unified-terminal-current-file/research/check_runner_regressions_test.dart --name 'interpreter retains the full header set|rejects an entry outside project'
+flutter test --no-pub --reporter expanded .trellis/tasks/archive/2026-11/10-09-unified-terminal-current-file/research/check_runner_regressions_test.dart --name 'interpreter retains the full header set|rejects an entry outside project'
 ```
 
 Result: 3 passed, exit 0.
