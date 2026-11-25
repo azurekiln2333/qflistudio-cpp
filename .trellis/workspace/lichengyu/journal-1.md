@@ -204,7 +204,17 @@ Coordinated 3 pi agents through Herdr; fixed terminal routing, compiler archive 
 
 ### Git Commits
 
-(No commits - planning session)
+当次会话未创建提交。
+后续提交收录了本次实现，不应倒填到会话日期。
+
+| 后续提交 | 收录内容 |
+| --- | --- |
+| `b930c01` | 进程内编译器实现 |
+| `d7345f1` | OHOS 终端桥接 |
+| `a1a3bfe` | Dart 启动握手 |
+| `3cc8a1f` | 终端命令委托 |
+| `f834dbe` | 运行时测试 |
+| `9511f4a` | 规范和交付记录 |
 
 ### Testing
 
@@ -233,7 +243,14 @@ Matched JVMX ArkUI startup through deferred first frame and progress, synchroniz
 
 ### Git Commits
 
-(No commits - planning session)
+当次会话未创建提交。
+后续提交收录了本次实现，不应倒填到会话日期。
+
+| 后续提交 | 收录内容 |
+| --- | --- |
+| `27db9ff` | OHOS 原生启动进度与图标 |
+| `a1a3bfe` | Dart 启动握手 |
+| `9511f4a` | 启动页交付记录 |
 
 ### Testing
 
@@ -258,7 +275,13 @@ Moved x86_64 exclusion from symbol stripping to actual native library packaging 
 
 ### Git Commits
 
-(No commits - planning session)
+当次会话未创建提交。
+后续提交收录了本次实现，不应倒填到会话日期。
+
+| 后续提交 | 收录内容 |
+| --- | --- |
+| `d7345f1` | ARM64 打包过滤改动 |
+| `9511f4a` | ARM64 打包说明 |
 
 ### Testing
 
@@ -286,12 +309,21 @@ Published GPL alignment and complete mobile native workflows; downloaded and ver
 
 ### Git Commits
 
-| Hash | Message |
-|------|---------|
-| `1cc0b11` | docs(license): align GPL-3.0 licensing with qflistudio |
-| `0819d2e` | ci(native): build complete Android OHOS and iOS dependency packages |
-| `043abaa` | fix(ci): define the iOS runtime Ninja link pool [skip ci] |
-| `bf1d1f5` | docs(ci): record verified mobile artifacts and download paths [skip ci] |
+2026-11-25 与 GitHub `main` 历史比较得到相同 patch-id。
+下表证明补丁等效，不表示两个提交对象相同。
+
+| 会话记录提交 | 当前主分支等效补丁 |
+| --- | --- |
+| `1cc0b11` | `1a09613` |
+| `0819d2e` | `2486056` |
+| `043abaa` | `715efaa` |
+| `bf1d1f5` | `b69f5d7` |
+
+协调者后来将这些补丁纳入本地 `main`。
+历史整合提交为 `9e19179` 和 `529c927`。
+`b5896d9` 属于后续桌面合并，不属于 Session 8。
+`9e34dcc` 修复 core 补丁测试换行。
+以上核对不代表重新下载或复验产物。
 
 ### Testing
 
@@ -304,4 +336,38 @@ Published GPL alignment and complete mobile native workflows; downloaded and ver
 
 ### Next Steps
 
-- Review PR #1 for main-branch merge; application signing and device execution remain separate.
+- Reviewed PR #1 before the later main-branch merge. Signing and device execution remain separate.## Session 9: Trellis status and archive cleanup
+<!-- trellis-session: v=2 fp=trellis-cleanup-20261125 -->
+
+**Date**: 2026-11-25
+**Task**: Trellis audit and publication handoff
+**Branch**: `main`
+
+### Summary
+
+更新任务归档、项目状态和工作日志。
+记录本地合并与 GitHub 历史验收边界。
+保留四个未完成任务。
+
+### Main Changes
+
+- 归档终端选源和 C/C++ 课程任务。
+- 清理安装包任务的重复活动目录。
+- 更新项目状态和 Session 5–8 记录。
+- 修复归档任务导航和链接。
+
+### Git Commits
+
+本次未创建功能提交。
+整理记录由后续路径限定提交保存。
+
+### Testing
+
+- [OK] Trellis context manifests validate for both archived tasks.
+- [OK] Active task list contains four tasks.
+- [ ] JSON, JSONL, links, Chinese lint and diff checks pending.
+- [ ] No build, push or device acceptance was run.
+
+### Status
+
+**In progress — awaiting metadata checks and scoped commit.**
