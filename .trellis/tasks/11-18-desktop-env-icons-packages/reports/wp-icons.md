@@ -2,8 +2,11 @@
 
 Status: `DONE`
 
-Worktree `D:/MyNewProjects/_wt/qfli_c-wp-icons`, branch `wp/icons`. Nothing was
-committed and nothing was pushed.
+2026-11-25 checkpoint: icon commit `7eb0dd5` is included in local main through
+coordinator merge `b5896d9`; it still awaits publication and a source-bound cloud
+run. The original worktree was `D:/MyNewProjects/_wt/qfli_c-wp-icons`, branch
+`wp/icons`. Measurements and test results below are historical. This checkpoint
+does not claim a new build or a new installed-platform icon review.
 
 ## 1. Source measurements
 

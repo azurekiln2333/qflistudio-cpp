@@ -1,5 +1,23 @@
 # Implementation plan
 
+## Current checkpoint (2026-11-25)
+
+Coordinator merge `b5896d9` integrates the environment, icon and portable-package
+work; `9e34dcc` fixes core-patch test line endings. Commits `5f8f962`, `7eb0dd5`,
+`2924b76`, `b894ec1` and `d673a23` are included. This is local integration, not
+publication or a new passing cloud run. The historical order and local commands
+below are retained as planning evidence and are superseded where noted here.
+All builds and future integrated validation run on GitHub. No local build is
+permitted. This housekeeping pass does not run Flutter or package checks.
+
+Current open gates: integrated Flutter checks, real Windows Clang/GCC setup and
+C/C++ execution, Node24 annotation checks, all-platform cloud success, package
+contents/checksums and explicit macOS GCC requirement resolution. Historical
+`44822103705` does not contain the new portable packages. Worktree cleanup is
+not part of this housekeeping pass. Publication belongs to the coordinator.
+
+## Historical plan
+
 ## Steps
 
 - [x] 0.1 Base in the worktree `D:/MyNewProjects/_wt/qfli_c-ci-app-installers`:
@@ -9,9 +27,10 @@
 - [ ] 0.3 Base commit on `ci/app-installers`, four worktrees, `task.py start`.
 - [ ] 1 Dispatch the four packages to `w5C:p2`, `w5C:p3`, `w5C:p4`, `w5C:p5`.
 - [ ] 2 Gate A for each package when its report arrives.
-- [ ] 3 Integrate on `ci/app-installers`: ICONS, CI, ENV-CORE, ENV-UI.
+- [x] 3 Integrate ICONS, CI, ENV-CORE and ENV-UI: coordinator merged the
+      resulting branch into local main in `b5896d9` on 2026-11-25.
 - [ ] 4 Gate B on the integrated branch.
-- [ ] 5 Specs: `app-installers.md`, `desktop-runtime.md`, `forge-tools.md`, a
+- [x] 5 Specs: `app-installers.md`, `desktop-runtime.md`, `forge-tools.md`, a
       new section for the toolchain environment.
 - [ ] 6 Commits, signature scan, push `ci/app-installers`, cloud run (gate C).
 - [ ] 7 Push to GitHub `main`. Check the runs on `main`.

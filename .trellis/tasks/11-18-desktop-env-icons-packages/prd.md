@@ -33,11 +33,29 @@ single-file edition. The workflow actions run on Node.js 24.
 - R7 Publication: conventional commit messages without an AI signature, a scan
   before each push, a green cloud run, then GitHub `main`.
 
+## Current checkpoint and publication authorization (2026-11-25)
+
+Coordinator merge `b5896d9` includes the desktop/icon/package work in local
+main. `9e34dcc` repairs a core-patch test. These commits await publication and
+new GitHub verification. The old branch-only publication constraint below is
+superseded by the user's main-integration instruction. This housekeeping agent
+may commit only its `.trellis/` changes and may not push. All builds run on
+GitHub; local builds are no longer permitted. Historical commands in the plan
+remain evidence recipes, not authorization for local builds.
+
+The added release-signing configuration was removed from the feature history;
+old default signing fields and local paths still exist and need a separate
+coordinator/pi-ci review. Do not describe the repository as free of all signing
+material. Historical cloud run `44822103705` predates the new portable packages.
+Real Windows setup, current integrated Flutter checks, Node24 cloud annotations
+and package verification remain open. macOS currently exposes command-line
+Clang installation; its GCC requirement is not closed.
+
 ## Constraints
 
-- Local `main` holds unpublished commits with a release signing
-  configuration. Never push local `main`. Publication goes through the branch
-  `ci/app-installers`, which starts from GitHub `main`.
+- Historical publication route: keep the original unpublished main isolated
+  and publish through `ci/app-installers`. The 2026-11-25 authorization above
+  replaces that route for the reviewed merged source.
 - The shared core is pinned at `573d1b6`. This task changes no file of the
   core and pushes nothing to the core repository.
 - No secret, key, token or keystore path enters the repository or an

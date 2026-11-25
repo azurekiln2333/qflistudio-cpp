@@ -15,12 +15,12 @@
   "branch": "main",
   "base_branch": "main",
   "worktree_path": null,
-  "commit": null,
+  "commit": "b5896d9",
   "pr_url": null,
   "subtasks": [],
   "children": [],
   "parent": null,
   "relatedFiles": [],
-  "notes": "",
+  "notes": "2026-11-25 housekeeping: keep in_progress. Coordinator merged 5f8f962, 7eb0dd5, 2924b76, b894ec1 and d673a23 through b5896d9; 9e34dcc repairs a core-patch test. Environment UI, compiler lookup/setup, unified icons, AppImage and Windows portable code are in local main. Historical reports retain 17 toolchain tests; pi-branches reports 89 CI helper tests and 50 matching icon files on its audited worktree. No new local test/build is claimed here. Current integrated Flutter gates, GitHub Node24/package verification and real Windows Clang/GCC C/C++ setup flows remain open. macOS GCC setup needs a requirement decision. All builds run on GitHub. Existing old default signing fields remain a separate coordinator/pi-ci publication risk.",
   "meta": {}
 }

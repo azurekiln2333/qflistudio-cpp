@@ -2,8 +2,10 @@
 
 Status: `DONE` for this work package. Full desktop acceptance is still pending.
 
-The worktree changes remain uncommitted. The report does not establish cloud
-build success or an end-to-end Windows, Linux or macOS setup flow.
+2026-11-25 checkpoint: commits `2924b76` and `b894ec1` are included in local
+main through coordinator merge `b5896d9`. The old uncommitted-worktree handoff
+is resolved. This report does not establish current cloud build success or an
+end-to-end Windows, Linux or macOS setup flow. All future builds run on GitHub.
 
 The desktop toolchain environment now stores settings in application storage,
 shares compiler lookup with `ClangProgramRunner`, supports managed toolchains,

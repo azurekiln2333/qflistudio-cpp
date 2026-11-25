@@ -1,6 +1,12 @@
 # WP-CI report
 
-Status: `DONE`
+Status: `DONE` for the implementation work package; task acceptance remains open.
+
+2026-11-25 checkpoint: coordinator merge `b5896d9` includes this work in local
+main, plus helper tests from `d673a23`; `9e34dcc` fixes a core-patch test. The
+results below are historical. No new cloud package run is claimed. AppImage,
+portable EXE and Node24 annotations still need source-bound GitHub checks. All
+future builds run on GitHub; do not rerun historical local build steps.
 
 The CI work package is integrated on `ci/app-installers`. It updates checkout,
 upload-artifact and download-artifact to the pinned Node.js 24 releases.
