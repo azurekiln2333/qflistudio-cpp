@@ -45,10 +45,19 @@ this workspace's scope. Older iOS/Web work remains recorded separately.
   interpreters; input, nonzero exits and cancellation remain observable.
 - [ ] AC4 (R4): Locally runnable native paths pass focused real execution tests.
   Unavailable platform testing is explicitly recorded as skipped.
-- [ ] AC5 (R5): Actual OHOS app compilation/execution and ordinary editor
-  Run/Stop pass on the authorized phone.
+- [x] AC5 (R5), historical acceptance on 2026-10-16: Actual OHOS app
+  compilation/execution and ordinary editor Run/Stop passed on the authorized
+  phone. This does not verify the current merged artifact.
 - [x] AC6 (R5): Android release artifacts are built and inspected without
   Android device actions (ARM64 + x86_64, 2026-10-15).
+
+## Status checkpoint (2026-11-25)
+
+AC5 records the accepted 2026-10-16 package only. Current-source OHOS device
+acceptance remains a separate gate. AC2, AC3 and AC4 remain open across the
+platform matrix, including iOS/Web execution and macOS application checks.
+Historical cloud builds do not close these runtime gates. All future builds
+run on GitHub; local builds are no longer permitted.
 
 ## Current acceptance scope and authorization (2026-10-15)
 
@@ -61,7 +70,7 @@ previously authorized phone; keep all repository writes in
 
 The user separately added C/C++ tutorial/example auditing, with conditional
 replacement only if placeholder data remains. That work continues under
-`10-12-c-cpp-substantive-curriculum`. Other language content is out of scope.
+`10-12-c-cpp-substantive-curriculum` is archived in `.trellis/tasks/archive/2026-11/10-12-c-cpp-substantive-curriculum`. Other language content is out of scope.
 Older iOS/Web acceptance evidence remains separate from the current OHOS and
 Android acceptance and must not be represented as newly verified.
 

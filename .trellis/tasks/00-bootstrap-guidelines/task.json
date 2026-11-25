@@ -24,6 +24,6 @@
     ".trellis/spec/backend/",
     ".trellis/spec/frontend/"
   ],
-  "notes": "First-time setup task created by trellis init (fullstack project)",
+  "notes": "2026-11-25 audit: keep in_progress. The five general backend guideline files and six general frontend guideline files still contain unfilled template sections. Specialized runtime, curriculum and tool specs do not satisfy the full bootstrap PRD. This housekeeping pass does not author the missing guidelines.",
   "meta": {}
 }

@@ -82,5 +82,5 @@ execve('/system/lib/ld-musl-aarch64.so.1') = EACCES, errno 13（精确真机诊�
 - 正式 OHOS 标准交付路径：`build/ohos/hap/entry-default-signed.hap`，已由 `-t lib/main.dart` 构建并完成严格校验、覆盖安装和正式 UI 验收；准确生产包哈希及证据引用 `research/ohos-production-ui-2026-10-16.json`。
 - 历史进程方案产物：`native/build/ohos-production-release-20261015.hap`、`native/build/ohos-audit-20261015.hap`；精确哈希保留于 `research/acceptance-artifacts-2026-10-15.json`。
 - Android：`build/app/outputs/flutter-apk/app-release.apk`（仅 ARM64/x86_64）。
-- 当前 Android 结果：`research/android-build-acceptance-2026-10-16.md` 与 `research/android-release-artifact-2026-10-16.json`；历史结果为 `research/android-analysis-2026-10-15.md`。课程逐项证据在 `10-12-c-cpp-substantive-curriculum/research/`。
+- 当前 Android 结果：`research/android-build-acceptance-2026-10-16.md` 与 `research/android-release-artifact-2026-10-16.json`；历史结果为 `research/android-analysis-2026-10-15.md`。课程逐项证据位于 `.trellis/tasks/archive/2026-11/10-12-c-cpp-substantive-curriculum/research/`。
 - Web 不在本轮验收范围；共享核心浏览器集成及编译器资源仍未完成，不能由本轮分析零问题或 Web 源码构建推定 Web App 可用。

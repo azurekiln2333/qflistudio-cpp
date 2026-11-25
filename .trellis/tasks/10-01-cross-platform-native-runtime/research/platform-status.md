@@ -1,9 +1,22 @@
 # Current Platform Status
 
-Updated 2026-10-16. Build/host evidence and application/device evidence are
-separate. Current requested acceptance is OHOS app testing and Android
-build-only verification; both requested gates pass. Older iOS/Web gaps remain
-open, so the overall cross-platform task remains in progress.
+## Current checkpoint (2026-11-25)
+
+本地 `main` 含进程内编译器、OHOS 终端和启动页改动。
+本地 `main` 也含桌面合并 `b5896d9` 和测试修复 `9e34dcc`。
+这些提交尚未发布，GitHub 也未验证这些源码。
+历史应用运行 `44822103705` 和 native 运行 `44001588302` 均成功。
+这两次运行没有验证当前合并源码。
+构建全部交给 GitHub Actions，本地不再构建。
+iOS、Web 和 macOS 应用验收仍未完成。
+下表只记录 2026-10-16 的验收结果。
+
+## Historical acceptance scope (2026-10-16)
+
+当时的验收范围包含 OHOS 手机测试和 Android 仅构建。
+两项当时的验收均通过。
+iOS 和 Web 验收仍未完成。
+因此运行时任务当时保持进行中。
 
 | Platform | Implementation | Verification |
 | --- | --- | --- |
@@ -16,8 +29,10 @@ open, so the overall cross-platform task remains in progress.
 | Web | Local compiler worker, WASI runtime and runner source; staged shared-core storage/path/editor patch; local facade keeps source analyzable without sibling writes | Web source build passes. Actual staged Edge facade persistence/editor sharing probe passes 2/2 after staged reexports. Production sibling core still uses unsupported browser filesystem calls. Older 12 Node, eight Chrome, eight Edge storage and six editor checks remain bounded evidence; actual compiler/Dart/UI run-stop and sibling integration remain open. |
 
 Historical 10-15 source/content commits: `797d9b7`, `49a7579`, `cccc0b8`, `7f92787`.
-The task remains `in_progress`; neither HAP signing nor Linux-host execution
-establishes OHOS app execution. See `../ohos-status.md` and
+The task remains `in_progress` for the open cross-platform gates. The recorded
+phone audit and production UI checks establish OHOS acceptance for their exact
+2026-10-16 packages. Signing or Linux-host checks alone do not establish phone
+execution, and the old phone results do not verify the current merged package. See `../ohos-status.md` and
 `ohos-portable-acceptance-2026-10-16.md` for current evidence and continuation.
 `ohos-portable-device-2026-10-16.json` records the 212 unique phone cases and
 exact signed audit HAP/log hashes. `ohos-production-ui-2026-10-16.json` records
