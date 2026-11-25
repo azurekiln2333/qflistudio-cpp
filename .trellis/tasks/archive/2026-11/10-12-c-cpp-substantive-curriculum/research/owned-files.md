@@ -43,7 +43,7 @@ Generated (regenerate, do not hand-edit):
 
 Task metadata (coordinator-owned):
 
-- `.trellis/tasks/10-12-c-cpp-substantive-curriculum/**`
+- `.trellis/tasks/archive/2026-11/10-12-c-cpp-substantive-curriculum/**`
 
 ## Not owned (never stage)
 

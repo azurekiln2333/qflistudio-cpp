@@ -62,7 +62,7 @@ Notes on accuracy:
 - `tool/` is entirely untracked now, so every `tool/...` path above is a new file
   (including `tool/generate_forge_content.dart` etc.).
 - `.trellis/spec/frontend/index.md` is the only **modified tracked** file.
-- `.trellis/tasks/10-12-c-cpp-substantive-curriculum/**` (task metadata) is
+- `.trellis/tasks/archive/2026-11/10-12-c-cpp-substantive-curriculum/**` (task metadata) is
   coordinator-owned; include it only if the coordinator wants task records in the
   same commit (it is untracked today).
 

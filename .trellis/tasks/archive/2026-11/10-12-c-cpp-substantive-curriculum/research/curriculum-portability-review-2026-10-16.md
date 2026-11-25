@@ -77,7 +77,7 @@ stdin SHA256. All 200 original programs compile with the WASI threads target.
 The coordinator's signed OHOS audit completed **212/212 unique cases** on the
 nova 14 Ultra: 12 runtime/compiler/error/cancellation/output checks plus all
 100 C and 100 C++ programs. The persistent device report is
-`../../10-01-cross-platform-native-runtime/research/ohos-portable-device-2026-10-16.json`.
+`../../../../10-01-cross-platform-native-runtime/research/ohos-portable-device-2026-10-16.json`.
 All 200 curriculum IDs are present once, exit zero and have empty stderr.
 Audit HAP SHA256:
 `e85120111893d9a319eb1160440037f26e2cd13e14b154fbf186e91087c7c1d2`.
@@ -90,7 +90,7 @@ the objective, source, output and exercises. The Examples list explicitly showed
 200 entries, and example detail displayed source and expected output.
 
 Persistent production HAP/hash/UI evidence is
-`../../10-01-cross-platform-native-runtime/research/ohos-production-ui-2026-10-16.json`.
+`../../../../10-01-cross-platform-native-runtime/research/ohos-production-ui-2026-10-16.json`.
 Production HAP SHA256:
 `f7472a09e0bd8773cfd971908653a41a1f96df754ea7ca78e8b10d26f1000e69`.
 Screenshots are `native/build/qfli-production-{run,stop,tutorials,lesson,examples}-20261016.jpeg`.
