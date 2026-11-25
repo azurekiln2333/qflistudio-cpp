@@ -1,4 +1,9 @@
-> Publication status (2026-11-21): This spec includes local OHOS terminal and startup work. The cloud app commit 6908e44 does not include terminalStart, startupProgress, tool/build_ohos_release.ps1 or tool/ohos_terminal_audit.dart. Keep the matching contracts below as local progress until a reviewed release integrates those files.
+> 发布状态（2026-11-25）：本地 `main` 包含 OHOS 终端和启动页改动。
+> `b5896d9` 合并桌面内容，`9e34dcc` 修复测试换行。
+> 这些提交尚未推送，GitHub 也未验证这些源码。
+> 历史运行 `44822103705` 对应 `f2529c3`。
+> 构建全部交给 GitHub Actions，本地不再构建。
+> 以下本地构建脚本只供追溯。它不是当前指令。
 
 # OHOS LLVM / WASI Runtime Contract
 
@@ -124,8 +129,11 @@ entry points share one broadcast EventChannel subscription and run-ID counter.
   redirection, chaining and globs retain the shared sandbox diagnostics.
 - A stop received while the delegate awaits toolchain preparation must reach
   the cancel callback when `SandboxShellBackend.runStreams` attaches it.
-- Production builds use `tool/build_ohos_release.ps1`: refresh pub dependencies
-  and verify core/re_editor resolve to the live sibling sources. Never leave
+- Historical production builds used `tool/build_ohos_release.ps1`. Current
+  production builds run only on GitHub with the reviewed pinned core revision;
+  do not run that local build script. Preserve the dependency-resolution guard:
+  refresh pub dependencies and verify core/re_editor resolve to the selected
+  reviewed sources. Never leave
   `.dart_tool/package_config.json` pointing at an ignored shared-core snapshot.
   Rebuild/stage compiler and runtime adapters after native API changes before
   HAP linking; a header or NAPI call alone cannot update the static archives.

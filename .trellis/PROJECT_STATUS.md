@@ -1,78 +1,109 @@
 # 项目交接状态
 
-更新日期：2026 年 11 月 21 日
+更新日期：2026 年 11 月 25 日
 
-## 已验证 UI 与安装包
+## 构建与发布规则
 
-共享界面属于 qfli_studio_core。
-应用通过 StudioProfile 配置共享界面。
-云端固定 core 提交 cbaa4a4166461baafff7c1a343bd3ca1865fcc4f。
-该版本含编辑器快捷栏、会话侧栏和新版聊天布局。
+所有构建都在 GitHub Actions 运行。
+本地不再运行任何构建。
+本地历史构建只作为历史证据。
+本记录不触发工作流，也不推送代码。
+当前本地 `main` 尚未发布。
+本地 HEAD 为 `9e34dcc3f1dfd5f4ba306c7df983e584dbad9b94`。
+本地跟踪引用 `github/main` 为 `dcb4355a6e9e3526db8b69956959dc1680a44872`。
+该本地快照显示 `main` 比远端多 32 个提交。
+协调者须在推送前复核远端引用和提交范围。
 
-安装包分支提交为 6908e44ecb5edbc8a3a1388d40ec8d3166a35ac5。
-云构建运行号为 44797136694。
-文档同步不会触发安装包构建。
-七个任务全部成功，覆盖六个平台。
-Android 分别构建 ARM64 和 x86_64。
-所有产物的 app/core 来源提交均已检查。
-Trellis 交接提交为 f2529c32da5e52ba1efbd0c44d685284f494e1fc。
-GitHub main 已包含 UI 同步和交接记录。
-主分支安装包运行 44822103705 已成功。
-该运行固定 core 提交 cbaa4a4166461baafff7c1a343bd3ca1865fcc4f。
-七项任务全部成功，七份产物均未过期。
+## 本地待发布功能批次
 
-签名限制：Android 使用临时调试密钥。
-Windows 和 Linux 产物未签名。
-macOS 使用临时 ad hoc 签名，且未公证。
-iOS 与 OHOS 产物未签名。
-本轮没有验证设备安装或运行。
-产物元数据证据保存在归档 Trellis 任务中。
-UI 同步任务归档后位于 .trellis/tasks/archive/2026-11/11-21-sync-core-ui-installers/。
+当前 `main` 已合并运行时与桌面功能工作。
+九个功能提交构成当前功能批次。
 
-## Native 构建范围
+| 提交 | 内容 |
+| --- | --- |
+| `b930c01` | 进程内编译器与 WASM 解释器 |
+| `d7345f1` | OHOS 终端桥接 |
+| `a1a3bfe` | 终端委托与启动握手 |
+| `27db9ff` | OHOS 原生启动进度 |
+| `3cc8a1f` | 共享终端命令委托 |
+| `f834dbe` | 运行时与课程测试 |
+| `5f8f962` | 桌面工具链环境契约 |
+| `7eb0dd5` | 各平台应用图标 |
+| `2924b76` | 工具链安装与便携包 |
 
-Native 工作流独立构建 Android、iOS 和 OHOS。
-Android 包含 ARM64 与 x86_64。
-iOS 包含真机 ARM64 和两个模拟器架构。
-OHOS 构建 ARM64 编译器与 WASI 资源。
+桌面分支已由 `b5896d9` 合并到本地 `main`。
+合并包含 `b894ec1` 工具链目录修复。
+合并包含 `d673a23` CI 辅助测试。
+`9e34dcc` 修复 core 补丁测试的换行。
+上表只列九个功能提交。
+上表未列出本地新增的全部提交。
 
-Native 工作流没有 Windows、Linux 或 macOS 工具链包。
-桌面安装包会构建 Flutter runner 和插件。
-桌面 C/C++ 编译依赖系统中的 clang 或 gcc。
-本轮复用了 native 运行 44001588302 的移动端产物。
+新增 Windows 单文件包和 Linux AppImage 代码已进入本地历史。
+桌面工具链配置和图标代码也已进入本地历史。
+这些改动尚未推送，也没有新的云端验收。
+发布签名配置 `ed4c9c0` 不在当前 `main` 历史，未上传 GitHub。
+历史 `default` 签名字段和本机证书路径仍存在。
+协调者与 pi-ci 须单独审查现存签名字段和本机证书路径。
+不得据此声称仓库不含签名材料。
 
-## 尚未发布的本地进度
+## GitHub 已验证的历史结果
 
-原始 main 有 23 个未上推提交。
-其中包含未审查的 OHOS 签名配置。
-不要从原始 main 推送提交。
-原始应用和 core 工作区仍保留本地改动。
+| 工作流 | 运行 | 源提交 | 结果与边界 |
+| --- | --- | --- | --- |
+| Native artifacts | `44001588302` | `ba5c33a` | 历史移动端依赖构建成功，不含本地运行时重写 |
+| Application installers | `44125206686` | `1969ef4` | 七个 job 成功，覆盖六个平台 |
+| Application installers | `44797136694` | `6908e44` | 七个 job 成功，iOS 未签名构建成功 |
+| Application installers | `44822103705` | `f2529c3` | 七个 job 成功，固定 core `cbaa4a4` |
 
-本轮使用隔离 app/core 兄弟工作区。
-app 分支为 `ci/ui-core-installers-20261121`。
-core 固定在提交 `cbaa4a4166461baafff7c1a343bd3ca1865fcc4f`。
-请从这对工作区继续构建和检查。
+这些成功运行不验证当前本地 HEAD。
+旧安装包不含 AppImage 和 Windows 单文件包。
+历史运行也不证明当前 OHOS 桥接已上云。
+历史 OHOS 手机审计为 212/212。
+历史生产界面验证覆盖普通运行、停止和再次运行。
+这些设备结果只适用于当时的精确产物。
+本轮没有重跑测试、构建或设备验收。
 
-本地 OHOS 终端与启动进度仍未进入云端 app。
-详见 .trellis/spec/backend/ohos-runtime.md 的发布状态说明。
-桌面环境、图标和便携安装包任务仍为 in_progress。
-详情见 .trellis/tasks/11-18-desktop-env-icons-packages/。
-该任务的云就绪检查不代表云构建已成功。
-AppImage 和单文件 Windows 包也未包含在本轮。
+## 推送后必须验证
 
-图标工作包已有提交 7eb0dd5，仍待整合和推送。
-CI 工作包分支有四个提交和未提交修改。
-CI 工作包含 AppImage 和 Windows 便携包改动。
-该分支尚未完成工作包复核或云构建。
-CI readiness 报告只记录构建前检查。
-ENV-CORE 报告记有 17 项测试通过。
-Windows 端到端安装流程仍未验证。
-ENV-CORE 和 ENV-UI 工作树仍有未提交修改。
-整合前应逐个复核工作包和测试。
-不要把这些工作包并入本轮 UI 提交。
+先复核签名配置和待推送提交。
+协调者推送后运行当前 `main` 的 Native 工作流。
+确认 Native 产物对应当前源码提交。
+再运行 Application installers 工作流。
+确认应用工作流下载匹配的 Native 产物。
+检查七个安装包 job 的结果和 Node.js 24 注记。
+检查 Windows portable EXE 和 Linux AppImage。
+检查包内清单与 SHA256SUMS。
+检查产物来源提交和固定 core 版本。
+检查 Actions artifact 是否已上传。
+当前源代码尚无这些新运行证据。
 
-## 后续检查
+云端构建成功不等于真机验收。
+OHOS 当前合并包仍待设备验收。
+iOS、Web 和 macOS 应用运行门禁仍未关闭。
+Windows 工具链须实测 Clang、GCC、C 和 C++。
+Linux、macOS 安装流程仍待目标环境验收。
+macOS GCC 需求仍待产品决策。
+签名、安装和公证状态须按产物分别记录。
 
-检查隔离工作区和配套 core 是否一致。
-继续前先审查桌面任务各工作包的提交和报告。
-不要把本地 OHOS 进度标记为已发布。
+## Trellis 任务状态
+
+| 任务 | 状态 | 当前交接 |
+| --- | --- | --- |
+| `00-bootstrap-guidelines` | `in_progress` | 五份后端和六份前端通用规范仍有模板 |
+| `10-01-cross-platform-native-runtime` | `in_progress` | 保留 iOS、Web、macOS 和当前源设备门禁 |
+| `10-22-offline-standalone-ide` | `in_progress` | 200 对课程已在独立任务验收，新增 160 对和总体验收未完成 |
+| `11-18-desktop-env-icons-packages` | `in_progress` | 等待推送后云端验证及真实安装验收 |
+| `10-09-unified-terminal-current-file` | 已归档 | 完成日 2026-11-25，提交 `41ffe52` |
+| `10-12-c-cpp-substantive-curriculum` | 已归档 | 保留完成日 2026-10-16 |
+| `11-17-ci-app-installers` | 已归档 | 保留 2026-11-21 的历史成功运行证据 |
+
+课程归档不关闭离线 IDE 总任务。
+旧安装包运行不关闭桌面新包验收。
+
+## 签名与产物边界
+
+历史安装包含调试签名、未签名或 ad hoc 产物。
+本轮未验证设备安装或运行。
+生产签名、Apple 公证和 OHOS 签名须单独授权。
+不得把本地证书路径或口令复制到交接记录。
+推送前由协调者与 pi-ci 审查签名材料。
