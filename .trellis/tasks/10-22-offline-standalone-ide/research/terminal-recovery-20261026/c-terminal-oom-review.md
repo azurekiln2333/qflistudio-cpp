@@ -203,7 +203,7 @@ timeouts, then `test/editor_run_test.dart`.
 
 Do **not** run the historically documented pair
 `flutter test test/terminal_pane_test.dart test/editor_run_test.dart`
-(see `.trellis/tasks/10-09-unified-terminal-current-file/research/verification.md:37`)
+(see `.trellis/tasks/archive/2026-11/10-09-unified-terminal-current-file/research/verification.md:37`)
 as a single step: that compiles both units in one compiler process and doubles peak
 memory, which is the wrong direction after an OOM.
 
@@ -239,7 +239,7 @@ memory, which is the wrong direction after an OOM.
 - `git -C D:/MyNewProjects/qfli_studio_core` log/status/diff
 - `build/baseline_200_owned_job.py` (limit semantics only)
 - `Get-CimInstance Win32_OperatingSystem` / `Win32_PageFileUsage`
-- `.trellis/tasks/10-09-unified-terminal-current-file/research/verification.md`
+- `.trellis/tasks/archive/2026-11/10-09-unified-terminal-current-file/research/verification.md`
 
 ### Audit-time hashes (worktree moved during this review)
 

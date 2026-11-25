@@ -21,6 +21,6 @@
   "children": [],
   "parent": null,
   "relatedFiles": [],
-  "notes": "",
+  "notes": "2026-11-25 housekeeping: keep in_progress. C/C++ tools, diagnostics, workspace integration and offline policy have historical host evidence. The current inventory remains 200 paired courses; the planned 160 additions, current packaged OHOS all-example/user-header execution and all-product acceptance remain open. main includes runtime/terminal/startup work and desktop merge b5896d9 plus test fix 9e34dcc, not yet covered by a new GitHub run. All future builds run on GitHub; no local build. Historical app run 44822103705 and native run 44001588302 do not establish current-source runtime/device acceptance.",
   "meta": {}
 }

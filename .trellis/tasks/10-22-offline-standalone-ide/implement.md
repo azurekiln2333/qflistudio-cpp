@@ -26,20 +26,31 @@ Validation: actual configured Flutter/OHOS SDK analysis/tests, all-example nativ
   actual NAPI/ArkTS/channel acceptance. No user execution or project-source writes.
   Existing terminal/startup/native changes remain separately owned and unstaged.
 
-## Commit sweep
+## Historical commit sweep, current-history mapping (2026-11-25)
 
-Swept all uncommitted work and grouped it by theme. Tracked icons that
-changed on purpose are included.
+The original sweep grouped the then-uncommitted work by theme. The table now
+uses commits reachable from current main. The earlier terminal commit included
+an added release-signing configuration; its old hash is not a publication target.
+This mapping does not claim that the current merged source passed a new cloud
+or device run.
 
-| Commit | Theme |
+| Current commit | Theme |
 | --- | --- |
 | `b930c01` feat(native): run compiler and wasm programs in process | native |
-| `ed4c9c0` feat(ohos): expose the in-process terminal to the ArkTS shell | ohos |
-| `79714d5` feat(forge): wire the terminal delegate and the OHOS splash hold | lib/main.dart, on its own because it carries two themes |
-| `27676aa` feat(ohos): hold a native startup splash with real progress | ohos + icons |
-| `04611d4` feat(forge): give the shared terminal a native command delegate | lib |
-| `e932e92` test(native): cover the in-process bridge and the portable curriculum | tests + tool |
-| `925591f` docs(spec): record the in-process bridge and the terminal contract | docs, LICENSE, archive |
+| `d7345f1` feat(ohos): expose the in-process terminal to the ArkTS shell | ohos |
+| `a1a3bfe` feat(forge): wire the terminal delegate and the OHOS splash hold | lib/main.dart, two themes |
+| `27db9ff` feat(ohos): hold a native startup splash with real progress | ohos + icons |
+| `3cc8a1f` feat(forge): give the shared terminal a native command delegate | lib |
+| `f834dbe` test(native): cover the in-process bridge and the portable curriculum | tests + tool |
+| `9511f4a` docs(spec): record the in-process bridge and the terminal contract | docs, LICENSE, archive |
+| `219b830` docs(task): record the commit sweep | historical sweep record |
 
-Skipped: none. Untracked build output, logs and crash dumps were not
-present in this repository.
+## Current integration checkpoint (2026-11-25)
+
+Coordinator merge `b5896d9` adds desktop toolchain setup, unified icons and
+Windows/Linux single-file packages. `9e34dcc` repairs the core-patch test's line
+endings. Historical app run `44822103705` and native run `44001588302` remain
+separate from the pending merged-source verification. The current 200-pair
+inventory, planned 160 additions and all-product/device gaps remain unchanged.
+All future builds run on GitHub; do not execute the historical local build
+commands above. This housekeeping pass performs metadata checks only.

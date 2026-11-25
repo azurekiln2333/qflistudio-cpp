@@ -1,5 +1,22 @@
 # Acceptance ledger — 2026-10-22
 
+## Current housekeeping checkpoint (2026-11-25)
+
+The umbrella remains in progress. Main now contains the runtime/terminal/startup
+batch and coordinator desktop merge `b5896d9` with test fix `9e34dcc`. No new
+source-bound cloud or device result is claimed here. App run `44822103705`
+(`f2529c3`, pinned core `cbaa4a4`) and native run `44001588302` (`ba5c33a`)
+are historical successful GitHub builds, not validation of this merged source.
+
+The current C/C++ inventory is still 200 pairs. The planned 160 additions,
+current packaged OHOS curriculum/user-header execution, actual runtime/debug
+adapters and cross-product acceptance remain open. Archived curriculum and
+selected-entry tasks close only their independent historical scopes. All future
+builds run on GitHub; local builds are no longer permitted. The dated records
+below retain their original evidence boundaries and hashes.
+
+## Historical ledger
+
 The umbrella remains in progress. Current host, shared UI, package and device gates
 are recorded separately. C is the sole shared-core integrator; language coordinators
 own their runtime/content/provider implementation. Existing startup/signing changes
