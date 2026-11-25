@@ -595,12 +595,13 @@ def verify_windows_portable(portable, source, extraction):
     """Extract without starting, compare the file list, and run it again."""
     extraction.mkdir(parents=True)
     target = extraction / APP_NAME
-    command = [portable, '/EXTRACTONLY', f'/D={target}']
+    # NSIS consumes /D= before GetParameters; pass the directory as a plain argument.
+    command = [portable, '/EXTRACTONLY', str(target)]
     run(command, timeout=1800)
     # The marker belongs to the launcher, not to the Flutter build output.
     extracted = files_under(target) - {PORTABLE_MARKER}
     check_portable_file_list(files_under(source), extracted)
-    # The marker file of a complete extraction makes the second run start no extraction.
+    # Repeat extract-only mode to verify that an existing extraction can be overwritten.
     if not (target / PORTABLE_MARKER).is_file():
         raise PackageError(f'The extraction wrote no {PORTABLE_MARKER} marker')
     run(command, timeout=600)

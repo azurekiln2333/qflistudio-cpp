@@ -55,6 +55,12 @@ $GITHUB_WORKSPACE/
   Lines beginning with `#` are comments, not preprocessor directives.
   Require `FileVersion` rather than supplying a fallback that hides missing
   arguments. An undefined `${FileVersion}` fails `VIProductVersion`.
+- The portable launcher accepts `/EXTRACTONLY [directory]`. Pass the directory
+  as a separate argument, not as `/D=...`: NSIS consumes `/D=` before
+  `$CMDLINE` reaches `GetParameters`. `GetOptions` already trims separator
+  spaces and removes surrounding quotes. Store its result directly in
+  `$Target`; do not trim characters or unquote it again. An omitted directory
+  keeps the `$EXEDIR\QFLIForge` default. Extract-only mode never starts the app.
 
 ### Triggers
 
@@ -141,6 +147,7 @@ Every job writes `dist/app/` and uploads that directory.
 | APK holds another ABI, lacks a toolchain library or lacks `assets/qfli_toolchain/<abi>.zip` | `package_app.py android` exits 1. The output directory stays empty |
 | `--native-record` file is missing or is not JSON | Exit 1 before packaging |
 | Windows install list differs from the build output, or uninstall leaves the executable | Exit 1 |
+| Portable extraction lacks a source file, adds an unexpected file or writes no completion marker | Exit 1 before the second extraction; a launcher process failure also propagates |
 | Linux launcher has an unresolved shared library, or `apt-get remove` leaves the application directory | Exit 1 |
 | macOS application is not universal, or the image lacks the application or the `/Applications` link | Exit 1 |
 | IPA holds an entry outside `Payload/` or holds `embedded.mobileprovision` | Exit 1 |
@@ -188,11 +195,19 @@ Every job writes `dist/app/` and uploads that directory.
 and executable invocation. It checks numeric version arguments (including
 versions without a build number), propagation through `package_windows`,
 paths with spaces, NSIS required definitions, staging cleanup after compiler
-failure and rejection of a missing compiler output. It performs no native build.
+failure and rejection of a missing compiler output. Extraction checks assert the
+positional directory argument, paths with spaces, repeat invocation, rejection
+of missing or unexpected files, the completion marker, process failures and
+untrimmed `GetOptions` output in the script. The tests perform no native build.
 Actual Windows compiler execution and installation remain cloud-only checks.
 No unit test runs the Linux, macOS and iOS commands of `package_app.py`.
 
 ## 7. Wrong vs Correct
+
+Wrong: pass `portable.exe /EXTRACTONLY /D=C:\temp\extract` and expect
+`GetParameters` to retain the directory.
+Correct: pass `portable.exe /EXTRACTONLY "C:\temp\extract with spaces"` and
+use the `GetOptions` result directly as the extraction directory.
 
 Wrong: publish the workflow with a push of local `main`. The local branch
 holds unpublished commits and a release signing configuration.

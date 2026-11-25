@@ -426,6 +426,91 @@ class WindowsPortableTest(unittest.TestCase):
                     self.source, self.output, '1.2.3+4', self.build_id)
         self.assertFalse(self.application.exists())
 
+    def test_portable_extraction_uses_a_positional_directory_and_repeats(self):
+        extraction = self.output / 'extract with spaces'
+        target = extraction / package_app.APP_NAME
+        command = [self.target, '/EXTRACTONLY', str(target)]
+
+        def extract_launcher(arguments, **options):
+            self.assertEqual(arguments, command)
+            destination = Path(arguments[2])
+            for relative in package_app.files_under(self.source):
+                path = destination / relative
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes((self.source / relative).read_bytes())
+            (destination / package_app.PORTABLE_MARKER).write_text(self.build_id, encoding='utf-8')
+
+        with mock.patch.object(package_app, 'run', side_effect=extract_launcher) as run:
+            validation = package_app.verify_windows_portable(self.target, self.source, extraction)
+        self.assertEqual(run.call_args_list, [
+            mock.call(command, timeout=1800), mock.call(command, timeout=600)])
+        self.assertEqual(package_app.files_under(target),
+                         set(package_app.WINDOWS_REQUIRED) | {package_app.PORTABLE_MARKER})
+        self.assertEqual(validation, [
+            'portable-extract-only', 'portable-file-list', 'portable-marker',
+            'portable-repeat-extraction'])
+
+    def test_portable_extraction_rejects_missing_and_unexpected_files(self):
+        for index, defect in enumerate(['missing', 'unexpected']):
+            with self.subTest(defect=defect):
+                extraction = self.output / f'extract {index}'
+                target = extraction / package_app.APP_NAME
+
+                def extract_launcher(arguments, **options):
+                    target.mkdir(parents=True)
+                    for relative in package_app.WINDOWS_REQUIRED:
+                        path = target / relative
+                        path.parent.mkdir(parents=True, exist_ok=True)
+                        path.write_bytes(b'fake application file')
+                    (target / package_app.PORTABLE_MARKER).write_text(self.build_id, encoding='utf-8')
+                    if defect == 'missing':
+                        (target / 'qfli_c.exe').unlink()
+                    else:
+                        (target / 'unexpected.dll').write_bytes(b'extra file')
+
+                with mock.patch.object(package_app, 'run', side_effect=extract_launcher) as run:
+                    with self.assertRaisesRegex(PackageError, 'Extracted files differ'):
+                        package_app.verify_windows_portable(self.target, self.source, extraction)
+                run.assert_called_once()
+
+    def test_portable_extraction_requires_the_completion_marker(self):
+        extraction = self.output / 'extract without marker'
+        target = extraction / package_app.APP_NAME
+
+        def extract_launcher(arguments, **options):
+            for relative in package_app.WINDOWS_REQUIRED:
+                path = target / relative
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(b'fake application file')
+
+        with mock.patch.object(package_app, 'run', side_effect=extract_launcher) as run:
+            with self.assertRaisesRegex(PackageError, 'The extraction wrote no'):
+                package_app.verify_windows_portable(self.target, self.source, extraction)
+        run.assert_called_once()
+
+    def test_portable_extraction_propagates_launcher_failure(self):
+        with mock.patch.object(package_app, 'run',
+                               side_effect=subprocess.CalledProcessError(1, [str(self.target)])) as run:
+            with self.assertRaises(subprocess.CalledProcessError):
+                package_app.verify_windows_portable(
+                    self.target, self.source, self.output / 'failed extraction')
+        run.assert_called_once()
+
+    def test_portable_script_parses_the_extraction_directory_without_trimming_it_again(self):
+        script = (package_app.ROOT / 'tool/ci/windows_portable.nsi').read_text(encoding='utf-8')
+        extract_branch = script.split('Function .onInit\n', 1)[1].split(
+            '  ; The switch is absent', 1)[0]
+        self.assertIn('${GetOptions} $R0 "/EXTRACTONLY" $Target', extract_branch)
+        self.assertIn('''    ${If} $Target == ""
+      StrCpy $Target "$EXEDIR\\${AppName}"
+    ${EndIf}''', extract_branch)
+        self.assertNotIn('UnquoteResult', script)
+        self.assertNotIn('StrCpy $R1', extract_branch)
+        self.assertNotIn('StrCpy $Target "$Target"', extract_branch)
+        self.assertIn('!insertmacro ExtractApplication', extract_branch)
+        self.assertIn('Quit', extract_branch)
+        self.assertNotIn('Call StartApplication', extract_branch)
+
     def test_portable_script_uses_native_nsis_required_definitions(self):
         script = (package_app.ROOT / 'tool/ci/windows_portable.nsi').read_text(encoding='utf-8')
         self.assertNotRegex(script, r'(?m)^\s*#\s*(?:ifndef|ifdef|define|endif|error)\b')

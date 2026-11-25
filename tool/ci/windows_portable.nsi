@@ -61,23 +61,11 @@ Var Arguments
   FileClose $0
 !macroend
 
-!macro UnquoteResult
-  ; GetOptions keeps the quotes of the value; Exec must not receive them twice.
-  StrCpy $2 "$R1" 1
-  ${If} $2 == '"'
-    StrCpy $Target "$R1" -1 1
-  ${Else}
-    StrCpy $Target "$R1"
-  ${EndIf}
-!macroend
-
 Function .onInit
   ${GetParameters} $R0
-  ${GetOptions} $R0 "/EXTRACTONLY" $R1
+  ${GetOptions} $R0 "/EXTRACTONLY" $Target
   ${IfNot} ${Errors}
-    ; An optional directory follows the switch and its separating space.
-    StrCpy $R1 "$R1" -1 1
-    !insertmacro UnquoteResult
+    ; GetOptions trims the separator and removes surrounding quotes itself.
     ${If} $Target == ""
       StrCpy $Target "$EXEDIR\${AppName}"
     ${EndIf}
