@@ -47,6 +47,14 @@ $GITHUB_WORKSPACE/
 - The workflow does not pin Python. Linux and macOS steps call `python3`.
   Windows steps call `python`. Helpers use the standard library only.
   `fetch_native_artifact.py` requires `tarfile.data_filter`.
+- Both Windows compilers receive `/DFileVersion` from
+  `windows_file_version(version)`: `1.2.3+4` becomes `1.2.3.4`, and `1.2.3`
+  becomes `1.2.3.0`. Pass the application version through
+  `package_windows` to `build_windows_portable`; the build ID is not a version.
+- NSIS scripts use `!ifndef`, `!error` and `!endif` for required definitions.
+  Lines beginning with `#` are comments, not preprocessor directives.
+  Require `FileVersion` rather than supplying a fallback that hides missing
+  arguments. An undefined `${FileVersion}` fails `VIProductVersion`.
 
 ### Triggers
 
@@ -176,8 +184,13 @@ Every job writes `dist/app/` and uploads that directory.
 `test_ohos_build.py` runs `package()` against a temporary directory. It patches
 `ohos_build.PROJECT` and sets the GitHub variables with `mock.patch.dict`.
 
-No unit test runs the Windows, Linux, macOS and iOS commands of
-`package_app.py`. Only the cloud run covers them.
+`WindowsPortableTest` uses temporary dummy files and mocks every compiler
+and executable invocation. It checks numeric version arguments (including
+versions without a build number), propagation through `package_windows`,
+paths with spaces, NSIS required definitions, staging cleanup after compiler
+failure and rejection of a missing compiler output. It performs no native build.
+Actual Windows compiler execution and installation remain cloud-only checks.
+No unit test runs the Linux, macOS and iOS commands of `package_app.py`.
 
 ## 7. Wrong vs Correct
 

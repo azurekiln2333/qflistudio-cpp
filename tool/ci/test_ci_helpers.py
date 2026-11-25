@@ -8,6 +8,7 @@ import json
 import os
 from pathlib import Path
 import struct
+import subprocess
 import sys
 import tarfile
 import tempfile
@@ -341,6 +342,97 @@ class DesktopArchiveTest(unittest.TestCase):
             f'usr/share/icons/hicolor/{package_app.APPDIR_ICON_SIZE}x{package_app.APPDIR_ICON_SIZE}/apps/{package_app.APP_ID}.png',
             package_app.appdir_icon_names(icons),
         )
+
+
+class WindowsPortableTest(unittest.TestCase):
+    """Check the NSIS contract without running a compiler or application."""
+
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        root = Path(temporary.name)
+        self.source = root / 'build with spaces'
+        for relative in package_app.WINDOWS_REQUIRED:
+            path = self.source / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(relative.encode())
+        self.output = root / 'output with spaces'
+        self.output.mkdir()
+        self.target = self.output / 'qfli-forge-windows-x64-portable.exe'
+        self.application = self.output / 'qfli-forge-windows-x64-portable'
+        self.compiler = root / 'NSIS tools' / 'makensis.exe'
+        self.build_id = 'd34c2062a7a3-45592127359'
+
+    def test_portable_compiler_receives_the_numeric_application_version(self):
+        for version, numeric in [('1.0.0+1', '1.0.0.1'),
+                                 ('1.2.3+4', '1.2.3.4'), ('1.2.3', '1.2.3.0')]:
+            with self.subTest(version=version):
+                def compile_launcher(command):
+                    self.assertEqual(command, [
+                        self.compiler, '/V2', '/NOCD',
+                        f'/DBuildId={self.build_id}',
+                        f'/DFileVersion={numeric}',
+                        f'/DApplicationDir={self.application}',
+                        f'/DOutputFile={self.target}',
+                        f'/DIconFile={package_app.ROOT / "windows/runner/resources/app_icon.ico"}',
+                        package_app.ROOT / 'tool/ci/windows_portable.nsi',
+                    ])
+                    self.assertEqual(package_app.files_under(self.application),
+                                     set(package_app.WINDOWS_REQUIRED))
+                    self.target.write_bytes(b'fake launcher')
+
+                with mock.patch.object(package_app, 'find_makensis', return_value=self.compiler), \
+                        mock.patch.object(package_app, 'run', side_effect=compile_launcher) as run:
+                    target = package_app.build_windows_portable(
+                        self.source, self.output, version, self.build_id)
+                run.assert_called_once()
+                self.assertEqual(target, self.target)
+                self.assertFalse(self.application.exists())
+
+    def test_windows_packaging_passes_the_version_to_the_portable_compiler(self):
+        setup = self.output / 'qfli-forge-windows-x64-setup.exe'
+        with mock.patch.object(package_app, 'build_windows_setup', return_value=setup) as build_setup, \
+                mock.patch.object(package_app, 'verify_windows_setup', return_value=['setup-check']), \
+                mock.patch.object(package_app, 'build_windows_portable',
+                                  return_value=self.target) as build_portable, \
+                mock.patch.object(package_app, 'verify_windows_portable',
+                                  return_value=['portable-check']) as verify_portable:
+            targets, validation = package_app.package_windows(
+                self.source, self.output, '1.2.3+4', self.build_id)
+        build_setup.assert_called_once_with(self.source, self.output, '1.2.3+4')
+        build_portable.assert_called_once_with(
+            self.source, self.output, '1.2.3+4', self.build_id)
+        verify_portable.assert_called_once_with(self.target, self.source, mock.ANY)
+        self.assertEqual(targets, [setup, self.output / 'qfli-forge-windows-x64.zip', self.target])
+        self.assertEqual(validation, [
+            'windows-build-files', 'setup-check', 'portable-zip-file-list', 'portable-check'])
+
+    def test_portable_compiler_failure_removes_staging_and_stale_output(self):
+        self.target.write_bytes(b'stale launcher')
+        with mock.patch.object(package_app, 'find_makensis', return_value=self.compiler), \
+                mock.patch.object(package_app, 'run',
+                                  side_effect=subprocess.CalledProcessError(1, ['makensis.exe'])):
+            with self.assertRaises(subprocess.CalledProcessError):
+                package_app.build_windows_portable(
+                    self.source, self.output, '1.2.3+4', self.build_id)
+        self.assertFalse(self.application.exists())
+        self.assertFalse(self.target.exists())
+
+    def test_portable_compiler_must_write_the_output(self):
+        with mock.patch.object(package_app, 'find_makensis', return_value=self.compiler), \
+                mock.patch.object(package_app, 'run'):
+            with self.assertRaisesRegex(PackageError, 'NSIS did not write'):
+                package_app.build_windows_portable(
+                    self.source, self.output, '1.2.3+4', self.build_id)
+        self.assertFalse(self.application.exists())
+
+    def test_portable_script_uses_native_nsis_required_definitions(self):
+        script = (package_app.ROOT / 'tool/ci/windows_portable.nsi').read_text(encoding='utf-8')
+        self.assertNotRegex(script, r'(?m)^\s*#\s*(?:ifndef|ifdef|define|endif|error)\b')
+        for name in ['BuildId', 'ApplicationDir', 'OutputFile', 'IconFile', 'FileVersion']:
+            self.assertIn(f'!ifndef {name}\n  !error "{name} is required"\n!endif', script)
+        self.assertIn('VIProductVersion "${FileVersion}"', script)
+        self.assertIn('VIAddVersionKey /LANG=1033 "FileVersion" "${FileVersion}"', script)
 
 
 class AndroidCommandTest(unittest.TestCase):

@@ -16,21 +16,21 @@ RequestExecutionLevel user
 !include "FileFunc.nsh"
 !include "LogicLib.nsh"
 
-#ifndef BuildId
-  #error BuildId is required
-#endif
-#ifndef ApplicationDir
-  #error ApplicationDir is required
-#endif
-#ifndef OutputFile
-  #error OutputFile is required
-#endif
-#ifndef IconFile
-  #error IconFile is required
-#endif
-#ifndef FileVersion
-  #define FileVersion "1.0.0.0"
-#endif
+!ifndef BuildId
+  !error "BuildId is required"
+!endif
+!ifndef ApplicationDir
+  !error "ApplicationDir is required"
+!endif
+!ifndef OutputFile
+  !error "OutputFile is required"
+!endif
+!ifndef IconFile
+  !error "IconFile is required"
+!endif
+!ifndef FileVersion
+  !error "FileVersion is required"
+!endif
 
 !define AppName "QFLIForge"
 !define AppExe "qfli_c.exe"

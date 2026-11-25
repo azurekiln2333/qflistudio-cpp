@@ -565,7 +565,7 @@ def find_makensis():
     raise PackageError('NSIS 3 (makensis.exe) is not installed on this runner')
 
 
-def build_windows_portable(source, output, build_id):
+def build_windows_portable(source, output, version, build_id):
     """Build the single-file edition: a launcher that carries the build output."""
     target = output / 'qfli-forge-windows-x64-portable.exe'
     target.unlink(missing_ok=True)
@@ -578,6 +578,7 @@ def build_windows_portable(source, output, build_id):
         run([
             find_makensis(), '/V2', '/NOCD',
             f'/DBuildId={build_id}',
+            f'/DFileVersion={windows_file_version(version)}',
             f'/DApplicationDir={application}',
             f'/DOutputFile={target}',
             f'/DIconFile={ROOT / "windows/runner/resources/app_icon.ico"}',
@@ -615,7 +616,7 @@ def package_windows(source, output, version, build_id):
     validation = ['windows-build-files', *verify_windows_setup(setup, source)]
     archive = build_windows_zip(source, output)
     validation.append('portable-zip-file-list')
-    portable = build_windows_portable(source, output, build_id)
+    portable = build_windows_portable(source, output, version, build_id)
     with workspace() as directory:
         validation += verify_windows_portable(portable, source, directory / 'extract')
     return [setup, archive, portable], validation
