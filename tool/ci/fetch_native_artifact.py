@@ -54,7 +54,8 @@ def missing_message(name: str, run_id: str | None, branch: str) -> str:
     source = f"run {run_id}" if run_id else f"branch '{branch}'"
     return (
         f"No unexpired artifact '{name}' exists for {source}. "
-        f'Run the "{WORKFLOW_NAME}" workflow first.'
+        f'Run the "{WORKFLOW_NAME}" workflow first, or provide a different '
+        "unexpired native_run_id."
     )
 
 
@@ -127,6 +128,8 @@ def fetch(args: argparse.Namespace) -> None:
     run = artifact.get("workflow_run") or {}
     print(f"Using artifact {artifact['id']} of run {run.get('id')} ({run.get('head_sha')}), "
           f"expires {artifact.get('expires_at')}.")
+    if args.check_only:
+        return
     temporary = Path(os.environ.get("RUNNER_TEMP") or tempfile.gettempdir())
     with tempfile.TemporaryDirectory(dir=temporary, prefix="native-input-") as scratch:
         outer = Path(scratch) / "artifact.zip"
@@ -161,6 +164,7 @@ def main() -> int:
     parser.add_argument("--run-id", help='run of the "Native artifacts" workflow')
     parser.add_argument("--repository", help="owner/repository, default GITHUB_REPOSITORY")
     parser.add_argument("--branch", default="main", help="branch of the source run")
+    parser.add_argument("--check-only", action="store_true", help="verify selection without downloading")
     args = parser.parse_args()
     try:
         fetch(args)

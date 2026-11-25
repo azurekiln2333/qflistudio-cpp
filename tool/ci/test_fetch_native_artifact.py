@@ -196,11 +196,13 @@ class ExtractTest(unittest.TestCase):
 
 
 class MainTest(unittest.TestCase):
-    def run_main(self, artifacts: list[dict], scratch: Path) -> tuple[int, str]:
+    def run_main(self, artifacts: list[dict], scratch: Path, *, check_only: bool = False) -> tuple[int, str]:
         arguments = [
             "fetch_native_artifact.py", "--name", NAME, "--repository", "owner/repository",
             "--extract-to", str(scratch / "package"), "--record", str(scratch / "record.json"),
         ]
+        if check_only:
+            arguments.append("--check-only")
         errors = io.StringIO()
         with mock.patch.object(fetch_native_artifact, "list_artifacts", return_value=artifacts):
             with mock.patch.object(sys, "argv", arguments), contextlib.redirect_stderr(errors):
@@ -213,7 +215,8 @@ class MainTest(unittest.TestCase):
                 status, errors = self.run_main(artifacts, scratch)
                 self.assertEqual(status, 1)
                 self.assertIn("Native input failed: No unexpired artifact", errors)
-                self.assertIn('Run the "Native artifacts" workflow first.', errors)
+                self.assertIn('Run the "Native artifacts" workflow first', errors)
+                self.assertIn('unexpired native_run_id', errors)
                 self.assertFalse((scratch / "record.json").exists())
                 self.assertFalse((scratch / "package").exists())
 

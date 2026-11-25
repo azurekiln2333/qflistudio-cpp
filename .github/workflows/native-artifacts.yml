@@ -1,6 +1,17 @@
 name: Native artifacts
 
 on:
+  workflow_call:
+    inputs:
+      target:
+        description: Native dependency packages to build
+        type: string
+        required: false
+        default: all
+    outputs:
+      native_run_id:
+        description: Workflow run ID that owns the uploaded native artifacts
+        value: ${{ jobs.native_run_id.outputs.value }}
   workflow_dispatch:
     inputs:
       target:
@@ -15,7 +26,6 @@ on:
           - ohos-resources
   push:
     branches:
-      - main
       - ci/native-artifacts
     paths:
       - .github/workflows/native-artifacts.yml
@@ -36,8 +46,17 @@ defaults:
     shell: bash
 
 jobs:
+  native_run_id:
+    name: Record native artifact run ID
+    runs-on: ubuntu-24.04
+    outputs:
+      value: ${{ steps.value.outputs.run_id }}
+    steps:
+      - id: value
+        run: echo "run_id=$GITHUB_RUN_ID" >> "$GITHUB_OUTPUT"
+
   android:
-    if: github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'android'
+    if: inputs.target == 'all' || inputs.target == 'android' || (github.event_name == 'push' && github.workflow == 'Native artifacts')
     name: Android ${{ matrix.abi }}
     runs-on: ubuntu-24.04
     timeout-minutes: 330
@@ -106,7 +125,7 @@ jobs:
           retention-days: 7
 
   ohos-resources:
-    if: github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'ohos-resources'
+    if: inputs.target == 'all' || inputs.target == 'ohos-resources' || (github.event_name == 'push' && github.workflow == 'Native artifacts')
     name: OHOS WASI resources (data only)
     runs-on: ubuntu-24.04
     timeout-minutes: 30
@@ -152,7 +171,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
   ohos:
-    if: github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'ohos'
+    if: inputs.target == 'all' || inputs.target == 'ohos' || (github.event_name == 'push' && github.workflow == 'Native artifacts')
     name: OHOS ARM64 native and resources
     runs-on: ubuntu-24.04
     timeout-minutes: 330
@@ -225,7 +244,7 @@ jobs:
           retention-days: 7
 
   ios-slice:
-    if: github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'ios'
+    if: inputs.target == 'all' || inputs.target == 'ios' || (github.event_name == 'push' && github.workflow == 'Native artifacts')
     name: iOS ${{ matrix.slice }}
     runs-on: macos-15-intel
     timeout-minutes: 330
