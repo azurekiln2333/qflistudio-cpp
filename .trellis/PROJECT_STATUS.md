@@ -1,109 +1,105 @@
 # 项目交接状态
 
-更新日期：2026 年 11 月 25 日
+更新日期：2026-11-27。
+迁移状态：进行中。
 
-## 构建与发布规则
+## 已发布基线
 
-所有构建都在 GitHub Actions 运行。
-本地不再运行任何构建。
-本地历史构建只作为历史证据。
-本记录不触发工作流，也不推送代码。
-当前本地 `main` 尚未发布。
-本地 HEAD 为 `9e34dcc3f1dfd5f4ba306c7df983e584dbad9b94`。
-本地跟踪引用 `github/main` 为 `dcb4355a6e9e3526db8b69956959dc1680a44872`。
-该本地快照显示 `main` 比远端多 32 个提交。
-协调者须在推送前复核远端引用和提交范围。
+GitHub 仓库为 `azurekiln2333/qflistudio-cpp`。
+GitHub `main` 已包含 `9ff5ce6b80de46011490fdc84db098d48758eb26`。
+基线树为 `7258defc922596dfa07c6b22dc8089c26780ffbf`。
+本轮修改尚未形成最终迁移提交。
 
-## 本地待发布功能批次
+依据为 `.trellis/tasks/11-26-github-workspace-migration/research/baseline.md`。
+该文件记录协调者在 2026-11-26 检查的结果。
+本页保留签名字段的用户更正。
 
-当前 `main` 已合并运行时与桌面功能工作。
-九个功能提交构成当前功能批次。
+## 云端结果
 
-| 提交 | 内容 |
+`app-installers.yml` 的 run 为 `45645017677`。
+该 run 的源提交为上述基线提交。
+六个平台共 18 个 job 成功。
+这些 job 包括可复用原生工作流和产物门禁。
+这些 job 也包括 Python CI 辅助测试。
+
+| 平台 | 应用产物 | 签名状态 |
+| --- | --- | --- |
+| Android | `app-android-arm64-v8a`、`app-android-x86_64` | 测试签名 |
+| Windows | `app-windows-x64` | 未签名 |
+| Linux | `app-linux-x64` | 未签名 |
+| macOS | `app-macos-universal` | ad hoc |
+| iOS | `app-ios-arm64-unsigned` | 未签名 |
+| OHOS | `app-ohos-arm64-unsigned` | 未签名 |
+
+该 run 含七个应用产物。
+该 run 也含原生依赖产物。
+独立原生 run `44001588302` 不是本次应用 run 的来源结论。
+原生工作流为 `native-artifacts.yml`。
+应用包保留期大多为 30 天。
+日志和切片保留期大多为 7 天。
+协调者未下载产物内容。
+包内来源清单和摘要仍待验收。
+云端打包成功不等于设备验收。
+
+## 目标布局与规则
+
+目标克隆为 `E:/MyNewProjects/QFLIProjects/qflistudio-cpp`。
+目标 core 为同级 `qflistudio-core`。
+应用依赖目标路径为 `../qflistudio-core`。
+Dart 包名仍为 `qfli_studio_core`。
+目录改名和依赖路径修改归 `cpp-ci`。
+目标克隆只绑定 GitHub 远端。
+
+所有 agent 只在 GitHub 托管 runner 运行构建与验证。
+本地禁令见根目录 `AGENTS.md`。
+持久任务、规范、研究、工作日志和工作流定义须入库。
+身份、会话、缓存和构建产物须继续忽略。
+agent 协作只走 Herdr。
+
+## 签名更正
+
+用户确认 DevEco 密码字段为加密密文。
+`ohos/build-profile.json5` 照常跟踪。
+不得将该文件定为敏感文件或泄露风险。
+`.p12`、`.cer`、`.p7b` 证书文件只留本地。
+`D:/Keystore` 不得入库。
+`~/.ohos/config/material` 不得入库。
+此更正优先于基线报告的旧判断。
+
+## 待关闭门禁
+
+| 门禁 | 所有者 | 验收条件 |
+| --- | --- | --- |
+| Git 历史与源码收敛 | `cpp-git` | 分支、worktree、备份和可恢复快照均有处置证据 |
+| Trellis 完整性 | `cpp-trellis` | 主工作区保留各 worktree 的独有知识 |
+| GitHub 发布 | 协调者 | 全部批准内容进入 GitHub `main` |
+| core 布局 | `cpp-ci` | 依赖不再要求旧 D 盘目录 |
+| 云端验证覆盖 | `cpp-ci` | 补充 Dart 分析和产品测试证据 |
+| 包内来源 | `cpp-ci` | 固定源码、core、原生产物来源和摘要 |
+| 目标克隆一致性 | `cpp-handoff` | 提交、树和跟踪字节与 GitHub 一致 |
+| 目标零构建产物 | `cpp-handoff` | 新目录无构建输出和依赖缓存 |
+| 旧目录可删除 | 协调者 | 有价值内容均已保存并完成目标验收 |
+
+当前不批准删除旧目录。
+共享 WSL 的所有权仍未确认。
+本轮不操作 WSL。
+最终迁移完成证据：待补。
+GitHub 最终提交与树：待补。
+目标克隆最终提交与树：待补。
+目标零构建产物证据：待补。
+旧目录删除授权：待补。
+
+## 产品门禁
+
+| 任务 | 状态与边界 |
 | --- | --- |
-| `b930c01` | 进程内编译器与 WASM 解释器 |
-| `d7345f1` | OHOS 终端桥接 |
-| `a1a3bfe` | 终端委托与启动握手 |
-| `27db9ff` | OHOS 原生启动进度 |
-| `3cc8a1f` | 共享终端命令委托 |
-| `f834dbe` | 运行时与课程测试 |
-| `5f8f962` | 桌面工具链环境契约 |
-| `7eb0dd5` | 各平台应用图标 |
-| `2924b76` | 工具链安装与便携包 |
+| `00-bootstrap-guidelines` | 五份后端和六份前端通用规范仍有模板 |
+| `10-01-cross-platform-native-runtime` | iOS、Web、macOS 和当前源设备门禁未关闭 |
+| `10-22-offline-standalone-ide` | 已验收 200 对课程，新增 160 对和总体验收未完成 |
+| `11-18-desktop-env-icons-packages` | 云端打包已有基线，真实安装验收仍待完成 |
 
-桌面分支已由 `b5896d9` 合并到本地 `main`。
-合并包含 `b894ec1` 工具链目录修复。
-合并包含 `d673a23` CI 辅助测试。
-`9e34dcc` 修复 core 补丁测试的换行。
-上表只列九个功能提交。
-上表未列出本地新增的全部提交。
-
-新增 Windows 单文件包和 Linux AppImage 代码已进入本地历史。
-桌面工具链配置和图标代码也已进入本地历史。
-这些改动尚未推送，也没有新的云端验收。
-发布签名配置 `ed4c9c0` 不在当前 `main` 历史，未上传 GitHub。
-历史 `default` 签名字段和本机证书路径仍存在。
-协调者与 pi-ci 须单独审查现存签名字段和本机证书路径。
-不得据此声称仓库不含签名材料。
-
-## GitHub 已验证的历史结果
-
-| 工作流 | 运行 | 源提交 | 结果与边界 |
-| --- | --- | --- | --- |
-| Native artifacts | `44001588302` | `ba5c33a` | 历史移动端依赖构建成功，不含本地运行时重写 |
-| Application installers | `44125206686` | `1969ef4` | 七个 job 成功，覆盖六个平台 |
-| Application installers | `44797136694` | `6908e44` | 七个 job 成功，iOS 未签名构建成功 |
-| Application installers | `44822103705` | `f2529c3` | 七个 job 成功，固定 core `cbaa4a4` |
-
-这些成功运行不验证当前本地 HEAD。
-旧安装包不含 AppImage 和 Windows 单文件包。
-历史运行也不证明当前 OHOS 桥接已上云。
-历史 OHOS 手机审计为 212/212。
-历史生产界面验证覆盖普通运行、停止和再次运行。
-这些设备结果只适用于当时的精确产物。
-本轮没有重跑测试、构建或设备验收。
-
-## 推送后必须验证
-
-先复核签名配置和待推送提交。
-协调者推送后运行当前 `main` 的 Native 工作流。
-确认 Native 产物对应当前源码提交。
-再运行 Application installers 工作流。
-确认应用工作流下载匹配的 Native 产物。
-检查七个安装包 job 的结果和 Node.js 24 注记。
-检查 Windows portable EXE 和 Linux AppImage。
-检查包内清单与 SHA256SUMS。
-检查产物来源提交和固定 core 版本。
-检查 Actions artifact 是否已上传。
-当前源代码尚无这些新运行证据。
-
-云端构建成功不等于真机验收。
-OHOS 当前合并包仍待设备验收。
-iOS、Web 和 macOS 应用运行门禁仍未关闭。
-Windows 工具链须实测 Clang、GCC、C 和 C++。
+Windows 工具链的 Clang、GCC、C 和 C++ 仍待验收。
 Linux、macOS 安装流程仍待目标环境验收。
 macOS GCC 需求仍待产品决策。
-签名、安装和公证状态须按产物分别记录。
-
-## Trellis 任务状态
-
-| 任务 | 状态 | 当前交接 |
-| --- | --- | --- |
-| `00-bootstrap-guidelines` | `in_progress` | 五份后端和六份前端通用规范仍有模板 |
-| `10-01-cross-platform-native-runtime` | `in_progress` | 保留 iOS、Web、macOS 和当前源设备门禁 |
-| `10-22-offline-standalone-ide` | `in_progress` | 200 对课程已在独立任务验收，新增 160 对和总体验收未完成 |
-| `11-18-desktop-env-icons-packages` | `in_progress` | 等待推送后云端验证及真实安装验收 |
-| `10-09-unified-terminal-current-file` | 已归档 | 完成日 2026-11-25，提交 `41ffe52` |
-| `10-12-c-cpp-substantive-curriculum` | 已归档 | 保留完成日 2026-10-16 |
-| `11-17-ci-app-installers` | 已归档 | 保留 2026-11-21 的历史成功运行证据 |
-
-课程归档不关闭离线 IDE 总任务。
-旧安装包运行不关闭桌面新包验收。
-
-## 签名与产物边界
-
-历史安装包含调试签名、未签名或 ad hoc 产物。
-本轮未验证设备安装或运行。
-生产签名、Apple 公证和 OHOS 签名须单独授权。
-不得把本地证书路径或口令复制到交接记录。
-推送前由协调者与 pi-ci 审查签名材料。
+生产签名、Apple 公证和移动设备验收须单独授权。
+这些产品门禁不等于迁移内容缺失。

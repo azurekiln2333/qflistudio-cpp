@@ -1,0 +1,4 @@
+{"file":".trellis/spec/backend/app-installers.md","reason":"Six-platform package, provenance and signing contract; user cloud-only execution overrides local examples."}
+{"file":".trellis/spec/backend/native-toolchain.md","reason":"Native source, intermediate outputs and resource ownership."}
+{"file":".trellis/spec/frontend/shared-core-ui.md","reason":"Shared core path, fixed revision and compatibility patch boundary."}
+{"file":".trellis/tasks/11-26-github-workspace-migration/research/baseline.md","reason":"Current reconciliation evidence, safety boundaries and migration scope."}

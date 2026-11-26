@@ -1,0 +1,31 @@
+{
+  "id": "github-workspace-migration",
+  "name": "github-workspace-migration",
+  "title": "GitHub workspace migration and cloud-only delivery",
+  "description": "Reconcile all C/C++ source and Trellis progress on GitHub main, verify six-platform cloud delivery, migrate to E drive and hand off cleanup.",
+  "status": "planning",
+  "dev_type": null,
+  "scope": null,
+  "package": null,
+  "priority": "P2",
+  "creator": "lichengyu",
+  "assignee": "codex",
+  "createdAt": "2026-11-26",
+  "completedAt": null,
+  "branch": null,
+  "base_branch": "main",
+  "worktree_path": null,
+  "commit": null,
+  "pr_url": null,
+  "subtasks": [],
+  "children": [
+    "11-26-github-branch-reconciliation",
+    "11-26-trellis-cloud-only-rules",
+    "11-26-six-platform-cloud-delivery",
+    "11-26-workspace-cleanup-handoff"
+  ],
+  "parent": null,
+  "relatedFiles": [],
+  "notes": "",
+  "meta": {}
+}
