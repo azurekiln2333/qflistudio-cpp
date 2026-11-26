@@ -131,7 +131,9 @@ jobs:
         run: |
           set -euo pipefail
           if [[ -d test ]]; then
-            flutter test --no-pub
+            # Startup fixtures have short wall-clock floors. Avoid CPU contention
+            # from parallel test processes on the shared hosted runner.
+            flutter test --no-pub --concurrency=1
           else
             echo 'No test/ directory: only flutter analyze was run.' >> "$GITHUB_STEP_SUMMARY"
           fi
