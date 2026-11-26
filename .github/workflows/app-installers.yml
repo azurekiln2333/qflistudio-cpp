@@ -86,7 +86,8 @@ jobs:
 
   flutter-validation:
     name: Flutter analyze and test
-    runs-on: ubuntu-24.04
+    # PATHEXT fixtures use real files and need a case-insensitive filesystem.
+    runs-on: windows-2022
     timeout-minutes: 30
     steps:
       - name: Check out application
@@ -115,8 +116,15 @@ jobs:
           echo "$GITHUB_WORKSPACE/flutter/bin" >> "$GITHUB_PATH"
           ../flutter/bin/flutter config --no-analytics
           ../flutter/bin/flutter --version
-          python3 tool/ci/prepare_core.py --flutter ../flutter
+          python tool/ci/prepare_core.py --flutter ../flutter
           ../flutter/bin/flutter pub get
+      - name: Select the hosted GCC toolchain for desktop fixtures
+        run: |
+          set -euo pipefail
+          echo "QFLI_CC=$(cygpath -w "$(command -v gcc)")" >> "$GITHUB_ENV"
+          echo "QFLI_CXX=$(cygpath -w "$(command -v g++)")" >> "$GITHUB_ENV"
+          gcc --version
+          g++ --version
       - name: Analyze Flutter sources
         run: flutter analyze --no-pub
       - name: Run Flutter tests when present
@@ -151,8 +159,8 @@ jobs:
 
   native-input-gate:
     name: Check native artifact availability
-    needs: [ci-tests, native-artifacts]
-    if: ${{ always() && needs.ci-tests.result == 'success' && (github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'android' || inputs.target == 'ios' || inputs.target == 'ohos') }}
+    needs: [ci-tests, actionlint, flutter-validation, native-artifacts]
+    if: ${{ always() && needs.ci-tests.result == 'success' && needs.actionlint.result == 'success' && needs.flutter-validation.result == 'success' && (github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'android' || inputs.target == 'ios' || inputs.target == 'ohos') }}
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     env:
@@ -359,6 +367,8 @@ jobs:
         env:
           ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
         run: |
+          # shellcheck disable=SC2016
+          # Render Markdown backticks literally, without shell substitution.
           {
             echo '### Windows x64 (x86_64)'
             echo "[Download setup program, portable ZIP and single-file edition]($ARTIFACT_URL) (retained for 30 days)."
@@ -440,6 +450,8 @@ jobs:
         env:
           ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
         run: |
+          # shellcheck disable=SC2016
+          # Render Markdown backticks literally, without shell substitution.
           {
             echo '### Linux x64 (x86_64)'
             echo "[Download Debian package, tar.gz bundle and AppImage]($ARTIFACT_URL) (retained for 30 days)."
