@@ -1,5 +1,9 @@
 # The .trellis/ tree is tracked on purpose so any clone can resume tasks.
 # Only truly ephemeral, machine-local artifacts are ignored.
+# Retain already-reviewed historical evidence without opening arbitrary new logs.
+!/tasks/10-22-offline-standalone-ide/research/.artifacts/**/*.log
+!/tasks/10-01-cross-platform-native-runtime/research/ohos-build-2026-10-08.log
+# The three ignored curriculum review logs are preserved as sanitized Markdown summaries.
 
 # Python bytecode cache
 **/__pycache__/
