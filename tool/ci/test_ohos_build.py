@@ -197,6 +197,8 @@ class PackageTest(unittest.TestCase):
         self.assertEqual(record["coreCommit"], "b" * 40)
         self.assertEqual(record["flutterCommit"], "c" * 40)
         self.assertEqual(record["flutterTag"], "3.41.9+ohos-1.0.2")
+        self.assertEqual(record["flutterVersion"], "3.41.9+ohos-1.0.2")
+        self.assertIsNone(record["nativeRunId"])
         self.assertEqual(record["runUrl"], "https://github.com/owner/repository/actions/runs/42")
         self.assertEqual(record["applicationVersion"], "1.2.3+4")
         self.assertEqual(record["signing"], "unsigned")
@@ -214,6 +216,7 @@ class PackageTest(unittest.TestCase):
         (self.temporary / "native-input.json").write_text(json.dumps(native), encoding="utf-8")
         self.package()
         self.assertEqual(self.provenance()["nativeInput"], native)
+        self.assertEqual(self.provenance()["nativeRunId"], 7)
 
     def test_run_outside_github_actions_fails(self) -> None:
         with mock.patch.dict(os.environ, {"GITHUB_ACTIONS": "false"}):

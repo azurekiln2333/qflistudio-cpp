@@ -111,6 +111,15 @@ actual application process before changing the capability declaration.
   Android fixture cross-linking does not establish device execution.
 - Native artifacts have 30-day retention; diagnostic logs have 7-day retention.
   Every native artifact includes source commit, run URL, and SHA256 inventory.
+- Application installer runs call the reusable native workflow at the same
+  source revision. Its `native_run_id` output identifies the parent run that
+  owns the native artifacts, not the newest standalone native run.
+- Flutter release artifacts are separate `flutter-build-*` uploads with
+  7-day retention. Final `app-*` installer uploads retain 30 days. Neither is
+  interchangeable with `qfli-native-*` inputs or `ios-slice-*` intermediates.
+- Acceptance evidence queries the GitHub run's artifacts API for name, byte
+  size, digest, creation/expiry timestamps and retention. Do not download
+  artifacts locally or infer device execution from a successful native build.
 
 ## Complete mobile dependency workflow
 
@@ -163,7 +172,7 @@ native dependency linking and XCFramework metadata. Compare downloaded archive
 checksums and internal inventories. App/device execution is a separate gate.
 
 Good: independently verified final packages with recorded SDK/source identity.
-Base: scripts pass local checks while cloud builds remain pending.
+Base: hosted script checks pass while cloud builds remain pending.
 Bad: call WASI data a complete native package or claim cloud success from lint.
 
 Wrong: rely on distro Clang defaults for Android C++ headers. Correct: select

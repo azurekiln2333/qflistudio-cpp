@@ -250,13 +250,57 @@ HarmonyOS 命令行工具的地址和校验值记录在锁文件中。
 `SHA256SUMS` 记录每个安装包的 SHA-256。
 `SIGNING.txt` 说明签名状态和安装限制。
 
-## 本地测试
+## 云端校验
 
-在仓库根目录运行脚本的单元测试：
+core 目录名为 `qflistudio-core`。
+Dart 包名仍为 `qfli_studio_core`。
+`prepare_core.py` 默认读取 `../qflistudio-core`。
+core 固定为 `cbaa4a4`，本轮不升级。
+
+`Actionlint workflow checks` 校验两个工作流。
+actionlint 固定为 1.7.11。
+CI 下载后校验 SHA-256。
+它同时调用构建机上的 shellcheck。
+摘要中的 Markdown 反引号不作 shell 展开。
+仅这两个输出块禁用 SC2016。
+
+`Flutter analyze and test` 使用 Flutter 3.41.9。
+该任务先准备 core。
+它再运行 `flutter pub get`。
+随后运行严格的 `flutter analyze --no-pub`。
+`test/` 存在时运行完整测试套件。
+测试命令为 `flutter test --no-pub --concurrency=1`。
+没有 `test/` 时，任务摘要注明未运行测试。
+
+校验任务使用 Windows 构建机。
+PATHEXT 测试要求大小写不敏感的文件系统。
+CI 通过 `QFLI_CC` 和 `QFLI_CXX` 选择 GCC。
+串行测试减少短时序用例的 CPU 竞争。
+六平台打包和 native 构建等待全部校验通过。
+
+## Flutter 构建输出
+
+打包前上传 `flutter-build-<platform>`。
+Android 名称附加 ABI，避免并行上传冲突。
+每份产物保留 7 天。
+最终 `app-*` 安装包仍保留 30 天。
+
+归档只包含 release 输出，不含 SDK 或构建缓存。
+归档使用 tar.gz，保留权限和符号链接。
+每份产物附带 `SHA256SUMS` 和 `provenance.json`。
+清单记录源码、core、Flutter 和 native 运行编号。
+桌面不使用 native 产物，其编号为 null。
+最终安装包的清单也记录 Flutter 版本号。
+签名状态不变。设备运行仍须单独验收。
+
+## 云端脚本测试
+
+GitHub Actions 在仓库根目录运行单元测试：
 
 ```sh
 python -m unittest discover -s tool/ci -p "test_*.py"
 ```
 
 单元测试不构建安装包。
-安装包构建只在 GitHub 构建机上运行。
+构建、测试、lint 和依赖安装只在 GitHub 运行。
+不要在本地下载 CI 产物。

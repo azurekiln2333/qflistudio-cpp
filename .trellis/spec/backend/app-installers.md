@@ -34,13 +34,15 @@ Manual run inputs: `target` (`all`, `android`, `ios`, `ohos`, `linux`,
 $GITHUB_WORKSPACE/
   qfli_c/              application, working directory of every step
   qflistudio-core/    azurekiln2333/qflistudio-core @ CORE_REVISION
-  flutter/             flutter/flutter @ FLUTTER_REVISION (five stock jobs)
+  flutter/             flutter/flutter @ FLUTTER_REVISION (validation and stock builds)
   flutter_ohos/        Flutter OHOS tag FLUTTER_OHOS_TAG @ FLUTTER_OHOS_REVISION (OHOS job)
 ```
 
 - The workflow pins the core, both Flutter trees and every action by commit.
   After a clone, compare `git rev-parse HEAD` with the pinned commit.
-- The five stock Flutter jobs run `prepare_core.py`. The OHOS job uses the
+- The Flutter validation job and five stock Flutter platform jobs run
+  `prepare_core.py`. Its default core path is `../qflistudio-core`.
+  The Dart package name remains `qfli_studio_core`. The OHOS job uses the
   unpatched core. `prepare_core.py` refuses an OHOS SDK and a core at another
   revision or with local edits.
 - `actions/checkout` uses `persist-credentials: false`.
@@ -114,11 +116,13 @@ Every job writes `dist/app/` and uploads that directory.
 - Upload options: `if-no-files-found: error`, `compression-level: 0`,
   `retention-days: 30`.
 - `provenance.json` records `applicationCommit`, `coreCommit`,
-  `flutterCommit`, `runUrl`, `signing`, `nativeInput`, `packages`,
+  `flutterCommit`, `flutterVersion`, `nativeRunId`, `runUrl`, `signing`, `nativeInput`, `packages`,
   `validation` and `deviceRuntimeVerified: false`.
 - Environment read by the packaging helpers: `GITHUB_SHA`,
   `GITHUB_REPOSITORY`, `GITHUB_RUN_ID`, `GITHUB_SERVER_URL`, `RUNNER_TEMP`,
-  `CORE_REVISION`, `FLUTTER_REVISION`. The OHOS helper reads
+  `CORE_REVISION`, `FLUTTER_REVISION`, `FLUTTER_VERSION`. Desktop packages
+  consume no native artifact and record `nativeRunId: null`. Mobile packages
+  copy the run ID from the verified `nativeInput` record. The OHOS helper reads
   `FLUTTER_OHOS_REVISION` and `FLUTTER_OHOS_TAG` instead of `FLUTTER_REVISION`,
   and also `GITHUB_ACTIONS`, `GITHUB_WORKSPACE`, `GITHUB_ENV`, `GITHUB_PATH`.
 
@@ -161,10 +165,44 @@ Every job writes `dist/app/` and uploads that directory.
 - Good: all jobs of the run on the pushed commit conclude `success`, the
   artifact list holds the seven names, and the report states the signing state
   and the untested device execution.
-- Base: unit tests and the YAML parse pass locally. The cloud run is pending.
-  Report the packages as not verified.
+- Base: helper tests and workflow checks pass in GitHub Actions. Platform
+  builds remain pending. Report the packages as not verified.
 - Bad: call an unsigned IPA or HAP installable, report device execution from a
   package layout check, or report cloud success from local checks.
+
+## Hosted validation and Flutter build outputs
+
+- `actionlint` runs the fixed official v1.7.11 Linux binary after checking its
+  SHA-256. It checks every `.github/workflows/*.yml`, including shellcheck.
+  Only SC2016 in two literal Markdown summary blocks is suppressed.
+- `flutter-validation` checks out the same core and stock Flutter revisions as
+  packaging. It prepares the core, runs `flutter pub get`, then strict
+  `flutter analyze --no-pub` and `flutter test --no-pub --concurrency=1`.
+  No `--no-fatal-infos` or `--no-fatal-warnings` flag is used.
+- Tests run on `windows-2022`: PATHEXT fixtures use real files and assume a
+  case-insensitive filesystem. The existing QFLI_CC/QFLI_CXX interface selects
+  the hosted GCC/G++ toolchain. Serial execution limits contention around the
+  startup fixtures' short wall-clock floors. Do not skip failing tests.
+- All six packaging jobs require helper tests, actionlint and Flutter validation.
+  The reusable native workflow waits for these checks as well.
+- `archive_flutter_build.py` runs after the release build, before installer
+  assembly. It archives only bounded release outputs, not SDK or build caches.
+  A tar.gz preserves modes and symlinks inside the uploaded ZIP artifact.
+  Missing expected output fails the job.
+
+| Artifact (7-day retention) | Release output |
+| --- | --- |
+| `flutter-build-android-<abi>` | `build/app/intermediates/flutter/release` |
+| `flutter-build-windows` | `build/windows/x64/runner/Release` |
+| `flutter-build-linux` | `build/linux/x64/release/bundle` |
+| `flutter-build-macos` | `build/macos/Build/Products/Release/*.app` |
+| `flutter-build-ios` | `build/ios/archive/*.xcarchive` |
+| `flutter-build-ohos` | OHOS AOT/assets from Flutter assemble output, excluding HAP/APP and Hvigor caches |
+
+Each Flutter artifact includes the tar.gz, its `SHA256SUMS` and
+`provenance.json` with source/core/Flutter/native-run identity and archive size.
+Android artifacts are ABI-qualified because the two jobs upload concurrently.
+Final `app-*` artifacts retain their existing 30-day policy and signing logic.
 
 ## 6. Tests Required
 
@@ -183,8 +221,9 @@ Every job writes `dist/app/` and uploads that directory.
   without a required entry).
 - The workflow YAML parses and holds the jobs `android`, `windows`, `linux`,
   `macos`, `ios`, `ohos`.
-- Cloud: seven jobs conclude `success` (Android runs once per ABI). The run
-  lists seven artifacts.
+- Cloud: all validation, reusable-native and platform jobs conclude `success`
+  (Android runs once per ABI). The run lists seven `app-*` artifacts and seven
+  `flutter-build-*` artifacts, plus native dependencies, slices and diagnostics.
 - Before each push: `git log github/main..HEAD` holds only CI commits. Author,
   committer and message hold no AI signature.
 
@@ -211,9 +250,9 @@ use the `GetOptions` result directly as the extraction directory.
 
 Wrong: publish the workflow with a push of local `main`. The local branch
 holds unpublished commits and a release signing configuration.
-Correct: branch from `github/main` in a separate worktree, commit only the
-workflow and `tool/ci/`, push the branch, wait for a green run, then
-fast-forward GitHub `main` from that branch.
+Correct: use the authorized separate worktree, commit only owned files,
+push `ci/cloud-validation`, and wait for a green run. Merge updated main into
+that branch when authorized, then rerun CI. The coordinator integrates main.
 
 Wrong:
 
@@ -239,8 +278,8 @@ download directory.
 - No cloud run has used `workflow_dispatch`. Platform selection and
   `native_run_id` are covered only by review and by the unit tests of
   `select_artifact`.
-- `actionlint` and `shellcheck` were not available. Only a YAML parse and a
-  manual review covered the workflow file.
+- Historical runs before cloud validation lacked actionlint and shellcheck.
+  The `actionlint` job now runs both on GitHub-hosted Ubuntu.
 - Native artifacts expire after 30 days. After expiry, run "Native artifacts"
   first.
 - The workflow uses the pinned Node.js 24 action releases: checkout v7.0.1,
