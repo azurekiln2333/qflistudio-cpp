@@ -197,12 +197,14 @@ Every job writes `dist/app/` and uploads that directory.
 | `flutter-build-linux` | `build/linux/x64/release/bundle` |
 | `flutter-build-macos` | `build/macos/Build/Products/Release/*.app` |
 | `flutter-build-ios` | `build/ios/archive/*.xcarchive` |
-| `flutter-build-ohos` | OHOS AOT/assets from Flutter assemble output, excluding HAP/APP and Hvigor caches |
+| `flutter-build-ohos` | `ohos/entry/libs/arm64-v8a/libapp.so` and `ohos/entry/src/main/resources/rawfile/flutter_assets` |
 
 Each Flutter artifact includes the tar.gz, its `SHA256SUMS` and
 `provenance.json` with source/core/Flutter/native-run identity and archive size.
 Android artifacts are ABI-qualified because the two jobs upload concurrently.
 Final `app-*` artifacts retain their existing 30-day policy and signing logic.
+OHOS requires both nonempty AOT and assets payloads. Assemble `.stamp` files
+alone must never satisfy this contract.
 
 ## 6. Tests Required
 

@@ -17,15 +17,11 @@ OUTPUT_PATTERNS = {
     "linux": ("build/linux/x64/release/bundle",),
     "macos": ("build/macos/Build/Products/Release/*.app",),
     "ios": ("build/ios/archive/*.xcarchive",),
-    # The OHOS fork's assemble cache contains AOT objects before HAP assembly.
-    # Do not archive Hvigor/SDK caches or duplicate the final HAP and APP.
+    # The fork stages these Flutter outputs before Hvigor packages the HAP.
+    # Cache stamps are not build payloads; SDK/Hvigor caches stay excluded.
     "ohos": (
-        ".dart_tool/flutter_build/*/ohos*",
-        ".dart_tool/flutter_build/*/app.so",
-        ".dart_tool/flutter_build/*/libapp.so",
-        ".dart_tool/flutter_build/*/flutter_assets",
-        "build/ohos/flutter_assets",
-        "build/ohos/intermediates/flutter/release",
+        "ohos/entry/libs/arm64-v8a/libapp.so",
+        "ohos/entry/src/main/resources/rawfile/flutter_assets",
     ),
 }
 
@@ -37,6 +33,13 @@ def source_paths(root: Path, platform: str) -> list[Path]:
                if not any(parent in candidates for parent in path.parents)]
     if not sources:
         raise RuntimeError(f"No Flutter release output for {platform}: {OUTPUT_PATTERNS[platform]}")
+    if platform == "ohos":
+        aot = root / OUTPUT_PATTERNS["ohos"][0]
+        assets = root / OUTPUT_PATTERNS["ohos"][1]
+        if not aot.is_file() or not aot.stat().st_size:
+            raise RuntimeError("OHOS Flutter output is missing its AOT libapp.so payload")
+        if not assets.is_dir() or not any(path.is_file() for path in assets.rglob("*")):
+            raise RuntimeError("OHOS Flutter output is missing its flutter_assets payload")
     return sources
 
 

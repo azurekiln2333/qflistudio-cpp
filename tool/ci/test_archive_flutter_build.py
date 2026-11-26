@@ -30,11 +30,13 @@ class ArchiveFlutterBuildTest(unittest.TestCase):
             "linux": "build/linux/x64/release/bundle/qfli_c",
             "macos": "build/macos/Build/Products/Release/QFLIForge.app/Contents/MacOS/QFLIForge",
             "ios": "build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app/Runner",
-            "ohos": ".dart_tool/flutter_build/abc/ohos-arm64/app.so",
+            "ohos": "ohos/entry/libs/arm64-v8a/libapp.so",
         }
         for platform, name in fixtures.items():
             with self.subTest(platform=platform):
                 self.write(name)
+                if platform == "ohos":
+                    self.write("ohos/entry/src/main/resources/rawfile/flutter_assets/AssetManifest.bin")
                 with patch.dict("os.environ", {
                     "GITHUB_SHA": "a" * 40,
                     "CORE_REVISION": "b" * 40,
@@ -59,12 +61,27 @@ class ArchiveFlutterBuildTest(unittest.TestCase):
             source_paths(self.root, "linux")
 
     def test_ohos_excludes_installer_and_build_cache(self):
-        self.write(".dart_tool/flutter_build/abc/flutter_assets/AssetManifest.bin")
+        self.write("ohos/entry/libs/arm64-v8a/libapp.so")
+        self.write("ohos/entry/src/main/resources/rawfile/flutter_assets/AssetManifest.bin")
+        self.write(".dart_tool/flutter_build/abc/ohos_aot_bundle_release_ohos-arm64.stamp")
         self.write("build/ohos/hap/entry-default-unsigned.hap")
         self.write("build/ohos/app/ohos-default-unsigned.app")
         self.write("ohos/entry/build/cache/compiler.tmp")
         record = archive_build(self.root, "ohos")
-        self.assertEqual(record["sources"], [".dart_tool/flutter_build/abc/flutter_assets"])
+        self.assertEqual(record["sources"], [
+            "ohos/entry/libs/arm64-v8a/libapp.so",
+            "ohos/entry/src/main/resources/rawfile/flutter_assets",
+        ])
+
+    def test_ohos_stamp_only_is_not_a_build(self):
+        self.write(".dart_tool/flutter_build/abc/ohos_aot_bundle_release_ohos-arm64.stamp")
+        with self.assertRaisesRegex(RuntimeError, "No Flutter release output"):
+            archive_build(self.root, "ohos")
+
+    def test_ohos_requires_aot_and_assets(self):
+        self.write("ohos/entry/libs/arm64-v8a/libapp.so")
+        with self.assertRaisesRegex(RuntimeError, "flutter_assets payload"):
+            archive_build(self.root, "ohos")
 
     def test_abi_names_do_not_collide(self):
         self.write("build/app/intermediates/flutter/release/arm64-v8a/app.so")
