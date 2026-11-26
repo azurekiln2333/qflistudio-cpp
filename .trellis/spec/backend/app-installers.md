@@ -13,7 +13,7 @@ the artifacts of another, and sets the signing boundary of every download.
 ## 2. Signatures
 
 ```text
-python3 tool/ci/prepare_core.py --core ../qfli_studio_core --flutter ../flutter [--check]
+python3 tool/ci/prepare_core.py --core ../qflistudio-core --flutter ../flutter [--check]
 python3 tool/ci/fetch_native_artifact.py --name <artifact> --extract-to <dir> --record <json>
     [--run-id <id>] [--repository <owner/repo>] [--branch main]
 python3 tool/ci/package_app.py android --abi arm64-v8a|x86_64 --output dist/app
@@ -33,7 +33,7 @@ Manual run inputs: `target` (`all`, `android`, `ios`, `ohos`, `linux`,
 ```text
 $GITHUB_WORKSPACE/
   qfli_c/              application, working directory of every step
-  qfli_studio_core/    azurekiln2333/qflistudio-core @ CORE_REVISION
+  qflistudio-core/    azurekiln2333/qflistudio-core @ CORE_REVISION
   flutter/             flutter/flutter @ FLUTTER_REVISION (five stock jobs)
   flutter_ohos/        Flutter OHOS tag FLUTTER_OHOS_TAG @ FLUTTER_OHOS_REVISION (OHOS job)
 ```

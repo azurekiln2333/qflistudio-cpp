@@ -15,7 +15,7 @@ planning approval.
   - `pubspec.yaml` / `pubspec.lock`
   - `lib/platform/` (new: 6 files — `platform_io.dart`, `platform_io_native.dart`, `platform_io_browser.dart`, `platform_path.dart`, `platform_path_native.dart`, `platform_path_browser.dart`)
   - this research document
-- Did **not** modify any sibling repository. `../qfli_studio_core` is a separate
+- Did **not** modify any sibling repository. `../qflistudio-core` is a separate
   git repo and was left clean (`git status` empty at start).
 - Did **not** touch any `ohos/` file, curriculum/content data, or another worker's
   files (`lib/clang_runner.dart`, `lib/forge_runner_native.dart`, `.trellis/*`
@@ -159,7 +159,7 @@ branch.
   (`qfli-studio-${StudioProfile.current?.id}`) and a separate `MemoryFileSystem`
   instance.
 - The production sibling shared core's `EditorController` still imports `dart:io`
-  (`../qfli_studio_core/lib/editor/editor_controller.dart:1`, `File(...)` at
+  (`../qflistudio-core/lib/editor/editor_controller.dart:1`, `File(...)` at
   `:54/:193/:222`). It is not a *compile-time* web problem — the Web build already
   succeeds — but a *runtime* one: the browser has no real filesystem, so
   `dart:io` file operations throw at run time. Observed in the earlier un-staged

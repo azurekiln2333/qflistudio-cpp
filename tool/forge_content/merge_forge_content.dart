@@ -29,13 +29,13 @@ import 'package:path/path.dart' as p;
 ///   dart run tool/forge_content/merge_forge_content.dart            # dry run
 ///   dart run tool/forge_content/merge_forge_content.dart --apply    # write
 ///
-/// The core path defaults to `../qfli_studio_core`; override with `--core <path>`.
+/// The core path defaults to `../qflistudio-core`; override with `--core <path>`.
 Future<void> main(List<String> args) async {
   final apply = args.contains('--apply');
   final coreArg = _option(args, '--core');
   final repoRoot = Directory.current.path;
   final core = Directory(
-    coreArg ?? p.normalize(p.join(repoRoot, '..', 'qfli_studio_core')),
+    coreArg ?? p.normalize(p.join(repoRoot, '..', 'qflistudio-core')),
   );
 
   final staging = Directory(p.join(repoRoot, 'tool', 'forge_content', 'staging'));

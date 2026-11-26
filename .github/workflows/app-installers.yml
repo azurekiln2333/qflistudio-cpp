@@ -62,6 +62,72 @@ env:
   FLUTTER_REVISION: 00b0c91f06209d9e4a41f71b7a512d6eb3b9c694
 
 jobs:
+  actionlint:
+    name: Actionlint workflow checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out application
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: qfli_c
+          persist-credentials: false
+      - name: Install and verify actionlint 1.7.11
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/actionlint.tar.gz"
+          curl --fail --location --retry 3 \
+            https://github.com/rhysd/actionlint/releases/download/v1.7.11/actionlint_1.7.11_linux_amd64.tar.gz \
+            --output "$archive"
+          echo "900919a84f2229bac68ca9cd4103ea297abc35e9689ebb842c6e34a3d1b01b0a  $archive" | sha256sum --check
+          tar -xzf "$archive" -C "$RUNNER_TEMP" actionlint
+      - name: Check all GitHub Actions workflows
+        run: '"$RUNNER_TEMP/actionlint" -color .github/workflows/*.yml'
+
+  flutter-validation:
+    name: Flutter analyze and test
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Check out application
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: qfli_c
+          persist-credentials: false
+      - name: Check out pinned shared core
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: azurekiln2333/qflistudio-core
+          ref: cbaa4a4166461baafff7c1a343bd3ca1865fcc4f
+          path: qflistudio-core
+          persist-credentials: false
+      - name: Check out Flutter 3.41.9
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: flutter/flutter
+          ref: 00b0c91f06209d9e4a41f71b7a512d6eb3b9c694
+          path: flutter
+          persist-credentials: false
+      - name: Prepare core and resolve dependencies
+        run: |
+          set -euo pipefail
+          git -C ../flutter tag "$FLUTTER_VERSION" "$FLUTTER_REVISION"
+          echo "$GITHUB_WORKSPACE/flutter/bin" >> "$GITHUB_PATH"
+          ../flutter/bin/flutter config --no-analytics
+          ../flutter/bin/flutter --version
+          python3 tool/ci/prepare_core.py --flutter ../flutter
+          ../flutter/bin/flutter pub get
+      - name: Analyze Flutter sources
+        run: flutter analyze --no-pub
+      - name: Run Flutter tests when present
+        run: |
+          set -euo pipefail
+          if [[ -d test ]]; then
+            flutter test --no-pub
+          else
+            echo 'No test/ directory: only flutter analyze was run.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+
   ci-tests:
     name: Python CI helper tests
     runs-on: ubuntu-24.04
@@ -78,7 +144,7 @@ jobs:
   native-artifacts:
     if: ${{ !inputs.native_run_id && (github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'android' || inputs.target == 'ios' || inputs.target == 'ohos') }}
     name: Build native dependencies
-    needs: ci-tests
+    needs: [ci-tests, actionlint, flutter-validation]
     uses: ./.github/workflows/native-artifacts.yml
     with:
       target: ${{ inputs.target || 'all' }}
@@ -127,8 +193,8 @@ jobs:
           done
 
   android:
-    needs: [ci-tests, native-artifacts, native-input-gate]
-    if: ${{ always() && needs.ci-tests.result == 'success' && needs.native-input-gate.result == 'success' && (github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'android') && (needs.native-artifacts.result == 'success' || (needs.native-artifacts.result == 'skipped' && inputs.native_run_id != '')) }}
+    needs: [ci-tests, actionlint, flutter-validation, native-artifacts, native-input-gate]
+    if: ${{ always() && needs.ci-tests.result == 'success' && needs.actionlint.result == 'success' && needs.flutter-validation.result == 'success' && needs.native-input-gate.result == 'success' && (github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'android') && (needs.native-artifacts.result == 'success' || (needs.native-artifacts.result == 'skipped' && inputs.native_run_id != '')) }}
     name: Android ${{ matrix.abi }} APK
     runs-on: ubuntu-24.04
     timeout-minutes: 60
@@ -154,7 +220,7 @@ jobs:
         with:
           repository: azurekiln2333/qflistudio-core
           ref: cbaa4a4166461baafff7c1a343bd3ca1865fcc4f
-          path: qfli_studio_core
+          path: qflistudio-core
           persist-credentials: false
       - name: Check out Flutter 3.41.9
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -170,7 +236,7 @@ jobs:
           echo "$GITHUB_WORKSPACE/flutter/bin" >> "$GITHUB_PATH"
           ../flutter/bin/flutter config --no-analytics
           ../flutter/bin/flutter --version
-          python3 tool/ci/prepare_core.py --core ../qfli_studio_core --flutter ../flutter
+          python3 tool/ci/prepare_core.py --core ../qflistudio-core --flutter ../flutter
           ../flutter/bin/flutter pub get
       - name: Install the pinned Android NDK
         run: |
@@ -187,6 +253,16 @@ jobs:
             ${NATIVE_RUN_ID:+--run-id "$NATIVE_RUN_ID"}
       - name: Build the APK
         run: flutter build apk --release --no-pub --target-platform "android-$ARCH"
+      - name: Archive Flutter release output
+        run: python3 tool/ci/archive_flutter_build.py android --abi "$ABI"
+      - name: Upload Flutter build output
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: flutter-build-android-${{ matrix.abi }}
+          path: qfli_c/dist/flutter-build/
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 7
       - name: Verify and package the APK
         run: |
           python3 tool/ci/package_app.py android --abi "$ABI" --output dist/app \
@@ -212,7 +288,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
   windows:
-    needs: ci-tests
+    needs: [ci-tests, actionlint, flutter-validation]
     if: github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'windows'
     name: Windows x64 (x86_64) packages
     runs-on: windows-2022
@@ -228,7 +304,7 @@ jobs:
         with:
           repository: azurekiln2333/qflistudio-core
           ref: cbaa4a4166461baafff7c1a343bd3ca1865fcc4f
-          path: qfli_studio_core
+          path: qflistudio-core
           persist-credentials: false
       - name: Check out Flutter 3.41.9
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -244,10 +320,20 @@ jobs:
           echo "$GITHUB_WORKSPACE/flutter/bin" >> "$GITHUB_PATH"
           ../flutter/bin/flutter config --no-analytics
           ../flutter/bin/flutter --version
-          python tool/ci/prepare_core.py --core ../qfli_studio_core --flutter ../flutter
+          python tool/ci/prepare_core.py --core ../qflistudio-core --flutter ../flutter
           ../flutter/bin/flutter pub get
       - name: Build the Windows application
         run: flutter build windows --release --no-pub
+      - name: Archive Flutter release output
+        run: python tool/ci/archive_flutter_build.py windows
+      - name: Upload Flutter build output
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: flutter-build-windows
+          path: qfli_c/dist/flutter-build/
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 7
       - name: Ensure Inno Setup 6 is available
         run: |
           if [[ ! -f "/c/Program Files (x86)/Inno Setup 6/ISCC.exe" ]]; then
@@ -286,7 +372,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
   linux:
-    needs: ci-tests
+    needs: [ci-tests, actionlint, flutter-validation]
     if: github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'linux'
     name: Linux x64 (x86_64) packages
     runs-on: ubuntu-24.04
@@ -302,7 +388,7 @@ jobs:
         with:
           repository: azurekiln2333/qflistudio-core
           ref: cbaa4a4166461baafff7c1a343bd3ca1865fcc4f
-          path: qfli_studio_core
+          path: qflistudio-core
           persist-credentials: false
       - name: Check out Flutter 3.41.9
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -323,10 +409,20 @@ jobs:
           echo "$GITHUB_WORKSPACE/flutter/bin" >> "$GITHUB_PATH"
           ../flutter/bin/flutter config --no-analytics
           ../flutter/bin/flutter --version
-          python3 tool/ci/prepare_core.py --core ../qfli_studio_core --flutter ../flutter
+          python3 tool/ci/prepare_core.py --core ../qflistudio-core --flutter ../flutter
           ../flutter/bin/flutter pub get
       - name: Build the Linux application
         run: flutter build linux --release --no-pub
+      - name: Archive Flutter release output
+        run: python3 tool/ci/archive_flutter_build.py linux
+      - name: Upload Flutter build output
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: flutter-build-linux
+          path: qfli_c/dist/flutter-build/
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 7
       - name: Download the pinned AppImage tools
         run: python3 tool/ci/fetch_appimage_tools.py --output "$RUNNER_TEMP/appimage-tools"
       - name: Build and verify the Debian package, the archive and the AppImage
@@ -358,7 +454,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
   macos:
-    needs: ci-tests
+    needs: [ci-tests, actionlint, flutter-validation]
     if: github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'macos'
     name: macOS universal disk image
     runs-on: macos-15
@@ -378,7 +474,7 @@ jobs:
         with:
           repository: azurekiln2333/qflistudio-core
           ref: cbaa4a4166461baafff7c1a343bd3ca1865fcc4f
-          path: qfli_studio_core
+          path: qflistudio-core
           persist-credentials: false
       - name: Check out Flutter 3.41.9
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -395,10 +491,20 @@ jobs:
           ../flutter/bin/flutter config --no-analytics --enable-macos-desktop
           ../flutter/bin/flutter precache --macos
           ../flutter/bin/flutter --version
-          python3 tool/ci/prepare_core.py --core ../qfli_studio_core --flutter ../flutter
+          python3 tool/ci/prepare_core.py --core ../qflistudio-core --flutter ../flutter
           ../flutter/bin/flutter pub get
       - name: Build the macOS application with ad hoc signing
         run: flutter build macos --release --no-pub
+      - name: Archive Flutter release output
+        run: python3 tool/ci/archive_flutter_build.py macos
+      - name: Upload Flutter build output
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: flutter-build-macos
+          path: qfli_c/dist/flutter-build/
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 7
       - name: Build and verify the disk image
         run: python3 tool/ci/package_app.py macos --output dist/app
       - name: Upload macOS disk image
@@ -422,8 +528,8 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
   ios:
-    needs: [ci-tests, native-artifacts, native-input-gate]
-    if: ${{ always() && needs.ci-tests.result == 'success' && needs.native-input-gate.result == 'success' && (github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'ios') && (needs.native-artifacts.result == 'success' || (needs.native-artifacts.result == 'skipped' && inputs.native_run_id != '')) }}
+    needs: [ci-tests, actionlint, flutter-validation, native-artifacts, native-input-gate]
+    if: ${{ always() && needs.ci-tests.result == 'success' && needs.actionlint.result == 'success' && needs.flutter-validation.result == 'success' && needs.native-input-gate.result == 'success' && (github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'ios') && (needs.native-artifacts.result == 'success' || (needs.native-artifacts.result == 'skipped' && inputs.native_run_id != '')) }}
     name: iOS ARM64 unsigned IPA
     runs-on: macos-15
     timeout-minutes: 60
@@ -441,7 +547,7 @@ jobs:
         with:
           repository: azurekiln2333/qflistudio-core
           ref: cbaa4a4166461baafff7c1a343bd3ca1865fcc4f
-          path: qfli_studio_core
+          path: qflistudio-core
           persist-credentials: false
       - name: Check out Flutter 3.41.9
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -458,7 +564,7 @@ jobs:
           ../flutter/bin/flutter config --no-analytics
           ../flutter/bin/flutter precache --ios
           ../flutter/bin/flutter --version
-          python3 tool/ci/prepare_core.py --core ../qfli_studio_core --flutter ../flutter
+          python3 tool/ci/prepare_core.py --core ../qflistudio-core --flutter ../flutter
           ../flutter/bin/flutter pub get
       - name: Download and verify the native runtime package
         env:
@@ -473,6 +579,16 @@ jobs:
           python3 native/toolchain/install-ios-package.py --package native/build/ios-portable/package
       - name: Build the unsigned iOS archive
         run: flutter build ipa --release --no-codesign --no-pub
+      - name: Archive Flutter release output
+        run: python3 tool/ci/archive_flutter_build.py ios
+      - name: Upload Flutter build output
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: flutter-build-ios
+          path: qfli_c/dist/flutter-build/
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 7
       - name: Package and verify the unsigned IPA
         run: |
           python3 tool/ci/package_app.py ios --output dist/app \
@@ -498,8 +614,8 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
   ohos:
-    needs: [ci-tests, native-artifacts, native-input-gate]
-    if: ${{ always() && needs.ci-tests.result == 'success' && needs.native-input-gate.result == 'success' && (github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'ohos') && (needs.native-artifacts.result == 'success' || (needs.native-artifacts.result == 'skipped' && inputs.native_run_id != '')) }}
+    needs: [ci-tests, actionlint, flutter-validation, native-artifacts, native-input-gate]
+    if: ${{ always() && needs.ci-tests.result == 'success' && needs.actionlint.result == 'success' && needs.flutter-validation.result == 'success' && needs.native-input-gate.result == 'success' && (github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'ohos') && (needs.native-artifacts.result == 'success' || (needs.native-artifacts.result == 'skipped' && inputs.native_run_id != '')) }}
     name: OHOS ARM64 unsigned HAP and APP
     runs-on: ubuntu-24.04
     timeout-minutes: 120
@@ -534,7 +650,7 @@ jobs:
         with:
           repository: azurekiln2333/qflistudio-core
           ref: cbaa4a4166461baafff7c1a343bd3ca1865fcc4f
-          path: qfli_studio_core
+          path: qflistudio-core
           persist-credentials: false
       - name: Check out the pinned Flutter OHOS release
         run: |
@@ -569,6 +685,16 @@ jobs:
           set -euo pipefail
           flutter build hap --release --no-pub --no-codesign --target-platform ohos-arm64
           flutter build app --release --no-pub --no-codesign --target-platform ohos-arm64
+      - name: Archive Flutter release output
+        run: python3 tool/ci/archive_flutter_build.py ohos
+      - name: Upload Flutter build output
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: flutter-build-ohos
+          path: qfli_c/dist/flutter-build/
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 7
       - name: Verify and package the HAP and APP
         run: python3 tool/ci/ohos_build.py package
       - name: Upload OHOS packages

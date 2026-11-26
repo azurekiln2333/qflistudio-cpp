@@ -1,6 +1,6 @@
 # Shared-core audit — 2026-10-22
 
-Scope: read-only source/test inspection of `../qfli_studio_core` for R3, R5, R6 and R7. Audited core HEAD: `6441a5a` (`fix(core): release idle code focus and preserve terminal cancellation`). `git status --short` was empty. No Flutter command was run because the root worker owns the active validation process. Test names below describe checked-in coverage, not newly obtained passing results. Only this report was written.
+Scope: read-only source/test inspection of `../qflistudio-core` for R3, R5, R6 and R7. Audited core HEAD: `6441a5a` (`fix(core): release idle code focus and preserve terminal cancellation`). `git status --short` was empty. No Flutter command was run because the root worker owns the active validation process. Test names below describe checked-in coverage, not newly obtained passing results. Only this report was written.
 
 ## Requirement findings
 

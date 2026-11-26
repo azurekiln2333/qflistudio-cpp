@@ -11,7 +11,7 @@ dependencies:
     sdk: flutter
 
   qfli_studio_core:
-    path: ../qfli_studio_core
+    path: ../qflistudio-core
   qfli_c_runtime:
     path: packages/qfli_c_runtime
 
@@ -32,7 +32,7 @@ dependencies:
 
 dependency_overrides:
   re_editor:
-    path: ../qfli_studio_core/vendor/re_editor
+    path: ../qflistudio-core/vendor/re_editor
 
 dev_dependencies:
   flutter_test:

@@ -28,11 +28,11 @@ import 'merge_forge_content.dart' as merge;
 /// Run from `qfli_c`:
 ///
 ///   dart run tool/forge_content/build_core_patch.dart
-///   dart run tool/forge_content/build_core_patch.dart --core ../qfli_studio_core
+///   dart run tool/forge_content/build_core_patch.dart --core ../qflistudio-core
 Future<void> main(List<String> args) async {
   final core = Directory(
     _option(args, '--core') ??
-        p.normalize(p.join(Directory.current.path, '..', 'qfli_studio_core')),
+        p.normalize(p.join(Directory.current.path, '..', 'qflistudio-core')),
   );
   if (!core.existsSync()) {
     stderr.writeln('core not found: ${core.path}');

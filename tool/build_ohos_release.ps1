@@ -27,7 +27,7 @@ try {
     $configPath = Join-Path $projectRoot '.dart_tool/package_config.json'
     $config = Get-Content -LiteralPath $configPath -Raw | ConvertFrom-Json
     $configUri = [Uri]::new($configPath)
-    $expectedCore = [IO.Path]::GetFullPath((Join-Path $projectRoot '../qfli_studio_core'))
+    $expectedCore = [IO.Path]::GetFullPath((Join-Path $projectRoot '../qflistudio-core'))
     $expectedPackages = @{
         qfli_studio_core = $expectedCore
         re_editor = Join-Path $expectedCore 'vendor/re_editor'

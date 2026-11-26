@@ -6,7 +6,7 @@ import subprocess
 import tempfile
 import unittest
 
-from prepare_core import CORE_REVISION, PATCH, prepare
+from prepare_core import CORE_PATH, CORE_REVISION, PATCH, prepare
 
 
 class PrepareCoreTest(unittest.TestCase):
@@ -128,8 +128,15 @@ class PrepareCoreTest(unittest.TestCase):
             r"repository: azurekiln2333/qflistudio-core\s+ref: ([0-9a-f]{40})",
             source,
         )
-        self.assertEqual(pins, [CORE_REVISION] * 6)
+        self.assertEqual(pins, [CORE_REVISION] * 7)
         self.assertIn(f"CORE_REVISION: {CORE_REVISION}", source)
+        self.assertEqual(CORE_PATH, Path("../qflistudio-core"))
+        self.assertEqual(source.count("path: qflistudio-core"), 7)
+        for filename in ("pubspec.yaml", "pubspec.lock"):
+            text = (PATCH.parents[2] / filename).read_text(encoding="utf-8")
+            self.assertIn("../qflistudio-core", text)
+            self.assertNotIn("../qfli_studio_core", text)
+            self.assertIn("qfli_studio_core:", text)
 
     def test_compatibility_patch_only_changes_the_huawei_view(self):
         source = PATCH.read_text(encoding="utf-8")

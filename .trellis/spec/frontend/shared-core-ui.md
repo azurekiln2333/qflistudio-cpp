@@ -4,7 +4,7 @@ The shared UI belongs to qflistudio-core, not to the Studio application shell.
 Forge imports the shared QfliApp and configures it through StudioProfile.
 Do not copy the Studio shell's pages into Forge to synchronize common UI.
 
-Local pubspec.yaml resolves ../qfli_studio_core, including that working tree's uncommitted edits. The Git HEAD alone does not describe the UI used locally.
+Local pubspec.yaml resolves ../qflistudio-core, including that working tree's uncommitted edits. The Git HEAD alone does not describe the UI used locally.
 Installer jobs instead check out one explicit CORE_REVISION. Update all six core checkout refs and tool/ci/prepare_core.py together. Keep pubspec.lock aligned with the selected core dependencies.
 
 The published core main baseline for this task is cbaa4a4166461baafff7c1a343bd3ca1865fcc4f. Its common UI includes the editor quick bar, editor/agent layout, session sidebar, chat composer and reorganized home scopes. Preview branches remain separate until explicitly selected.

@@ -16,7 +16,7 @@ QFLIForge 是面向 C/C++ 的 Flutter IDE。
 
 ```text
 checkout-parent/
-  qfli_studio_core/
+  qflistudio-core/
   qfli_c/
 ```
 
@@ -34,7 +34,7 @@ checkout-parent/
 原生 WASI 工具鏈位於 `native/`。
 
 編輯器依賴指向共享核心中的修補版本。
-其路徑為 `../qfli_studio_core/vendor/re_editor`。
+其路徑為 `../qflistudio-core/vendor/re_editor`。
 
 ## 開發
 

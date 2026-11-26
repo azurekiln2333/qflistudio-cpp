@@ -344,6 +344,7 @@ def package() -> None:
         packages.append({"file": name, "sha256": sha256(target), "size": target.stat().st_size})
     (output / "hap-contents.json").write_text(json.dumps({"hap": contents}, indent=2) + "\n", encoding="utf-8")
     (output / "SIGNING.txt").write_text(SIGNING_NOTE, encoding="utf-8")
+    native_input = read_json(temporary / "native-input.json", required=False)
     evidence = {
         "applicationCommit": os.environ["GITHUB_SHA"],
         "repository": os.environ["GITHUB_REPOSITORY"],
@@ -352,11 +353,13 @@ def package() -> None:
         "coreCommit": os.environ["CORE_REVISION"],
         "flutterCommit": os.environ["FLUTTER_OHOS_REVISION"],
         "flutterTag": os.environ["FLUTTER_OHOS_TAG"],
+        "flutterVersion": os.environ["FLUTTER_OHOS_TAG"],
+        "nativeRunId": native_input.get("runId") if native_input else None,
         "platform": "HarmonyOS",
         "architecture": HAP_ABI,
         "applicationVersion": application_version(PROJECT / "pubspec.yaml"),
         "signing": "unsigned",
-        "nativeInput": read_json(temporary / "native-input.json", required=False),
+        "nativeInput": native_input,
         "toolchain": read_json(temporary / "ohos-toolchain.json"),
         "flutter": read_flutter_version(temporary / "ohos-flutter-version.json"),
         "packages": packages,

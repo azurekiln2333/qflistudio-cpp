@@ -222,18 +222,21 @@ class RecordTest(unittest.TestCase):
             'GITHUB_SHA': 'c' * 40, 'GITHUB_REPOSITORY': 'azurekiln2333/qflistudio-cpp',
             'GITHUB_RUN_ID': '42', 'GITHUB_SERVER_URL': 'https://github.com',
             'CORE_REVISION': 'd' * 40, 'FLUTTER_REVISION': 'e' * 40,
+            'FLUTTER_VERSION': '3.41.9',
         }
         record = package_app.provenance(
             environment, 'linux', 'x64', '1.0.0+1', self.PACKAGES, ['tar-file-list'])
         self.assertEqual(list(record), [
             'applicationCommit', 'repository', 'runId', 'runUrl', 'coreCommit', 'flutterCommit',
-            'platform', 'architecture', 'applicationVersion', 'signing', 'nativeInput',
+            'flutterVersion', 'nativeRunId', 'platform', 'architecture', 'applicationVersion', 'signing', 'nativeInput',
             'packages', 'validation', 'deviceRuntimeVerified'])
         self.assertEqual(record['applicationCommit'], 'c' * 40)
         self.assertEqual(
             record['runUrl'], 'https://github.com/azurekiln2333/qflistudio-cpp/actions/runs/42')
         self.assertEqual(record['coreCommit'], 'd' * 40)
         self.assertEqual(record['flutterCommit'], 'e' * 40)
+        self.assertEqual(record['flutterVersion'], '3.41.9')
+        self.assertIsNone(record['nativeRunId'])
         self.assertEqual(record['applicationVersion'], '1.0.0+1')
         self.assertEqual(record['signing'], 'unsigned')
         self.assertIsNone(record['nativeInput'])
@@ -247,6 +250,8 @@ class RecordTest(unittest.TestCase):
             self.assertIsNone(record[field])
         self.assertEqual(record['signing'], 'ephemeral debug key')
         self.assertEqual(record['nativeInput'], {'runId': 7})
+        self.assertEqual(record['nativeRunId'], 7)
+        self.assertIsNone(record['flutterVersion'])
 
     def test_signing_values(self):
         self.assertEqual(package_app.SIGNING, {

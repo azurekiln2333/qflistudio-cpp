@@ -388,6 +388,8 @@ def provenance(environment, platform, architecture, version, packages, validatio
         'runUrl': run_url,
         'coreCommit': environment.get('CORE_REVISION'),
         'flutterCommit': environment.get('FLUTTER_REVISION'),
+        'flutterVersion': environment.get('FLUTTER_VERSION'),
+        'nativeRunId': native_input.get('runId') if native_input else None,
         'platform': platform,
         'architecture': architecture,
         'applicationVersion': version,

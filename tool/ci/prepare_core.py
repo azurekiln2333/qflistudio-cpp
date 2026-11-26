@@ -16,6 +16,7 @@ import sys
 
 
 CORE_REVISION = "cbaa4a4166461baafff7c1a343bd3ca1865fcc4f"
+CORE_PATH = Path("../qflistudio-core")
 PATCH = Path(__file__).with_name("stock-flutter-core.patch")
 SOURCE_ROOTS = ("lib", "vendor/re_editor/lib")
 FORK_ONLY_API = re.compile(r"\bTargetPlatform\s*\.\s*ohos\b|\bOhosView\b")
@@ -84,7 +85,7 @@ def verify_portable_sources(core: Path) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--core", type=Path, required=True)
+    parser.add_argument("--core", type=Path, default=CORE_PATH)
     parser.add_argument("--flutter", type=Path, required=True)
     parser.add_argument("--check", action="store_true", help="Validate without editing.")
     args = parser.parse_args()

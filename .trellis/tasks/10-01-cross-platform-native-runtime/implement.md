@@ -273,7 +273,7 @@ timeout; all main-session test handles completed successfully.
   Flutter test files passed, 67 tests total, including four startup checks,
   16 Android/iOS channel checks and 13 actual Windows runner checks.
 - Whole review-copy Flutter analysis reports one scratch-only base pubspec
-  path warning: ../qfli_studio_core does not exist at that copy's location.
+  path warning: ../qflistudio-core does not exist at that copy's location.
   Its pubspec override correctly resolves the staged shared core. Do not
   describe this invocation as a clean whole-project analysis result.
 - A one-job compiler-cache resume was stopped during CMake configuration

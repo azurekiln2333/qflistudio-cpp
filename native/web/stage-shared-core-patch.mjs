@@ -4,7 +4,7 @@ import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
-const source = path.resolve(repo, "../qfli_studio_core");
+const source = path.resolve(repo, "../qflistudio-core");
 const task = path.join(repo, ".trellis/tasks/10-01-cross-platform-native-runtime");
 const templates = path.join(task, "patches/shared-core-platform");
 const stage = path.join(repo, "native/build/shared-core-web-review");

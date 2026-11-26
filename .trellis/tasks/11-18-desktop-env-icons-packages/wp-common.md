@@ -11,7 +11,7 @@ Read this file first. Then read the brief of your own package.
 
 - Product: the Flutter application `qfli_c` ("QFLIForge", a C/C++ learning IDE).
   Public repository: `azurekiln2333/qflistudio-cpp`.
-- Shared core: `../qfli_studio_core`. The pin above belongs to this historical
+- Shared core: `../qflistudio-core`. The pin above belongs to this historical
   work plan only.
 - Four work packages were assigned separate worktrees and file sets.
 - Task files: `D:/MyNewProjects/qfli_c/.trellis/tasks/11-18-desktop-env-icons-packages/`
@@ -34,7 +34,7 @@ Read this file first. Then read the brief of your own package.
   brief lists as owned. When you need a change in another file, write the
   request into your report and continue without it.
 - `D:/MyNewProjects/_wt/qfli_studio_core` is the core clone that every worktree
-  resolves as `../qfli_studio_core`. It is read only. Also read only:
+  resolves as `../qflistudio-core`. It is read only. Also read only:
   `D:/MyNewProjects/qfli_studio_core` and `D:/MyNewProjects/qfli_dart`.
 
 ## Git

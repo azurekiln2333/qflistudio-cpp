@@ -9,12 +9,12 @@ passes absolute filesystem paths to its runners and uses local files throughout:
   processes (`lib/clang_runner.dart:221`, `:258`).
 - `lib/c_runner.dart:2` imports dart:io and reads the project through File and
   Directory (`lib/c_runner.dart:57`, `:243`).
-- `../qfli_studio_core/lib/services/app_paths.dart:41` reads Platform.environment;
+- `../qflistudio-core/lib/services/app_paths.dart:41` reads Platform.environment;
   project directories are local Directory objects (`:128`).
-- `../qfli_studio_core/lib/store/project_store.dart:112` resolves its registry
+- `../qflistudio-core/lib/store/project_store.dart:112` resolves its registry
   to a local File, and project creation writes template files (`:315`).
-- `../qfli_studio_core/lib/services/file_service.dart:21` lists Directory entries.
-- `../qfli_studio_core/lib/services/runner_service.dart:71` validates entries
+- `../qflistudio-core/lib/services/file_service.dart:21` lists Directory entries.
+- `../qflistudio-core/lib/services/runner_service.dart:71` validates entries
   through File and resolves symbolic links (`:73`).
 
 Browser execution cannot use the operating-system Process API. A browser-native

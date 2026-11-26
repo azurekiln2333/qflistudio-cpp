@@ -16,7 +16,7 @@ Put both repositories under the same parent directory.
 
 ```text
 checkout-parent/
-  qfli_studio_core/
+  qflistudio-core/
   qfli_c/
 ```
 
@@ -34,7 +34,7 @@ This runtime package interprets C source in the app process using Dart.
 The native WASI toolchain is under `native/`.
 
 The editor dependency points to a patched editor in the shared core.
-Its path is `../qfli_studio_core/vendor/re_editor`.
+Its path is `../qflistudio-core/vendor/re_editor`.
 
 ## Development
 
