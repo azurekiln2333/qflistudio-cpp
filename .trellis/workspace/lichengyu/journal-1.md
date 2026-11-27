@@ -371,3 +371,38 @@ Published GPL alignment and complete mobile native workflows; downloaded and ver
 ### Status
 
 **In progress — awaiting metadata checks and scoped commit.**
+
+
+## Session 10: GitHub workspace migration and cloud-only delivery
+<!-- trellis-session: v=2 fp=b35f09258079c734 -->
+
+**Date**: 2026-11-27
+**Task**: GitHub workspace migration and cloud-only delivery
+**Branch**: `main`
+
+### Summary
+
+Reconciled branches, preserved generated and private paths outside Git, curated Trellis progress, and prepared the exact-commit publication gate. No local builds, tests, lint, analysis, installs, artifact downloads, WSL operations, or direct pushes.
+
+### Main Changes
+
+- Added reviewed migration records and cloud-only project-records workflow
+- Recorded native/build metadata-preserving move and branch dispositions
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `a9a1088` | docs(trellis): activate the unified migration execution contract |
+
+### Testing
+
+- [OK] Not run locally by policy; GitHub Actions run 45892017304 attempt 2 remains the accepted baseline
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- Publish the reviewed main commit through the push gate, inspect current hosted results, pull and compare the target, then hand off through Herdr

@@ -1,0 +1,14 @@
+Independent browser facade probe, 2026-10-15
+Actual Microsoft Edge Chromium via Flutter browser test harness.
+Probe source retained: native/build/browser_facade_review_test.dart
+Temporary test/_temporary_browser_facade_review_test.dart removed after execution.
+
+PASS: local facade persists project bytes through IndexedDB reload.
+FAIL: real shared EditorController opens the local runner filesystem.
+Actual exception: Unsupported operation: Platform._operatingSystem
+Stack: dart:io FileSystemEntity.stat -> qfli_studio_core/editor/editor_controller.dart openPath (File(path), line 54).
+
+Browser harness initially stalled due local CanvasKit 404s. Supplied installed SDK CanvasKit through task-owned browser CDP Fetch routing; tests then actually executed.
+Renderer routing helper retained: native/build/route-facade-renderer.mjs
+This is underlying shared-core browser nonintegration, not an OHOS/Android regression.
+New local facade also remains separate from staged shared-core memory singleton and IndexedDB profile database.

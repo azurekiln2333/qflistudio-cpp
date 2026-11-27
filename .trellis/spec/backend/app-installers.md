@@ -250,11 +250,11 @@ Wrong: pass `portable.exe /EXTRACTONLY /D=C:\temp\extract` and expect
 Correct: pass `portable.exe /EXTRACTONLY "C:\temp\extract with spaces"` and
 use the `GetOptions` result directly as the extraction directory.
 
-Wrong: publish the workflow with a push of local `main`. The local branch
-holds unpublished commits and a release signing configuration.
-Correct: use the authorized separate worktree, commit only owned files,
-push `ci/cloud-validation`, and wait for a green run. Merge updated main into
-that branch when authorized, then rerun CI. The coordinator integrates main.
+Wrong: push migration commits directly or assume a clean worktree proves that
+every outgoing file is safe to publish.
+Correct: integrate reviewed work on main, commit only reviewed paths, and use
+the orchestrator's exact-commit push gate. Check the matching gate result before
+pulling the destination. The migration execution contract records this boundary.
 
 Wrong:
 
@@ -276,6 +276,9 @@ Correct: `write_records` and `ohos_build.py package` copy `LICENSE` into every
 download directory.
 
 ## Known limits (2026-11-17)
+
+This section records historical limits. Later validation and migration evidence
+supersede claims about which dispatch modes have been exercised.
 
 - No cloud run has used `workflow_dispatch`. Platform selection and
   `native_run_id` are covered only by review and by the unit tests of
@@ -312,3 +315,25 @@ cbaa4a4166461baafff7c1a343bd3ca1865fcc4f. The run used checkout v7.0.1 and
 upload-artifact v7.0.2. It used a push event; workflow_dispatch remains
 untested. See the archived Trellis task for artifact metadata and signing
 limits.
+
+## Migration acceptance and native reuse (2026-11-27)
+
+Run `45892017304`, attempt 2, accepted all six platforms at application commit
+`82f344657b5074698aa934db77408599d26024c5`: 20 successful jobs and 28 artifacts.
+The migration task records exact artifact metadata and signing limits.
+
+A manual main run may use `target=all` and `native_run_id=45892017304` only
+after comparing native sources, native workflow, dependency pins and build
+configuration with that accepted commit. The selector accepts an explicit run
+from another branch; it does not prove source equivalence. The coordinator must
+record that comparison. Reject reuse after any relevant input drift or expiry.
+
+A reuse run skips the reusable native job and still runs hosted validation plus
+all application jobs. Expect seven application and seven Flutter artifacts.
+Record the older native owner run separately. Do not claim new native artifacts
+or identical application/native commits. Native checksums are verified in the
+hosted mobile jobs before extraction.
+
+The independent `project-records.yml` workflow checks controlled Chinese in
+`AGENTS.md` and `.trellis/PROJECT_STATUS.md`. These text checks also run only on
+GitHub-hosted runners. A records-only change does not require a native rebuild.

@@ -2,104 +2,135 @@
 
 更新日期：2026-11-27。
 迁移状态：进行中。
+最终迁移提交：待协调者确定。
+最终提交的云端检查：待完成。
 
-## 已发布基线
+## 源码与发布
 
 GitHub 仓库为 `azurekiln2333/qflistudio-cpp`。
-GitHub `main` 已包含 `9ff5ce6b80de46011490fdc84db098d48758eb26`。
-基线树为 `7258defc922596dfa07c6b22dc8089c26780ffbf`。
-本轮修改尚未形成最终迁移提交。
+已发布的主分支基线为 `918233c5f32e848e63df11fa4e25639cdf17053a`。
+协调者已将云端检查分支纳入本地主分支。
+该分支的证据提交为 `b8e48afba505ac636877dfb1c5958702485b0832`。
+该提交只补充运行证据。
+后续迁移修改仍须通过推送闸门。
+本页不将阶段提交当作最终提交。
 
-依据为 `.trellis/tasks/11-26-github-workspace-migration/research/baseline.md`。
-该文件记录协调者在 2026-11-26 检查的结果。
-本页保留签名字段的用户更正。
+运行约束见 `tasks/11-26-github-workspace-migration/research/execution-contract.md`。
+运行证据见 `tasks/11-26-six-platform-cloud-delivery/research/cloud-evidence.md`。
 
-## 云端结果
+## 已验收的云端运行
 
-`app-installers.yml` 的 run 为 `45645017677`。
-该 run 的源提交为上述基线提交。
-六个平台共 18 个 job 成功。
-这些 job 包括可复用原生工作流和产物门禁。
-这些 job 也包括 Python CI 辅助测试。
+应用工作流为 `.github/workflows/app-installers.yml`。
+已验收 run 为 `45892017304`。
+该 run 的第 2 次尝试成功。
+该 run 检查的源码为 `82f344657b5074698aa934db77408599d26024c5`。
+该 run 的 20 个 job 全部成功。
+Flutter 分析未发现问题。
+Flutter 测试通过 268 项。
+运行记录还覆盖 Python 测试和工作流检查。
+
+原生工作流为 `.github/workflows/native-artifacts.yml`。
+应用 run 复用该原生工作流。
+移动端原生产物来自同一 run。
+桌面包不消费移动端原生产物。
+该 run 保留 28 个产物的元数据。
+其中应用产物和 Flutter 中间产物各有 7 个。
+应用产物和最终原生产物保留 30 天。
+Flutter 中间产物、日志和 iOS 切片保留 7 天。
+包清单、摘要和签名边界见运行证据。
+本轮未下载产物。
 
 | 平台 | 应用产物 | 签名状态 |
 | --- | --- | --- |
 | Android | `app-android-arm64-v8a`、`app-android-x86_64` | 测试签名 |
 | Windows | `app-windows-x64` | 未签名 |
 | Linux | `app-linux-x64` | 未签名 |
-| macOS | `app-macos-universal` | ad hoc |
+| macOS | `app-macos-universal` | ad hoc，未公证 |
 | iOS | `app-ios-arm64-unsigned` | 未签名 |
 | OHOS | `app-ohos-arm64-unsigned` | 未签名 |
 
-该 run 含七个应用产物。
-该 run 也含原生依赖产物。
-独立原生 run `44001588302` 不是本次应用 run 的来源结论。
-原生工作流为 `native-artifacts.yml`。
-应用包保留期大多为 30 天。
-日志和切片保留期大多为 7 天。
-协调者未下载产物内容。
-包内来源清单和摘要仍待验收。
+第 1 次尝试遇到 Maven Central 的 HTTP 429。
+协调者重跑失败 job 后完成第 2 次尝试。
+旧 run `45874912699` 的 OHOS 归档只有状态文件。
+该旧 run 不作为完整中间产物证据。
+当前记录不证明最终迁移提交已通过检查。
 云端打包成功不等于设备验收。
+`deviceRuntimeVerified` 仍为 `false`。
 
-## 目标布局与规则
+## 目录与运行规则
 
 目标克隆为 `E:/MyNewProjects/QFLIProjects/qflistudio-cpp`。
-目标 core 为同级 `qflistudio-core`。
-应用依赖目标路径为 `../qflistudio-core`。
+共享 core 目录为同级 `qflistudio-core`。
+应用依赖路径为 `../qflistudio-core`。
 Dart 包名仍为 `qfli_studio_core`。
-目录改名和依赖路径修改归 `cpp-ci`。
-目标克隆只绑定 GitHub 远端。
+云端 core 固定为 `cbaa4a4166461baafff7c1a343bd3ca1865fcc4f`。
+本次迁移不升级该固定版本。
+目标克隆须只绑定 GitHub 远端。
+协调者仍须检查 fetch 和 push URL。
 
-所有 agent 只在 GitHub 托管 runner 运行构建与验证。
-本地禁令见根目录 `AGENTS.md`。
-持久任务、规范、研究、工作日志和工作流定义须入库。
-身份、会话、缓存和构建产物须继续忽略。
+根目录 `AGENTS.md` 保存父目录云端规则原文。
+所有构建、测试、分析和 lint 只在云端运行。
+中文文本检查也只在云端运行。
+历史脚本和模板不构成本地运行授权。
+持久任务、规范、研究和工作日志继续跟踪。
+身份、会话、缓存和密钥继续忽略。
 agent 协作只走 Herdr。
 
-## 签名更正
+## 保全与签名边界
 
-用户确认 DevEco 密码字段为加密密文。
+Trellis 保全摘要见 `tasks/11-26-trellis-cloud-only-rules/research/retained-items-audit-2026-11-27.md`。
+旧构建研究摘要见 `tasks/10-22-offline-standalone-ide/research/legacy-build-progress-20261026.md`。
+平台适配摘要见 `tasks/11-26-trellis-cloud-only-rules/research/platform-adapters-2026-11-27.md`。
+该摘要覆盖 53 份 Claude 定义。
+该摘要另列 17 项专用适配定义。
+旧构建树已移入外部备份。
+本轮只提取可移植的历史结论。
+备份不等于可移植内容已经发布。
+原始设备记录、证书和二进制不随摘要入库。
+
 `ohos/build-profile.json5` 照常跟踪。
-不得将该文件定为敏感文件或泄露风险。
-`.p12`、`.cer`、`.p7b` 证书文件只留本地。
+其 DevEco 密码字段为加密密文。
+不得将该字段当作明文凭据。
+`.p12`、`.cer`、`.p7b` 证书只留本地。
 `D:/Keystore` 不得入库。
 `~/.ohos/config/material` 不得入库。
-此更正优先于基线报告的旧判断。
+生产签名和 Apple 公证仍须单独授权。
+未签名的 iOS 和 OHOS 包不具备设备安装验收。
 
-## 待关闭门禁
+## 待关闭的迁移门禁
 
 | 门禁 | 所有者 | 验收条件 |
 | --- | --- | --- |
-| Git 历史与源码收敛 | `cpp-git` | 分支、worktree、备份和可恢复快照均有处置证据 |
-| Trellis 完整性 | `cpp-trellis` | 主工作区保留各 worktree 的独有知识 |
-| GitHub 发布 | 协调者 | 全部批准内容进入 GitHub `main` |
-| core 布局 | `cpp-ci` | 依赖不再要求旧 D 盘目录 |
-| 云端验证覆盖 | `cpp-ci` | 补充 Dart 分析和产品测试证据 |
-| 包内来源 | `cpp-ci` | 固定源码、core、原生产物来源和摘要 |
-| 目标克隆一致性 | `cpp-handoff` | 提交、树和跟踪字节与 GitHub 一致 |
-| 目标零构建产物 | `cpp-handoff` | 新目录无构建输出和依赖缓存 |
-| 旧目录可删除 | 协调者 | 有价值内容均已保存并完成目标验收 |
+| 分支与快照收敛 | 源协调者、p2 | 独有源码和进度均有处置证据 |
+| Trellis 发布 | 源协调者、p3 | 批准的持久知识进入主分支 |
+| 原生树保全 | p2 | 独有候选和签名副本均有保全记录 |
+| 最终提交检查 | 源协调者、p4 | 云端结果绑定最终提交 |
+| 生产签名与公证 | 产品所有者 | 单独授权并补齐签名证据 |
+| 设备验收 | 产品所有者 | 安装包与实际运行结果有绑定证据 |
+| GitHub 发布 | 源协调者 | 推送闸门接受最终提交 |
+| 目标一致性 | 源协调者、p5 | 源、远端和目标的提交与树相同 |
+| 目标零构建产物 | 目标协调者 | 新目录没有构建输出和依赖缓存 |
+| 正式交接 | 源协调者 | 目标 Codex 通过 Herdr 确认 |
+| 旧目录处置 | 所有者 | 保全、目标验收和授权均已完成 |
 
-当前不批准删除旧目录。
-共享 WSL 的所有权仍未确认。
-本轮不操作 WSL。
-最终迁移完成证据：待补。
-GitHub 最终提交与树：待补。
-目标克隆最终提交与树：待补。
-目标零构建产物证据：待补。
-旧目录删除授权：待补。
+源目录和目标目录的最终干净状态仍待检查。
+目标克隆的最终提交与树仍待检查。
+本页不授权删除旧目录。
+本页不授权删除共享 WSL。
 
-## 产品门禁
+## 未完成的产品任务
 
 | 任务 | 状态与边界 |
 | --- | --- |
-| `00-bootstrap-guidelines` | 五份后端和六份前端通用规范仍有模板 |
-| `10-01-cross-platform-native-runtime` | iOS、Web、macOS 和当前源设备门禁未关闭 |
-| `10-22-offline-standalone-ide` | 已验收 200 对课程，新增 160 对和总体验收未完成 |
-| `11-18-desktop-env-icons-packages` | 云端打包已有基线，真实安装验收仍待完成 |
+| `00-bootstrap-guidelines` | 通用规范仍有模板 |
+| `10-01-cross-platform-native-runtime` | 平台运行和当前源码设备验收仍未完成 |
+| `10-22-offline-standalone-ide` | 原有 200 对课程已有历史验收，新增 160 对仍未交付 |
+| `11-18-desktop-env-icons-packages` | 云端包已有证据，真实工具链安装和运行仍待验收 |
 
+历史主机课程结果不证明当前 OHOS 包或设备结果。
+新增课程须先通过当前 OHOS 基线门禁。
 Windows 工具链的 Clang、GCC、C 和 C++ 仍待验收。
-Linux、macOS 安装流程仍待目标环境验收。
-macOS GCC 需求仍待产品决策。
-生产签名、Apple 公证和移动设备验收须单独授权。
-这些产品门禁不等于迁移内容缺失。
+Linux 和 macOS 安装流程仍待目标环境验收。
+macOS 的 GCC 需求仍待产品决策。
+其他产品的验收不能由 C/C++ 证据替代。
+本轮不将未完成的产品任务标为完成。

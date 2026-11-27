@@ -8,8 +8,8 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 9
-- **Last Active**: 2026-11-25
+- **Total Sessions**: 10
+- **Last Active**: 2026-11-27
 <!-- @@@/auto:current-status -->
 
 ---
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~373 | Active |
+| `journal-1.md` | ~408 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 10 | 2026-11-27 | GitHub workspace migration and cloud-only delivery | `a9a1088` | `main` |
 | 9 | 2026-11-25 | Trellis status and archive cleanup | pending scoped commit | `main` |
 | 8 | 2026-11-17 | Verified Android OHOS and iOS cloud artifacts | `1cc0b11` ≡ `1a09613`, `0819d2e` ≡ `2486056`, `043abaa` ≡ `715efaa`, `bf1d1f5` ≡ `b69f5d7` (patch-id) | `ci/native-artifacts` |
 | 7 | 2026-10-17 | OHOS HAP packaging restricted to ARM64 | `d7345f1`, `9511f4a` (later inclusion) | `main` |

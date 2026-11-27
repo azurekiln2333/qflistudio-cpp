@@ -1,0 +1,72 @@
+name: Project records
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - AGENTS.md
+      - .trellis/PROJECT_STATUS.md
+      - .trellis/spec/backend/app-installers.md
+      - .trellis/tasks/10-22-offline-standalone-ide/research/legacy-build-progress-20261026.md
+      - .trellis/tasks/11-26-github-branch-reconciliation/research/final-branches.md
+      - .trellis/tasks/11-26-github-branch-reconciliation/research/native-recovery/README.md
+      - .trellis/tasks/11-26-trellis-cloud-only-rules/research/platform-adapters-2026-11-27.md
+      - .trellis/tasks/11-26-trellis-cloud-only-rules/research/retained-items-audit-2026-11-27.md
+      - .trellis/tasks/11-26-workspace-cleanup-handoff/research/cleanup-procedure.md
+      - .trellis/tasks/11-26-workspace-cleanup-handoff/research/handoff-draft.md
+      - .trellis/tasks/11-26-workspace-cleanup-handoff/research/preservation-summary.md
+      - scripts/ste-lint-zh.py
+      - .github/workflows/project-records.yml
+
+permissions:
+  contents: read
+
+jobs:
+  actionlint:
+    name: Actionlint workflow checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install and verify actionlint 1.7.11
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/actionlint.tar.gz"
+          curl --fail --location --retry 3 \
+            https://github.com/rhysd/actionlint/releases/download/v1.7.11/actionlint_1.7.11_linux_amd64.tar.gz \
+            --output "$archive"
+          echo "900919a84f2229bac68ca9cd4103ea297abc35e9689ebb842c6e34a3d1b01b0a  $archive" | sha256sum --check
+          tar -xzf "$archive" -C "$RUNNER_TEMP" actionlint
+      - name: Check all GitHub Actions workflows
+        run: '"$RUNNER_TEMP/actionlint" -color .github/workflows/*.yml'
+
+  chinese-text:
+    name: Controlled Chinese text
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Check agent rules with the inherited text baseline
+        # The managed TRELLIS block and parent cloud rules each contain one inherited semicolon.
+        run: python3 scripts/ste-lint-zh.py --baseline 2 AGENTS.md
+      - name: Check project status with no baseline
+        run: python3 scripts/ste-lint-zh.py .trellis/PROJECT_STATUS.md
+      - name: Check cleanup and preservation records with no baseline
+        run: >-
+          python3 scripts/ste-lint-zh.py
+          .trellis/tasks/11-26-workspace-cleanup-handoff/research/cleanup-procedure.md
+          .trellis/tasks/11-26-workspace-cleanup-handoff/research/handoff-draft.md
+          .trellis/tasks/11-26-workspace-cleanup-handoff/research/preservation-summary.md
+      - name: Check migration research records with no baseline
+        run: >-
+          python3 scripts/ste-lint-zh.py
+          .trellis/tasks/10-22-offline-standalone-ide/research/legacy-build-progress-20261026.md
+          .trellis/tasks/11-26-github-branch-reconciliation/research/final-branches.md
+          .trellis/tasks/11-26-github-branch-reconciliation/research/native-recovery/README.md
+          .trellis/tasks/11-26-trellis-cloud-only-rules/research/platform-adapters-2026-11-27.md
+          .trellis/tasks/11-26-trellis-cloud-only-rules/research/retained-items-audit-2026-11-27.md

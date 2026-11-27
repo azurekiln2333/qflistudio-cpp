@@ -1,0 +1,9 @@
+cmake_minimum_required(VERSION 3.24)
+project(bundle_install_contract LANGUAGES NONE)
+# Exercise CMake install-rule generation only; no compiler or SDK is invoked.
+set(APPLE TRUE)
+add_executable(auxiliary EXCLUDE_FROM_ALL main.c)
+set_target_properties(auxiliary PROPERTIES LINKER_LANGUAGE C)
+set(CMAKE_C_COMPILE_OBJECT "true")
+set(CMAKE_C_LINK_EXECUTABLE "true")
+install(TARGETS auxiliary RUNTIME DESTINATION bin)

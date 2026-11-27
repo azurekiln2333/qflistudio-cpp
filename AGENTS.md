@@ -20,6 +20,37 @@ Managed by Trellis. Edits outside this block are preserved; edits inside may be 
 
 <!-- TRELLIS:END -->
 
+# QFLI product workspace rules
+
+These rules apply to every agent and every repository under this directory.
+The user requires all builds and tests to run on GitHub-hosted runners.
+
+- Do not run local builds, tests, benchmarks, emulators, or native compilation.
+- Do not run dependency installation, SDK installation, or dependency restore.
+- Do not download build artifacts, installers, SDKs, or build caches to this workspace.
+- Do not run Flutter, Dart, Gradle, CMake, Ninja, Xcode, Hvigor, or package-manager commands that generate output.
+- Read and edit source locally. Inspect Git metadata and text without creating build or test outputs.
+- Run validation through the repository's GitHub Actions workflows. Read results through GitHub API or log output.
+- Keep artifacts on GitHub. Record immutable source revisions, run IDs, job conclusions, checksums, and signing limitations in Trellis.
+- Keep durable Trellis tasks, specs, research, journals, and project instructions in version control. Keep local runtime/session state and secrets ignored.
+- Use GitHub as the sole remote for migrated clones. Check both fetch and push URLs.
+- Preserve another agent's work. Coordinate repository ownership and handoff through Herdr.
+- Do not delete shared WSL distributions or old source workspaces without the owning coordinators' preservation decision.
+- Folder names follow GitHub repository names. Shared core is `qflistudio-core`; its Dart package name remains `qfli_studio_core`.
+
+Each repository must also commit these restrictions in its own AGENTS.md or project policy so fresh clones on another PC retain the rules. This parent file is a convenience copy, not a substitute for versioned repository policy.
+
+Initial coordinated writer: SQL coordinator, Herdr w62:p1, 2026-11-26.
+
+## Execution precedence
+
+The cloud-only rules override local validation examples in Trellis templates,
+agent definitions, skills, historical research, and source documentation.
+Do not run local analysis, lint, or text-check commands, including
+`scripts/ste-lint-zh.py`. Perform those checks only on GitHub-hosted runners.
+Local work is limited to source/document edits, read-only file and Git metadata
+inspection, and Herdr coordination within the assigned ownership.
+
 ## 仅云端构建
 
 本节优先于工作流模板的本地检查指令。
@@ -32,11 +63,8 @@ Managed by Trellis. Edits outside this block are preserved; edits inside may be 
 - 工具包括 `flutter`、`dart`、`gradle`、`cmake`、`ninja`、`xcodebuild`、`hvigor`、`ohpm`、`npm`、`pip` 和 `pytest`。
 - 禁止下载构建产物、安装包、SDK 和构建缓存。
 - 本地只允许源码编辑和只读检查。
-- 中文文本检查只允许下列命令。
-
-```text
-python -I -B scripts/ste-lint-zh.py <文件>
-```
+- 禁止本地分析、lint 和文本检查。
+- 中文文本检查只在云端运行。
 
 - 应用工作流为 `.github/workflows/app-installers.yml`。
 - 原生工作流为 `.github/workflows/native-artifacts.yml`。
@@ -70,4 +98,4 @@ python -I -B scripts/ste-lint-zh.py <文件>
 - 禁用含糊词，如 `若干`、`一些`、`相关`。
 - 不得改动情态，如 `可能`、`也许`。
 - 置信度属于内容。
-- 先用上述中文文本检查命令检查文件。
+- 只在云端运行中文文本检查。
