@@ -236,8 +236,8 @@ native 依赖包的说明见 `native/toolchain/README.ci.md`。
 
 工作流按提交号固定 Flutter 和共享 core。
 Android、iOS、Windows、Linux 和 macOS 任务使用官方 Flutter。
-这五类任务先对共享 core 应用兼容补丁。
-补丁文件为 `tool/ci/stock-flutter-core.patch`。
+这五类任务先运行 core 的兼容脚本。
+脚本为 `tool/ci/prepare_flutter_core.py`。
 OHOS 任务使用 Flutter OHOS 和未打补丁的共享 core。
 HarmonyOS 命令行工具的地址和校验值记录在锁文件中。
 锁文件为 `tool/ci/ohos-command-line-tools.lock.json`。

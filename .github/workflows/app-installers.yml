@@ -116,6 +116,8 @@ jobs:
           echo "$GITHUB_WORKSPACE/flutter/bin" >> "$GITHUB_PATH"
           ../flutter/bin/flutter config --no-analytics
           ../flutter/bin/flutter --version
+          # Pub checks out dependency history with long preserved source paths.
+          git config --global core.longpaths true
           python -B ../qflistudio-core/tool/ci/prepare_flutter_core.py --flavor official --sdk-root ../flutter --sdk-revision "$FLUTTER_REVISION"
           ../flutter/bin/flutter pub get
       - name: Select the hosted GCC toolchain for desktop fixtures
@@ -330,6 +332,8 @@ jobs:
           echo "$GITHUB_WORKSPACE/flutter/bin" >> "$GITHUB_PATH"
           ../flutter/bin/flutter config --no-analytics
           ../flutter/bin/flutter --version
+          # Pub checks out dependency history with long preserved source paths.
+          git config --global core.longpaths true
           python -B ../qflistudio-core/tool/ci/prepare_flutter_core.py --flavor official --sdk-root ../flutter --sdk-revision "$FLUTTER_REVISION"
           ../flutter/bin/flutter pub get
       - name: Build the Windows application
