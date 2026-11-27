@@ -185,9 +185,16 @@ ZIP 含同一套应用文件，不含安装器。
 ### Linux
 
 安装包在 Ubuntu 24.04 上构建并校验。
-`.deb` 依赖 GTK 3 和 libstdc++。
+`.deb` 依赖 GTK 3、libstdc++ 和 libsecret。
+libsecret 运行库包名为 `libsecret-1-0`。
+此包名适用于 Debian 和 Ubuntu。
 应用调用 PATH 中的 clang 或 gcc 编译程序。
 `.tar.gz` 含同一套应用文件，不经 apt 安装。
+`.tar.gz` 和 AppImage 不内置这些系统库。
+请先在主机安装这些运行库。
+安全存储还依赖桌面会话的密钥环服务。
+该服务须提供 Secret Service 接口。
+libsecret 客户端库不提供此服务。
 
 ### macOS
 

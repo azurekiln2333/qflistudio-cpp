@@ -52,7 +52,7 @@ WINDOWS_REQUIRED = [
 INSTALLER_FILES = {'LICENSE.txt', 'unins000.exe', 'unins000.dat'}
 SILENT = ['/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART']
 LINUX_REQUIRED = [BINARY_NAME, 'lib/libflutter_linux_gtk.so', 'lib/libapp.so']
-DEB_DEPENDS = 'libgtk-3-0t64 | libgtk-3-0, libstdc++6'
+DEB_DEPENDS = 'libgtk-3-0t64 | libgtk-3-0, libstdc++6, libsecret-1-0'
 DEB_MAINTAINER = f'{APP_NAME} CI <noreply@github.com>'
 CONTROL_FIELDS = ['Package', 'Version', 'Architecture', 'Maintainer', 'Depends', 'Homepage']
 # Sizes that the hicolor icon theme declares for application icons.
@@ -94,6 +94,11 @@ SIGNING_NOTES = {
     'linux': [
         'Signing: unsigned.',
         'The package was built and checked on Ubuntu 24.04.',
+        'The Debian package declares GTK 3, libstdc++ and libsecret runtime dependencies.',
+        'The tar.gz and AppImage require these libraries on the host and do not bundle them.',
+        'On Debian or Ubuntu, libsecret-1-0 supplies the libsecret runtime.',
+        'Secure storage also requires an active Secret Service/keyring in the desktop session.',
+        'The libsecret client library does not supply that service.',
         'Rename the file first: an AppImage keeps its root icon only under its own name.',
         'The AppImage sets no library path, so the host clang, gcc and pkexec keep their environment.',
         _HOST_COMPILER,

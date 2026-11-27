@@ -151,7 +151,7 @@ class LinuxTest(unittest.TestCase):
         self.assertEqual(fields['Version'], '1.0.0-1')
         self.assertEqual(fields['Architecture'], 'amd64')
         self.assertEqual(fields['Maintainer'], 'QFLIForge CI <noreply@github.com>')
-        self.assertEqual(fields['Depends'], 'libgtk-3-0t64 | libgtk-3-0, libstdc++6')
+        self.assertEqual(fields['Depends'], 'libgtk-3-0t64 | libgtk-3-0, libstdc++6, libsecret-1-0')
         self.assertEqual(fields['Homepage'], 'https://github.com/azurekiln2333/qflistudio-cpp')
         self.assertEqual(fields['Installed-Size'], '1234')
         self.assertTrue(fields['Description'].startswith('QFLIForge'))
@@ -164,6 +164,20 @@ class LinuxTest(unittest.TestCase):
         fields = package_app.parse_control_fields(package_app.control_file('1.0.0+1'))
         with self.assertRaisesRegex(PackageError, 'Unexpected package fields'):
             package_app.check_control_fields(fields, '1.0.1+1')
+
+    def test_control_fields_reject_missing_libsecret(self):
+        fields = package_app.parse_control_fields(package_app.control_file('1.0.0+1'))
+        fields['Depends'] = 'libgtk-3-0t64 | libgtk-3-0, libstdc++6'
+        with self.assertRaisesRegex(PackageError, 'Unexpected package fields'):
+            package_app.check_control_fields(fields, '1.0.0+1')
+
+    def test_notes_disclose_host_runtime_and_keyring_requirements(self):
+        note = package_app.signing_note('linux')
+        self.assertIn('GTK 3, libstdc++ and libsecret', note)
+        self.assertIn('tar.gz and AppImage require these libraries on the host', note)
+        self.assertIn('libsecret-1-0', note)
+        self.assertIn('active Secret Service/keyring', note)
+        self.assertIn('client library does not supply that service', note)
 
     def test_desktop_entry(self):
         lines = package_app.desktop_entry().splitlines()

@@ -33,6 +33,12 @@ The strict single-ABI inspector remains required for every APK, including
 native libraries supplied by dependencies.
 Linux runners install `libsecret-1-dev` for the secure-storage plugin's
 `libsecret-1>=0.18.4` build dependency.
+The Debian package declares `libsecret-1-0` as a runtime dependency.
+The tar.gz and AppImage use host GTK 3, libstdc++ and libsecret libraries.
+They do not bundle these system libraries or change `LD_LIBRARY_PATH`.
+Their distributed `SIGNING.txt` states these host prerequisites.
+Secure storage requires an active Secret Service/keyring in the desktop
+session. The libsecret client library does not provide that service.
 
 ## 3. Contracts
 
