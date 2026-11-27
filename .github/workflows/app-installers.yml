@@ -57,7 +57,7 @@ defaults:
     working-directory: qfli_c
 
 env:
-  CORE_REVISION: cbaa4a4166461baafff7c1a343bd3ca1865fcc4f
+  CORE_REVISION: 1ae4674a4b153701b0c3b3ff04b1a1b77a318611
   FLUTTER_VERSION: 3.41.9
   FLUTTER_REVISION: 00b0c91f06209d9e4a41f71b7a512d6eb3b9c694
 
@@ -99,7 +99,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: azurekiln2333/qflistudio-core
-          ref: cbaa4a4166461baafff7c1a343bd3ca1865fcc4f
+          ref: 1ae4674a4b153701b0c3b3ff04b1a1b77a318611
           path: qflistudio-core
           persist-credentials: false
       - name: Check out Flutter 3.41.9
@@ -116,7 +116,7 @@ jobs:
           echo "$GITHUB_WORKSPACE/flutter/bin" >> "$GITHUB_PATH"
           ../flutter/bin/flutter config --no-analytics
           ../flutter/bin/flutter --version
-          python tool/ci/prepare_core.py --flutter ../flutter
+          python -B ../qflistudio-core/tool/ci/prepare_flutter_core.py --flavor official --sdk-root ../flutter --sdk-revision "$FLUTTER_REVISION"
           ../flutter/bin/flutter pub get
       - name: Select the hosted GCC toolchain for desktop fixtures
         run: |
@@ -229,7 +229,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: azurekiln2333/qflistudio-core
-          ref: cbaa4a4166461baafff7c1a343bd3ca1865fcc4f
+          ref: 1ae4674a4b153701b0c3b3ff04b1a1b77a318611
           path: qflistudio-core
           persist-credentials: false
       - name: Check out Flutter 3.41.9
@@ -246,7 +246,7 @@ jobs:
           echo "$GITHUB_WORKSPACE/flutter/bin" >> "$GITHUB_PATH"
           ../flutter/bin/flutter config --no-analytics
           ../flutter/bin/flutter --version
-          python3 tool/ci/prepare_core.py --core ../qflistudio-core --flutter ../flutter
+          python3 -B ../qflistudio-core/tool/ci/prepare_flutter_core.py --flavor official --sdk-root ../flutter --sdk-revision "$FLUTTER_REVISION"
           ../flutter/bin/flutter pub get
       - name: Install the pinned Android NDK
         run: |
@@ -313,7 +313,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: azurekiln2333/qflistudio-core
-          ref: cbaa4a4166461baafff7c1a343bd3ca1865fcc4f
+          ref: 1ae4674a4b153701b0c3b3ff04b1a1b77a318611
           path: qflistudio-core
           persist-credentials: false
       - name: Check out Flutter 3.41.9
@@ -330,7 +330,7 @@ jobs:
           echo "$GITHUB_WORKSPACE/flutter/bin" >> "$GITHUB_PATH"
           ../flutter/bin/flutter config --no-analytics
           ../flutter/bin/flutter --version
-          python tool/ci/prepare_core.py --core ../qflistudio-core --flutter ../flutter
+          python -B ../qflistudio-core/tool/ci/prepare_flutter_core.py --flavor official --sdk-root ../flutter --sdk-revision "$FLUTTER_REVISION"
           ../flutter/bin/flutter pub get
       - name: Build the Windows application
         run: flutter build windows --release --no-pub
@@ -399,7 +399,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: azurekiln2333/qflistudio-core
-          ref: cbaa4a4166461baafff7c1a343bd3ca1865fcc4f
+          ref: 1ae4674a4b153701b0c3b3ff04b1a1b77a318611
           path: qflistudio-core
           persist-credentials: false
       - name: Check out Flutter 3.41.9
@@ -421,7 +421,7 @@ jobs:
           echo "$GITHUB_WORKSPACE/flutter/bin" >> "$GITHUB_PATH"
           ../flutter/bin/flutter config --no-analytics
           ../flutter/bin/flutter --version
-          python3 tool/ci/prepare_core.py --core ../qflistudio-core --flutter ../flutter
+          python3 -B ../qflistudio-core/tool/ci/prepare_flutter_core.py --flavor official --sdk-root ../flutter --sdk-revision "$FLUTTER_REVISION"
           ../flutter/bin/flutter pub get
       - name: Build the Linux application
         run: flutter build linux --release --no-pub
@@ -487,7 +487,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: azurekiln2333/qflistudio-core
-          ref: cbaa4a4166461baafff7c1a343bd3ca1865fcc4f
+          ref: 1ae4674a4b153701b0c3b3ff04b1a1b77a318611
           path: qflistudio-core
           persist-credentials: false
       - name: Check out Flutter 3.41.9
@@ -505,7 +505,7 @@ jobs:
           ../flutter/bin/flutter config --no-analytics --enable-macos-desktop
           ../flutter/bin/flutter precache --macos
           ../flutter/bin/flutter --version
-          python3 tool/ci/prepare_core.py --core ../qflistudio-core --flutter ../flutter
+          python3 -B ../qflistudio-core/tool/ci/prepare_flutter_core.py --flavor official --sdk-root ../flutter --sdk-revision "$FLUTTER_REVISION"
           ../flutter/bin/flutter pub get
       - name: Build the macOS application with ad hoc signing
         run: flutter build macos --release --no-pub
@@ -560,7 +560,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: azurekiln2333/qflistudio-core
-          ref: cbaa4a4166461baafff7c1a343bd3ca1865fcc4f
+          ref: 1ae4674a4b153701b0c3b3ff04b1a1b77a318611
           path: qflistudio-core
           persist-credentials: false
       - name: Check out Flutter 3.41.9
@@ -578,7 +578,7 @@ jobs:
           ../flutter/bin/flutter config --no-analytics
           ../flutter/bin/flutter precache --ios
           ../flutter/bin/flutter --version
-          python3 tool/ci/prepare_core.py --core ../qflistudio-core --flutter ../flutter
+          python3 -B ../qflistudio-core/tool/ci/prepare_flutter_core.py --flavor official --sdk-root ../flutter --sdk-revision "$FLUTTER_REVISION"
           ../flutter/bin/flutter pub get
       - name: Download and verify the native runtime package
         env:
@@ -663,7 +663,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: azurekiln2333/qflistudio-core
-          ref: cbaa4a4166461baafff7c1a343bd3ca1865fcc4f
+          ref: 1ae4674a4b153701b0c3b3ff04b1a1b77a318611
           path: qflistudio-core
           persist-credentials: false
       - name: Check out the pinned Flutter OHOS release
@@ -691,6 +691,7 @@ jobs:
           set -euo pipefail
           flutter config --no-analytics --ohos-sdk "$DEVECO_SDK_HOME"
           flutter --version --machine > "$RUNNER_TEMP/ohos-flutter-version.json"
+          python3 -B ../qflistudio-core/tool/ci/prepare_flutter_core.py --flavor ohos --sdk-root ../flutter_ohos --sdk-revision "$FLUTTER_OHOS_REVISION"
           flutter pub get
       - name: Build unsigned ARM64 HAP and APP
         env:

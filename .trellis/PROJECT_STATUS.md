@@ -69,8 +69,8 @@ Flutter 中间产物、日志和 iOS 切片保留 7 天。
 共享 core 目录为同级 `qflistudio-core`。
 应用依赖路径为 `../qflistudio-core`。
 Dart 包名仍为 `qfli_studio_core`。
-云端 core 固定为 `cbaa4a4166461baafff7c1a343bd3ca1865fcc4f`。
-本次迁移不升级该固定版本。
+云端 core 固定为 `1ae4674a4b153701b0c3b3ff04b1a1b77a318611`。
+本轮按协调指令更新固定版本。
 目标克隆须只绑定 GitHub 远端。
 协调者已检查 fetch 和 push URL。
 

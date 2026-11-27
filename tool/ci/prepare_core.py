@@ -15,7 +15,7 @@ import subprocess
 import sys
 
 
-CORE_REVISION = "cbaa4a4166461baafff7c1a343bd3ca1865fcc4f"
+CORE_REVISION = "1ae4674a4b153701b0c3b3ff04b1a1b77a318611"
 CORE_PATH = Path("../qflistudio-core")
 PATCH = Path(__file__).with_name("stock-flutter-core.patch")
 SOURCE_ROOTS = ("lib", "vendor/re_editor/lib")

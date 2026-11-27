@@ -13,7 +13,8 @@ the artifacts of another, and sets the signing boundary of every download.
 ## 2. Signatures
 
 ```text
-python3 tool/ci/prepare_core.py --core ../qflistudio-core --flutter ../flutter [--check]
+python3 -B ../qflistudio-core/tool/ci/prepare_flutter_core.py
+    --flavor official|ohos --sdk-root <flutter-checkout> --sdk-revision <pinned-sha>
 python3 tool/ci/fetch_native_artifact.py --name <artifact> --extract-to <dir> --record <json>
     [--run-id <id>] [--repository <owner/repo>] [--branch main]
 python3 tool/ci/package_app.py android --abi arm64-v8a|x86_64 --output dist/app
@@ -40,11 +41,12 @@ $GITHUB_WORKSPACE/
 
 - The workflow pins the core, both Flutter trees and every action by commit.
   After a clone, compare `git rev-parse HEAD` with the pinned commit.
-- The Flutter validation job and five stock Flutter platform jobs run
-  `prepare_core.py`. Its default core path is `../qflistudio-core`.
-  The Dart package name remains `qfli_studio_core`. The OHOS job uses the
-  unpatched core. `prepare_core.py` refuses an OHOS SDK and a core at another
-  revision or with local edits.
+- Core is pinned to `1ae4674a4b153701b0c3b3ff04b1a1b77a318611`.
+  The Flutter validation job and five stock Flutter platform jobs invoke
+  core's `prepare_flutter_core.py` with flavor `official` before resolution.
+  The OHOS job invokes flavor `ohos`, which preserves the native view.
+  Both modes verify the exact SDK revision on GitHub-hosted runners.
+  The Dart package name remains `qfli_studio_core`.
 - `actions/checkout` uses `persist-credentials: false`.
 - The workflow does not pin Python. Linux and macOS steps call `python3`.
   Windows steps call `python`. Helpers use the standard library only.

@@ -7,7 +7,7 @@
 
 ## 公共 UI 版本
 
-安装包使用共享 core 的 `cbaa4a4` 提交。
+安装包使用共享 core 的 `1ae4674a4b153701b0c3b3ff04b1a1b77a318611` 提交。
 该提交包含编辑器快捷栏和新版侧栏。
 该提交也更新主页导航与聊天组件。
 Forge 保留离线策略和 C/C++ 工具。
@@ -254,8 +254,8 @@ HarmonyOS 命令行工具的地址和校验值记录在锁文件中。
 
 core 目录名为 `qflistudio-core`。
 Dart 包名仍为 `qfli_studio_core`。
-`prepare_core.py` 默认读取 `../qflistudio-core`。
-core 固定为 `cbaa4a4`，本轮不升级。
+云端调用 core 的 `prepare_flutter_core.py`。
+core 固定为 `1ae4674a4b153701b0c3b3ff04b1a1b77a318611`。
 
 `Actionlint workflow checks` 校验两个工作流。
 actionlint 固定为 1.7.11。

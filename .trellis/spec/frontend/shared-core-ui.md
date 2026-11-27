@@ -5,9 +5,9 @@ Forge imports the shared QfliApp and configures it through StudioProfile.
 Do not copy the Studio shell's pages into Forge to synchronize common UI.
 
 Local pubspec.yaml resolves ../qflistudio-core, including that working tree's uncommitted edits. The Git HEAD alone does not describe the UI used locally.
-Installer jobs instead check out one explicit CORE_REVISION. Update all six core checkout refs and tool/ci/prepare_core.py together. Keep pubspec.lock aligned with the selected core dependencies.
+Installer jobs instead check out one explicit CORE_REVISION. Update all seven core checkout refs and tool/ci/prepare_core.py together. Invoke the pinned core prepare_flutter_core.py on hosted runners before dependency resolution. Keep pubspec.lock aligned with the selected core dependencies.
 
-The published core main baseline for this task is cbaa4a4166461baafff7c1a343bd3ca1865fcc4f. Its common UI includes the editor quick bar, editor/agent layout, session sidebar, chat composer and reorganized home scopes. Preview branches remain separate until explicitly selected.
+The published core main baseline for this task is 1ae4674a4b153701b0c3b3ff04b1a1b77a318611. Its common UI includes the editor quick bar, editor/agent layout, session sidebar, chat composer and reorganized home scopes. Preview branches remain separate until explicitly selected.
 
 Preserve Forge's offline policy, C/C++ templates, analyzer, runtime, owned content repository and tools builders. A core update must not silently enable the Studio networked product profile.
 
