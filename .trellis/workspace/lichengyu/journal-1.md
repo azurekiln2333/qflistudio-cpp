@@ -411,7 +411,7 @@ Reconciled branches, preserved generated and private paths outside Git, curated 
 
 **Date**: 2026-11-27
 **Task**: GitHub workspace migration and cloud-only delivery
-**Final SHA**: `f34deb125fccdb57c717602e0197555fc3a89be6`
-**Tree**: `e59b07f88bbd65e8ec8a858b9a45c418a717edb9`
+**Accepted migration snapshot**: `f34deb125fccdb57c717602e0197555fc3a89be6`
+**Snapshot tree**: `e59b07f88bbd65e8ec8a858b9a45c418a717edb9`
 
-The source and target repositories match GitHub main and are clean. The target Codex accepted ownership through Herdr. Application run `45957995690` succeeded with native reuse from `45892017304` attempt 2. Records run `45959065568` succeeded. Signing and device gates remain open. Cleanup remains inventory only.
+At that snapshot, source and target matched GitHub main and were clean. The target Codex accepted ownership through Herdr. Application run `45957995690` succeeded with native reuse from `45892017304` attempt 2. Records run `45959065568` succeeded. Later records-only commits require another gate, target pull, and final comparison. Final delivery identifies current main and its GitHub Actions results. Signing and device gates remain open. Cleanup remains inventory only.

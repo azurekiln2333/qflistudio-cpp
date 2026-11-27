@@ -2,19 +2,21 @@
 
 更新日期：2026-11-27。
 迁移状态：已完成。
-最终迁移提交：`f34deb125fccdb57c717602e0197555fc3a89be6`。
-最终提交的云端检查：记录运行已通过。应用运行复用已验收原生输入。
+迁移验收快照：`f34deb125fccdb57c717602e0197555fc3a89be6`。
+最终交付提交以当前 `main` 为准。
+该提交的云端结果以 GitHub Actions 记录为准。
 
 ## 源码与发布
 
 GitHub 仓库为 `azurekiln2333/qflistudio-cpp`。
 已发布的主分支基线为 `918233c5f32e848e63df11fa4e25639cdf17053a`。
-最终主分支为 `f34deb125fccdb57c717602e0197555fc3a89be6`。
+交接确认绑定快照 `f34deb125fccdb57c717602e0197555fc3a89be6`。
 协调者已将云端检查分支纳入本地主分支。
 该分支的证据提交为 `b8e48afba505ac636877dfb1c5958702485b0832`。
 该提交只补充运行证据。
 后续迁移修改仍须通过推送闸门。
-最终主分支树为 `e59b07f88bbd65e8ec8a858b9a45c418a717edb9`。
+验收快照的树为 `e59b07f88bbd65e8ec8a858b9a45c418a717edb9`。
+后续记录提交保留该快照的构建输入。
 
 运行约束见 `tasks/11-26-github-workspace-migration/research/execution-contract.md`。
 运行证据见 `tasks/11-26-six-platform-cloud-delivery/research/cloud-evidence.md`。
@@ -56,7 +58,7 @@ Flutter 中间产物、日志和 iOS 切片保留 7 天。
 该旧 run 不作为完整中间产物证据。
 应用运行 `45957995690` 检查提交 `69497a97a667b090c461e60ef37487888906ddf4`。
 该运行在迁移提交前启动。应用和原生输入保持一致。
-记录运行 `45959065568` 检查最终迁移记录。
+记录运行 `45959065568` 检查该验收快照。
 该运行的两个 job 全部成功。
 云端打包成功不等于设备验收。
 `deviceRuntimeVerified` 仍为 `false`。
@@ -101,7 +103,7 @@ Trellis 保全摘要见 `tasks/11-26-trellis-cloud-only-rules/research/retained-
 生产签名和 Apple 公证仍须单独授权。
 未签名的 iOS 和 OHOS 包不具备设备安装验收。
 
-## 待关闭的迁移门禁
+## 迁移门禁与责任
 
 | 门禁 | 所有者 | 验收条件 |
 | --- | --- | --- |
@@ -117,8 +119,10 @@ Trellis 保全摘要见 `tasks/11-26-trellis-cloud-only-rules/research/retained-
 | 正式交接 | 源协调者 | 目标 Codex 已通过 Herdr 确认 |
 | 旧目录处置 | 所有者 | 保全、目标验收和授权均已完成 |
 
-源目录和目标目录均已干净。
-目标克隆的提交与树已对齐。
+验收快照处的源目录和目标目录均已干净。
+该快照处的提交与树已对齐。
+后续记录提交仍须通过推送闸门。
+协调者须再次检查最终交付提交。
 本页不授权删除旧目录。
 本页不授权删除共享 WSL。
 
