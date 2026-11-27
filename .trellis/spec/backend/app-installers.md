@@ -27,6 +27,13 @@ python3 tool/ci/ohos_build.py sanitize|bootstrap|package
 Manual run inputs: `target` (`all`, `android`, `ios`, `ohos`, `linux`,
 `windows`, `macos`; default `all`) and `native_run_id` (optional).
 
+Android matrix jobs pass `--split-per-abi` to the hosted Flutter build.
+The packager receives the explicit `app-$ABI-release.apk` split as input.
+The strict single-ABI inspector remains required for every APK, including
+native libraries supplied by dependencies.
+Linux runners install `libsecret-1-dev` for the secure-storage plugin's
+`libsecret-1>=0.18.4` build dependency.
+
 ## 3. Contracts
 
 ### Runner layout and pins

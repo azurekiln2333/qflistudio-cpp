@@ -264,7 +264,7 @@ jobs:
             --branch "$NATIVE_BRANCH" \
             ${NATIVE_RUN_ID:+--run-id "$NATIVE_RUN_ID"}
       - name: Build the APK
-        run: flutter build apk --release --no-pub --target-platform "android-$ARCH"
+        run: flutter build apk --release --no-pub --split-per-abi --target-platform "android-$ARCH"
       - name: Archive Flutter release output
         run: python3 tool/ci/archive_flutter_build.py android --abi "$ABI"
       - name: Upload Flutter build output
@@ -278,6 +278,7 @@ jobs:
       - name: Verify and package the APK
         run: |
           python3 tool/ci/package_app.py android --abi "$ABI" --output dist/app \
+            --input "build/app/outputs/flutter-apk/app-$ABI-release.apk" \
             --native-record "$RUNNER_TEMP/native-input.json"
       - name: Upload APK
         id: upload
@@ -417,7 +418,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install --no-install-recommends -y \
-            clang cmake ninja-build pkg-config libgtk-3-dev libstdc++-12-dev dpkg-dev
+            clang cmake ninja-build pkg-config libgtk-3-dev libsecret-1-dev libstdc++-12-dev dpkg-dev
       - name: Initialize Flutter and resolve dependencies
         run: |
           set -euo pipefail
