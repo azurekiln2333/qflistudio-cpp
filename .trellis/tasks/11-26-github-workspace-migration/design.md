@@ -20,6 +20,10 @@ Native workflow outputs feed installer jobs through explicit provenance checks. 
 
 The source coordinator is the sole Git writer during reconciliation. Four Herdr pi workers audit separate areas. Re-resolve Herdr pane identity before every handoff. Target Codex starts final checks only after the source gate and pull comparison. Cross-product changes belong to their owners.
 
-## Rollback and cleanup
+## Preservation and cleanup inventory
 
-Preserve source refs and evidence before destructive cleanup. Do not copy ignored build trees to E. Remove only enumerated owned outputs after final comparison. Shared WSL removal requires verified distribution ownership and preservation of non-generated data. A failed remote or CI check keeps cleanup blocked.
+Preserve source refs and evidence. Do not copy ignored build trees to E. Move enumerated private/generated content to D:/MyNewProjects/_migration-backup/qflistudio-cpp-20261127 after checking resolved source/destination boundaries and avoiding collisions. Record what moved. Do not delete files or worktrees and do not unregister WSL. The cleanup document is an inventory for a later owner decision. A failed remote or CI check prevents a completed migration claim.
+
+## Push gate
+
+The coordinator commits reviewed changes on main and writes the exact HEAD to D:/MyNewProjects/_orchestra/push/qflistudio-cpp.json with any path-specific allow reasons. The orchestrator owns review and push. Read the corresponding result JSON before synchronizing the destination. No worker or coordinator runs git push directly.

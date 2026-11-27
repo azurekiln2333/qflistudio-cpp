@@ -21,7 +21,7 @@ R4. Use GitHub-hosted execution for builds, tests, lint, dependency preparation,
 R5. Record the source commit, dependency revisions, native artifact origin, package inventory, digests, retention, and signing state. A workflow file alone is not acceptance evidence.
 R6. Keep only GitHub remotes in the destination. Pull the reviewed main, compare Git trees and tracked bytes, verify portable dependency paths, and leave both repositories clean after all progress commits.
 R7. Publish durable agent rules against local builds/tests and automatic dependency downloads. Coordinate exclusively through Herdr. Prefer gpt-6.1-sol; retry limits, compact or replace sessions, then use deepseek-v4.1-flash only if needed.
-R8. Hand off to the destination Codex after reconciliation. Include evidence, remaining gates, and an exact cleanup procedure. Delete only verified owned outputs after cloud and destination checks. Inventory shared WSL before any destructive action.
+R8. Hand off to the destination Codex after reconciliation. Include evidence, remaining gates, and an exact cleanup inventory. Preserve private and generated content under D:/MyNewProjects/_migration-backup/qflistudio-cpp-20261127. Do not delete files, remove worktrees, or unregister WSL in this migration.
 
 ## Acceptance criteria
 
@@ -38,4 +38,4 @@ Do not publish secrets, merge signing-only backup changes wholesale, force-push 
 
 ## Current status
 
-Planning approved on 2026-11-26. Implementation has not been approved. See research/baseline.md for observations. The four child tasks cover Git reconciliation, Trellis/rules, cloud delivery, and migration/cleanup.
+Planning was approved on 2026-11-26. The user approved implementation and renewed execution on 2026-11-27 through the unified migration directive. Push only through D:/MyNewProjects/_orchestra/push/qflistudio-cpp.json. Do not run git push directly. See research/baseline.md for historical observations. The four child tasks cover Git reconciliation, Trellis/rules, cloud delivery, and migration/cleanup. The parent coordinator owns final integration and the completion record.

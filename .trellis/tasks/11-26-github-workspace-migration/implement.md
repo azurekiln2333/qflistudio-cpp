@@ -5,20 +5,20 @@
 - [x] Confirm source/destination paths and Herdr identities.
 - [x] Obtain task-creation and planning consent.
 - [x] Create parent and four linked child tasks.
-- [ ] Complete four read-only audit reports and decision review.
-- [ ] Present the final plan and obtain subsequent implementation approval.
+- [x] Complete four read-only audit reports and decision review.
+- [x] Present the final plan and obtain subsequent implementation approval.
 
 ## Ordered implementation
 
 1. Recheck remote heads and concurrent workspace writers. Start the child owning the next deliverable.
 2. Reconcile branch/worktree source and progress. Resolve signing-only history before publishing.
 3. Correct Trellis status, agent rules, ignored output handling, and portable core dependencies.
-4. Commit reviewed source/progress using explicit paths. Publish to GitHub main without force.
+4. Commit reviewed source/progress using explicit paths. Request publication only through the orchestrator push gate and verify its result.
 5. Complete cloud validation and six-platform delivery checks. Record exact run and artifact metadata.
 6. Commit updated acceptance evidence. Pull destination main with fast-forward protection.
 7. Compare commit/tree, tracked-file status, dependency layout, Trellis manifest, and GitHub-only remotes.
 8. Send the handoff through Herdr and obtain target Codex acknowledgement.
-9. Publish the bounded cleanup inventory. Perform only separately resolved destructive cleanup.
+9. Publish the bounded cleanup inventory. Move excluded private/generated data to the designated backup. Do not delete files or unregister WSL.
 10. Archive completed tasks and record the session. Publish bookkeeping and repeat source/remote/target equality checks.
 
 ## Validation boundary

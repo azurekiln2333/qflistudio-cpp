@@ -11,7 +11,7 @@ Finish the C/C++ workspace migration with source/progress equality, clear owners
 - Keep the target free of build/test/cache/install outputs.
 - Hand off through Herdr to the confirmed target Codex with evidence and pending work.
 - Inventory exact old output/worktree paths and WSL ownership. Separate generated data from source, credentials, and other products.
-- Perform cleanup only after source/remote/target preservation and cloud-delivery gates.
+- Move classified private/generated content to D:/MyNewProjects/_migration-backup/qflistudio-cpp-20261127. Inventory deletion candidates only. Do not delete files, remove worktrees, or unregister WSL in this migration.
 
 ## Acceptance
 
