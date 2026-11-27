@@ -41,7 +41,7 @@ $GITHUB_WORKSPACE/
 
 - The workflow pins the core, both Flutter trees and every action by commit.
   After a clone, compare `git rev-parse HEAD` with the pinned commit.
-- Core is pinned to `1ae4674a4b153701b0c3b3ff04b1a1b77a318611`.
+- Core is pinned to `8e031313ffc8d531c5a6b4d131f721f35da04c86`.
   The Flutter validation job and five stock Flutter platform jobs invoke
   core's `prepare_flutter_core.py` with flavor `official` before resolution.
   The OHOS job invokes flavor `ohos`, which preserves the native view.

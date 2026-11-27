@@ -57,7 +57,7 @@ defaults:
     working-directory: qfli_c
 
 env:
-  CORE_REVISION: 1ae4674a4b153701b0c3b3ff04b1a1b77a318611
+  CORE_REVISION: 8e031313ffc8d531c5a6b4d131f721f35da04c86
   FLUTTER_VERSION: 3.41.9
   FLUTTER_REVISION: 00b0c91f06209d9e4a41f71b7a512d6eb3b9c694
 
@@ -99,7 +99,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: azurekiln2333/qflistudio-core
-          ref: 1ae4674a4b153701b0c3b3ff04b1a1b77a318611
+          ref: 8e031313ffc8d531c5a6b4d131f721f35da04c86
           path: qflistudio-core
           persist-credentials: false
       - name: Check out Flutter 3.41.9
@@ -231,7 +231,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: azurekiln2333/qflistudio-core
-          ref: 1ae4674a4b153701b0c3b3ff04b1a1b77a318611
+          ref: 8e031313ffc8d531c5a6b4d131f721f35da04c86
           path: qflistudio-core
           persist-credentials: false
       - name: Check out Flutter 3.41.9
@@ -315,7 +315,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: azurekiln2333/qflistudio-core
-          ref: 1ae4674a4b153701b0c3b3ff04b1a1b77a318611
+          ref: 8e031313ffc8d531c5a6b4d131f721f35da04c86
           path: qflistudio-core
           persist-credentials: false
       - name: Check out Flutter 3.41.9
@@ -403,7 +403,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: azurekiln2333/qflistudio-core
-          ref: 1ae4674a4b153701b0c3b3ff04b1a1b77a318611
+          ref: 8e031313ffc8d531c5a6b4d131f721f35da04c86
           path: qflistudio-core
           persist-credentials: false
       - name: Check out Flutter 3.41.9
@@ -491,7 +491,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: azurekiln2333/qflistudio-core
-          ref: 1ae4674a4b153701b0c3b3ff04b1a1b77a318611
+          ref: 8e031313ffc8d531c5a6b4d131f721f35da04c86
           path: qflistudio-core
           persist-credentials: false
       - name: Check out Flutter 3.41.9
@@ -564,7 +564,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: azurekiln2333/qflistudio-core
-          ref: 1ae4674a4b153701b0c3b3ff04b1a1b77a318611
+          ref: 8e031313ffc8d531c5a6b4d131f721f35da04c86
           path: qflistudio-core
           persist-credentials: false
       - name: Check out Flutter 3.41.9
@@ -667,7 +667,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: azurekiln2333/qflistudio-core
-          ref: 1ae4674a4b153701b0c3b3ff04b1a1b77a318611
+          ref: 8e031313ffc8d531c5a6b4d131f721f35da04c86
           path: qflistudio-core
           persist-credentials: false
       - name: Check out the pinned Flutter OHOS release
